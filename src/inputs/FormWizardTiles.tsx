@@ -2,12 +2,12 @@ import { FormGroup, Gallery, Tile } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
-import { InputTextDetail, IRadioGroupContextState, RadioGroupContext } from '..'
-import { InputLabelHelp } from '../components/InputLabelHelp'
-import { InputContext, InputMode } from '../contexts/InputContext'
-import { InputItemContext } from '../contexts/InputItemContext'
+import { FormWizardTextDetail, IRadioGroupContextState, RadioGroupContext } from '..'
+import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
-export function InputTiles(props: {
+export function FormWizardTiles(props: {
     id: string
     label?: string
     path?: string
@@ -22,14 +22,14 @@ export function InputTiles(props: {
 }) {
     const path = props.path ?? props.id
 
-    let inputContext = useContext(InputContext)
-    let item = useContext(InputItemContext)
+    let formWizardContext = useContext(FormWizardContext)
+    let item = useContext(FormWizardItemContext)
 
     const state: IRadioGroupContextState = {
         value: get(item, path),
         setValue: (value) => {
             set(item, path, value)
-            inputContext.updateContext()
+            formWizardContext.updateContext()
         },
         readonly: props.readonly,
         disabled: props.disabled,
@@ -37,8 +37,8 @@ export function InputTiles(props: {
 
     if (props.hidden) return <Fragment />
 
-    if (inputContext.mode === InputMode.Details) {
-        return <InputTextDetail id={props.id} label={props.label} />
+    if (formWizardContext.mode === InputMode.Details) {
+        return <FormWizardTextDetail id={props.id} label={props.label} />
     }
 
     return (
@@ -47,7 +47,7 @@ export function InputTiles(props: {
                 id={`${props.id}-form-group`}
                 fieldId={props.id}
                 label={props.label}
-                labelIcon={<InputLabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                labelIcon={<FormWizardLabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                 helperText={props.helperText}
                 isRequired={props.required}
                 // tODO validation.... required...
@@ -58,7 +58,7 @@ export function InputTiles(props: {
     )
 }
 
-export function InputTile(props: {
+export function FormWizardTile(props: {
     id: string
     label: string
     value: string | number | boolean

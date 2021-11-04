@@ -1,9 +1,9 @@
 import { FormFieldGroupExpandableProps } from '@patternfly/react-core'
 import { InternalFormFieldGroup } from '@patternfly/react-core/dist/js/components/Form/InternalFormFieldGroup'
-import './InputFieldGroup.css'
+import './FormWizardFieldGroup.css'
 
-export type InputFieldGroupProps = FormFieldGroupExpandableProps & { setIsExpanded: (expanded: boolean) => void }
-export function InputFieldGroup(props: InputFieldGroupProps) {
+export type FormWizardFieldGroupProps = FormFieldGroupExpandableProps & { setIsExpanded: (expanded: boolean) => void }
+export function FormWizardFieldGroup(props: FormWizardFieldGroupProps) {
     const { children, className, header, isExpanded, setIsExpanded, toggleAriaLabel, ...extraProps } = props
     return (
         <InternalFormFieldGroup

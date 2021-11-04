@@ -1,24 +1,33 @@
-import { InputArray, InputLabels, InputPage, InputSection, InputSelect, InputStep, InputText, InputTextDetail } from '../../src'
+import {
+    FormWizardArrayInput,
+    FormWizardLabels,
+    FormWizardPage,
+    FormWizardSection,
+    FormWizardSelect,
+    FormWizardStep,
+    FormWizardTextDetail,
+    FormWizardTextInput,
+} from '../../src'
 import DeploymentTemplate from './Deployment.hbs'
 
 export function DeploymentForm() {
     return (
-        <InputPage
+        <FormWizardPage
             title="Create deployment"
             description="A deployment provides declarative updates for pods and replica sets."
             template={DeploymentTemplate}
             breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Kubernetes' }]}
         >
-            <InputStep label="Metadata">
-                <InputSection label="Metadata" prompt="Enter the details of the deployment">
-                    <InputText
+            <FormWizardStep label="Metadata">
+                <FormWizardSection label="Metadata" prompt="Enter the details of the deployment">
+                    <FormWizardTextInput
                         id="name"
                         label="Name"
                         placeholder="Enter name"
                         required
                         helperText="The name of the deployment must be unique in the namespace."
                     />
-                    <InputSelect
+                    <FormWizardSelect
                         id="namespace"
                         label="Namespace"
                         helperText="The namespace on the hub cluster where the resources will be created."
@@ -26,79 +35,79 @@ export function DeploymentForm() {
                         placeholder="Select namespace"
                         required
                     />
-                    <InputLabels
+                    <FormWizardLabels
                         id="labels"
                         label="Labels"
                         placeholder="Enter labels"
                         helperText="Labels are key/value pairs that are attached to objects, such as pods. Labels are intended to be used to specify identifying attributes of objects that are meaningful and relevant to users, but do not directly imply semantics to the core system. Labels can be used to organize and to select subsets of objects."
                     />
-                </InputSection>
-            </InputStep>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="Replicas">
-                <InputSection
+            <FormWizardStep label="Replicas">
+                <FormWizardSection
                     label="Replicas"
                     prompt="Enter the replica count"
                     description="A deployment creates a replica set which scales the number of pods for the deployment."
                 >
-                    <InputText
+                    <FormWizardTextInput
                         id="replicas"
                         label="Replicas"
                         placeholder="Enter replica count"
                         helperText="The replica count indicates how many pod replicas to create as part of the deployment."
                         required
                     />
-                </InputSection>
-            </InputStep>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            {/* <InputStep label="Update strategy">
-                <InputSection label="Update strategy" prompt="Configure the strategy for deployment updates">
-                    <InputSelect id="strategy" label="Strategy" options={['rollingUpdate']} placeholder="Select strategy" />
-                    <InputText id="strategy.maxSurge" label="Max surge" placeholder="Enter name" />
-                    <InputText id="strategy.maxUnavailable" label="Max unavailable" placeholder="Enter name" />
-                </InputSection>
+            {/* <FormWizardStep label="Update strategy">
+                <FormWizardSection label="Update strategy" prompt="Configure the strategy for deployment updates">
+                    <FormWizardSelect id="strategy" label="Strategy" options={['rollingUpdate']} placeholder="Select strategy" />
+                    <FormWizardText id="strategy.maxSurge" label="Max surge" placeholder="Enter name" />
+                    <FormWizardText id="strategy.maxUnavailable" label="Max unavailable" placeholder="Enter name" />
+                </FormWizardSection>
             </InputStep> */}
 
-            {/* <InputStep label="Resources">
-                <InputSection
+            {/* <FormWizardStep label="Resources">
+                <FormWizardSection
                     label="Resources requests"
                     prompt="Enter the resource requests"
                     description="Resource requests are used by Kubernetes to determine the node placement of pods based on calculated available resources on those nodes."
                 >
-                    <InputText id="requests.cpu" label="CPU request" placeholder="Enter cpu request" />
-                    <InputText id="requests.memory" label="Memory request" placeholder="Enter memory request" />
-                </InputSection>
-                <InputSection
+                    <FormWizardText id="requests.cpu" label="CPU request" placeholder="Enter cpu request" />
+                    <FormWizardText id="requests.memory" label="Memory request" placeholder="Enter memory request" />
+                </FormWizardSection>
+                <FormWizardSection
                     label="Resources limits"
                     prompt="Enter the resource limits"
                     description="Resource limits are used by Kubernetes to limit the amount of CPU and memory pods can use."
                 >
-                    <InputText id="requests.cpu" label="CPU limit" placeholder="Enter cpu limit" />
-                    <InputText id="requests.memory" label="Memory limit" placeholder="Enter memory limit" />
-                </InputSection>
+                    <FormWizardText id="requests.cpu" label="CPU limit" placeholder="Enter cpu limit" />
+                    <FormWizardText id="requests.memory" label="Memory limit" placeholder="Enter memory limit" />
+                </FormWizardSection>
             </InputStep> */}
 
-            <InputStep label="Containers">
-                <InputSection label="Containers" description="Each deployment pod can be made up of multiple containers.">
-                    <InputArray
+            <FormWizardStep label="Containers">
+                <FormWizardSection label="Containers" description="Each deployment pod can be made up of multiple containers.">
+                    <FormWizardArrayInput
                         id="containers"
                         placeholder="Add container"
-                        collapsedText={<InputTextDetail id="name" placeholder="Expand to enter the container details" />}
+                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the container details" />}
                     >
-                        <InputText id="name" label="Name" />
-                        <InputText id="image" label="Image" />
-                        <InputArray
+                        <FormWizardTextInput id="name" label="Name" />
+                        <FormWizardTextInput id="image" label="Image" />
+                        <FormWizardArrayInput
                             id="ports"
                             label="Ports"
                             placeholder="Add port"
-                            collapsedText={<InputTextDetail id="containerPort" placeholder="Expand to enter the port" />}
+                            collapsedText={<FormWizardTextDetail id="containerPort" placeholder="Expand to enter the port" />}
                             sortable
                         >
-                            <InputText id="containerPort" label="Port" required />
-                        </InputArray>
-                    </InputArray>
-                </InputSection>
-            </InputStep>
-        </InputPage>
+                            <FormWizardTextInput id="containerPort" label="Port" required />
+                        </FormWizardArrayInput>
+                    </FormWizardArrayInput>
+                </FormWizardSection>
+            </FormWizardStep>
+        </FormWizardPage>
     )
 }

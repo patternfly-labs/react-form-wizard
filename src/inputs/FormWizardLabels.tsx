@@ -12,11 +12,11 @@ import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import get from 'get-value'
 import { Fragment, useContext, useState } from 'react'
 import set from 'set-value'
-import { InputLabelHelp } from '../components/InputLabelHelp'
-import { InputContext, InputMode } from '../contexts/InputContext'
-import { InputItemContext } from '../contexts/InputItemContext'
+import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
-export function InputLabels(props: {
+export function FormWizardLabels(props: {
     id: string
     label: string
     path?: string
@@ -39,8 +39,8 @@ export function InputLabels(props: {
     const id = props.id
     const path = props.path ?? id
 
-    let inputContext = useContext(InputContext)
-    let item = useContext(InputItemContext)
+    let formWizardContext = useContext(FormWizardContext)
+    let item = useContext(FormWizardItemContext)
 
     const [open, setOpen] = useState(false)
 
@@ -66,7 +66,7 @@ export function InputLabels(props: {
     const hidden = props.hidden ? props.hidden(item) : false
     if (hidden) return <Fragment />
 
-    if (inputContext.mode === InputMode.Details) {
+    if (formWizardContext.mode === InputMode.Details) {
         return (
             <DescriptionListGroup>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
@@ -90,7 +90,7 @@ export function InputLabels(props: {
             helperTextInvalid={error}
             validated={validated}
             helperText={props.helperText}
-            labelIcon={<InputLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+            labelIcon={<FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
         >
             <Select
                 variant={SelectVariant.typeaheadMulti}
@@ -105,7 +105,7 @@ export function InputLabels(props: {
                         ? undefined
                         : () => {
                               set(item, path, '', { preservePaths: false })
-                              inputContext.updateContext()
+                              formWizardContext.updateContext()
                           }
                 }
                 selections={selections}
@@ -121,7 +121,7 @@ export function InputLabels(props: {
                         value = parts.slice(1).join('=')
                     }
                     set(item, path + '.' + key, value)
-                    inputContext.updateContext()
+                    formWizardContext.updateContext()
                 }}
             >
                 {props.options?.map((option) => {

@@ -1,9 +1,9 @@
 import { Stack } from '@patternfly/react-core'
 import { Fragment, ReactNode, useContext } from 'react'
-import { InputItemContext } from '../contexts/InputItemContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
-export function InputIndented(props: { children?: ReactNode; hidden?: (item: any) => boolean }) {
-    let item = useContext(InputItemContext)
+export function FormWizardIndented(props: { children?: ReactNode; hidden?: (item: any) => boolean }) {
+    let item = useContext(FormWizardItemContext)
 
     if (!props.children) return <Fragment />
 

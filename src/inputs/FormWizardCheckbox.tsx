@@ -4,12 +4,12 @@ import { CheckIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
-import { InputIndented } from '../components/InputIndented'
-import { InputLabelHelp } from '../components/InputLabelHelp'
-import { InputContext, InputMode } from '../contexts/InputContext'
-import { InputItemContext } from '../contexts/InputItemContext'
+import { FormWizardIndented } from '../components/FormWizardIndented'
+import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
-export function InputCheckbox(props: {
+export function FormWizardCheckbox(props: {
     id: string
     label: string
     description?: string
@@ -28,8 +28,8 @@ export function InputCheckbox(props: {
     const id = props.id
     const path = props.path ?? id
 
-    let inputContext = useContext(InputContext)
-    let item = useContext(InputItemContext)
+    let formWizardContext = useContext(FormWizardContext)
+    let item = useContext(FormWizardItemContext)
 
     const value = get(item, path)
 
@@ -45,7 +45,7 @@ export function InputCheckbox(props: {
 
     if (props.hidden) return <Fragment />
 
-    if (inputContext.mode === InputMode.Details) {
+    if (formWizardContext.mode === InputMode.Details) {
         if (!value) return <Fragment />
         return (
             <Split hasGutter>
@@ -64,20 +64,20 @@ export function InputCheckbox(props: {
                 helperTextInvalid={error}
                 validated={validated}
                 helperText={props.helperText}
-                labelIcon={<InputLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                labelIcon={<FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
             >
                 <Checkbox
                     id={id ?? props.label}
                     isChecked={value}
                     onChange={(value) => {
                         set(item, path, value)
-                        inputContext.updateContext()
+                        formWizardContext.updateContext()
                     }}
                     label={props.label}
                     value={value}
                 />
             </FormGroup>
-            {value && <InputIndented>{props.children}</InputIndented>}
+            {value && <FormWizardIndented>{props.children}</FormWizardIndented>}
         </Fragment>
     )
 }

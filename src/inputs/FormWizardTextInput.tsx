@@ -4,16 +4,16 @@ import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput'
 import get from 'get-value'
 import { Fragment, useContext, useState } from 'react'
 import set from 'set-value'
-import { InputTextDetail } from '..'
+import { FormWizardTextDetail } from '..'
 import { ClearInputButton } from '../buttons/ClearInputButton'
 import { PasteInputButton } from '../buttons/PasteInputButton'
 import { ShowSecretsButton } from '../buttons/ShowSecretsButton'
-import { InputLabelHelp } from '../components/InputLabelHelp'
-import { InputContext, InputMode } from '../contexts/InputContext'
-import { InputItemContext } from '../contexts/InputItemContext'
+import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 import { lowercaseFirst } from '../lib/input-utils'
 
-export function InputText(props: {
+export function FormWizardTextInput(props: {
     id: string
     label: string
     path?: string
@@ -32,8 +32,8 @@ export function InputText(props: {
     const path = props.path ?? props.id
     const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`
 
-    let inputContext = useContext(InputContext)
-    let item = useContext(InputItemContext)
+    let formWizardContext = useContext(FormWizardContext)
+    let item = useContext(FormWizardItemContext)
 
     const [showSecrets, setShowSecrets] = useState(false)
     const [mouseOver, setMouseOver] = useState(false)
@@ -42,7 +42,7 @@ export function InputText(props: {
 
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
-    if (inputContext.showValidation) {
+    if (formWizardContext.showValidation) {
         if (props.required && !value) {
             error = `${props.label} is required`
         } else if (props.validation) {
@@ -54,8 +54,8 @@ export function InputText(props: {
     const hidden = props.hidden ? props.hidden(item) : false
     if (hidden) return <Fragment />
 
-    if (inputContext.mode === InputMode.Details) {
-        return <InputTextDetail id={props.id} label={props.label} />
+    if (formWizardContext.mode === InputMode.Details) {
+        return <FormWizardTextDetail id={props.id} label={props.label} />
     }
 
     return (
@@ -68,7 +68,7 @@ export function InputText(props: {
             helperTextInvalid={error}
             validated={validated}
             helperText={props.helperText}
-            labelIcon={<InputLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+            labelIcon={<FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
             onMouseOver={() => setMouseOver(true)}
             onMouseLeave={() => setMouseOver(false)}
         >
@@ -81,7 +81,7 @@ export function InputText(props: {
                     value={value}
                     onChange={(value) => {
                         set(item, path, value)
-                        inputContext.updateContext()
+                        formWizardContext.updateContext()
                     }}
                     // validated={validated}
                     isReadOnly={props.readonly}
@@ -91,7 +91,7 @@ export function InputText(props: {
                     <PasteInputButton
                         setValue={(value) => {
                             set(item, path, value)
-                            inputContext.updateContext()
+                            formWizardContext.updateContext()
                         }}
                         setShowSecrets={setShowSecrets}
                     />
@@ -100,7 +100,7 @@ export function InputText(props: {
                     <ClearInputButton
                         onClick={() => {
                             set(item, path, '')
-                            inputContext.updateContext()
+                            formWizardContext.updateContext()
                         }}
                     />
                 )}

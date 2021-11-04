@@ -3,10 +3,10 @@ import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import get from 'get-value'
 import { Children, createContext, Fragment, isValidElement, ReactElement, ReactNode, useContext } from 'react'
 import set from 'set-value'
-import { InputIndented } from '../components/InputIndented'
-import { InputLabelHelp } from '../components/InputLabelHelp'
-import { InputContext, InputMode } from '../contexts/InputContext'
-import { InputItemContext } from '../contexts/InputItemContext'
+import { FormWizardIndented } from '../components/FormWizardIndented'
+import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
 export interface IRadioGroupContextState {
     value?: any
@@ -17,7 +17,7 @@ export interface IRadioGroupContextState {
 
 export const RadioGroupContext = createContext<IRadioGroupContextState>({})
 
-export function InputRadioGroup(props: {
+export function FormWizardRadioGroup(props: {
     id: string
     label?: string
     path: string
@@ -30,14 +30,14 @@ export function InputRadioGroup(props: {
     helperText?: string
     children?: ReactNode
 }) {
-    let inputContext = useContext(InputContext)
-    let item = useContext(InputItemContext)
+    let formWizardContext = useContext(FormWizardContext)
+    let item = useContext(FormWizardItemContext)
 
     const state: IRadioGroupContextState = {
         value: get(item, props.path),
         setValue: (value) => {
             set(item, props.path, value)
-            inputContext.updateContext()
+            formWizardContext.updateContext()
         },
         readonly: props.readonly,
         disabled: props.disabled,
@@ -45,7 +45,7 @@ export function InputRadioGroup(props: {
 
     if (props.hidden) return <Fragment />
 
-    if (inputContext.mode === InputMode.Details) {
+    if (formWizardContext.mode === InputMode.Details) {
         if (!state.value) return <Fragment />
 
         let selectedChild: ReactElement | undefined
@@ -68,7 +68,7 @@ export function InputRadioGroup(props: {
                 id={`${props.id}-form-group`}
                 fieldId={props.id}
                 label={props.label}
-                labelIcon={<InputLabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                labelIcon={<FormWizardLabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                 helperText={props.helperText}
                 isRequired={props.required}
                 // tODO validation.... required...
@@ -79,7 +79,7 @@ export function InputRadioGroup(props: {
     )
 }
 
-export function InputRadio(props: {
+export function FormWizardRadio(props: {
     id: string
     label: string
     value: string | number | boolean
@@ -99,7 +99,7 @@ export function InputRadio(props: {
                 isDisabled={radioGroupContext.disabled}
                 readOnly={radioGroupContext.readonly}
             />
-            {radioGroupContext.value === props.value && <InputIndented>{props.children}</InputIndented>}
+            {radioGroupContext.value === props.value && <FormWizardIndented>{props.children}</FormWizardIndented>}
         </Fragment>
     )
 }

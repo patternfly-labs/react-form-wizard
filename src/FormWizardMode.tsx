@@ -1,23 +1,23 @@
 import { Alert, FormAlert, Split, SplitItem, Stack, Wizard, WizardStep } from '@patternfly/react-core'
 import { Children, isValidElement, ReactNode, useCallback, useContext } from 'react'
-import { InputStep } from '.'
-import { InputContext } from './contexts/InputContext'
-import { InputDetails } from './InputDetails'
-import { hasValidationErrorsProps, isInputHiddenProps } from './lib/input-utils'
+import { FormWizardStep } from '.'
+import { FormWizardContext } from './contexts/FormWizardContext'
+import { FormWizardDetailsView } from './FormWizardDetails'
+import { hasValidationErrorsProps, isFormWizardHiddenProps } from './lib/input-utils'
 
-export function InputWizard(props: { children: ReactNode }) {
+export function FormWizardWizardView(props: { children: ReactNode }) {
     const steps: WizardStep[] = []
-    let inputContext = useContext(InputContext)
+    let formWizardContext = useContext(FormWizardContext)
 
     let formHasValidationErrors = false
     Children.forEach(props.children, (child) => {
         if (!isValidElement(child)) return
-        if (child.type !== InputStep) return
-        if (isInputHiddenProps(child.props)) return
+        if (child.type !== FormWizardStep) return
+        if (isFormWizardHiddenProps(child.props)) return
 
         let color: string | undefined = undefined
         if (hasValidationErrorsProps(child.props)) {
-            if (inputContext.showValidation) {
+            if (formWizardContext.showValidation) {
                 color = '#C9190B'
             }
             formHasValidationErrors = true
@@ -44,7 +44,7 @@ export function InputWizard(props: { children: ReactNode }) {
                     <FormAlert style={{ paddingBottom: 16 }}>
                         <Alert variant="danger" title="Fix validation errors before summitting." isInline isPlain />
                     </FormAlert>
-                    <InputDetails>{props.children}</InputDetails>
+                    <FormWizardDetailsView>{props.children}</FormWizardDetailsView>
                 </Stack>
             ),
             nextButtonText: 'Submit',
@@ -53,14 +53,14 @@ export function InputWizard(props: { children: ReactNode }) {
     } else {
         steps.push({
             name: 'Summary',
-            component: <InputDetails>{props.children}</InputDetails>,
+            component: <FormWizardDetailsView>{props.children}</FormWizardDetailsView>,
             nextButtonText: 'Submit',
         })
     }
 
     const stepChange = useCallback((step) => {
         if (step.name === 'Summary') {
-            inputContext.setShowValidation(true)
+            formWizardContext.setShowValidation(true)
         }
     }, [])
 

@@ -12,9 +12,9 @@ export enum InputEditMode {
 }
 
 /**
- * InputContext is the root level context of an InputForm and represents the forms data.
+ * FormWizardContext is the root level context of an InputForm and represents the forms data.
  */
-export interface IInputContext {
+export interface IFormWizardContext {
     /**
      * updateContext updates the input context state.
      * This should be called by the input components when they update state.
@@ -30,9 +30,9 @@ export interface IInputContext {
 }
 
 /**
- * InputContext is the root level context of an InputForm and represents the forms data.
+ * FormWizardContext is the root level context of an InputForm and represents the forms data.
  */
-export const InputContext = createContext<IInputContext>({
+export const FormWizardContext = createContext<IFormWizardContext>({
     updateContext: () => {},
     mode: InputMode.Wizard,
     editMode: InputEditMode.Create,

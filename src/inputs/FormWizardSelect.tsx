@@ -3,14 +3,14 @@ import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import set from 'set-value'
-import { InputTextDetail } from '..'
-import { InputLabelHelp } from '../components/InputLabelHelp'
-import { InputContext, InputMode } from '../contexts/InputContext'
-import { InputItemContext } from '../contexts/InputItemContext'
+import { FormWizardTextDetail } from '..'
+import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 import { lowercaseFirst } from '../lib/input-utils'
-import './InputSelect.css'
+import './FormWizardSelect.css'
 
-export interface InputOption<T> {
+export interface FormWizardOption<T> {
     id?: string
     icon?: ReactNode
     label: string
@@ -19,13 +19,13 @@ export interface InputOption<T> {
     disabled?: boolean
 }
 
-export interface InputOptionGroup<T> {
+export interface FormWizardOptionGroup<T> {
     id?: string
     label: string
-    options: (InputOption<T> | string | number)[]
+    options: (FormWizardOption<T> | string | number)[]
 }
 
-interface InputSelectCommonProps {
+interface FormWizardSelectCommonProps {
     id: string
     label: string
     placeholder?: string
@@ -45,62 +45,62 @@ interface InputSelectCommonProps {
     hidden?: (values: any) => boolean
 }
 
-export enum InputSelectVariant {
+export enum FormWizardSelectVariant {
     Single = 'single',
     Multi = 'multi',
     SingleGrouped = 'single-grouped',
     MultiGrouped = 'multi-grouped',
 }
 
-interface InputSingleSelectProps<T> extends InputSelectCommonProps {
+interface FormWizardSingleSelectProps<T> extends FormWizardSelectCommonProps {
     variant: 'single'
-    options: (InputOption<T> | string | number)[]
+    options: (FormWizardOption<T> | string | number)[]
     validation?: (value: T) => string | undefined
 }
 
-interface InputMultiselectProps<T> extends InputSelectCommonProps {
+interface FormWizardMultiselectProps<T> extends FormWizardSelectCommonProps {
     variant: 'multi'
-    options: (InputOption<T> | string | number)[]
+    options: (FormWizardOption<T> | string | number)[]
     validation?: (values: T[]) => string | undefined
 }
 
-interface InputSingleGroupedSelectProps<T> extends InputSelectCommonProps {
+interface FormWizardGroupedSingleSelectProps<T> extends FormWizardSelectCommonProps {
     variant: 'single-grouped'
-    groups: InputOptionGroup<T>[]
+    groups: FormWizardOptionGroup<T>[]
     validation?: (value: T) => string | undefined
 }
 
-interface InputMultiGroupedSelectProps<T> extends InputSelectCommonProps {
+interface FormWizardGroupedMultiselectProps<T> extends FormWizardSelectCommonProps {
     variant: 'multi-grouped'
-    groups: InputOptionGroup<T>[]
+    groups: FormWizardOptionGroup<T>[]
     validation?: (values: T[]) => string | undefined
 }
 
-export function InputSelect<T>(props: Omit<InputSingleSelectProps<T>, 'variant'>) {
-    return <InputSelectBase<T> {...props} variant="single" />
+export function FormWizardSelect<T>(props: Omit<FormWizardSingleSelectProps<T>, 'variant'>) {
+    return <FormWizardSelectBase<T> {...props} variant="single" />
 }
 
-export function InputMultiselect<T>(props: Omit<InputMultiselectProps<T>, 'variant'>) {
-    return <InputSelectBase<T> {...props} variant="multi" />
+export function FormWizardMultiselect<T>(props: Omit<FormWizardMultiselectProps<T>, 'variant'>) {
+    return <FormWizardSelectBase<T> {...props} variant="multi" />
 }
 
-export function InputGroupedSelect<T>(props: Omit<InputSingleGroupedSelectProps<T>, 'variant'>) {
-    return <InputSelectBase<T> {...props} variant="single-grouped" />
+export function FormWizardGroupedSelect<T>(props: Omit<FormWizardGroupedSingleSelectProps<T>, 'variant'>) {
+    return <FormWizardSelectBase<T> {...props} variant="single-grouped" />
 }
 
-export function InputGroupedMultiselect<T>(props: Omit<InputMultiGroupedSelectProps<T>, 'variant'>) {
-    return <InputSelectBase<T> {...props} variant="multi-grouped" />
+export function FormWizardGroupedMultiselect<T>(props: Omit<FormWizardGroupedMultiselectProps<T>, 'variant'>) {
+    return <FormWizardSelectBase<T> {...props} variant="multi-grouped" />
 }
 
-export type InputSelectProps<T> =
-    | InputSingleSelectProps<T>
-    | InputMultiselectProps<T>
-    | InputSingleGroupedSelectProps<T>
-    | InputMultiGroupedSelectProps<T>
+export type FormWizardSelectProps<T> =
+    | FormWizardSingleSelectProps<T>
+    | FormWizardMultiselectProps<T>
+    | FormWizardGroupedSingleSelectProps<T>
+    | FormWizardGroupedMultiselectProps<T>
 
-function InputSelectBase<T = any>(props: InputSelectProps<T>) {
-    const inputContext = useContext(InputContext)
-    const item = useContext(InputItemContext)
+function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
+    const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
 
     const id = props.id
@@ -199,7 +199,7 @@ function InputSelectBase<T = any>(props: InputSelectProps<T>) {
 
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
-    if (inputContext.showValidation) {
+    if (formWizardContext.showValidation) {
         if (props.required && !selections) {
             error = `${props.label} is required`
         } else if (props.validation) {
@@ -228,9 +228,9 @@ function InputSelectBase<T = any>(props: InputSelectProps<T>) {
                     set(item, path, newValues)
                     break
             }
-            inputContext.updateContext()
+            formWizardContext.updateContext()
         },
-        [item, props, inputContext, selections]
+        [item, props, formWizardContext, selections]
     )
 
     const isGrouped = useMemo(() => {
@@ -246,8 +246,8 @@ function InputSelectBase<T = any>(props: InputSelectProps<T>) {
 
     const onClear = useCallback(() => {
         // set(item, props.path, '', { preservePaths: false })
-        inputContext.updateContext()
-    }, [item, props, inputContext])
+        formWizardContext.updateContext()
+    }, [item, props, formWizardContext])
 
     const onFilter = useCallback(
         (_, value: string) =>
@@ -281,8 +281,8 @@ function InputSelectBase<T = any>(props: InputSelectProps<T>) {
     const hidden = props.hidden ? props.hidden(item) : false
     if (hidden) return <Fragment />
 
-    if (inputContext.mode === InputMode.Details) {
-        return <InputTextDetail id={props.id} label={props.label} />
+    if (formWizardContext.mode === InputMode.Details) {
+        return <FormWizardTextDetail id={props.id} label={props.label} />
     }
 
     return (
@@ -291,7 +291,7 @@ function InputSelectBase<T = any>(props: InputSelectProps<T>) {
             id={`${id}-form-group`}
             fieldId={id}
             label={props.label}
-            labelIcon={<InputLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+            labelIcon={<FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
             helperText={props.helperText}
             helperTextInvalid={error}
             validated={validated}

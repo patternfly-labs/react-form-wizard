@@ -21,11 +21,11 @@ import {
 import Handlebars, { HelperOptions } from 'handlebars'
 import { ReactNode, useState } from 'react'
 import YAML from 'yaml'
-import { InputWizard } from '.'
+import { FormWizardWizardView } from '.'
 import { YamlHighlighter } from './components/YamlHighlighter'
-import { InputContext, InputEditMode, InputMode } from './contexts/InputContext'
-import { InputItemContext } from './contexts/InputItemContext'
-import { InputForm } from './InputForm'
+import { FormWizardContext, InputEditMode, InputMode } from './contexts/FormWizardContext'
+import { FormWizardItemContext } from './contexts/FormWizardItemContext'
+import { FormWizard } from './FormWizard'
 
 Handlebars.registerHelper('if_eq', function (arg1: string, arg2: string, options: HelperOptions) {
     return arg1 == arg2 ? options.fn(this) : options.inverse(this)
@@ -35,7 +35,7 @@ Handlebars.registerHelper('if_ne', function (arg1: string, arg2: string, options
     return arg1 !== arg2 ? options.fn(this) : options.inverse(this)
 })
 
-export function InputPage(props: {
+export function FormWizardPage(props: {
     title: string
     description?: string
     children: ReactNode
@@ -87,7 +87,7 @@ export function InputPage(props: {
         >
             {/* <Drawer isExpanded={drawerExpanded} isInline={drawerInline}> */}
             <Drawer isExpanded={drawerExpanded} isInline>
-                <DrawerContent panelContent={<InputPageDrawer data={data} template={props.template} devMode={devMode} />}>
+                <DrawerContent panelContent={<FormWizardPageDrawer data={data} template={props.template} devMode={devMode} />}>
                     <DrawerContentBody>
                         <PageSection
                             variant="light"
@@ -95,7 +95,7 @@ export function InputPage(props: {
                             type={mode === InputMode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
                             isWidthLimited
                         >
-                            <InputContext.Provider
+                            <FormWizardContext.Provider
                                 value={{
                                     updateContext: () => setData(JSON.parse(JSON.stringify(data))),
                                     mode,
@@ -104,14 +104,14 @@ export function InputPage(props: {
                                     setShowValidation,
                                 }}
                             >
-                                <InputItemContext.Provider value={data}>
+                                <FormWizardItemContext.Provider value={data}>
                                     {mode === InputMode.Wizard ? (
-                                        <InputWizard>{props.children}</InputWizard>
+                                        <FormWizardWizardView>{props.children}</FormWizardWizardView>
                                     ) : (
-                                        <InputForm>{props.children}</InputForm>
+                                        <FormWizard>{props.children}</FormWizard>
                                     )}
-                                </InputItemContext.Provider>
-                            </InputContext.Provider>
+                                </FormWizardItemContext.Provider>
+                            </FormWizardContext.Provider>
                         </PageSection>
                     </DrawerContentBody>
                 </DrawerContent>
@@ -120,7 +120,7 @@ export function InputPage(props: {
     )
 }
 
-function InputPageDrawer(props: { data: any; template: string; devMode: boolean }) {
+function FormWizardPageDrawer(props: { data: any; template: string; devMode: boolean }) {
     const [template] = useState(() => Handlebars.compile(props.template))
     const [activeKey, setActiveKey] = useState<number | string>(0)
 

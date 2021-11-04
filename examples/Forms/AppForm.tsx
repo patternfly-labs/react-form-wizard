@@ -4,20 +4,20 @@ import { GitAltIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
 import { Fragment, useMemo } from 'react'
 import {
-    InputArray,
-    InputCheckbox,
-    InputHidden,
-    InputLabels,
-    InputPage,
-    InputRadio,
-    InputRadioGroup,
-    InputSection,
-    InputSelect,
-    InputStep,
-    InputText,
-    InputTextDetail,
-    InputTile,
-    InputTiles,
+    FormWizardArrayInput,
+    FormWizardCheckbox,
+    FormWizardHidden,
+    FormWizardLabels,
+    FormWizardPage,
+    FormWizardRadio,
+    FormWizardRadioGroup,
+    FormWizardSection,
+    FormWizardSelect,
+    FormWizardStep,
+    FormWizardTextDetail,
+    FormWizardTextInput,
+    FormWizardTile,
+    FormWizardTiles,
 } from '../../src'
 import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
@@ -48,24 +48,27 @@ export function AppForm() {
     const urlOptions = useMemo(() => ['url1', 'url2'], [])
     const ansibleCredentials = useMemo(() => ['credential1', 'credential2'], [])
     return (
-        <InputPage
+        <FormWizardPage
             title="Create an application"
             template={ApplicationHandlebars}
             breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Applications' }]}
         >
-            <InputStep label="Type">
-                <InputSection label="Type" prompt="Type">
-                    <InputTiles id="deployType" label="Select the application management type to deploy this application into clusters.">
-                        <InputTile id="subscription" value="Subscription" label="Subscription" />
-                        <InputTile id="argoCD" value="ArgoCD" label="Argo CD ApplicationSet" />
-                    </InputTiles>
-                </InputSection>
-            </InputStep>
+            <FormWizardStep label="Type">
+                <FormWizardSection label="Type" prompt="Type">
+                    <FormWizardTiles
+                        id="deployType"
+                        label="Select the application management type to deploy this application into clusters."
+                    >
+                        <FormWizardTile id="subscription" value="Subscription" label="Subscription" />
+                        <FormWizardTile id="argoCD" value="ArgoCD" label="Argo CD ApplicationSet" />
+                    </FormWizardTiles>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="Details" hidden={(item) => item.deployType !== 'Subscription'}>
-                <InputSection label="Details" prompt="Enter the details of the application">
-                    <InputText id="name" label="Application name" required />
-                    <InputSelect
+            <FormWizardStep label="Details" hidden={(item) => item.deployType !== 'Subscription'}>
+                <FormWizardSection label="Details" prompt="Enter the details of the application">
+                    <FormWizardTextInput id="name" label="Application name" required />
+                    <FormWizardSelect
                         id="namespace"
                         label="Namespace"
                         placeholder="Select the namespace"
@@ -73,24 +76,24 @@ export function AppForm() {
                         options={namespaces}
                         required
                     />
-                </InputSection>
-            </InputStep>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="Repositories" hidden={(item) => item.deployType !== 'Subscription'}>
-                <InputSection label="Repositories" prompt="Enter the application repositories">
-                    <InputArray
+            <FormWizardStep label="Repositories" hidden={(item) => item.deployType !== 'Subscription'}>
+                <FormWizardSection label="Repositories" prompt="Enter the application repositories">
+                    <FormWizardArrayInput
                         id="repositories"
                         placeholder="Add repository"
-                        collapsedText={<InputTextDetail id="url" placeholder="Expand to enter the repository details" />}
+                        collapsedText={<FormWizardTextDetail id="url" placeholder="Expand to enter the repository details" />}
                     >
-                        <InputTiles id="repositoryType" label="Repository type">
-                            <InputTile id="git" value="SubscriptionGit" label="Git" icon={<GitAltIcon />} />
-                            <InputTile id="helm" value="SubscriptionHelm" label="Helm" />
-                            <InputTile id="objectstorage" value="SubscriptionObjectstorage" label="Object Storage" />
-                        </InputTiles>
+                        <FormWizardTiles id="repositoryType" label="Repository type">
+                            <FormWizardTile id="git" value="SubscriptionGit" label="Git" icon={<GitAltIcon />} />
+                            <FormWizardTile id="helm" value="SubscriptionHelm" label="Helm" />
+                            <FormWizardTile id="objectstorage" value="SubscriptionObjectstorage" label="Object Storage" />
+                        </FormWizardTiles>
 
-                        <InputHidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
-                            <InputSelect
+                        <FormWizardHidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
+                            <FormWizardSelect
                                 id="subscription.git.url"
                                 label="URL"
                                 placeholder="Enter or select a Git URL"
@@ -98,9 +101,13 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <InputText id="subscription.git.username" label="Username" placeholder="Enter the Git user name" />
-                            <InputText id="subscription.git.accessToken" label="Access token" placeholder="Enter the Git access token" />
-                            <InputSelect
+                            <FormWizardTextInput id="subscription.git.username" label="Username" placeholder="Enter the Git user name" />
+                            <FormWizardTextInput
+                                id="subscription.git.accessToken"
+                                label="Access token"
+                                placeholder="Enter the Git access token"
+                            />
+                            <FormWizardSelect
                                 id="subscription.git.branch"
                                 label="Branch"
                                 placeholder="Enter or select a branch"
@@ -108,7 +115,7 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <InputSelect
+                            <FormWizardSelect
                                 id="subscription.git.path"
                                 label="Path"
                                 placeholder="Enter or select a repository path"
@@ -117,41 +124,45 @@ export function AppForm() {
                                 required
                             />
 
-                            <InputText id="subscription.git.commitHash" label="Commit hash" placeholder="Enter a specific commit hash" />
+                            <FormWizardTextInput
+                                id="subscription.git.commitHash"
+                                label="Commit hash"
+                                placeholder="Enter a specific commit hash"
+                            />
 
-                            <InputText id="subscription.git.tag" label="Tag" placeholder="Enter a specific tag" />
-                            <InputSelect
+                            <FormWizardTextInput id="subscription.git.tag" label="Tag" placeholder="Enter a specific tag" />
+                            <FormWizardSelect
                                 id="subscription.git.reconcileOption"
                                 label="Reconcile option"
                                 labelHelp="With the Merge option, new fields are added and existing fields are updated in the resource. Choose to merge if resources are updated after the initial deployment. If you choose to replace, the existing resource is replaced with the Git source."
                                 options={reconcileOptions}
                             />
-                            <InputSelect
+                            <FormWizardSelect
                                 id="subscription.git.reconcileRate"
                                 label="Repository reconcile rate"
                                 labelHelp="The frequency of resource reconciliation that is used as a global repository setting. The medium default setting checks for changes to apply every three minutes and re-applies all resources every 15 minutes, even without a change. Select low to reconcile every hour. Select high to reconcile every two minutes. If you select off, the deployed resources are not automatically reconciled."
                                 options={reconcileRates}
                             />
-                            <InputCheckbox
+                            <FormWizardCheckbox
                                 id="subscription.git.subReconcileRate"
                                 label="Disable auto-reconciliation"
                                 labelHelp="Turn the auto-reconciliation off for this specific application regardless of the reconcile rate setting in the repository."
                             />
-                            <InputCheckbox
+                            <FormWizardCheckbox
                                 id="subscription.git.insecureSkipVerify"
                                 label="Disable server certificate verification"
                                 labelHelp="Disable server TLS certificate verification for Git server connection."
                             />
-                            <InputSelect
+                            <FormWizardSelect
                                 id="subscription.git.ansibleSecretName"
                                 label="Ansible Automation Platform credential"
                                 labelHelp="If using Configure automation for prehook and posthook tasks, select the Ansible Automation Platform credential. Click the Add credentials tab to create a new secret."
                                 options={ansibleCredentials}
                             />
-                        </InputHidden>
+                        </FormWizardHidden>
 
-                        <InputHidden hidden={(data) => data.repositoryType !== 'SubscriptionHelm'}>
-                            <InputSelect
+                        <FormWizardHidden hidden={(data) => data.repositoryType !== 'SubscriptionHelm'}>
+                            <FormWizardSelect
                                 id="subscription.helm.url"
                                 label="URL"
                                 placeholder="Enter or select a Helm repository URL"
@@ -159,48 +170,56 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <InputText id="subscription.helm.username" label="Username" placeholder="Enter the Helm repository username" />
-                            <InputText id="subscription.helm.password" label="Password" placeholder="Enter the Helm repository password" />
-                            <InputText
+                            <FormWizardTextInput
+                                id="subscription.helm.username"
+                                label="Username"
+                                placeholder="Enter the Helm repository username"
+                            />
+                            <FormWizardTextInput
+                                id="subscription.helm.password"
+                                label="Password"
+                                placeholder="Enter the Helm repository password"
+                            />
+                            <FormWizardTextInput
                                 id="subscription.helm.chart"
                                 label="Chart name"
                                 placeholder="Enter the name of the target Helm chart"
                                 required
                             />
-                            <InputText
+                            <FormWizardTextInput
                                 id="subscription.helm.packageAlias"
                                 label="Package alias"
                                 placeholder="Enter the alias name of the target Helm chart"
                                 labelHelp="The alias name for the target Helm chart."
                                 required
                             />
-                            <InputText
+                            <FormWizardTextInput
                                 id="subscription.helm.packageVersion"
                                 label="Package version"
                                 placeholder="Enter the version or versions"
                                 labelHelp="The version or versions for the deployable. You can use a range of versions in the form >1.0, or <3.0."
                             />
-                            <InputSelect
+                            <FormWizardSelect
                                 id="subscription.helm.reconcileRate"
                                 label="Repository reconcile rate"
                                 labelHelp="The frequency of resource reconciliation that is used as a global repository setting. The medium default setting checks for changes to apply every three minutes and re-applies all resources every 15 minutes, even without a change. Select low to reconcile every hour. Select high to reconcile every two minutes. If you select off, the deployed resources are not automatically reconciled."
                                 options={reconcileRates}
                                 required
                             />
-                            <InputCheckbox
+                            <FormWizardCheckbox
                                 id="subscription.helm.subReconcileRate"
                                 label="Disable auto-reconciliation"
                                 labelHelp="Turn the auto-reconciliation off for this specific application regardless of the reconcile rate setting in the repository."
                             />
-                            <InputCheckbox
+                            <FormWizardCheckbox
                                 id="subscription.helm.insecureSkipVerify"
                                 label="Disable server certificate verification"
                                 labelHelp="Disable server TLS certificate verification for Git server connection."
                             />
-                        </InputHidden>
+                        </FormWizardHidden>
 
-                        <InputHidden hidden={(data) => data.repositoryType !== 'SubscriptionObjectstorage'}>
-                            <InputSelect
+                        <FormWizardHidden hidden={(data) => data.repositoryType !== 'SubscriptionObjectstorage'}>
+                            <FormWizardSelect
                                 id="subscription.obj.url"
                                 label="URL"
                                 placeholder="Enter or select an ObjectStore bucket URL"
@@ -208,27 +227,44 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <InputText id="subscription.obj.accessKey" label="Access key" placeholder="Enter the object store access key" />
-                            <InputText id="subscription.obj.secretKey" label="Secret key" placeholder="Enter the object store secret key" />
-                            <InputText id="subscription.obj.region" label="Region" placeholder="Enter the AWS region of the S3 bucket" />
-                            <InputText
+                            <FormWizardTextInput
+                                id="subscription.obj.accessKey"
+                                label="Access key"
+                                placeholder="Enter the object store access key"
+                            />
+                            <FormWizardTextInput
+                                id="subscription.obj.secretKey"
+                                label="Secret key"
+                                placeholder="Enter the object store secret key"
+                            />
+                            <FormWizardTextInput
+                                id="subscription.obj.region"
+                                label="Region"
+                                placeholder="Enter the AWS region of the S3 bucket"
+                            />
+                            <FormWizardTextInput
                                 id="subscription.obj.subfolder"
                                 label="Subfolder"
                                 placeholder="Enter the Amazon S3 or MinIO subfolder bucket path"
                             />
-                        </InputHidden>
+                        </FormWizardHidden>
 
-                        <InputHidden hidden={(data) => data.repositoryType === undefined}>
+                        <FormWizardHidden hidden={(data) => data.repositoryType === undefined}>
                             <PlacementRules />
-                        </InputHidden>
-                    </InputArray>
-                </InputSection>
-            </InputStep>
+                        </FormWizardHidden>
+                    </FormWizardArrayInput>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <InputSection label="General">
-                    <InputText id="appSetName" label="ApplicationSet name" placeholder="Enter the application set name" required />
-                    <InputSelect
+            <FormWizardStep label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
+                <FormWizardSection label="General">
+                    <FormWizardTextInput
+                        id="appSetName"
+                        label="ApplicationSet name"
+                        placeholder="Enter the application set name"
+                        required
+                    />
+                    <FormWizardSelect
                         id="argoServer"
                         label="Argo server"
                         placeholder="Select the Argo server"
@@ -236,24 +272,24 @@ export function AppForm() {
                         options={servers}
                         required
                     />
-                    <InputSelect
+                    <FormWizardSelect
                         id="requeueTime"
                         label="Requeue time"
                         options={requeueTimes}
                         labelHelp="Cluster decision resource requeue time in seconds"
                         required
                     />
-                </InputSection>
-            </InputStep>
-            <InputStep label="Template" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <InputSection label="Source">
-                    <InputTiles id="repositoryType" label="Repository type">
-                        <InputTile id="git" value="Git" label="Git" icon={<GitAltIcon />} />
-                        <InputTile id="helm" value="Helm" label="Helm" />
-                    </InputTiles>
+                </FormWizardSection>
+            </FormWizardStep>
+            <FormWizardStep label="Template" hidden={(item) => item.deployType !== 'ArgoCD'}>
+                <FormWizardSection label="Source">
+                    <FormWizardTiles id="repositoryType" label="Repository type">
+                        <FormWizardTile id="git" value="Git" label="Git" icon={<GitAltIcon />} />
+                        <FormWizardTile id="helm" value="Helm" label="Helm" />
+                    </FormWizardTiles>
                     {/* Git repo */}
-                    <InputHidden hidden={(data) => data.repositoryType !== 'Git'}>
-                        <InputSelect
+                    <FormWizardHidden hidden={(data) => data.repositoryType !== 'Git'}>
+                        <FormWizardSelect
                             id="git.url"
                             label="URL"
                             labelHelp="The URL path for the Git repository."
@@ -261,24 +297,24 @@ export function AppForm() {
                             options={urlOptions}
                             required
                         />
-                        <InputSelect
+                        <FormWizardSelect
                             id="git.revision"
                             label="Revision"
                             labelHelp="Refer to a single commit"
                             placeholder="Enter or select a tracking revision"
                             options={urlOptions}
                         />
-                        <InputSelect
+                        <FormWizardSelect
                             id="git.path"
                             label="Path"
                             labelHelp="The location of the resources on the Git repository."
                             placeholder="Enter or select a repository path"
                             options={urlOptions}
                         />
-                    </InputHidden>
+                    </FormWizardHidden>
                     {/* Helm repo */}
-                    <InputHidden hidden={(data) => data.repositoryType !== 'Helm'}>
-                        <InputSelect
+                    <FormWizardHidden hidden={(data) => data.repositoryType !== 'Helm'}>
+                        <FormWizardSelect
                             id="helm.url"
                             label="URL"
                             labelHelp="The URL path for the Helm repository."
@@ -286,104 +322,109 @@ export function AppForm() {
                             options={urlOptions}
                             required
                         />
-                        <InputText
+                        <FormWizardTextInput
                             id="helm.chart"
                             label="Chart name"
                             placeholder="Enter the name of the Helm chart"
                             labelHelp="The specific name for the target Helm chart."
                             required
                         />
-                        <InputText
+                        <FormWizardTextInput
                             id="helm.packageVersion"
                             label="Package version"
                             placeholder="Enter the version or versions"
                             labelHelp="The version or versions for the deployable. You can use a range of versions in the form >1.0, or <3.0."
                             required
                         />
-                    </InputHidden>
-                </InputSection>
-                <InputSection label="Destination">
-                    <InputText id="remoteNamespace" label="Remote namespace" placeholder="Enter the destination namespace" required />
-                </InputSection>
-            </InputStep>
+                    </FormWizardHidden>
+                </FormWizardSection>
+                <FormWizardSection label="Destination">
+                    <FormWizardTextInput
+                        id="remoteNamespace"
+                        label="Remote namespace"
+                        placeholder="Enter the destination namespace"
+                        required
+                    />
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="Sync policy" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <InputSection
+            <FormWizardStep label="Sync policy" hidden={(item) => item.deployType !== 'ArgoCD'}>
+                <FormWizardSection
                     label="Sync policy"
                     description="Settings used to configure application syncing when there are differences between the desired state and the live cluster state."
                 >
                     {/* Git only sync policies */}
-                    <InputHidden hidden={(data) => data.repositoryType !== 'Git'}>
-                        <InputCheckbox path="syncPolicy.prune" label="Delete resources that are no longer defined in Git" />
-                        <InputCheckbox
+                    <FormWizardHidden hidden={(data) => data.repositoryType !== 'Git'}>
+                        <FormWizardCheckbox path="syncPolicy.prune" label="Delete resources that are no longer defined in Git" />
+                        <FormWizardCheckbox
                             path="syncPolicy.pruneLast"
                             label="Delete resources that are no longer defined in Git at the end of a sync operation"
                         />
-                        <InputCheckbox path="syncPolicy.replace" label="Replace resources instead of applying changes from Git" />
-                    </InputHidden>
-                    <InputCheckbox path="syncPolicy.allowEmpty" label="Allow applications to have empty resources" />
-                    <InputCheckbox path="syncPolicy.applyOutOfSyncOnly" label="Only synchronize out-of-sync resources" />
-                    <InputCheckbox path="syncPolicy.selfHeal" label="Automatically sync when cluster state changes" />
-                    <InputCheckbox path="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
-                    <InputCheckbox path="syncPolicy.validate" label="Disable kubectl validation" />
-                    <InputCheckbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
-                        <InputSelect
+                        <FormWizardCheckbox path="syncPolicy.replace" label="Replace resources instead of applying changes from Git" />
+                    </FormWizardHidden>
+                    <FormWizardCheckbox path="syncPolicy.allowEmpty" label="Allow applications to have empty resources" />
+                    <FormWizardCheckbox path="syncPolicy.applyOutOfSyncOnly" label="Only synchronize out-of-sync resources" />
+                    <FormWizardCheckbox path="syncPolicy.selfHeal" label="Automatically sync when cluster state changes" />
+                    <FormWizardCheckbox path="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
+                    <FormWizardCheckbox path="syncPolicy.validate" label="Disable kubectl validation" />
+                    <FormWizardCheckbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
+                        <FormWizardSelect
                             id="syncPolicy.propagationPolicy"
                             label="Propogation policy"
                             options={['foreground', 'background', 'orphan']}
                             required
                         />
-                    </InputCheckbox>
-                </InputSection>
-            </InputStep>
+                    </FormWizardCheckbox>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
+            <FormWizardStep label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <PlacementRules />
-            </InputStep>
-        </InputPage>
+            </FormWizardStep>
+        </FormWizardPage>
     )
 }
 
 export function PlacementRules() {
     return (
         <Fragment>
-            <InputSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
-                <InputCheckbox id="placement.useLabels" label="New placement">
-                    <InputLabels
+            <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
+                <FormWizardCheckbox id="placement.useLabels" label="New placement">
+                    <FormWizardLabels
                         id="placement.labels"
                         label="Cluster labels"
                         placeholder="Enter cluster labels"
                         helperText="Placement will only select clusters matching all the specified labels"
                         required
                     />
-                </InputCheckbox>
-                <InputCheckbox id="placement.useExisting" label="Use an existing placement">
-                    <InputSelect
+                </FormWizardCheckbox>
+                <FormWizardCheckbox id="placement.useExisting" label="Use an existing placement">
+                    <FormWizardSelect
                         id="placement.select"
                         label="Placement"
                         placeholder="Select an existing placement"
                         options={['my-placement-rule-1']}
                         required
                     />
-                </InputCheckbox>
-            </InputSection>
+                </FormWizardCheckbox>
+            </FormWizardSection>
 
-            <InputSection label="Deployment window" description="Schedule a time window for deployments">
-                <InputRadioGroup
+            <FormWizardSection label="Deployment window" description="Schedule a time window for deployments">
+                <FormWizardRadioGroup
                     id="remediation"
                     path="deployment.window"
                     required
                     // hidden={get(resources, 'DELEM') === undefined}
                 >
-                    <InputRadio id="always" label="Always active" value="always" />
-                    <InputRadio id="active" label="Active within specified interval" value="active">
+                    <FormWizardRadio id="always" label="Always active" value="always" />
+                    <FormWizardRadio id="active" label="Active within specified interval" value="active">
                         <TimeWindow />
-                    </InputRadio>
-                    <InputRadio id="blocked" label="Blocked within specified interval" value="blocked">
+                    </FormWizardRadio>
+                    <FormWizardRadio id="blocked" label="Blocked within specified interval" value="blocked">
                         <TimeWindow />
-                    </InputRadio>
-                </InputRadioGroup>
-            </InputSection>
+                    </FormWizardRadio>
+                </FormWizardRadioGroup>
+            </FormWizardSection>
         </Fragment>
     )
 }
@@ -399,20 +440,20 @@ export function TimeWindow() {
     return (
         <Stack hasGutter style={{ paddingBottom: 16 }}>
             {/* TODO InputCheckBoxGroup */}
-            {/* <InputSection title="Deployment window"> */}
-            <InputCheckbox id="timeWindow.sunday" label="Sunday" />
-            <InputCheckbox id="timeWindow.monday" label="Monday" />
-            <InputCheckbox id="timeWindow.tuesday" label="Tuesday" />
-            <InputCheckbox id="timeWindow.wednesday" label="Wednesday" />
-            <InputCheckbox id="timeWindow.thursday" label="Thursday" />
-            <InputCheckbox id="timeWindow.friday" label="Friday" />
-            <InputCheckbox id="timeWindow.saturday" label="Saturday" />
-            {/* </InputSection> */}
-            <InputSelect id="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={['EST']} required />
-            <InputArray
+            {/* <FormWizardSection title="Deployment window"> */}
+            <FormWizardCheckbox id="timeWindow.sunday" label="Sunday" />
+            <FormWizardCheckbox id="timeWindow.monday" label="Monday" />
+            <FormWizardCheckbox id="timeWindow.tuesday" label="Tuesday" />
+            <FormWizardCheckbox id="timeWindow.wednesday" label="Wednesday" />
+            <FormWizardCheckbox id="timeWindow.thursday" label="Thursday" />
+            <FormWizardCheckbox id="timeWindow.friday" label="Friday" />
+            <FormWizardCheckbox id="timeWindow.saturday" label="Saturday" />
+            {/* </FormWizardSection> */}
+            <FormWizardSelect id="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={['EST']} required />
+            <FormWizardArrayInput
                 id="timeWindows"
                 placeholder="Add time range"
-                collapsedText={<InputTextDetail id="timeWindowSection" placeholder="Expand to enter the time range" />}
+                collapsedText={<FormWizardTextDetail id="timeWindowSection" placeholder="Expand to enter the time range" />}
             >
                 <div className="config-time-container" style={{ display: 'flex', marginBottom: 20 }}>
                     <div className="config-input-time" style={{ float: 'left', marginRight: 10 }}>
@@ -420,7 +461,7 @@ export function TimeWindow() {
                         <TimePicker id="endTime" onChange={onChange} width={'140px'} />
                     </div>
                 </div>
-            </InputArray>
+            </FormWizardArrayInput>
         </Stack>
     )
 }

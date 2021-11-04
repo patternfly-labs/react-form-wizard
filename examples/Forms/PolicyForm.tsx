@@ -1,16 +1,16 @@
 import { Button } from '@patternfly/react-core'
 import { useMemo } from 'react'
 import {
-    InputArray,
-    InputCheckbox,
-    InputPage,
-    InputRadio,
-    InputRadioGroup,
-    InputSection,
-    InputSelect,
-    InputStep,
-    InputText,
-    InputTextDetail,
+    FormWizardArrayInput,
+    FormWizardCheckbox,
+    FormWizardPage,
+    FormWizardRadio,
+    FormWizardRadioGroup,
+    FormWizardSection,
+    FormWizardSelect,
+    FormWizardStep,
+    FormWizardTextDetail,
+    FormWizardTextInput,
 } from '../../src'
 import { Specifications } from '../templates'
 import { PlacementRules } from './AppForm'
@@ -68,17 +68,17 @@ export function PolicyForm() {
     )
 
     return (
-        <InputPage
+        <FormWizardPage
             title="Create policy"
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
             template={PolicyTemplate}
             breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Governance' }]}
             defaultData={{ templates: [{}] }}
         >
-            <InputStep label="Details">
-                <InputSection label="Details">
-                    <InputText id="name" label="Name" placeholder="Enter name" required />
-                    <InputSelect
+            <FormWizardStep label="Details">
+                <FormWizardSection label="Details">
+                    <FormWizardTextInput id="name" label="Name" placeholder="Enter name" required />
+                    <FormWizardSelect
                         id="namespace"
                         label="Namespace"
                         placeholder="Select namespace"
@@ -91,47 +91,47 @@ export function PolicyForm() {
                             </Button>
                         }
                     />
-                    <InputSelect
+                    <FormWizardSelect
                         id="severity"
                         label="Severity"
                         placeholder="Select severity"
                         options={['Low', 'Medium', 'High']}
                         required
                     />
-                    <InputRadioGroup id="remediation" label="Remediation" path="remediation" required>
-                        <InputRadio
+                    <FormWizardRadioGroup id="remediation" label="Remediation" path="remediation" required>
+                        <FormWizardRadio
                             id="inform"
                             label="Inform"
                             value="inform"
                             description="Reports the violation, which requires manual remediation."
                         />
-                        <InputRadio
+                        <FormWizardRadio
                             id="enforce"
                             label="Enforce"
                             value="enforce"
                             description="Automatically runs remediation action that is defined in the source, if this feature is supported."
                         />
-                    </InputRadioGroup>
-                    <InputCheckbox
+                    </FormWizardRadioGroup>
+                    <FormWizardCheckbox
                         id="disable"
                         label="Disable policy"
                         path="disabled"
                         helperText="Select to disable the policy from being propagated to the managed cluster."
                     />
-                </InputSection>
-            </InputStep>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="Specification">
-                <InputSection label="Specification">
-                    <InputArray
+            <FormWizardStep label="Specification">
+                <FormWizardSection label="Specification">
+                    <FormWizardArrayInput
                         id="templates"
                         placeholder="Add policy template"
-                        collapsedText={<InputTextDetail id="template.description" placeholder="Expand to select the template" />}
+                        collapsedText={<FormWizardTextDetail id="template.description" placeholder="Expand to select the template" />}
                         collapsedDescription={
-                            <InputTextDetail id="template.replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory" />
+                            <FormWizardTextDetail id="template.replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory" />
                         }
                     >
-                        <InputSelect
+                        <FormWizardSelect
                             id="template"
                             label="Template"
                             keyPath="name"
@@ -139,8 +139,8 @@ export function PolicyForm() {
                             options={specifications}
                             required
                         />
-                        {/* <InputTextDetail id="replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory" /> */}
-                        <InputText
+                        {/* <FormWizardTextDetail id="replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory" /> */}
+                        <FormWizardTextInput
                             id="template.replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory"
                             label="Memory limit"
                             placeholder="Enter memory limit"
@@ -148,12 +148,12 @@ export function PolicyForm() {
                             hidden={(template) => template.template?.name !== 'LimitRange'}
                             helperText="Examples: 512Mi, 2Gi"
                         />
-                    </InputArray>
-                </InputSection>
-            </InputStep>
+                    </FormWizardArrayInput>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            {/* <InputStep label="Specification">
-                             <InputSelect
+            {/* <FormWizardStep label="Specification">
+                             <FormWizardSelect
                                     variant="multi-path"
 
                     label="Standards"
@@ -162,7 +162,7 @@ export function PolicyForm() {
                     options={standards}
                     placeholder="Select standards"
                 />
-                <InputSelect
+                <FormWizardSelect
                                     variant="multi-path"
 
                     label="Categories"
@@ -171,7 +171,7 @@ export function PolicyForm() {
                     options={categories}
                     placeholder="Select categories"
                 />
-                <InputSelect
+                <FormWizardSelect
                                     variant="multi-path"
 
                     label="Controls"
@@ -182,9 +182,9 @@ export function PolicyForm() {
                 />
             </InputStep> */}
 
-            <InputStep label="Placement">
+            <FormWizardStep label="Placement">
                 <PlacementRules />
-            </InputStep>
-        </InputPage>
+            </FormWizardStep>
+        </FormWizardPage>
     )
 }

@@ -1,121 +1,135 @@
 import { Split } from '@patternfly/react-core'
 import { Fragment, useMemo } from 'react'
-import { InputArray, InputHidden, InputPage, InputSection, InputSelect, InputStep, InputText, InputTextDetail } from '../../src'
+import {
+    FormWizardArrayInput,
+    FormWizardHidden,
+    FormWizardPage,
+    FormWizardSection,
+    FormWizardSelect,
+    FormWizardStep,
+    FormWizardTextDetail,
+    FormWizardTextInput,
+} from '../../src'
 import AnsibleHandlebars from './Ansible.hbs'
 
 export function AnsibleForm() {
     const credentials = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
     return (
-        <InputPage
+        <FormWizardPage
             title="Create Ansible template"
             template={AnsibleHandlebars}
             breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Automation' }]}
         >
-            <InputStep label="Details">
-                <InputSection
+            <FormWizardStep label="Details">
+                <FormWizardSection
                     label="Details"
                     prompt="Configure the Ansible job template"
                     description="The Ansible job templates that you select appear automatically during cluster creation. To create a sequence of events, select multiple jobs."
                 >
-                    <InputText id="name" label="Template name" placeholder="Enter the template name" required />
-                    <InputSelect
+                    <FormWizardTextInput id="name" label="Template name" placeholder="Enter the template name" required />
+                    <FormWizardSelect
                         id="credential"
                         label="Ansible Automation Platform credential"
                         placeholder="Select the credential"
                         options={credentials}
                         required
                     />
-                </InputSection>
-            </InputStep>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="Install">
-                <InputSection
+            <FormWizardStep label="Install">
+                <FormWizardSection
                     label="Pre-install jobs"
                     prompt="Pre-install Ansible job templates"
                     description="Ansible job templates run before cluster installation."
                 >
-                    <InputArray
+                    <FormWizardArrayInput
                         id={`install.preJobs`}
                         placeholder="Add job template"
-                        collapsedText={<InputTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
+                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
                         <AnsibleJobTemplates />
-                    </InputArray>
-                </InputSection>
-                <InputSection
+                    </FormWizardArrayInput>
+                </FormWizardSection>
+                <FormWizardSection
                     label="Pre-install jobs"
                     prompt="Post-install Ansible job templates"
                     description="Ansible job templates run after cluster installation."
                 >
-                    <InputArray
+                    <FormWizardArrayInput
                         id={`install.postJobs`}
                         placeholder="Add job template"
-                        collapsedText={<InputTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
+                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
                         <AnsibleJobTemplates />
-                    </InputArray>
-                </InputSection>
-            </InputStep>
+                    </FormWizardArrayInput>
+                </FormWizardSection>
+            </FormWizardStep>
 
-            <InputStep label="Upgrade">
-                <InputSection
+            <FormWizardStep label="Upgrade">
+                <FormWizardSection
                     label="Pre-upgrade jobs"
                     prompt="Pre-upgrade Ansible job templates"
                     description="Ansible job templates run before cluster upgrade."
                 >
-                    <InputArray
+                    <FormWizardArrayInput
                         id={`upgrade.preJobs`}
                         placeholder="Add job template"
-                        collapsedText={<InputTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
+                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
                         <AnsibleJobTemplates />
-                    </InputArray>
-                </InputSection>
-                <InputSection
+                    </FormWizardArrayInput>
+                </FormWizardSection>
+                <FormWizardSection
                     label="Post-upgrade jobs"
                     prompt="Post-upgrade Ansible job templates"
                     description="Ansible job templates run after cluster upgrade."
                 >
-                    <InputArray
+                    <FormWizardArrayInput
                         id={`upgrade.postJobs`}
                         placeholder="Add job template"
-                        collapsedText={<InputTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
+                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
                         <AnsibleJobTemplates />
-                    </InputArray>
-                </InputSection>
-            </InputStep>
-        </InputPage>
+                    </FormWizardArrayInput>
+                </FormWizardSection>
+            </FormWizardStep>
+        </FormWizardPage>
     )
 }
 
 function AnsibleJobTemplates() {
     return (
         <Fragment>
-            <InputText id="name" label="Ansible job template name" placeholder="Enter or select Ansible job template name" required />
-            <InputArray
+            <FormWizardTextInput
+                id="name"
+                label="Ansible job template name"
+                placeholder="Enter or select Ansible job template name"
+                required
+            />
+            <FormWizardArrayInput
                 id="variables"
                 label="Extra variables"
                 placeholder="Add variable"
                 collapsedText={
                     <Fragment>
-                        <InputTextDetail id="variable" placeholder="Expand to enter the variable" />
-                        <InputHidden hidden={(item) => item.variable === undefined}>
+                        <FormWizardTextDetail id="variable" placeholder="Expand to enter the variable" />
+                        <FormWizardHidden hidden={(item) => item.variable === undefined}>
                             &nbsp;=&nbsp;
-                            <InputTextDetail id="value" />
-                        </InputHidden>
+                            <FormWizardTextDetail id="value" />
+                        </FormWizardHidden>
                     </Fragment>
                 }
             >
                 <Split hasGutter>
-                    <InputText id="variable" label="Variable" placeholder="Enter the variable name" required />
-                    <InputText id="value" label="Value" placeholder="Enter the value for the variable" required />
+                    <FormWizardTextInput id="variable" label="Variable" placeholder="Enter the variable name" required />
+                    <FormWizardTextInput id="value" label="Value" placeholder="Enter the value for the variable" required />
                 </Split>
-            </InputArray>
+            </FormWizardArrayInput>
         </Fragment>
     )
 }

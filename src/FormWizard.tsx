@@ -1,7 +1,7 @@
 import { ActionGroup, ActionList, ActionListGroup, ActionListItem, Button, Form, Stack } from '@patternfly/react-core'
 import { ReactNode } from 'react'
 
-export function InputForm(props: { children: ReactNode }) {
+export function FormWizard(props: { children: ReactNode }) {
     return (
         <Form>
             {props.children}

@@ -16,11 +16,11 @@ import { ArrowDownIcon, ArrowUpIcon, PlusIcon, TrashIcon } from '@patternfly/rea
 import get from 'get-value'
 import { Fragment, ReactNode, useContext, useState } from 'react'
 import set from 'set-value'
-import { InputFieldGroup } from '../components/InputFieldGroup'
-import { InputContext, InputMode } from '../contexts/InputContext'
-import { InputItemContext } from '../contexts/InputItemContext'
+import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
+import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
-export function InputArray(props: {
+export function FormWizardArrayInput(props: {
     id: string
     label?: string
     path?: string
@@ -35,16 +35,16 @@ export function InputArray(props: {
 
     const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
 
-    let inputContext = useContext(InputContext)
-    let item = useContext(InputItemContext)
+    let formWizardContext = useContext(FormWizardContext)
+    let item = useContext(FormWizardItemContext)
     let values = get(item, path) as []
     if (!Array.isArray(values)) values = []
 
-    if (inputContext.mode === InputMode.Details) {
+    if (formWizardContext.mode === InputMode.Details) {
         return (
             <DataList aria-label="" isCompact>
                 {values.map((value, index) => (
-                    <InputItemContext.Provider value={value}>
+                    <FormWizardItemContext.Provider value={value}>
                         <DataListItem aria-labelledby={`item-${index}`}>
                             <DataListItemRow>
                                 <DataListItemCells
@@ -61,7 +61,7 @@ export function InputArray(props: {
                                 />
                             </DataListItemRow>
                         </DataListItem>
-                    </InputItemContext.Provider>
+                    </FormWizardItemContext.Provider>
                 ))}
             </DataList>
         )
@@ -80,8 +80,8 @@ export function InputArray(props: {
                 values.map((value, index) => {
                     const hasErrors = false
                     return (
-                        <InputItemContext.Provider value={value}>
-                            <InputFieldGroup
+                        <FormWizardItemContext.Provider value={value}>
+                            <FormWizardFieldGroup
                                 key={index}
                                 id={index.toString()}
                                 isExpanded={collapsed[index.toString()] !== true}
@@ -112,7 +112,7 @@ export function InputArray(props: {
                                                                 const temp = values[index]
                                                                 values[index] = values[index - 1]
                                                                 values[index - 1] = temp
-                                                                inputContext.updateContext()
+                                                                formWizardContext.updateContext()
                                                             }}
                                                         >
                                                             <ArrowUpIcon />
@@ -125,7 +125,7 @@ export function InputArray(props: {
                                                                 const temp = values[index]
                                                                 values[index] = values[index + 1]
                                                                 values[index + 1] = temp
-                                                                inputContext.updateContext()
+                                                                formWizardContext.updateContext()
                                                             }}
                                                         >
                                                             <ArrowDownIcon />
@@ -137,7 +137,7 @@ export function InputArray(props: {
                                                     aria-label="Remove item"
                                                     onClick={() => {
                                                         values.splice(index, 1)
-                                                        inputContext.updateContext()
+                                                        formWizardContext.updateContext()
                                                     }}
                                                 >
                                                     <TrashIcon />
@@ -156,8 +156,8 @@ export function InputArray(props: {
                                     {props.children}
                                     {/* <div className="pf-c-form__helper-text pf-m-error">Error</div> */}
                                 </Fragment>
-                            </InputFieldGroup>
-                        </InputItemContext.Provider>
+                            </FormWizardFieldGroup>
+                        </FormWizardItemContext.Provider>
                     )
                 })
             )}
@@ -174,7 +174,7 @@ export function InputArray(props: {
                             values = []
                         }
                         set(item, path, values)
-                        inputContext.updateContext()
+                        formWizardContext.updateContext()
                     }}
                 >
                     <PlusIcon /> &nbsp; {props.placeholder}
