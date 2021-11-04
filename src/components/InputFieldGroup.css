@@ -1,0 +1,13 @@
+.input-field-group .pf-c-form__field-group-body {
+    padding-top: 16px;
+    padding-bottom: 32px;
+}
+
+.input-field-group .pf-c-form__field-group-toggle {
+    padding-top: 16px;
+}
+
+.input-field-group .pf-c-form__field-group-header {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}

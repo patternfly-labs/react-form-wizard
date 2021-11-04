@@ -1,0 +1,7 @@
+.form-multiselect .pf-c-select__toggle-badge {
+    display: none;
+}
+
+.form-multiselect .pf-c-chip .pf-c-chip__text {
+    max-width: unset;
+}

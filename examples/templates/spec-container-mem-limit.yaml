@@ -1,0 +1,37 @@
+# an available choice for the specs control
+name: LimitRange
+description: Limit container memory usage
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        PR.IP Information Protection Processes and Procedures
+    controls: |
+        PR.IP-1 Baseline Configuration
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: '{{name}}-container-mem-limit-range'
+              spec:
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  severity: medium
+                  namespaceSelector:
+                      exclude: ['kube-*']
+                      include: ['default']
+                  object-templates:
+                      - complianceType: musthave
+                        objectDefinition:
+                            apiVersion: v1
+                            kind: LimitRange # limit memory usage
+                            metadata:
+                                name: container-mem-limit-range
+                            spec:
+                                limits:
+                                    - default:
+                                          memory: 512Mi
+                                      defaultRequest:
+                                          memory: 256Mi
+                                      type: Container

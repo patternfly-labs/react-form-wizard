@@ -1,0 +1,56 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{name}}
+  namespace: {{namespace}}
+  annotations:
+    policy.open-cluster-management.io/standards: {{#each standards}}{{ this }}{{^if @last}}, {{/if}}{{/each}}
+    policy.open-cluster-management.io/categories: {{#each categories}}{{ this }}{{^if @last}}, {{/if}}{{/each}}
+    policy.open-cluster-management.io/controls: {{#each controls}}{{ this }}{{^if @last}}, {{/if}}{{/each}}
+spec:
+  remediationAction: {{remediation}}
+  disabled: {{disabled}}
+  {{! If user modifies one of these specs, editor captures those changes and will insert here on re-render}}
+  {{#if specsCapture}}
+  {{{ specsCapture }}}
+  {{else}}
+  policy-templates:{{#unless policyTemplates.length}} []
+  {{else~}}
+  {{! Need to have this newline here so that templates don't appear inline like the empty brackets}}
+
+  {{#each policyTemplates}}
+  {{{ this }}}
+  {{/each}}
+  {{/unless}}
+  {{/if}}
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-{{name}}
+  namespace: {{namespace}}
+placementRef:
+  name: placement-{{name}}
+  kind: PlacementRule
+  apiGroup: apps.open-cluster-management.io
+subjects:
+- name: {{name}}
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: placement-{{name}}
+  namespace: {{namespace}}
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+      {{#each clusters}}
+      - {key: {{@key}}, operator: In, values: [{{#each this}}{{#if @index}}, {{/if}}"{{this}}"{{/each}}]}
+      {{else}}
+      []  # selects all clusters if not specified
+      {{/each}}
