@@ -1,17 +1,13 @@
 # Patternfly React Form Wizard
 
+A Patternfly react wizard framework.
+
 [Demo](https://patternfly-labs.github.io/react-form-wizard/)
 
-A wizard framework using
+## Features
 
-- React
-- Patternfly
-- Typescript
-
-Features
-
-- Wizard input validation
-- COnditionally hiding/showing of controls and sections
+- Input validation
+- Conditional hiding/showing of controls and sections
 
 ## Development setup
 
