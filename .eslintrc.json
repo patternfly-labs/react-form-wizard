@@ -7,7 +7,7 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:i18next/recommended",
+        // "plugin:i18next/recommended",
         "plugin:jsx-a11y/recommended",
         "plugin:i18n-json/recommended",
         "plugin:jest/recommended",
@@ -19,7 +19,9 @@
         "plugin:prettier/recommended"
     ],
     "rules": {
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        // TODO - Turn this back on one new version of eslint-plugin-react-hooks comes out
+        "react-hooks/exhaustive-deps": "off"
     },
     "root": true,
     "settings": {

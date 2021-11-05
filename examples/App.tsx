@@ -12,7 +12,6 @@ import {
     Text,
     Title,
 } from '@patternfly/react-core'
-import RedHatIcon from '@patternfly/react-icons/dist/js/icons/redhat-icon'
 import { ReactNode, Suspense } from 'react'
 import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom'
 import { AnsibleForm } from './Forms/AnsibleForm'
@@ -114,7 +113,6 @@ function AppHeader() {
         <PageHeader
             logo={
                 <div style={{ display: 'flex', gap: 8, alignItems: 'start' }}>
-                    <RedHatIcon size="lg" style={{ color: '#EE0000', marginTop: -8 }} />
                     <div style={{ color: 'white' }}>
                         <Title headingLevel="h4" style={{ fontWeight: 'bold', lineHeight: 1.2 }}>
                             PatternFly
