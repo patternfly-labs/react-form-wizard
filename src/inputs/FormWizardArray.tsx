@@ -35,8 +35,8 @@ export function FormWizardArrayInput(props: {
 
     const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
 
-    let formWizardContext = useContext(FormWizardContext)
-    let item = useContext(FormWizardItemContext)
+    const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
     let values = get(item, path) as []
     if (!Array.isArray(values)) values = []
 
@@ -44,7 +44,7 @@ export function FormWizardArrayInput(props: {
         return (
             <DataList aria-label="" isCompact>
                 {values.map((value, index) => (
-                    <FormWizardItemContext.Provider value={value}>
+                    <FormWizardItemContext.Provider key={index} value={value}>
                         <DataListItem aria-labelledby={`item-${index}`}>
                             <DataListItemRow>
                                 <DataListItemCells
@@ -80,7 +80,7 @@ export function FormWizardArrayInput(props: {
                 values.map((value, index) => {
                     const hasErrors = false
                     return (
-                        <FormWizardItemContext.Provider value={value}>
+                        <FormWizardItemContext.Provider key={index} value={value}>
                             <FormWizardFieldGroup
                                 key={index}
                                 id={index.toString()}

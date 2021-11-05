@@ -32,8 +32,8 @@ export function FormWizardTextInput(props: {
     const path = props.path ?? props.id
     const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`
 
-    let formWizardContext = useContext(FormWizardContext)
-    let item = useContext(FormWizardItemContext)
+    const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
 
     const [showSecrets, setShowSecrets] = useState(false)
     const [mouseOver, setMouseOver] = useState(false)

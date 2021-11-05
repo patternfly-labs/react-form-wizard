@@ -22,8 +22,8 @@ export function FormWizardTiles(props: {
 }) {
     const path = props.path ?? props.id
 
-    let formWizardContext = useContext(FormWizardContext)
-    let item = useContext(FormWizardItemContext)
+    const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
 
     const state: IRadioGroupContextState = {
         value: get(item, path),

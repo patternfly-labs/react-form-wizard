@@ -3,7 +3,7 @@ import { Fragment, ReactNode, useContext } from 'react'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
 export function FormWizardIndented(props: { children?: ReactNode; hidden?: (item: any) => boolean }) {
-    let item = useContext(FormWizardItemContext)
+    const item = useContext(FormWizardItemContext)
 
     if (!props.children) return <Fragment />
 

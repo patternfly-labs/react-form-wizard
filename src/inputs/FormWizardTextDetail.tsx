@@ -16,7 +16,7 @@ export function FormWizardTextDetail(props: {
     const id = props.id
     const path = props.path ?? props.id
 
-    let item = useContext(FormWizardItemContext)
+    const item = useContext(FormWizardItemContext)
 
     // TODO - Support hiding sercets
     // const [showSecrets, setShowSecrets] = useState(false)

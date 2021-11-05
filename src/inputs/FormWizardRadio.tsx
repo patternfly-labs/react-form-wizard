@@ -30,8 +30,8 @@ export function FormWizardRadioGroup(props: {
     helperText?: string
     children?: ReactNode
 }) {
-    let formWizardContext = useContext(FormWizardContext)
-    let item = useContext(FormWizardItemContext)
+    const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
 
     const state: IRadioGroupContextState = {
         value: get(item, props.path),

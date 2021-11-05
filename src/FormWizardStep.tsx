@@ -3,7 +3,7 @@ import { Fragment, ReactNode, useContext } from 'react'
 import { FormWizardContext, InputMode } from './contexts/FormWizardContext'
 
 export function FormWizardStep(props: { label: string; children: ReactNode; hidden?: (item: any) => boolean }) {
-    let formWizardContext = useContext(FormWizardContext)
+    const formWizardContext = useContext(FormWizardContext)
 
     switch (formWizardContext.mode) {
         case InputMode.Wizard:

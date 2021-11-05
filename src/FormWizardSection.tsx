@@ -12,7 +12,7 @@ interface FormWizardSectionProps {
 }
 
 export function FormWizardSection(props: FormWizardSectionProps) {
-    let formWizardContext = useContext(FormWizardContext)
+    const formWizardContext = useContext(FormWizardContext)
 
     let label = props.label
     if (formWizardContext.mode == InputMode.Wizard) {

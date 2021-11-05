@@ -71,22 +71,14 @@ export function FormWizardPage(props: {
                             <Title headingLevel="h1">{props.title}</Title>
                             {props.description && <Text component="small">{props.description}</Text>}
                         </FlexItem>
-                        <Flex
-                            alignItems={{ default: 'alignItemsFlexEnd' }}
-                            wrap="noWrap"
-                            style={{ flexWrap: 'nowrap', gap: 16 }}
-                        >
+                        <Flex alignItems={{ default: 'alignItemsFlexEnd' }} wrap="noWrap" style={{ flexWrap: 'nowrap', gap: 16 }}>
                             {process.env.NODE_ENV === 'development' && (
                                 <Switch label="FORM" isChecked={isForm} onChange={() => setIsForm(!isForm)} />
                             )}
                             {process.env.NODE_ENV === 'development' && (
                                 <Switch label="DEV" isChecked={devMode} onChange={() => setDevMode(!devMode)} />
                             )}
-                            <Switch
-                                label="YAML"
-                                isChecked={drawerExpanded}
-                                onChange={() => setDrawerExpanded(!drawerExpanded)}
-                            />
+                            <Switch label="YAML" isChecked={drawerExpanded} onChange={() => setDrawerExpanded(!drawerExpanded)} />
                         </Flex>
                     </Flex>
                 </PageSection>
@@ -95,9 +87,7 @@ export function FormWizardPage(props: {
         >
             {/* <Drawer isExpanded={drawerExpanded} isInline={drawerInline}> */}
             <Drawer isExpanded={drawerExpanded} isInline>
-                <DrawerContent
-                    panelContent={<FormWizardPageDrawer data={data} template={props.template} devMode={devMode} />}
-                >
+                <DrawerContent panelContent={<FormWizardPageDrawer data={data} template={props.template} devMode={devMode} />}>
                     <DrawerContentBody>
                         <PageSection
                             variant="light"

@@ -10,7 +10,7 @@ export interface InputCommonProps {
 }
 
 export function isFormWizardHiddenProps(props: any) {
-    let item = useContext(FormWizardItemContext)
+    const item = useContext(FormWizardItemContext)
     const hidden = props.hidden
     if (typeof hidden === 'boolean') return hidden
     if (typeof hidden === 'function') {
@@ -37,7 +37,7 @@ export function hasValidationErrorsProps(props: any): boolean {
     if (!props) return false
     if (isFormWizardHiddenProps(props)) return false
 
-    let item = useContext(FormWizardItemContext)
+    const item = useContext(FormWizardItemContext)
     const path = props.path ?? props.id
     if (path) {
         const value = get(item, path)
@@ -73,7 +73,7 @@ export function hasValidationErrorsProps(props: any): boolean {
 }
 
 export function inputHasValue(props: any) {
-    let item = useContext(FormWizardItemContext)
+    const item = useContext(FormWizardItemContext)
     const path = props.path ?? props.id
     if (path) {
         const value = get(item, path)

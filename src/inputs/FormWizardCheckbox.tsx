@@ -28,8 +28,8 @@ export function FormWizardCheckbox(props: {
     const id = props.id
     const path = props.path ?? id
 
-    let formWizardContext = useContext(FormWizardContext)
-    let item = useContext(FormWizardItemContext)
+    const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
 
     const value = get(item, path)
 
