@@ -130,7 +130,7 @@ function FormWizardPageDrawer(props: { data: any; template: string; devMode: boo
                 <div style={{ height: '100%' }}>
                     <Tabs
                         activeKey={activeKey}
-                        onSelect={(event, tabIndex) => setActiveKey(tabIndex)}
+                        onSelect={(_event, tabIndex) => setActiveKey(tabIndex)}
                         isBox
                         variant="light300"
                         isFilled

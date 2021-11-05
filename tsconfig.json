@@ -30,7 +30,9 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
 
-        "removeComments": true
+        "removeComments": true,
+
+        "skipLibCheck": true
     },
     "include": ["src/**/*", "old/DataForm.tsx", "old/inputs", "old/utils"]
 }
