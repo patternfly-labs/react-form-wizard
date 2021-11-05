@@ -84,12 +84,18 @@ export function AppForm() {
                     <FormWizardArrayInput
                         id="repositories"
                         placeholder="Add repository"
-                        collapsedText={<FormWizardTextDetail id="url" placeholder="Expand to enter the repository details" />}
+                        collapsedText={
+                            <FormWizardTextDetail id="url" placeholder="Expand to enter the repository details" />
+                        }
                     >
                         <FormWizardTiles id="repositoryType" label="Repository type">
                             <FormWizardTile id="git" value="SubscriptionGit" label="Git" icon={<GitAltIcon />} />
                             <FormWizardTile id="helm" value="SubscriptionHelm" label="Helm" />
-                            <FormWizardTile id="objectstorage" value="SubscriptionObjectstorage" label="Object Storage" />
+                            <FormWizardTile
+                                id="objectstorage"
+                                value="SubscriptionObjectstorage"
+                                label="Object Storage"
+                            />
                         </FormWizardTiles>
 
                         <FormWizardHidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
@@ -101,7 +107,11 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <FormWizardTextInput id="subscription.git.username" label="Username" placeholder="Enter the Git user name" />
+                            <FormWizardTextInput
+                                id="subscription.git.username"
+                                label="Username"
+                                placeholder="Enter the Git user name"
+                            />
                             <FormWizardTextInput
                                 id="subscription.git.accessToken"
                                 label="Access token"
@@ -130,7 +140,11 @@ export function AppForm() {
                                 placeholder="Enter a specific commit hash"
                             />
 
-                            <FormWizardTextInput id="subscription.git.tag" label="Tag" placeholder="Enter a specific tag" />
+                            <FormWizardTextInput
+                                id="subscription.git.tag"
+                                label="Tag"
+                                placeholder="Enter a specific tag"
+                            />
                             <FormWizardSelect
                                 id="subscription.git.reconcileOption"
                                 label="Reconcile option"
@@ -355,17 +369,35 @@ export function AppForm() {
                 >
                     {/* Git only sync policies */}
                     <FormWizardHidden hidden={(data) => data.repositoryType !== 'Git'}>
-                        <FormWizardCheckbox path="syncPolicy.prune" label="Delete resources that are no longer defined in Git" />
+                        <FormWizardCheckbox
+                            path="syncPolicy.prune"
+                            label="Delete resources that are no longer defined in Git"
+                        />
                         <FormWizardCheckbox
                             path="syncPolicy.pruneLast"
                             label="Delete resources that are no longer defined in Git at the end of a sync operation"
                         />
-                        <FormWizardCheckbox path="syncPolicy.replace" label="Replace resources instead of applying changes from Git" />
+                        <FormWizardCheckbox
+                            path="syncPolicy.replace"
+                            label="Replace resources instead of applying changes from Git"
+                        />
                     </FormWizardHidden>
-                    <FormWizardCheckbox path="syncPolicy.allowEmpty" label="Allow applications to have empty resources" />
-                    <FormWizardCheckbox path="syncPolicy.applyOutOfSyncOnly" label="Only synchronize out-of-sync resources" />
-                    <FormWizardCheckbox path="syncPolicy.selfHeal" label="Automatically sync when cluster state changes" />
-                    <FormWizardCheckbox path="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
+                    <FormWizardCheckbox
+                        path="syncPolicy.allowEmpty"
+                        label="Allow applications to have empty resources"
+                    />
+                    <FormWizardCheckbox
+                        path="syncPolicy.applyOutOfSyncOnly"
+                        label="Only synchronize out-of-sync resources"
+                    />
+                    <FormWizardCheckbox
+                        path="syncPolicy.selfHeal"
+                        label="Automatically sync when cluster state changes"
+                    />
+                    <FormWizardCheckbox
+                        path="syncPolicy.createNamespace"
+                        label="Automatically create namespace if it does not exist"
+                    />
                     <FormWizardCheckbox path="syncPolicy.validate" label="Disable kubectl validation" />
                     <FormWizardCheckbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
                         <FormWizardSelect
@@ -388,7 +420,10 @@ export function AppForm() {
 export function PlacementRules() {
     return (
         <Fragment>
-            <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
+            <FormWizardSection
+                label="Cluster placement"
+                description="Applications are deployed to clusters based on placements"
+            >
                 <FormWizardCheckbox id="placement.useLabels" label="New placement">
                     <FormWizardLabels
                         id="placement.labels"
@@ -449,11 +484,19 @@ export function TimeWindow() {
             <FormWizardCheckbox id="timeWindow.friday" label="Friday" />
             <FormWizardCheckbox id="timeWindow.saturday" label="Saturday" />
             {/* </FormWizardSection> */}
-            <FormWizardSelect id="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={['EST']} required />
+            <FormWizardSelect
+                id="timeWindow.timezone"
+                label="Time zone"
+                placeholder="Select the time zone"
+                options={['EST']}
+                required
+            />
             <FormWizardArrayInput
                 id="timeWindows"
                 placeholder="Add time range"
-                collapsedText={<FormWizardTextDetail id="timeWindowSection" placeholder="Expand to enter the time range" />}
+                collapsedText={
+                    <FormWizardTextDetail id="timeWindowSection" placeholder="Expand to enter the time range" />
+                }
             >
                 <div className="config-time-container" style={{ display: 'flex', marginBottom: 20 }}>
                     <div className="config-input-time" style={{ float: 'left', marginRight: 10 }}>

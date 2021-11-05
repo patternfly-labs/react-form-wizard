@@ -14,7 +14,7 @@ import {
 } from '@patternfly/react-core'
 import RedHatIcon from '@patternfly/react-icons/dist/js/icons/redhat-icon'
 import { ReactNode, Suspense } from 'react'
-import { BrowserRouter, Link, Redirect, Route, Switch, useHistory } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom'
 import { AnsibleForm } from './Forms/AnsibleForm'
 import { AppForm } from './Forms/AppForm'
 import { ClusterForm } from './Forms/ClusterForm'
@@ -32,7 +32,7 @@ export enum RouteE {
     Policy = '/policy',
 }
 
-export function App() {
+export default function App() {
     return (
         <BrowserRouter>
             <Page
@@ -43,18 +43,17 @@ export function App() {
                 style={{ height: '100vh' }}
             >
                 <Suspense fallback={<div />}>
-                    <Switch>
-                        <Route exact path={RouteE.Home} component={AppHome} />
-                        <Route exact path={RouteE.Ansible} component={AnsibleForm} />
-                        <Route exact path={RouteE.Application} component={AppForm} />
-                        <Route exact path={RouteE.Cluster} component={ClusterForm} />
-                        <Route exact path={RouteE.Credentials} component={CredentialsForm} />
-                        <Route exact path={RouteE.Deployment} component={DeploymentForm} />
-                        <Route exact path={RouteE.Policy} component={PolicyForm} />
-                        <Route path="*">
-                            <Redirect to={RouteE.Home} />
-                        </Route>
-                    </Switch>
+                    <Routes>
+                        <Route path={'/'} element={<AppHome />} />
+                        <Route path={RouteE.Home} element={<AppHome />} />
+                        <Route path={RouteE.Ansible} element={<AnsibleForm />} />
+                        <Route path={RouteE.Application} element={<AppForm />} />
+                        <Route path={RouteE.Cluster} element={<ClusterForm />} />
+                        <Route path={RouteE.Credentials} element={<CredentialsForm />} />
+                        <Route path={RouteE.Deployment} element={<DeploymentForm />} />
+                        <Route path={RouteE.Policy} element={<PolicyForm />} />
+                        {/* <Route path="*" element={<Redirect to={RouteE.Home} />} /> */}
+                    </Routes>
                 </Suspense>
             </Page>
         </BrowserRouter>
@@ -88,13 +87,13 @@ function AppHome() {
 }
 
 function AppCard(props: { title: string; children: ReactNode; route: RouteE }) {
-    const history = useHistory()
+    const navigate = useNavigate()
     return (
         <Card
             isRounded
             isHoverable
             onClick={() => {
-                history.push(props.route)
+                navigate(props.route)
             }}
         >
             <CardBody>{props.title}</CardBody>

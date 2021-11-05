@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        // "jsx": "react-jsxdev",
         "outDir": "lib",
 
         "jsx": "react-jsx",
@@ -34,5 +33,5 @@
 
         "skipLibCheck": true
     },
-    "include": ["src/**/*", "old/DataForm.tsx", "old/inputs", "old/utils"]
+    "include": ["src/**/*"]
 }

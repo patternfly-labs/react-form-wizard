@@ -1,0 +1,30 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": ["./tsconfig.json"]
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:i18next/recommended",
+        "plugin:jsx-a11y/recommended",
+        "plugin:i18n-json/recommended",
+        "plugin:jest/recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:prettier/recommended"
+    ],
+    "rules": {
+        "react/react-in-jsx-scope": "off"
+    },
+    "root": true,
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
+}
