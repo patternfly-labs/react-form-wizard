@@ -117,10 +117,10 @@ function AppHeader() {
                     <RedHatIcon size="lg" style={{ color: '#EE0000', marginTop: -8 }} />
                     <div style={{ color: 'white' }}>
                         <Title headingLevel="h4" style={{ fontWeight: 'bold', lineHeight: 1.2 }}>
-                            Red Hat
+                            PatternFly
                         </Title>
                         <Title headingLevel="h3" style={{ fontWeight: 'lighter', lineHeight: 1.2 }}>
-                            Advanced Cluster Management for Kubernetes
+                            Form Wizard
                         </Title>
                     </div>
                 </div>
