@@ -7,7 +7,7 @@ export function PasteInputButton(props: { setValue: (value: string) => void; set
         <Button
             variant="control"
             onClick={() => {
-                navigator.clipboard.readText().then((value) => {
+                void navigator.clipboard.readText().then((value) => {
                     setValue(value)
                     if (value && setShowSecrets) setShowSecrets(false)
                 })

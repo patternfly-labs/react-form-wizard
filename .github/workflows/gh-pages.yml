@@ -1,7 +1,7 @@
 name: GH Pages
 on:
     push:
-        branches: [$default-branch]
+        branches: main
 jobs:
     pages:
         runs-on: ubuntu-latest

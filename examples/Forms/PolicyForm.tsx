@@ -18,15 +18,15 @@ import PolicyTemplate from './PolicyTemplate.hbs'
 
 export function PolicyForm() {
     const namespaces = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
-    const clusterSelectors = useMemo(
-        () =>
-            ['cloud: "Amazon"', 'namespace-1', 'namespace-2'].map((selector) => ({
-                id: selector,
-                label: selector,
-                value: selector,
-            })),
-        []
-    )
+    // const clusterSelectors = useMemo(
+    //     () =>
+    //         ['cloud: "Amazon"', 'namespace-1', 'namespace-2'].map((selector) => ({
+    //             id: selector,
+    //             label: selector,
+    //             value: selector,
+    //         })),
+    //     []
+    // )
     const specifications = useMemo(
         () => Specifications.map((specification) => ({ id: specification.name, label: specification.description, value: specification })),
         []

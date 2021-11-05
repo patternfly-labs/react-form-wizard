@@ -33,9 +33,13 @@ export interface IFormWizardContext {
  * FormWizardContext is the root level context of an InputForm and represents the forms data.
  */
 export const FormWizardContext = createContext<IFormWizardContext>({
-    updateContext: () => {},
+    updateContext: () => {
+        /* Do nothing. */
+    },
     mode: InputMode.Wizard,
     editMode: InputEditMode.Create,
     showValidation: true,
-    setShowValidation: () => {},
+    setShowValidation: () => {
+        /* Do nothing. */
+    },
 })

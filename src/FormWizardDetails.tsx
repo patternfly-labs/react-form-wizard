@@ -3,7 +3,7 @@ import { ReactNode, useContext } from 'react'
 import { FormWizardContext, InputMode } from './contexts/FormWizardContext'
 
 export function FormWizardDetailsView(props: { children: ReactNode }) {
-    let formWizardContext = useContext(FormWizardContext)
+    const formWizardContext = useContext(FormWizardContext)
     return (
         <FormWizardContext.Provider value={{ ...formWizardContext, ...{ mode: InputMode.Details } }}>
             <DescriptionList isHorizontal>{props.children}</DescriptionList>
