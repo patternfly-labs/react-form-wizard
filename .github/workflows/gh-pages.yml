@@ -1,8 +1,7 @@
 name: GH Pages
 on:
     push:
-        branches:
-            - main
+        branches: [$default-branch]
 jobs:
     pages:
         runs-on: ubuntu-latest
@@ -11,6 +10,7 @@ jobs:
             - uses: actions/setup-node@v2
               with:
                   node-version: '14'
+                  cache: 'npm'
             - run: npm ci
             - run: npm run pages
             - uses: JamesIves/github-pages-deploy-action@4.1.5

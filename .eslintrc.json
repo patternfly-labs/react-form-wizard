@@ -20,9 +20,7 @@
         "plugin:prettier/recommended"
     ],
     "rules": {
-        "react/react-in-jsx-scope": "off",
-        // TODO - Turn this back on once a new version of eslint-plugin-react-hooks comes out
-        "react-hooks/exhaustive-deps": "off"
+        "react/react-in-jsx-scope": "off"
     },
     "root": true,
     "settings": {
