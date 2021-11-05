@@ -161,9 +161,9 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
                 return []
             }
         }
-    }, [props])
+    }, [props, keyPath])
 
-    const value = useMemo(() => get(item, path), [item, props])
+    const value = useMemo(() => get(item, path), [item, path])
 
     const keyedValue = useMemo(() => {
         if (typeof value === 'undefined') return ''
@@ -185,7 +185,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
         if (typeof valueKey === 'string') return valueKey
         if (typeof valueKey === 'number') return valueKey
         throw new Error()
-    }, [value])
+    }, [value, keyPath])
 
     const selections = useMemo(() => {
         if (Array.isArray(keyedValue)) {
@@ -195,7 +195,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
         } else {
             return selectOptions.find((selectOption) => keyedValue === selectOption.keyedValue)
         }
-    }, [keyedValue])
+    }, [keyedValue, selectOptions])
 
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
@@ -230,7 +230,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
             }
             formWizardContext.updateContext()
         },
-        [item, props, formWizardContext, selections]
+        [item, props, formWizardContext, path, value]
     )
 
     const isGrouped = useMemo(() => {
@@ -242,12 +242,12 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
             case 'multi':
                 return false
         }
-    }, [])
+    }, [props.variant])
 
     const onClear = useCallback(() => {
         // set(item, props.path, '', { preservePaths: false })
         formWizardContext.updateContext()
-    }, [item, props, formWizardContext])
+    }, [formWizardContext])
 
     const onFilter = useCallback(
         (_, value: string) =>
@@ -264,7 +264,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
                         {option.toString()}
                     </SelectOption>
                 )),
-        [selectOptions, value]
+        [selectOptions]
     )
 
     const variant = useMemo(() => {

@@ -57,7 +57,9 @@ export function hasValidationErrorsProps(props: InputCommonProps, item: unknown)
                 try {
                     const result = validation(value)
                     if (typeof result === 'string') return true
-                } catch {}
+                } catch {
+                    // Do nothing
+                }
             }
         }
     }

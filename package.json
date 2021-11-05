@@ -12,7 +12,7 @@
         "start": "TS_NODE_PROJECT=webpack.tsconfig.json webpack serve --mode development",
         "pages": "TS_NODE_PROJECT=webpack.tsconfig.json webpack --mode production",
         "test": "npm run tsc:noEmit && npm run eslint",
-        "tsc:noEmit": "tsc --noEmit",
+        "tsc:noEmit": "tsc --noEmit -p tsconfig.eslint.json",
         "eslint": "eslint src examples",
         "reinstall": "rm -rf node_modules package-lock.json && npm install && npm audit fix && npm dedup",
         "plugin": "npm run build && npx http-server ./dist -p 3000 -c-1 --cors"

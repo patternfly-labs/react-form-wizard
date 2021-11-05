@@ -60,11 +60,14 @@ export function FormWizardWizardView(props: { children: ReactNode }) {
         })
     }
 
-    const stepChange = useCallback((step) => {
-        if ((step as { name: string }).name === 'Summary') {
-            formWizardContext.setShowValidation(true)
-        }
-    }, [])
+    const stepChange = useCallback(
+        (step) => {
+            if ((step as { name: string }).name === 'Summary') {
+                formWizardContext.setShowValidation(true)
+            }
+        },
+        [formWizardContext]
+    )
 
     return <Wizard steps={steps} onNext={stepChange} onGoToStep={stepChange} />
 }
