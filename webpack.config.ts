@@ -60,13 +60,13 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
                 ignoreOrder: false, // Enable to remove warnings about conflicting order
             }),
         ].filter(Boolean) as webpack.WebpackPluginInstance[],
-        // output: {
-        //     assetModuleFilename: 'assets/[name].[contenthash:8][ext][query]',
-        //     filename: '[name].[contenthash:8].js',
-        //     chunkFilename: '[name].[contenthash:8].js',
-        //     publicPath: isProduction ? '/' : '/',
-        //     clean: true,
-        // },
+        output: {
+            //     assetModuleFilename: 'assets/[name].[contenthash:8][ext][query]',
+            //     filename: '[name].[contenthash:8].js',
+            //     chunkFilename: '[name].[contenthash:8].js',
+            publicPath: isProduction ? '/react-form-wizard/' : '/',
+            //     clean: true,
+        },
         optimization: {
             minimizer: [
                 `...`,
@@ -80,17 +80,9 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
         devServer: {
             port: 3000,
             open: true,
-            // historyApiFallback: true,
+            historyApiFallback: true,
             compress: true,
-            // https: true,
             hot: true,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-            },
-            client: {
-                overlay: false,
-            },
         },
         // devtool: isDevelopment && 'eval-cheap-module-source-map',
     }

@@ -49,7 +49,7 @@ export function AppForm() {
     const ansibleCredentials = useMemo(() => ['credential1', 'credential2'], [])
     return (
         <FormWizardPage
-            title="Create an application"
+            title="Create application"
             template={ApplicationHandlebars}
             breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Applications' }]}
         >
