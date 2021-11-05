@@ -355,19 +355,19 @@ export function AppForm() {
                 >
                     {/* Git only sync policies */}
                     <FormWizardHidden hidden={(data) => data.repositoryType !== 'Git'}>
-                        <FormWizardCheckbox path="syncPolicy.prune" label="Delete resources that are no longer defined in Git" />
+                        <FormWizardCheckbox id="syncPolicy.prune" label="Delete resources that are no longer defined in Git" />
                         <FormWizardCheckbox
-                            path="syncPolicy.pruneLast"
+                            id="syncPolicy.pruneLast"
                             label="Delete resources that are no longer defined in Git at the end of a sync operation"
                         />
-                        <FormWizardCheckbox path="syncPolicy.replace" label="Replace resources instead of applying changes from Git" />
+                        <FormWizardCheckbox id="syncPolicy.replace" label="Replace resources instead of applying changes from Git" />
                     </FormWizardHidden>
-                    <FormWizardCheckbox path="syncPolicy.allowEmpty" label="Allow applications to have empty resources" />
-                    <FormWizardCheckbox path="syncPolicy.applyOutOfSyncOnly" label="Only synchronize out-of-sync resources" />
-                    <FormWizardCheckbox path="syncPolicy.selfHeal" label="Automatically sync when cluster state changes" />
-                    <FormWizardCheckbox path="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
-                    <FormWizardCheckbox path="syncPolicy.validate" label="Disable kubectl validation" />
-                    <FormWizardCheckbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
+                    <FormWizardCheckbox id="syncPolicy.allowEmpty" label="Allow applications to have empty resources" />
+                    <FormWizardCheckbox id="syncPolicy.applyOutOfSyncOnly" label="Only synchronize out-of-sync resources" />
+                    <FormWizardCheckbox id="syncPolicy.selfHeal" label="Automatically sync when cluster state changes" />
+                    <FormWizardCheckbox id="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
+                    <FormWizardCheckbox id="syncPolicy.validate" label="Disable kubectl validation" />
+                    <FormWizardCheckbox id="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
                         <FormWizardSelect
                             id="syncPolicy.propagationPolicy"
                             label="Propogation policy"
@@ -430,7 +430,7 @@ export function PlacementRules() {
 }
 
 export function TimeWindow() {
-    const onChange = (time, hour, minute, isValid) => {
+    const onChange = (time: string, hour?: number, minute?: number, isValid?: boolean) => {
         // TBD
         console.log('time', time)
         console.log('hour', hour)
