@@ -1,30 +1,32 @@
 import get from 'get-value'
-import { Children, isValidElement, useContext } from 'react'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { Children, isValidElement } from 'react'
 
 export interface InputCommonProps {
     id: string
     path: string
-    hidden?: (item: any) => boolean
+    hidden?: (item: unknown) => boolean
     validation?: (value: string) => string | undefined
 }
 
-export function isFormWizardHiddenProps(props: any) {
-    const item = useContext(FormWizardItemContext)
-    const hidden = props.hidden
+export function isFormWizardHiddenProps(props: unknown, item: unknown) {
+    const hidden = (props as InputCommonProps).hidden
     if (typeof hidden === 'boolean') return hidden
     if (typeof hidden === 'function') {
         try {
             const result = hidden(item)
             if (typeof result === 'boolean') return result
-        } catch {}
+        } catch {
+            // Do nothing
+        }
     }
-    if (props.children) {
+
+    const children = (props as { children?: ReactNode }).children
+    if (children) {
         let allChildrenHidden = true
-        Children.forEach(props.children, (child) => {
+        Children.forEach(children, (child) => {
             if (!allChildrenHidden) return
             if (!isValidElement(child)) return
-            if (!isFormWizardHiddenProps(child.props)) {
+            if (!isFormWizardHiddenProps(child.props, item)) {
                 allChildrenHidden = false
             }
         })
@@ -33,12 +35,13 @@ export function isFormWizardHiddenProps(props: any) {
     return false
 }
 
-export function hasValidationErrorsProps(props: any): boolean {
+export function hasValidationErrorsProps(props: unknown, item: unknown): boolean {
     if (!props) return false
-    if (isFormWizardHiddenProps(props)) return false
+    if (isFormWizardHiddenProps(props, item)) return false
 
-    const item = useContext(FormWizardItemContext)
-    const path = props.path ?? props.id
+    const id = (props as InputCommonProps).id
+    const path = (props as InputCommonProps).path ?? id
+
     if (path) {
         const value = get(item, path)
 
@@ -72,9 +75,9 @@ export function hasValidationErrorsProps(props: any): boolean {
     return false
 }
 
-export function inputHasValue(props: any) {
-    const item = useContext(FormWizardItemContext)
-    const path = props.path ?? props.id
+export function inputHasValue(props: unknown, item: unknown) {
+    const id = (props as InputCommonProps).id
+    const path = (props as InputCommonProps).path ?? id
     if (path) {
         const value = get(item, path)
         if (value === undefined) return false
@@ -96,8 +99,8 @@ export function inputHasValue(props: any) {
         Children.forEach(props.children, (child) => {
             if (anyChildHasValue) return
             if (!isValidElement(child)) return
-            if (isFormWizardHiddenProps(child.props)) return
-            if (inputHasValue(child.props)) {
+            if (isFormWizardHiddenProps(child.props, item)) return
+            if (inputHasValue(child.props, item)) {
                 anyChildHasValue = true
             }
         })

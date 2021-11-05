@@ -1,6 +1,7 @@
 import { DescriptionList, FormSection, Stack, Text, Title } from '@patternfly/react-core'
 import { Fragment, ReactNode, useContext } from 'react'
 import { FormWizardContext, InputMode } from './contexts/FormWizardContext'
+import { FormWizardItemContext } from './contexts/FormWizardItemContext'
 import { inputHasValue, isFormWizardHiddenProps } from './lib/input-utils'
 
 interface FormWizardSectionProps {
@@ -13,6 +14,7 @@ interface FormWizardSectionProps {
 
 export function FormWizardSection(props: FormWizardSectionProps) {
     const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
 
     let label = props.label
     if (formWizardContext.mode == InputMode.Wizard) {
@@ -21,11 +23,11 @@ export function FormWizardSection(props: FormWizardSectionProps) {
         }
     }
 
-    const hidden = isFormWizardHiddenProps(props)
+    const hidden = isFormWizardHiddenProps(props, item)
     if (hidden) return <Fragment />
 
     if (formWizardContext.mode === InputMode.Details) {
-        if (!inputHasValue(props)) {
+        if (!inputHasValue(props, item)) {
             return <Fragment />
         }
         return (

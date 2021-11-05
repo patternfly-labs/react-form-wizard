@@ -97,7 +97,7 @@ export function FormWizardPage(props: {
                         >
                             <FormWizardContext.Provider
                                 value={{
-                                    updateContext: () => setData(JSON.parse(JSON.stringify(data))),
+                                    updateContext: () => setData(JSON.parse(JSON.stringify(data)) as object),
                                     mode,
                                     editMode: InputEditMode.Create,
                                     showValidation,
@@ -120,7 +120,7 @@ export function FormWizardPage(props: {
     )
 }
 
-function FormWizardPageDrawer(props: { data: any; template: string; devMode: boolean }) {
+function FormWizardPageDrawer(props: { data: unknown; template: string; devMode: boolean }) {
     const [template] = useState(() => Handlebars.compile(props.template))
     const [activeKey, setActiveKey] = useState<number | string>(0)
 

@@ -2,28 +2,30 @@ import { Alert, FormAlert, Split, SplitItem, Stack, Wizard, WizardStep } from '@
 import { Children, isValidElement, ReactNode, useCallback, useContext } from 'react'
 import { FormWizardStep } from '.'
 import { FormWizardContext } from './contexts/FormWizardContext'
+import { FormWizardItemContext } from './contexts/FormWizardItemContext'
 import { FormWizardDetailsView } from './FormWizardDetails'
 import { hasValidationErrorsProps, isFormWizardHiddenProps } from './lib/input-utils'
 
 export function FormWizardWizardView(props: { children: ReactNode }) {
     const steps: WizardStep[] = []
-    let formWizardContext = useContext(FormWizardContext)
+    const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
 
     let formHasValidationErrors = false
     Children.forEach(props.children, (child) => {
         if (!isValidElement(child)) return
         if (child.type !== FormWizardStep) return
-        if (isFormWizardHiddenProps(child.props)) return
+        if (isFormWizardHiddenProps(child.props, item)) return
 
         let color: string | undefined = undefined
-        if (hasValidationErrorsProps(child.props)) {
+        if (hasValidationErrorsProps(child.props, item)) {
             if (formWizardContext.showValidation) {
                 color = '#C9190B'
             }
             formHasValidationErrors = true
         }
 
-        const label = child.props.label
+        const label = (child.props as { label: ReactNode }).label
         if (label) {
             steps.push({
                 name: (
@@ -59,7 +61,7 @@ export function FormWizardWizardView(props: { children: ReactNode }) {
     }
 
     const stepChange = useCallback((step) => {
-        if (step.name === 'Summary') {
+        if ((step as { name: string }).name === 'Summary') {
             formWizardContext.setShowValidation(true)
         }
     }, [])

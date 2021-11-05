@@ -84,7 +84,7 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
             compress: true,
             hot: true,
         },
-        // devtool: isDevelopment && 'eval-cheap-module-source-map',
+        devtool: 'source-map',
     }
 
     return config
