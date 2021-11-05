@@ -4,7 +4,7 @@ import { FormWizardStep } from '.'
 import { FormWizardContext } from './contexts/FormWizardContext'
 import { FormWizardItemContext } from './contexts/FormWizardItemContext'
 import { FormWizardDetailsView } from './FormWizardDetails'
-import { hasValidationErrorsProps, isFormWizardHiddenProps } from './lib/input-utils'
+import { hasValidationErrorsProps, InputCommonProps, isFormWizardHiddenProps } from './lib/input-utils'
 
 export function FormWizardWizardView(props: { children: ReactNode }) {
     const steps: WizardStep[] = []
@@ -18,7 +18,7 @@ export function FormWizardWizardView(props: { children: ReactNode }) {
         if (isFormWizardHiddenProps(child.props, item)) return
 
         let color: string | undefined = undefined
-        if (hasValidationErrorsProps(child.props, item)) {
+        if (hasValidationErrorsProps(child.props as InputCommonProps, item)) {
             if (formWizardContext.showValidation) {
                 color = '#C9190B'
             }

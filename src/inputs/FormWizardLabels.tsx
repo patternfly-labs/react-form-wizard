@@ -73,7 +73,9 @@ export function FormWizardLabels(props: {
                 <DescriptionListDescription>
                     <LabelGroup>
                         {selections.map((label) => (
-                            <Chip isReadOnly>{label}</Chip>
+                            <Chip key={label} isReadOnly>
+                                {label}
+                            </Chip>
                         ))}
                     </LabelGroup>
                 </DescriptionListDescription>

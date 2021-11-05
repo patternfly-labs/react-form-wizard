@@ -1,11 +1,12 @@
 import get from 'get-value'
-import { Children, isValidElement } from 'react'
+import { Children, isValidElement, ReactNode } from 'react'
 
 export interface InputCommonProps {
     id: string
     path: string
     hidden?: (item: unknown) => boolean
     validation?: (value: string) => string | undefined
+    required?: boolean
 }
 
 export function isFormWizardHiddenProps(props: unknown, item: unknown) {
@@ -35,37 +36,40 @@ export function isFormWizardHiddenProps(props: unknown, item: unknown) {
     return false
 }
 
-export function hasValidationErrorsProps(props: unknown, item: unknown): boolean {
+export function hasValidationErrorsProps(props: InputCommonProps, item: unknown): boolean {
     if (!props) return false
     if (isFormWizardHiddenProps(props, item)) return false
 
-    const id = (props as InputCommonProps).id
-    const path = (props as InputCommonProps).path ?? id
+    const id = props.id
+    const path = props.path ?? id
 
     if (path) {
-        const value = get(item, path)
+        if (item && typeof item === 'object') {
+            const value = get(item, path) as unknown
 
-        const required = props.required
-        if (required && !value) {
-            return true
-        }
+            const required = props.required
+            if (required && !value) {
+                return true
+            }
 
-        const validation = props.validation
-        if (typeof validation === 'function') {
-            try {
-                const result = validation(value)
-                if (typeof result === 'string') return true
-            } catch {}
+            const validation = props.validation
+            if (typeof validation === 'function') {
+                try {
+                    const result = validation(value)
+                    if (typeof result === 'string') return true
+                } catch {}
+            }
         }
     }
 
-    if (props.children) {
+    const children = (props as { children?: ReactNode }).children
+    if (children) {
         let anyChildrenHasValidationErrors = false
-        Children.forEach(props.children, (child) => {
+        Children.forEach(children, (child) => {
             if (anyChildrenHasValidationErrors) return
             if (!isValidElement(child)) return
-            if (isFormWizardHiddenProps(child.props)) return
-            if (hasValidationErrorsProps(child.props)) {
+            if (isFormWizardHiddenProps(child.props, item)) return
+            if (hasValidationErrorsProps(child.props as InputCommonProps, item)) {
                 anyChildrenHasValidationErrors = true
             }
         })
@@ -94,9 +98,11 @@ export function inputHasValue(props: unknown, item: unknown) {
             return value.length > 0
         }
     }
-    if (props.children) {
+
+    const children = (props as { children?: ReactNode }).children
+    if (children) {
         let anyChildHasValue = false
-        Children.forEach(props.children, (child) => {
+        Children.forEach(children, (child) => {
             if (anyChildHasValue) return
             if (!isValidElement(child)) return
             if (isFormWizardHiddenProps(child.props, item)) return

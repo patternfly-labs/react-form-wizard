@@ -42,7 +42,7 @@ interface FormWizardSelectCommonProps {
      * Used in cases where the value is an object, but we need to track select by a string or number
      */
     keyPath?: string
-    hidden?: (values: any) => boolean
+    hidden?: (values: unknown) => boolean
 }
 
 export enum FormWizardSelectVariant {
