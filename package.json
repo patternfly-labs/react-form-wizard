@@ -24,6 +24,7 @@
         "react-dom": "^17.0"
     },
     "dependencies": {
+        "@svgr/webpack": "^5.5.0",
         "get-value": "^3.0.1",
         "handlebars": "^4.7.7",
         "set-value": "^4.1.0",
