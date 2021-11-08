@@ -102,6 +102,11 @@ export function AnsibleForm() {
     )
 }
 
+interface IAnsibleVariableData {
+    variable: string
+    value: string
+}
+
 function AnsibleJobTemplates() {
     return (
         <Fragment>
@@ -118,7 +123,7 @@ function AnsibleJobTemplates() {
                 collapsedText={
                     <Fragment>
                         <FormWizardTextDetail id="variable" placeholder="Expand to enter the variable" />
-                        <FormWizardHidden hidden={(item) => item.variable === undefined}>
+                        <FormWizardHidden hidden={(item: IAnsibleVariableData) => item.variable === undefined}>
                             &nbsp;=&nbsp;
                             <FormWizardTextDetail id="value" />
                         </FormWizardHidden>

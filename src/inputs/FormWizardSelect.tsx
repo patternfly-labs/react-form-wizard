@@ -217,7 +217,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
                     setOpen(false)
                     break
                 case 'multi':
-                case 'multi-grouped':
+                case 'multi-grouped': {
                     let newValues: any[] = []
                     if (Array.isArray(value)) newValues = [...value]
                     if (newValues.includes(selectOptionObject.value)) {
@@ -227,6 +227,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
                     }
                     set(item, path, newValues)
                     break
+                }
             }
             formWizardContext.updateContext()
         },

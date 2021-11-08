@@ -4,7 +4,7 @@ import './FormWizardFieldGroup.css'
 
 export type FormWizardFieldGroupProps = FormFieldGroupExpandableProps & { setIsExpanded: (expanded: boolean) => void }
 export function FormWizardFieldGroup(props: FormWizardFieldGroupProps) {
-    const { children, className, header, isExpanded, setIsExpanded, toggleAriaLabel, ...extraProps } = props
+    const { children, header, isExpanded, setIsExpanded, toggleAriaLabel, ...extraProps } = props
     return (
         <InternalFormFieldGroup
             className="input-field-group"
