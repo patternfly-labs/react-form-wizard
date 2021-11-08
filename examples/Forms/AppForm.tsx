@@ -65,8 +65,20 @@ export function AppForm() {
                         id="deployType"
                         label="Select the application management type to deploy this application into clusters."
                     >
-                        <FormWizardTile id="subscription" value="Subscription" label="Subscription" icon={<SubscriptionIcon />} />
-                        <FormWizardTile id="argoCD" value="ArgoCD" label="Argo CD ApplicationSet" icon={<ArgoIcon />} />
+                        <FormWizardTile
+                            id="subscription"
+                            value="Subscription"
+                            label="Subscription"
+                            icon={<SubscriptionIcon />}
+                            description="Subscriptions are Kubernetes resources within channels (source repositories)"
+                        />
+                        <FormWizardTile
+                            id="argoCD"
+                            value="ArgoCD"
+                            label="Argo CD ApplicationSet"
+                            icon={<ArgoIcon />}
+                            description="Supports deployments to large numbers of clusters, deployments of large monorepos, and enabling secure Application self-service."
+                        />
                     </FormWizardTiles>
                 </FormWizardSection>
             </FormWizardStep>
