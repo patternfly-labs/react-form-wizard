@@ -430,12 +430,12 @@ export function PlacementRules() {
 }
 
 export function TimeWindow() {
-    const onChange = (time: string, hour?: number, minute?: number, isValid?: boolean) => {
+    const onChange = () => /* time: string, hour?: number, minute?: number, isValid?: boolean */ {
         // TBD
-        console.log('time', time)
-        console.log('hour', hour)
-        console.log('minute', minute)
-        console.log('isValid', isValid)
+        // console.log('time', time)
+        // console.log('hour', hour)
+        // console.log('minute', minute)
+        // console.log('isValid', isValid)
     }
     return (
         <Stack hasGutter style={{ paddingBottom: 16 }}>
