@@ -92,7 +92,7 @@ function AppHome() {
     )
 }
 
-function AppCard(props: { title: string; children: ReactNode; route: string }) {
+function AppCard(props: { title?: string; children?: ReactNode; route: string }) {
     const navigate = useNavigate()
     return (
         <Card isRounded isHoverable onClick={() => navigate(props.route)}>

@@ -49,7 +49,7 @@ export function FormWizardLabels(props: {
     if (value)
         selections = Object.keys(value).map((key) => {
             const v = value[key]
-            if (v) key += '=' + v
+            if (v) key += '=' + (v as string).toString()
             return key
         })
 

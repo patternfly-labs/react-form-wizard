@@ -5,7 +5,7 @@ export interface InputCommonProps {
     id: string
     path: string
     hidden?: (item: unknown) => boolean
-    validation?: (value: string) => string | undefined
+    validation?: (value: any) => string | undefined
     required?: boolean
 }
 
@@ -57,7 +57,9 @@ export function hasValidationErrorsProps(props: InputCommonProps, item: unknown)
                 try {
                     const result = validation(value)
                     if (typeof result === 'string') return true
-                } catch {}
+                } catch {
+                    // Do nothing
+                }
             }
         }
     }
@@ -83,7 +85,7 @@ export function inputHasValue(props: unknown, item: unknown) {
     const id = (props as InputCommonProps).id
     const path = (props as InputCommonProps).path ?? id
     if (path) {
-        const value = get(item, path)
+        const value = get(item as object, path)
         if (value === undefined) return false
         if (typeof value === 'string') {
             return value !== '' && value !== undefined

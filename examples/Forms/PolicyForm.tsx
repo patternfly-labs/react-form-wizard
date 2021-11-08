@@ -31,41 +31,41 @@ export function PolicyForm() {
         () => Specifications.map((specification) => ({ id: specification.name, label: specification.description, value: specification })),
         []
     )
-    const standards = useMemo(
-        () =>
-            ['NIST', 'NIST-CSF', 'PCI', 'FISMA', 'HIPAA', 'NIST SP 800-53'].map((standard) => ({
-                label: standard,
-            })),
-        []
-    )
-    const categories = useMemo(
-        () =>
-            [
-                'PR.PT Protective Technology',
-                'PR.DS Data Security',
-                'PR.IP Information Protection Processes and Procedures',
-                'PR.AC Identity Management and Access Control',
-                'DE.CM Security Continuous Monitoring',
-                'AC Access Control',
-            ].map((category) => ({ label: category })),
-        []
-    )
-    const controls = useMemo(
-        () =>
-            [
-                'PR.PT-1 Audit Logging',
-                'PR.PT-3 Least Functionality',
-                'PR.DS-1 Data-at-rest',
-                'PR.DS-2 Data-in-transit',
-                'PR.AC-4 Access Control',
-                'PR.AC-5 Network Integrity',
-                'PR.IP-1 Baseline Configuration',
-                'DE.CM-7 Monitoring for Unauthorized Activity',
-                'DE.CM-8 Vulnerability Scans',
-                'AC-3 Access Enforcement',
-            ].map((control) => ({ label: control })),
-        []
-    )
+    // const standards = useMemo(
+    //     () =>
+    //         ['NIST', 'NIST-CSF', 'PCI', 'FISMA', 'HIPAA', 'NIST SP 800-53'].map((standard) => ({
+    //             label: standard,
+    //         })),
+    //     []
+    // )
+    // const categories = useMemo(
+    //     () =>
+    //         [
+    //             'PR.PT Protective Technology',
+    //             'PR.DS Data Security',
+    //             'PR.IP Information Protection Processes and Procedures',
+    //             'PR.AC Identity Management and Access Control',
+    //             'DE.CM Security Continuous Monitoring',
+    //             'AC Access Control',
+    //         ].map((category) => ({ label: category })),
+    //     []
+    // )
+    // const controls = useMemo(
+    //     () =>
+    //         [
+    //             'PR.PT-1 Audit Logging',
+    //             'PR.PT-3 Least Functionality',
+    //             'PR.DS-1 Data-at-rest',
+    //             'PR.DS-2 Data-in-transit',
+    //             'PR.AC-4 Access Control',
+    //             'PR.AC-5 Network Integrity',
+    //             'PR.IP-1 Baseline Configuration',
+    //             'DE.CM-7 Monitoring for Unauthorized Activity',
+    //             'DE.CM-8 Vulnerability Scans',
+    //             'AC-3 Access Enforcement',
+    //         ].map((control) => ({ label: control })),
+    //     []
+    // )
 
     return (
         <FormWizardPage

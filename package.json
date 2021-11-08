@@ -1,5 +1,5 @@
 {
-    "name": "input-form",
+    "name": "@patternfly-labs/react-form-wizard",
     "version": "1.0.0",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -12,7 +12,7 @@
         "start": "TS_NODE_PROJECT=webpack.tsconfig.json webpack serve --mode development",
         "pages": "TS_NODE_PROJECT=webpack.tsconfig.json webpack --mode production",
         "test": "npm run tsc:noEmit && npm run eslint",
-        "tsc:noEmit": "tsc --noEmit",
+        "tsc:noEmit": "tsc --noEmit -p tsconfig.eslint.json",
         "eslint": "eslint src examples",
         "reinstall": "rm -rf node_modules package-lock.json && npm install && npm audit fix && npm dedup",
         "plugin": "npm run build && npx http-server ./dist -p 3000 -c-1 --cors"
@@ -20,25 +20,21 @@
     "peerDependencies": {
         "@patternfly/react-icons": "^4.19",
         "@patternfly/react-core": "^4.162",
-        "@patternfly/react-code-editor": "^4.2",
-        "monaco-editor": "^0.30",
         "react": "^17.0",
-        "react-dom": "^17.0",
-        "react-monaco-editor": "^0.46"
+        "react-dom": "^17.0"
     },
     "dependencies": {
         "@svgr/webpack": "^5.5.0",
         "get-value": "^3.0.1",
         "handlebars": "^4.7.7",
         "set-value": "^4.1.0",
-        "yaml": "^1.10.2"
+        "yaml": "^1.10.2",
+        "@react-hook/resize-observer": "^1.2.4"
     },
     "devDependencies": {
-        "@patternfly/react-code-editor": "^4.9.8",
         "@patternfly/react-core": "^4.168.8",
         "@patternfly/react-icons": "^4.19.8",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.1",
-        "@react-hook/resize-observer": "^1.2.4",
         "@types/compression-webpack-plugin": "^9.0.0",
         "@types/css-minimizer-webpack-plugin": "^3.0.2",
         "@types/get-value": "^3.0.2",
@@ -68,12 +64,9 @@
         "eslint-plugin-react-hooks": "^4.2.1-alpha-13455d26d-20211104",
         "html-webpack-plugin": "^5.5.0",
         "mini-css-extract-plugin": "^2.4.4",
-        "monaco-editor": "^0.30.0",
-        "monaco-editor-webpack-plugin": "^6.0.0",
         "prettier": "^2.4.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
-        "react-monaco-editor": "^0.46.0",
         "react-refresh": "^0.10.0",
         "react-refresh-typescript": "^2.0.2",
         "react-router-dom": "^6.0.0",
