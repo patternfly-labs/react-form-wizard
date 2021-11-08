@@ -29,6 +29,12 @@ import SubscriptionHelmHandlebars from './applicationTemplates/subscription/temp
 import SubscriptionObjHandlebars from './applicationTemplates/subscription/templateSubscriptionObj.hbs'
 import SubscriptionPlacementHandlebars from './applicationTemplates/subscription/templateSubscriptionPlacement.hbs'
 
+//icons
+import SubscriptionIcon from './Logo/SubscriptionIcon.svg'
+import ArgoIcon from './Logo/ArgoIcon.svg'
+import ObjectStore from './Logo/ObjectStore.svg'
+import HelmIcon from './Logo/HelmIcon.svg'
+
 export function AppForm() {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
@@ -59,8 +65,8 @@ export function AppForm() {
                         id="deployType"
                         label="Select the application management type to deploy this application into clusters."
                     >
-                        <FormWizardTile id="subscription" value="Subscription" label="Subscription" />
-                        <FormWizardTile id="argoCD" value="ArgoCD" label="Argo CD ApplicationSet" />
+                        <FormWizardTile id="subscription" value="Subscription" label="Subscription" icon={<SubscriptionIcon />} />
+                        <FormWizardTile id="argoCD" value="ArgoCD" label="Argo CD ApplicationSet" icon={<ArgoIcon />} />
                     </FormWizardTiles>
                 </FormWizardSection>
             </FormWizardStep>
@@ -87,9 +93,27 @@ export function AppForm() {
                         collapsedText={<FormWizardTextDetail id="url" placeholder="Expand to enter the repository details" />}
                     >
                         <FormWizardTiles id="repositoryType" label="Repository type">
-                            <FormWizardTile id="git" value="SubscriptionGit" label="Git" icon={<GitAltIcon />} />
-                            <FormWizardTile id="helm" value="SubscriptionHelm" label="Helm" />
-                            <FormWizardTile id="objectstorage" value="SubscriptionObjectstorage" label="Object Storage" />
+                            <FormWizardTile
+                                id="git"
+                                value="SubscriptionGit"
+                                label="Git"
+                                icon={<GitAltIcon />}
+                                description="Use a Git repository"
+                            />
+                            <FormWizardTile
+                                id="helm"
+                                value="SubscriptionHelm"
+                                label="Helm"
+                                icon={<HelmIcon />}
+                                description="Use a Helm repository"
+                            />
+                            <FormWizardTile
+                                id="objectstorage"
+                                value="SubscriptionObjectstorage"
+                                icon={<ObjectStore />}
+                                label="Object Storage"
+                                description="Use a bucket from an object storage repository"
+                            />
                         </FormWizardTiles>
 
                         <FormWizardHidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
@@ -284,8 +308,8 @@ export function AppForm() {
             <FormWizardStep label="Template" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <FormWizardSection label="Source">
                     <FormWizardTiles id="repositoryType" label="Repository type">
-                        <FormWizardTile id="git" value="Git" label="Git" icon={<GitAltIcon />} />
-                        <FormWizardTile id="helm" value="Helm" label="Helm" />
+                        <FormWizardTile id="git" value="Git" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
+                        <FormWizardTile id="helm" value="Helm" label="Helm" icon={<HelmIcon />} description="Use a Helm repository" />
                     </FormWizardTiles>
                     {/* Git repo */}
                     <FormWizardHidden hidden={(data) => data.repositoryType !== 'Git'}>
