@@ -139,11 +139,17 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <FormWizardTextInput id="subscription.git.username" label="Username" placeholder="Enter the Git user name" />
+                            <FormWizardTextInput
+                                id="subscription.git.username"
+                                label="Username"
+                                placeholder="Enter the Git user name"
+                                labelHelp="The username if this is a private Git repository and requires connection."
+                            />
                             <FormWizardTextInput
                                 id="subscription.git.accessToken"
                                 label="Access token"
                                 placeholder="Enter the Git access token"
+                                labelHelp="The access token if this is a private Git repository and requires connection."
                             />
                             <FormWizardSelect
                                 id="subscription.git.branch"
@@ -166,9 +172,15 @@ export function AppForm() {
                                 id="subscription.git.commitHash"
                                 label="Commit hash"
                                 placeholder="Enter a specific commit hash"
+                                labelHelp="If you want to subscribe to a specific commit, you need to specify the desired commit hash. You might need to specify git-clone-depth annotation if your desired commit is older than the last 20 commits."
                             />
 
-                            <FormWizardTextInput id="subscription.git.tag" label="Tag" placeholder="Enter a specific tag" />
+                            <FormWizardTextInput
+                                id="subscription.git.tag"
+                                label="Tag"
+                                placeholder="Enter a specific tag"
+                                labelHelp="If you want to subscribe to a specific tag, you need to specify the tag. If both Git desired commit and tag annotations are specified, the tag is ignored. You might need to specify git-clone-depth annotation if your desired commit of the tag is older than the last 20 commits."
+                            />
                             <FormWizardSelect
                                 id="subscription.git.reconcileOption"
                                 label="Reconcile option"
@@ -212,16 +224,19 @@ export function AppForm() {
                                 id="subscription.helm.username"
                                 label="Username"
                                 placeholder="Enter the Helm repository username"
+                                labelHelp="The username if this is a private Helm repository and requires connection."
                             />
                             <FormWizardTextInput
                                 id="subscription.helm.password"
                                 label="Password"
                                 placeholder="Enter the Helm repository password"
+                                labelHelp="The password if this is a private Helm repository and requires connection."
                             />
                             <FormWizardTextInput
                                 id="subscription.helm.chart"
                                 label="Chart name"
                                 placeholder="Enter the name of the target Helm chart"
+                                labelHelp="The specific name for the target Helm chart."
                                 required
                             />
                             <FormWizardTextInput
@@ -269,21 +284,25 @@ export function AppForm() {
                                 id="subscription.obj.accessKey"
                                 label="Access key"
                                 placeholder="Enter the object store access key"
+                                labelHelp="The access key for accessing the object store."
                             />
                             <FormWizardTextInput
                                 id="subscription.obj.secretKey"
                                 label="Secret key"
                                 placeholder="Enter the object store secret key"
+                                labelHelp="The secret key for accessing the object store."
                             />
                             <FormWizardTextInput
                                 id="subscription.obj.region"
                                 label="Region"
                                 placeholder="Enter the AWS region of the S3 bucket"
+                                labelHelp="The AWS Region of the S3 bucket. This field is required for Amazon S3 buckets only."
                             />
                             <FormWizardTextInput
                                 id="subscription.obj.subfolder"
                                 label="Subfolder"
                                 placeholder="Enter the Amazon S3 or MinIO subfolder bucket path"
+                                labelHelp="The Amazon S3 or MinIO subfolder bucket path. This field is optional for Amazon S3 and MinIO only."
                             />
                         </FormWizardHidden>
 
@@ -430,7 +449,7 @@ export function PlacementRules() {
                 <FormWizardCheckbox
                     id="placement.useLabels"
                     label="New placement"
-                    labelHelp="If available in the application namespace, you can select a predefined placement configuration"
+                    labelHelp="Deploy application resources only on clusters matching specified labels"
                 >
                     <FormWizardLabels
                         id="placement.labels"
@@ -440,7 +459,11 @@ export function PlacementRules() {
                         required
                     />
                 </FormWizardCheckbox>
-                <FormWizardCheckbox id="placement.useExisting" label="Use an existing placement">
+                <FormWizardCheckbox
+                    id="placement.useExisting"
+                    label="Use an existing placement"
+                    labelHelp="If available in the application namespace, you can select a predefined placement configuration"
+                >
                     <FormWizardSelect
                         id="placement.select"
                         label="Placement"
