@@ -1,4 +1,4 @@
-import { Stack, TimePicker } from '@patternfly/react-core'
+import { Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon } from '@patternfly/react-icons'
 // handlebars
 import Handlebars from 'handlebars'
@@ -18,7 +18,9 @@ import {
     FormWizardTextInput,
     FormWizardTile,
     FormWizardTiles,
+    FormWizardTimeRange,
 } from '../../src'
+
 import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
 import ArgoTemplateGit from './applicationTemplates/argoApplicationSet/templateArgoGit.hbs'
@@ -425,7 +427,11 @@ export function PlacementRules() {
     return (
         <Fragment>
             <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
-                <FormWizardCheckbox id="placement.useLabels" label="New placement">
+                <FormWizardCheckbox
+                    id="placement.useLabels"
+                    label="New placement"
+                    labelHelp="If available in the application namespace, you can select a predefined placement configuration"
+                >
                     <FormWizardLabels
                         id="placement.labels"
                         label="Cluster labels"
@@ -443,36 +449,49 @@ export function PlacementRules() {
                         required
                     />
                 </FormWizardCheckbox>
+                <FormWizardCheckbox
+                    id="placement.allClusters"
+                    label="Deploy to all online clusters and local cluster"
+                    labelHelp="Deploy your application resources on all online clusters, including your local cluster."
+                ></FormWizardCheckbox>
+                <FormWizardCheckbox
+                    id="placement.local"
+                    label="Deploy on local cluster"
+                    labelHelp="Deploy application resources on local cluster only"
+                ></FormWizardCheckbox>
             </FormWizardSection>
-
-            <FormWizardSection label="Deployment window" description="Schedule a time window for deployments">
-                <FormWizardRadioGroup
-                    id="remediation"
-                    path="deployment.window"
-                    required
-                    // hidden={get(resources, 'DELEM') === undefined}
-                >
-                    <FormWizardRadio id="always" label="Always active" value="always" />
-                    <FormWizardRadio id="active" label="Active within specified interval" value="active">
-                        <TimeWindow />
-                    </FormWizardRadio>
-                    <FormWizardRadio id="blocked" label="Blocked within specified interval" value="blocked">
-                        <TimeWindow />
-                    </FormWizardRadio>
-                </FormWizardRadioGroup>
-            </FormWizardSection>
+            <DeploymentWindow />
         </Fragment>
     )
 }
 
+export function DeploymentWindow() {
+    return (
+        <FormWizardSection
+            id="deploymentWindow.title"
+            label="Deployment window"
+            description="Schedule a time window for deployments"
+            labelHelp="Define a time window if you want to activate or block resources deployment within a certain time interval."
+        >
+            <FormWizardRadioGroup
+                id="remediation"
+                path="deployment.window"
+                required
+                // hidden={get(resources, 'DELEM') === undefined}
+            >
+                <FormWizardRadio id="always" label="Always active" value="always" />
+                <FormWizardRadio id="active" label="Active within specified interval" value="active">
+                    <TimeWindow />
+                </FormWizardRadio>
+                <FormWizardRadio id="blocked" label="Blocked within specified interval" value="blocked">
+                    <TimeWindow />
+                </FormWizardRadio>
+            </FormWizardRadioGroup>
+        </FormWizardSection>
+    )
+}
+
 export function TimeWindow() {
-    const onChange = () => /* time: string, hour?: number, minute?: number, isValid?: boolean */ {
-        // TBD
-        // console.log('time', time)
-        // console.log('hour', hour)
-        // console.log('minute', minute)
-        // console.log('isValid', isValid)
-    }
     return (
         <Stack hasGutter style={{ paddingBottom: 16 }}>
             {/* TODO InputCheckBoxGroup */}
@@ -489,15 +508,26 @@ export function TimeWindow() {
             <FormWizardArrayInput
                 id="timeWindows"
                 placeholder="Add time range"
-                collapsedText={<FormWizardTextDetail id="timeWindowSection" placeholder="Expand to enter the time range" />}
+                collapsedText={
+                    <Fragment>
+                        <FormWizardTextDetail id="start" placeholder="Expand to enter the variable" />
+                        <FormWizardHidden hidden={(item: ITimeRangeVariableData) => item.end === undefined}>
+                            &nbsp;-&nbsp;
+                            <FormWizardTextDetail id="end" />
+                        </FormWizardHidden>
+                    </Fragment>
+                }
             >
-                <div className="config-time-container" style={{ display: 'flex', marginBottom: 20 }}>
-                    <div className="config-input-time" style={{ float: 'left', marginRight: 10 }}>
-                        <TimePicker id="startTime" onChange={onChange} width={'140px'} />
-                        <TimePicker id="endTime" onChange={onChange} width={'140px'} />
-                    </div>
-                </div>
+                <Split hasGutter>
+                    <FormWizardTimeRange id="start" label="Start Time"></FormWizardTimeRange>
+                    <FormWizardTimeRange id="end" label="End Time"></FormWizardTimeRange>
+                </Split>
             </FormWizardArrayInput>
         </Stack>
     )
+}
+
+interface ITimeRangeVariableData {
+    variable: string
+    value: string
 }
