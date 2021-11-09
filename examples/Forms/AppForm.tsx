@@ -528,6 +528,6 @@ export function TimeWindow() {
 }
 
 interface ITimeRangeVariableData {
-    variable: string
-    value: string
+    start: string
+    end: string
 }
