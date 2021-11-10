@@ -62,6 +62,7 @@ export function AppForm() {
             title="Create application"
             template={ApplicationHandlebars}
             breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Applications' }]}
+            defaultData={{ curlyServer: '{{server}}', curlyName: '{{name}}' }}
         >
             <FormWizardStep label="Type">
                 <FormWizardSection label="Type" prompt="Type">
