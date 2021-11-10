@@ -25,6 +25,7 @@ import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
 import ArgoTemplateGit from './applicationTemplates/argoApplicationSet/templateArgoGit.hbs'
 import ArgoTemplateHelm from './applicationTemplates/argoApplicationSet/templateArgoHelm.hbs'
+import ArgoTemplatePlacement from './applicationTemplates/argoApplicationSet/templateArgoPlacement.hbs'
 import SubscriptionHandlebars from './applicationTemplates/subscription/Application.hbs'
 import SubscriptionGitHandlebars from './applicationTemplates/subscription/templateSubscriptionGit.hbs'
 import SubscriptionHelmHandlebars from './applicationTemplates/subscription/templateSubscriptionHelm.hbs'
@@ -47,6 +48,7 @@ export function AppForm() {
     Handlebars.registerPartial('templateArgoCD', Handlebars.compile(ArgoAppSetHandlebars))
     Handlebars.registerPartial('templateArgoGit', Handlebars.compile(ArgoTemplateGit))
     Handlebars.registerPartial('templateArgoHelm', Handlebars.compile(ArgoTemplateHelm))
+    Handlebars.registerPartial('templateArgoPlacement', Handlebars.compile(ArgoTemplatePlacement))
     const namespaces = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
     const reconcileOptions = useMemo(() => ['merge', 'replace'], [])
     const reconcileRates = useMemo(() => ['medium', 'low', 'high', 'off'], [])
@@ -307,7 +309,7 @@ export function AppForm() {
                         </FormWizardHidden>
 
                         <FormWizardHidden hidden={(data) => data.repositoryType === undefined}>
-                            <PlacementRules />
+                            <Placement />
                         </FormWizardHidden>
                     </FormWizardArrayInput>
                 </FormWizardSection>
@@ -436,13 +438,14 @@ export function AppForm() {
             </FormWizardStep>
 
             <FormWizardStep label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <PlacementRules />
+                <Placement />
             </FormWizardStep>
         </FormWizardPage>
     )
 }
 
-export function PlacementRules() {
+export function Placement() {
+    const labelOptions = useMemo(() => [{ id: 'amazon', label: 'cloud', value: 'Amazon' }], [])
     return (
         <Fragment>
             <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
@@ -457,6 +460,7 @@ export function PlacementRules() {
                         placeholder="Enter cluster labels"
                         helperText="Placement will only select clusters matching all the specified labels"
                         required
+                        options={labelOptions}
                     />
                 </FormWizardCheckbox>
                 <FormWizardCheckbox

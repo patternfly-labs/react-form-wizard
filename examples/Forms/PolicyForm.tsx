@@ -13,7 +13,7 @@ import {
     FormWizardTextInput,
 } from '../../src'
 import { Specifications } from '../templates'
-import { PlacementRules } from './AppForm'
+import { Placement } from './AppForm'
 import PolicyTemplate from './PolicyTemplate.hbs'
 
 export function PolicyForm() {
@@ -183,7 +183,7 @@ export function PolicyForm() {
             </InputStep> */}
 
             <FormWizardStep label="Placement">
-                <PlacementRules />
+                <Placement />
             </FormWizardStep>
         </FormWizardPage>
     )
