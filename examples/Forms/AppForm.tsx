@@ -1,4 +1,4 @@
-import { Stack, TimePicker } from '@patternfly/react-core'
+import { Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon } from '@patternfly/react-icons'
 // handlebars
 import Handlebars from 'handlebars'
@@ -18,11 +18,14 @@ import {
     FormWizardTextInput,
     FormWizardTile,
     FormWizardTiles,
+    FormWizardTimeRange,
 } from '../../src'
+
 import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
 import ArgoTemplateGit from './applicationTemplates/argoApplicationSet/templateArgoGit.hbs'
 import ArgoTemplateHelm from './applicationTemplates/argoApplicationSet/templateArgoHelm.hbs'
+import ArgoTemplatePlacement from './applicationTemplates/argoApplicationSet/templateArgoPlacement.hbs'
 import SubscriptionHandlebars from './applicationTemplates/subscription/Application.hbs'
 import SubscriptionGitHandlebars from './applicationTemplates/subscription/templateSubscriptionGit.hbs'
 import SubscriptionHelmHandlebars from './applicationTemplates/subscription/templateSubscriptionHelm.hbs'
@@ -45,6 +48,7 @@ export function AppForm() {
     Handlebars.registerPartial('templateArgoCD', Handlebars.compile(ArgoAppSetHandlebars))
     Handlebars.registerPartial('templateArgoGit', Handlebars.compile(ArgoTemplateGit))
     Handlebars.registerPartial('templateArgoHelm', Handlebars.compile(ArgoTemplateHelm))
+    Handlebars.registerPartial('templateArgoPlacement', Handlebars.compile(ArgoTemplatePlacement))
     const namespaces = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
     const reconcileOptions = useMemo(() => ['merge', 'replace'], [])
     const reconcileRates = useMemo(() => ['medium', 'low', 'high', 'off'], [])
@@ -58,6 +62,7 @@ export function AppForm() {
             title="Create application"
             template={ApplicationHandlebars}
             breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Applications' }]}
+            defaultData={{ curlyServer: '{{server}}', curlyName: '{{name}}' }}
         >
             <FormWizardStep label="Type">
                 <FormWizardSection label="Type" prompt="Type">
@@ -137,11 +142,17 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <FormWizardTextInput id="subscription.git.username" label="Username" placeholder="Enter the Git user name" />
+                            <FormWizardTextInput
+                                id="subscription.git.username"
+                                label="Username"
+                                placeholder="Enter the Git user name"
+                                labelHelp="The username if this is a private Git repository and requires connection."
+                            />
                             <FormWizardTextInput
                                 id="subscription.git.accessToken"
                                 label="Access token"
                                 placeholder="Enter the Git access token"
+                                labelHelp="The access token if this is a private Git repository and requires connection."
                             />
                             <FormWizardSelect
                                 id="subscription.git.branch"
@@ -164,9 +175,15 @@ export function AppForm() {
                                 id="subscription.git.commitHash"
                                 label="Commit hash"
                                 placeholder="Enter a specific commit hash"
+                                labelHelp="If you want to subscribe to a specific commit, you need to specify the desired commit hash. You might need to specify git-clone-depth annotation if your desired commit is older than the last 20 commits."
                             />
 
-                            <FormWizardTextInput id="subscription.git.tag" label="Tag" placeholder="Enter a specific tag" />
+                            <FormWizardTextInput
+                                id="subscription.git.tag"
+                                label="Tag"
+                                placeholder="Enter a specific tag"
+                                labelHelp="If you want to subscribe to a specific tag, you need to specify the tag. If both Git desired commit and tag annotations are specified, the tag is ignored. You might need to specify git-clone-depth annotation if your desired commit of the tag is older than the last 20 commits."
+                            />
                             <FormWizardSelect
                                 id="subscription.git.reconcileOption"
                                 label="Reconcile option"
@@ -210,16 +227,19 @@ export function AppForm() {
                                 id="subscription.helm.username"
                                 label="Username"
                                 placeholder="Enter the Helm repository username"
+                                labelHelp="The username if this is a private Helm repository and requires connection."
                             />
                             <FormWizardTextInput
                                 id="subscription.helm.password"
                                 label="Password"
                                 placeholder="Enter the Helm repository password"
+                                labelHelp="The password if this is a private Helm repository and requires connection."
                             />
                             <FormWizardTextInput
                                 id="subscription.helm.chart"
                                 label="Chart name"
                                 placeholder="Enter the name of the target Helm chart"
+                                labelHelp="The specific name for the target Helm chart."
                                 required
                             />
                             <FormWizardTextInput
@@ -267,26 +287,30 @@ export function AppForm() {
                                 id="subscription.obj.accessKey"
                                 label="Access key"
                                 placeholder="Enter the object store access key"
+                                labelHelp="The access key for accessing the object store."
                             />
                             <FormWizardTextInput
                                 id="subscription.obj.secretKey"
                                 label="Secret key"
                                 placeholder="Enter the object store secret key"
+                                labelHelp="The secret key for accessing the object store."
                             />
                             <FormWizardTextInput
                                 id="subscription.obj.region"
                                 label="Region"
                                 placeholder="Enter the AWS region of the S3 bucket"
+                                labelHelp="The AWS Region of the S3 bucket. This field is required for Amazon S3 buckets only."
                             />
                             <FormWizardTextInput
                                 id="subscription.obj.subfolder"
                                 label="Subfolder"
                                 placeholder="Enter the Amazon S3 or MinIO subfolder bucket path"
+                                labelHelp="The Amazon S3 or MinIO subfolder bucket path. This field is optional for Amazon S3 and MinIO only."
                             />
                         </FormWizardHidden>
 
                         <FormWizardHidden hidden={(data) => data.repositoryType === undefined}>
-                            <PlacementRules />
+                            <Placement />
                         </FormWizardHidden>
                     </FormWizardArrayInput>
                 </FormWizardSection>
@@ -415,26 +439,36 @@ export function AppForm() {
             </FormWizardStep>
 
             <FormWizardStep label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <PlacementRules />
+                <Placement />
             </FormWizardStep>
         </FormWizardPage>
     )
 }
 
-export function PlacementRules() {
+export function Placement() {
+    const labelOptions = useMemo(() => [{ id: 'amazon', label: 'cloud', value: 'Amazon' }], [])
     return (
         <Fragment>
             <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
-                <FormWizardCheckbox id="placement.useLabels" label="New placement">
+                <FormWizardCheckbox
+                    id="placement.useLabels"
+                    label="New placement"
+                    labelHelp="Deploy application resources only on clusters matching specified labels"
+                >
                     <FormWizardLabels
                         id="placement.labels"
                         label="Cluster labels"
                         placeholder="Enter cluster labels"
                         helperText="Placement will only select clusters matching all the specified labels"
                         required
+                        options={labelOptions}
                     />
                 </FormWizardCheckbox>
-                <FormWizardCheckbox id="placement.useExisting" label="Use an existing placement">
+                <FormWizardCheckbox
+                    id="placement.useExisting"
+                    label="Use an existing placement"
+                    labelHelp="If available in the application namespace, you can select a predefined placement configuration"
+                >
                     <FormWizardSelect
                         id="placement.select"
                         label="Placement"
@@ -443,36 +477,49 @@ export function PlacementRules() {
                         required
                     />
                 </FormWizardCheckbox>
+                <FormWizardCheckbox
+                    id="placement.allClusters"
+                    label="Deploy to all online clusters and local cluster"
+                    labelHelp="Deploy your application resources on all online clusters, including your local cluster."
+                ></FormWizardCheckbox>
+                <FormWizardCheckbox
+                    id="placement.local"
+                    label="Deploy on local cluster"
+                    labelHelp="Deploy application resources on local cluster only"
+                ></FormWizardCheckbox>
             </FormWizardSection>
-
-            <FormWizardSection label="Deployment window" description="Schedule a time window for deployments">
-                <FormWizardRadioGroup
-                    id="remediation"
-                    path="deployment.window"
-                    required
-                    // hidden={get(resources, 'DELEM') === undefined}
-                >
-                    <FormWizardRadio id="always" label="Always active" value="always" />
-                    <FormWizardRadio id="active" label="Active within specified interval" value="active">
-                        <TimeWindow />
-                    </FormWizardRadio>
-                    <FormWizardRadio id="blocked" label="Blocked within specified interval" value="blocked">
-                        <TimeWindow />
-                    </FormWizardRadio>
-                </FormWizardRadioGroup>
-            </FormWizardSection>
+            <DeploymentWindow />
         </Fragment>
     )
 }
 
+export function DeploymentWindow() {
+    return (
+        <FormWizardSection
+            id="deploymentWindow.title"
+            label="Deployment window"
+            description="Schedule a time window for deployments"
+            labelHelp="Define a time window if you want to activate or block resources deployment within a certain time interval."
+        >
+            <FormWizardRadioGroup
+                id="remediation"
+                path="deployment.window"
+                required
+                // hidden={get(resources, 'DELEM') === undefined}
+            >
+                <FormWizardRadio id="always" label="Always active" value="always" />
+                <FormWizardRadio id="active" label="Active within specified interval" value="active">
+                    <TimeWindow />
+                </FormWizardRadio>
+                <FormWizardRadio id="blocked" label="Blocked within specified interval" value="blocked">
+                    <TimeWindow />
+                </FormWizardRadio>
+            </FormWizardRadioGroup>
+        </FormWizardSection>
+    )
+}
+
 export function TimeWindow() {
-    const onChange = () => /* time: string, hour?: number, minute?: number, isValid?: boolean */ {
-        // TBD
-        // console.log('time', time)
-        // console.log('hour', hour)
-        // console.log('minute', minute)
-        // console.log('isValid', isValid)
-    }
     return (
         <Stack hasGutter style={{ paddingBottom: 16 }}>
             {/* TODO InputCheckBoxGroup */}
@@ -489,15 +536,26 @@ export function TimeWindow() {
             <FormWizardArrayInput
                 id="timeWindows"
                 placeholder="Add time range"
-                collapsedText={<FormWizardTextDetail id="timeWindowSection" placeholder="Expand to enter the time range" />}
+                collapsedText={
+                    <Fragment>
+                        <FormWizardTextDetail id="start" placeholder="Expand to enter the variable" />
+                        <FormWizardHidden hidden={(item: ITimeRangeVariableData) => item.end === undefined}>
+                            &nbsp;-&nbsp;
+                            <FormWizardTextDetail id="end" />
+                        </FormWizardHidden>
+                    </Fragment>
+                }
             >
-                <div className="config-time-container" style={{ display: 'flex', marginBottom: 20 }}>
-                    <div className="config-input-time" style={{ float: 'left', marginRight: 10 }}>
-                        <TimePicker id="startTime" onChange={onChange} width={'140px'} />
-                        <TimePicker id="endTime" onChange={onChange} width={'140px'} />
-                    </div>
-                </div>
+                <Split hasGutter>
+                    <FormWizardTimeRange id="start" label="Start Time"></FormWizardTimeRange>
+                    <FormWizardTimeRange id="end" label="End Time"></FormWizardTimeRange>
+                </Split>
             </FormWizardArrayInput>
         </Stack>
     )
+}
+
+interface ITimeRangeVariableData {
+    start: string
+    end: string
 }

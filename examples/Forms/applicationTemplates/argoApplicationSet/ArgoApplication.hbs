@@ -12,8 +12,8 @@ spec:
         configMapRef: acm-placement
         labelSelector:
           matchLabels:
-        {{#if decisionResourceName}}
-            cluster.open-cluster-management.io/placement: {{{decisionResourceName}}}  
+        {{#if placement.select}}
+            cluster.open-cluster-management.io/placement: {{{placement.select}}}  
         {{else}}  
             cluster.open-cluster-management.io/placement: {{{appSetName}}}-placement
         {{/if}}                
@@ -40,5 +40,5 @@ spec:
 {{#if_eq repositoryType 'Helm'}}
 {{>templateArgoHelm}}
 {{/if_eq}}
-
+{{>templateArgoPlacement}}
 

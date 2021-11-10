@@ -1,15 +1,13 @@
-import { Checkbox, DescriptionListDescription, Split } from '@patternfly/react-core'
+import { DescriptionListDescription, Split, TimePicker } from '@patternfly/react-core'
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import { CheckIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
-import { FormWizardIndented } from '../components/FormWizardIndented'
-import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
-export function FormWizardCheckbox(props: {
+export function FormWizardTimeRange(props: {
     id: string
     label: string
     description?: string
@@ -60,26 +58,24 @@ export function FormWizardCheckbox(props: {
             <FormGroup
                 id={`${props.id}-form-group`}
                 fieldId={id}
-                // label={props.label}
+                isInline
+                label={props.label}
+                helperText={props.helperText}
                 helperTextInvalid={error}
                 validated={validated}
-                helperText={props.helperText}
+                isRequired
             >
-                <Split>
-                    <Checkbox
-                        id={id ?? props.label}
-                        isChecked={value}
-                        onChange={(value) => {
-                            set(item, path, value)
-                            formWizardContext.updateContext()
-                        }}
-                        label={props.label}
-                        value={value}
-                    />
-                    <FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
-                </Split>
+                <TimePicker
+                    id={`${props.id}-time-picker`}
+                    key={id}
+                    onChange={(value) => {
+                        set(item, path, value)
+                        formWizardContext.updateContext()
+                    }}
+                    label={props.label}
+                    value={value}
+                />
             </FormGroup>
-            {value && <FormWizardIndented>{props.children}</FormWizardIndented>}
         </Fragment>
     )
 }
