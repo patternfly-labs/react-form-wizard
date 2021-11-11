@@ -4,19 +4,14 @@ A PatternFly React wizard framework.
 
 [Demo](https://patternfly-labs.github.io/react-form-wizard/)
 
-## Features
+## Overview
+
+### Features
 
 - Input validation
 - Conditional hiding/showing of controls and sections
 
-## Development setup
-
-```
-npm ci
-npm start
-```
-
-## Example
+### Example
 
 ```
 <FormWizardPage title="Example form">
@@ -27,4 +22,11 @@ npm start
       </FormWizardSection>
    </FormWizardStep>
 </FormWizardPage>
+```
+
+## Development
+
+```
+npm ci
+npm start
 ```
