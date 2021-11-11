@@ -19,23 +19,12 @@ npm start
 ## Example
 
 ```
-<FormWizardPage title="Create deployment">
-   <FormWizardStep label="Metadata">
+<FormWizardPage title="Example form">
+   <FormWizardStep label="Details">
       <FormWizardSection label="Details" prompt="Enter the details">
-          <FormWizardTextInput
-              id="name"
-              label="Name"
-              placeholder="Enter name"
-              required
-          />
-          <FormWizardSelect
-              id="namespace"
-              label="Namespace"
-              options={['default']}
-              placeholder="Select namespace"
-              required
-          />
+          <FormWizardTextInput id="name" label="Name" required />
+          <FormWizardSelect id="namespace" label="Namespace" options={['default']} required />
       </FormWizardSection>
-  </FormWizardStep>
+   </FormWizardStep>
 </FormWizardPage>
 ```
