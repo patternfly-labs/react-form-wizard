@@ -1,6 +1,6 @@
-# Patternfly React Form Wizard
+# PatternFly Labs React Form Wizard
 
-A Patternfly react wizard framework.
+A PatternFly react wizard framework.
 
 [Demo](https://patternfly-labs.github.io/react-form-wizard/)
 
