@@ -4,6 +4,7 @@ import {
     CardTitle,
     Gallery,
     Nav,
+    NavExpandable,
     NavItem,
     NavList,
     Page,
@@ -22,7 +23,7 @@ import { DeploymentForm } from './Forms/DeploymentForm'
 import { PolicyForm } from './Forms/PolicyForm'
 
 export enum RouteE {
-    Home = '/',
+    Home = '.',
     Ansible = '?wizard=ansible',
     Application = '?wizard=application',
     Cluster = '?wizard=cluster',
@@ -147,18 +148,25 @@ function AppSidebar() {
             nav={
                 <Nav>
                     <NavList>
-                        {Object.keys(RouteE).map((route) => (
-                            <NavItem key={route}>
-                                <Link
-                                    to={
-                                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                                        (RouteE as any)[route] // eslint-disable-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-explicit-any
-                                    }
-                                >
-                                    {route}
-                                </Link>
-                            </NavItem>
-                        ))}
+                        <NavItem>
+                            <Link to={RouteE.Home}>Home</Link>
+                        </NavItem>
+                        <NavExpandable title="Wizards" isExpanded={true}>
+                            {Object.keys(RouteE)
+                                .filter((r) => r !== 'Home')
+                                .map((route) => (
+                                    <NavItem key={route}>
+                                        <Link
+                                            to={
+                                                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                                                (RouteE as any)[route] // eslint-disable-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-explicit-any
+                                            }
+                                        >
+                                            {route}
+                                        </Link>
+                                    </NavItem>
+                                ))}
+                        </NavExpandable>
                     </NavList>
                 </Nav>
             }
