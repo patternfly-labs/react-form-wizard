@@ -7,7 +7,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ReactRefreshTypeScript from 'react-refresh-typescript'
 import webpack from 'webpack'
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server'
-// import { ConsoleRemotePlugin } from '@openshift-console/dynamic-plugin-sdk-webpack'
 
 module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | undefined }) {
     const isProduction = argv.mode === 'production' || argv.mode === undefined
@@ -44,10 +43,8 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
             ],
         },
         plugins: [
-            // new ConsoleRemotePlugin(),
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': isProduction ? JSON.stringify('production') : JSON.stringify('development'),
-                'process.env.REACT_APP_BACKEND_HOST': isProduction,
             }),
             isProduction && new CompressionPlugin({ algorithm: 'gzip' }),
             isDevelopment && new ReactRefreshWebpackPlugin(),
@@ -59,11 +56,7 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
             }),
         ].filter(Boolean) as webpack.WebpackPluginInstance[],
         output: {
-            //     assetModuleFilename: 'assets/[name].[contenthash:8][ext][query]',
-            //     filename: '[name].[contenthash:8].js',
-            //     chunkFilename: '[name].[contenthash:8].js',
             publicPath: isProduction ? '/react-form-wizard/' : '/',
-            //     clean: true,
         },
         optimization: {
             minimizer: [

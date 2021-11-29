@@ -12,8 +12,8 @@ import {
     PageSidebar,
     Title,
 } from '@patternfly/react-core'
-import { ReactNode, Suspense } from 'react'
-import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom'
+import { ReactNode } from 'react'
+import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleForm } from './Forms/AnsibleForm'
 import { AppForm } from './Forms/AppForm'
 import { ClusterForm } from './Forms/ClusterForm'
@@ -22,13 +22,13 @@ import { DeploymentForm } from './Forms/DeploymentForm'
 import { PolicyForm } from './Forms/PolicyForm'
 
 export enum RouteE {
-    Home = '/home',
-    Ansible = '/ansible',
-    Application = '/application',
-    Cluster = '/cluster',
-    Credentials = '/credentials',
-    Deployment = '/deployment',
-    Policy = '/policy',
+    Home = '?wizard=home',
+    Ansible = '?wizard=ansible',
+    Application = '?wizard=application',
+    Cluster = '?wizard=cluster',
+    Credentials = '?wizard=credentials',
+    Deployment = '?wizard=deployment',
+    Policy = '?wizard=policy',
 }
 
 export default function App() {
@@ -41,22 +41,29 @@ export default function App() {
                 defaultManagedSidebarIsOpen={false}
                 style={{ height: '100vh' }}
             >
-                <Suspense fallback={<div />}>
-                    <Routes>
-                        <Route path={'/'} element={<AppHome />} />
-                        <Route path={RouteE.Home} element={<AppHome />} />
-                        <Route path={RouteE.Ansible} element={<AnsibleForm />} />
-                        <Route path={RouteE.Application} element={<AppForm />} />
-                        <Route path={RouteE.Cluster} element={<ClusterForm />} />
-                        <Route path={RouteE.Credentials} element={<CredentialsForm />} />
-                        <Route path={RouteE.Deployment} element={<DeploymentForm />} />
-                        <Route path={RouteE.Policy} element={<PolicyForm />} />
-                        {/* <Route path="*" element={<Redirect to={RouteE.Home} />} /> */}
-                    </Routes>
-                </Suspense>
+                <AppMain />
             </Page>
         </BrowserRouter>
     )
+}
+export function AppMain() {
+    const location = useLocation()
+    switch (location.search) {
+        case RouteE.Ansible:
+            return <AnsibleForm />
+        case RouteE.Application:
+            return <AppForm />
+        case RouteE.Cluster:
+            return <ClusterForm />
+        case RouteE.Credentials:
+            return <CredentialsForm />
+        case RouteE.Deployment:
+            return <DeploymentForm />
+        case RouteE.Policy:
+            return <PolicyForm />
+        default:
+            return <AppHome />
+    }
 }
 
 function AppHome() {
@@ -93,9 +100,9 @@ function AppHome() {
 }
 
 function AppCard(props: { title?: string; children?: ReactNode; route: string }) {
-    const navigate = useNavigate()
+    const history = useHistory()
     return (
-        <Card isRounded isHoverable onClick={() => navigate(props.route)}>
+        <Card isRounded isHoverable onClick={() => history.push(props.route)}>
             {props.title && <CardTitle>{props.title}</CardTitle>}
             {props.children && <CardBody>{props.children}</CardBody>}
         </Card>
