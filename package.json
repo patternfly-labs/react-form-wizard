@@ -1,6 +1,8 @@
 {
     "name": "@patternfly-labs/react-form-wizard",
     "version": "1.0.0",
+    "description": "A Patternfly react wizard framework.",
+    "license": "Apache-2.0",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "files": [
@@ -17,6 +19,10 @@
         "reinstall": "rm -rf node_modules package-lock.json && npm install && npm audit fix && npm dedup",
         "plugin": "npm run build && npx http-server ./dist -p 3000 -c-1 --cors"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/patternfly-labs/react-form-wizard.git"
+    },
     "peerDependencies": {
         "@patternfly/react-icons": "^4.19",
         "@patternfly/react-core": "^4.162",
@@ -24,7 +30,6 @@
         "react-dom": "^17.0"
     },
     "dependencies": {
-        "@svgr/webpack": "^5.5.0",
         "get-value": "^3.0.1",
         "handlebars": "^4.7.7",
         "set-value": "^4.1.0",
@@ -35,6 +40,7 @@
         "@patternfly/react-core": "^4.168.8",
         "@patternfly/react-icons": "^4.19.8",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.1",
+        "@svgr/webpack": "^5.5.0",
         "@types/compression-webpack-plugin": "^9.0.0",
         "@types/css-minimizer-webpack-plugin": "^3.0.2",
         "@types/get-value": "^3.0.2",
@@ -48,12 +54,12 @@
         "@types/set-value": "^4.0.1",
         "@types/webpack": "^5.28.0",
         "@types/webpack-dev-server": "^4.3.1",
-        "@typescript-eslint/eslint-plugin": "^5.3.0",
-        "@typescript-eslint/parser": "^5.3.0",
+        "@typescript-eslint/eslint-plugin": "^5.3.1",
+        "@typescript-eslint/parser": "^5.3.1",
         "compression-webpack-plugin": "^9.0.0",
         "css-loader": "^6.5.1",
-        "css-minimizer-webpack-plugin": "^3.1.1",
-        "eslint": "^8.1.0",
+        "css-minimizer-webpack-plugin": "^3.1.2",
+        "eslint": "^8.2.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-i18n-json": "^3.1.0",
         "eslint-plugin-i18next": "^5.1.2",
@@ -69,14 +75,14 @@
         "react-dom": "^17.0.2",
         "react-refresh": "^0.10.0",
         "react-refresh-typescript": "^2.0.2",
-        "react-router-dom": "^6.0.0",
+        "react-router-dom": "^6.0.1",
         "style-loader": "^3.3.1",
         "ts-loader": "^9.2.6",
         "ts-node": "^10.4.0",
         "tsconfig-paths": "^3.11.0",
         "type-fest": "^2.5.2",
         "typescript": "4.4.4",
-        "webpack": "^5.61.0",
+        "webpack": "^5.62.1",
         "webpack-cli": "^4.9.1",
         "webpack-dev-server": "^4.4.0"
     }
