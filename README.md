@@ -10,6 +10,7 @@ A PatternFly React wizard framework.
 
 - Input validation
 - Conditional hiding/showing of controls and sections
+- more
 
 ### Example
 
