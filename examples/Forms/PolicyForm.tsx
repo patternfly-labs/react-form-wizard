@@ -72,7 +72,7 @@ export function PolicyForm() {
             title="Create policy"
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
             template={PolicyTemplate}
-            breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Governance' }]}
+            breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Governance' }]}
             defaultData={{ templates: [{}] }}
         >
             <FormWizardStep label="Details">

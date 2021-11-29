@@ -18,7 +18,7 @@ export function AnsibleForm() {
         <FormWizardPage
             title="Create Ansible template"
             template={AnsibleHandlebars}
-            breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Automation' }]}
+            breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
         >
             <FormWizardStep label="Details">
                 <FormWizardSection

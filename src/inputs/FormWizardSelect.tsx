@@ -289,8 +289,8 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
     return (
         <FormGroup
             className="form-multiselect"
-            id={`${id}-form-group`}
-            fieldId={id}
+            id={id}
+            fieldId={`select-${id}`}
             label={props.label}
             labelIcon={<FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
             helperText={props.helperText}
@@ -299,6 +299,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
             isRequired={props.required}
         >
             <Select
+                id={`select-${id}`}
                 variant={variant}
                 isOpen={open}
                 onToggle={setOpen}

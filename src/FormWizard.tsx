@@ -14,6 +14,7 @@ export function FormWizard(props: { children: ReactNode }) {
                         <ActionListGroup>
                             <ActionListItem>
                                 <Button
+                                    id="next"
                                     // onClick={() => {
                                     //     setShowFormErrors(true)
                                     //     if (!formHasErrors(formData)) {
@@ -45,6 +46,7 @@ export function FormWizard(props: { children: ReactNode }) {
                             </ActionListItem>
                             <ActionListItem>
                                 <Button
+                                    id="cancel"
                                     variant="secondary"
                                     // onClick={formData.cancel}
                                     // isDisabled={isSubmitting}

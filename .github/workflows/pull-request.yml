@@ -13,3 +13,7 @@ jobs:
                   cache: 'npm'
             - run: npm ci
             - run: npm test
+            - uses: cypress-io/github-action@v2
+              with:
+                  browser: chrome
+                  headless: true

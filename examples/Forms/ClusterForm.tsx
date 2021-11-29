@@ -18,7 +18,7 @@ import YamlTemplate from './Cluster.hbs'
 
 export function ClusterForm() {
     return (
-        <FormWizardPage title="Create cluster" template={YamlTemplate} breadcrumb={[{ label: 'Managed clusters', to: '..' }]}>
+        <FormWizardPage title="Create cluster" template={YamlTemplate} breadcrumb={[{ label: 'Managed clusters', to: '.' }]}>
             <FormWizardStep label="Infrastructure provider">
                 <FormWizardSection label="Infrastructure provider" prompt="Select the infrastructure for the cluster">
                     <FormWizardTiles id="provider" path="provider" label="Cloud infrastructure providers">

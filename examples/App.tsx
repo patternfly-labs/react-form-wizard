@@ -22,7 +22,7 @@ import { DeploymentForm } from './Forms/DeploymentForm'
 import { PolicyForm } from './Forms/PolicyForm'
 
 export enum RouteE {
-    Home = '?wizard=home',
+    Home = '/',
     Ansible = '?wizard=ansible',
     Application = '?wizard=application',
     Cluster = '?wizard=cluster',

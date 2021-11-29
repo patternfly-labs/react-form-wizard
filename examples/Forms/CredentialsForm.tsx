@@ -12,7 +12,7 @@ import YamlTemplate from './Credentials.hbs'
 
 export function CredentialsForm() {
     return (
-        <FormWizardPage title="Add credentials" template={YamlTemplate} breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Automation' }]}>
+        <FormWizardPage title="Add credentials" template={YamlTemplate} breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}>
             <FormWizardStep label="Credential type">
                 <FormWizardTiles id="cloudCredentials" path="credentialsType" label="Cloud provider credentials">
                     <FormWizardTile id="aws" icon={<AmazonIcon />} value="AWS" label="Amazon Web Services" />

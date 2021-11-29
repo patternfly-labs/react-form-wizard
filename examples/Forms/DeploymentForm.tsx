@@ -16,7 +16,7 @@ export function DeploymentForm() {
             title="Create deployment"
             description="A deployment provides declarative updates for pods and replica sets."
             template={DeploymentTemplate}
-            breadcrumb={[{ label: 'Home', to: '..' }, { label: 'Kubernetes' }]}
+            breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Kubernetes' }]}
         >
             <FormWizardStep label="Metadata">
                 <FormWizardSection label="Metadata" prompt="Enter the details of the deployment">
