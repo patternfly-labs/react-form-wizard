@@ -17,15 +17,13 @@
     windowtype: {{{deployment.window}}}
     location: {{{timeWindow.timezone}}}
     daysofweek: [{{{timeWindow.days}}}]
-    {{#if timeWindow.showTimeSection}}
     hours:
-      {{#each timeWindow.timeList}}
-      {{#if validTime}}
-      - start: "{{{start}}}"
-        end: "{{{end}}}"
-      {{/if}}
-      {{/each}}
-    {{/if}}
+  {{#if timeWindows}}
+  {{#each timeWindows}}
+      - start: "{{start}}"
+        end: "{{end}}"
+  {{/each}}
+  {{/if}}
 {{/if_ne}}
 {{/if}}
 
