@@ -1,12 +1,13 @@
 import { Alert, FormAlert, Split, SplitItem, Stack, Wizard, WizardStep } from '@patternfly/react-core'
 import { Children, isValidElement, ReactNode, useCallback, useContext } from 'react'
+import YAML from 'yaml'
 import { FormWizardStep } from '.'
 import { FormWizardContext } from './contexts/FormWizardContext'
 import { FormWizardItemContext } from './contexts/FormWizardItemContext'
 import { FormWizardDetailsView } from './FormWizardDetails'
 import { hasValidationErrorsProps, InputCommonProps, isFormWizardHiddenProps } from './lib/input-utils'
 
-export function FormWizardWizardView(props: { children: ReactNode }) {
+export function FormWizardWizardView(props: { data: object; children: ReactNode; template: HandlebarsTemplateDelegate }) {
     const steps: WizardStep[] = []
     const formWizardContext = useContext(FormWizardContext)
     const item = useContext(FormWizardItemContext)
@@ -69,5 +70,16 @@ export function FormWizardWizardView(props: { children: ReactNode }) {
         [formWizardContext]
     )
 
-    return <Wizard steps={steps} onNext={stepChange} onGoToStep={stepChange} onSubmit={() => formWizardContext.onSubmit?.({})} />
+    return (
+        <Wizard
+            steps={steps}
+            onNext={stepChange}
+            onGoToStep={stepChange}
+            onSave={() => {
+                const data = props.template(props.data)
+                console.log(data)
+                void formWizardContext.onSubmit?.(YAML.parse(data))
+            }}
+        />
+    )
 }

@@ -1,7 +1,9 @@
 /// <reference types="cypress" />
+import YAML from 'yaml'
+
 describe('ansible wizard', () => {
     it('displays', () => {
-        cy.visit('http://localhost:3000/?wizard=ansible')
+        cy.visit('http://localhost:3000/?route=ansible')
         cy.get('h1').contains('Create Ansible template')
     })
 
@@ -29,7 +31,38 @@ describe('ansible wizard', () => {
         cy.contains('Next').click()
     })
 
-    it('summary', async () => {
+    it('summary', () => {
         cy.contains('Submit').click()
+    })
+
+    it('results', () => {
+        const expected = {
+            apiVersion: 'app.k8s.io/v1beta1',
+            kind: 'Application',
+            metadata: {
+                name: 'test-name',
+                namespace: null,
+            },
+            spec: {
+                componentKinds: [
+                    {
+                        group: 'apps.open-cluster-management.io',
+                        kind: 'Subscription',
+                    },
+                ],
+                descriptor: {},
+                selector: {
+                    matchExpressions: [
+                        {
+                            key: 'app',
+                            operator: 'In',
+                            values: ['test-name'],
+                        },
+                    ],
+                },
+            },
+        }
+        const yaml = YAML.stringify(expected)
+        cy.get('pre').should('have.text', yaml)
     })
 })

@@ -19,7 +19,7 @@ import useResizeObserver from '@react-hook/resize-observer'
 import { Children, ReactNode, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { ResultYaml } from './components/Results'
-import { AnsibleForm } from './Forms/AnsibleForm'
+import { AnsibleExample } from './Forms/AnsibleExample'
 import { AppForm } from './Forms/AppForm'
 import { ClusterForm } from './Forms/ClusterForm'
 import { CredentialsForm } from './Forms/CredentialsForm'
@@ -79,7 +79,7 @@ export function AppMain() {
     const location = useLocation()
     switch (location.search) {
         case RouteE.Ansible:
-            return <AnsibleForm />
+            return <AnsibleExample />
         case RouteE.Application:
             return <AppForm />
         case RouteE.Cluster:

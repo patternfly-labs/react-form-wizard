@@ -46,6 +46,7 @@ export function FormWizardPage(props: {
     breadcrumb?: { label: string; to?: string }[]
     onSubmit?: FormSubmit
 }) {
+    const [template] = useState(() => Handlebars.compile(props.template))
     const [data, setData] = useState(props.defaultData ?? {})
     const [devMode, setDevMode] = useState(false)
     const [isForm, setIsForm] = useState(false)
@@ -90,7 +91,7 @@ export function FormWizardPage(props: {
         >
             {/* <Drawer isExpanded={drawerExpanded} isInline={drawerInline}> */}
             <Drawer isExpanded={drawerExpanded} isInline>
-                <DrawerContent panelContent={<FormWizardPageDrawer data={data} template={props.template} devMode={devMode} />}>
+                <DrawerContent panelContent={<FormWizardPageDrawer data={data} template={template} devMode={devMode} />}>
                     <DrawerContentBody>
                         <PageSection
                             variant="light"
@@ -110,7 +111,9 @@ export function FormWizardPage(props: {
                             >
                                 <FormWizardItemContext.Provider value={data}>
                                     {mode === InputMode.Wizard ? (
-                                        <FormWizardWizardView>{props.children}</FormWizardWizardView>
+                                        <FormWizardWizardView template={template} data={data}>
+                                            {props.children}
+                                        </FormWizardWizardView>
                                     ) : (
                                         <FormWizard>{props.children}</FormWizard>
                                     )}
@@ -124,8 +127,7 @@ export function FormWizardPage(props: {
     )
 }
 
-function FormWizardPageDrawer(props: { data: unknown; template: string; devMode: boolean }) {
-    const [template] = useState(() => Handlebars.compile(props.template))
+function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template: HandlebarsTemplateDelegate }) {
     const [activeKey, setActiveKey] = useState<number | string>(0)
 
     return (
@@ -142,7 +144,7 @@ function FormWizardPageDrawer(props: { data: unknown; template: string; devMode:
                     >
                         <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
                             <PageSection>
-                                <YamlHighlighter yaml={template(props.data)}></YamlHighlighter>
+                                <YamlHighlighter yaml={props.template(props.data)}></YamlHighlighter>
                             </PageSection>
                         </Tab>
                         <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
@@ -152,14 +154,14 @@ function FormWizardPageDrawer(props: { data: unknown; template: string; devMode:
                         </Tab>
                         <Tab eventKey={1} title={<TabTitleText>Template</TabTitleText>}>
                             <PageSection>
-                                <YamlHighlighter yaml={props.template}></YamlHighlighter>
+                                <YamlHighlighter yaml={props.template(props.data)}></YamlHighlighter>
                             </PageSection>
                         </Tab>
                     </Tabs>
                 </div>
             ) : (
                 <PageSection>
-                    <YamlHighlighter yaml={template(props.data)}></YamlHighlighter>
+                    <YamlHighlighter yaml={props.template(props.data)}></YamlHighlighter>
                 </PageSection>
             )}
         </DrawerPanelContent>

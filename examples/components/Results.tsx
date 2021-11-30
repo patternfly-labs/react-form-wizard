@@ -18,6 +18,8 @@ export function ResultYaml() {
                     <BreadcrumbItem>Results</BreadcrumbItem>
                 </Breadcrumb>
             }
+            isBreadcrumbGrouped
+            groupProps={{ sticky: 'top' }}
         >
             <PageSection variant="light">
                 <pre>{YAML.stringify(data)}</pre>
