@@ -2,6 +2,9 @@ import {
     Card,
     CardBody,
     CardTitle,
+    Grid,
+    GridItem,
+    gridSpans,
     Nav,
     NavExpandable,
     NavItem,
@@ -10,13 +13,11 @@ import {
     PageHeader,
     PageSection,
     PageSidebar,
-    Split,
-    SplitItem,
     Stack,
     Title,
 } from '@patternfly/react-core'
 import useResizeObserver from '@react-hook/resize-observer'
-import { Children, ReactNode, useRef, useState } from 'react'
+import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { ResultYaml } from './components/Results'
 import { AnsibleExample } from './Forms/AnsibleExample'
@@ -35,8 +36,9 @@ interface IWizard {
 
 const wizards: IWizard[] = [
     {
-        name: 'Create Ansible',
+        name: 'Create Ansible automation template',
         route: RouteE.Ansible,
+        description: 'Cluster management uses Ansible automation templates to run ansible jobs as during cluster creating and upgrade.',
     },
     {
         name: 'Create application',
@@ -108,7 +110,7 @@ function AppHome() {
             groupProps={{ sticky: 'top' }}
         >
             <PageSection>
-                <Masonry size={300}>
+                <Masonry size={350}>
                     {wizards.map((wizard, index) => (
                         <AppCard key={index} title={wizard.name} route={wizard.route}>
                             {wizard.description}
@@ -190,20 +192,51 @@ function AppCard(props: { title?: string; children?: ReactNode; route: string })
 function Masonry(props: { size: number; children?: ReactNode }) {
     const target = useRef(null)
     const [columns, setColumns] = useState(2)
-    useResizeObserver(target, (entry) => setColumns(Math.max(Math.floor(entry.contentRect.width / props.size), 1)))
+    useResizeObserver(target, (entry) => {
+        setColumns(Math.max(Math.floor(entry.contentRect.width / props.size), 1))
+    })
+    const [span, setSpan] = useState<gridSpans>(2)
+    useLayoutEffect(() => {
+        switch (columns) {
+            case 1:
+                setSpan(12)
+                break
+            case 2:
+                setSpan(6)
+                break
+            case 3:
+                setSpan(4)
+                break
+            case 4:
+                setSpan(3)
+                break
+            case 5:
+                setSpan(2)
+                break
+            case 6:
+                setSpan(2)
+                break
+            default:
+                setSpan(1)
+                break
+        }
+    }, [columns])
+
+    const realColumns = 12 / span
+
     return (
         <div ref={target}>
-            <Split hasGutter>
-                {new Array(columns).fill(0).map((_, index) => (
-                    <SplitItem isFilled key={index}>
+            <Grid hasGutter>
+                {new Array(realColumns).fill(0).map((_, index) => (
+                    <GridItem span={span} key={index}>
                         <Stack hasGutter>
                             {Children.toArray(props.children)
-                                .filter((_, i) => (i - index) % columns === 0)
+                                .filter((_, i) => (i - index) % realColumns === 0)
                                 .map((child) => child)}
                         </Stack>
-                    </SplitItem>
+                    </GridItem>
                 ))}
-            </Split>
+            </Grid>
         </div>
     )
 }

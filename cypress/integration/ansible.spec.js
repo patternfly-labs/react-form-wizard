@@ -4,12 +4,12 @@ import YAML from 'yaml'
 describe('ansible wizard', () => {
     it('displays', () => {
         cy.visit('http://localhost:3000/?route=ansible')
-        cy.get('h1').contains('Create Ansible template')
+        cy.get('h1').contains('Create Ansible automation template')
     })
 
     it('details', () => {
-        cy.get('#name').type('test-name')
-        cy.get('#credential').click().get('#default').click()
+        cy.get('#name').type('my-ansible-autmation-template')
+        cy.get('#credential').click().get('#my-ansible-creds').click()
         cy.contains('Next').click()
     })
 
@@ -39,10 +39,7 @@ describe('ansible wizard', () => {
         const expected = {
             apiVersion: 'app.k8s.io/v1beta1',
             kind: 'Application',
-            metadata: {
-                name: 'test-name',
-                namespace: null,
-            },
+            metadata: { name: 'my-ansible-autmation-template', namespace: null },
             spec: {
                 componentKinds: [
                     {
@@ -56,7 +53,7 @@ describe('ansible wizard', () => {
                         {
                             key: 'app',
                             operator: 'In',
-                            values: ['test-name'],
+                            values: ['my-ansible-autmation-template'],
                         },
                     ],
                 },
