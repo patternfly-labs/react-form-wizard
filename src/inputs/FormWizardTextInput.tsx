@@ -11,7 +11,7 @@ import { ShowSecretsButton } from '../buttons/ShowSecretsButton'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
-import { lowercaseFirst } from '../lib/input-utils'
+import { lowercaseFirst } from '../utils/input-utils'
 
 export function FormWizardTextInput(props: {
     id: string
