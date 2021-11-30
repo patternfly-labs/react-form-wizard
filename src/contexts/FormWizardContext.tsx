@@ -27,6 +27,8 @@ export interface IFormWizardContext {
 
     showValidation: boolean
     setShowValidation: (show: boolean) => void
+
+    onSubmit?: (data: object) => Promise<void>
 }
 
 /**

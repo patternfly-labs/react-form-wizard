@@ -1,6 +1,7 @@
 import { Split } from '@patternfly/react-core'
 import { Fragment, useMemo } from 'react'
 import {
+    FormSubmit,
     FormWizardArrayInput,
     FormWizardHidden,
     FormWizardPage,
@@ -12,13 +13,14 @@ import {
 } from '../../src'
 import AnsibleHandlebars from './Ansible.hbs'
 
-export function AnsibleForm() {
+export function AnsibleForm(props: { onSubmit?: FormSubmit }) {
     const credentials = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
     return (
         <FormWizardPage
             title="Create Ansible template"
             template={AnsibleHandlebars}
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
+            onSubmit={props.onSubmit}
         >
             <FormWizardStep label="Details">
                 <FormWizardSection

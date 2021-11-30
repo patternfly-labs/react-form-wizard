@@ -69,5 +69,5 @@ export function FormWizardWizardView(props: { children: ReactNode }) {
         [formWizardContext]
     )
 
-    return <Wizard steps={steps} onNext={stepChange} onGoToStep={stepChange} />
+    return <Wizard steps={steps} onNext={stepChange} onGoToStep={stepChange} onSubmit={() => formWizardContext.onSubmit?.({})} />
 }

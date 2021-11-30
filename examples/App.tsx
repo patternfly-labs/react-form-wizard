@@ -2,7 +2,6 @@ import {
     Card,
     CardBody,
     CardTitle,
-    Gallery,
     Nav,
     NavExpandable,
     NavItem,
@@ -11,26 +10,55 @@ import {
     PageHeader,
     PageSection,
     PageSidebar,
+    Split,
+    SplitItem,
+    Stack,
     Title,
 } from '@patternfly/react-core'
-import { ReactNode } from 'react'
+import useResizeObserver from '@react-hook/resize-observer'
+import { Children, ReactNode, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
+import { ResultYaml } from './components/Results'
 import { AnsibleForm } from './Forms/AnsibleForm'
 import { AppForm } from './Forms/AppForm'
 import { ClusterForm } from './Forms/ClusterForm'
 import { CredentialsForm } from './Forms/CredentialsForm'
 import { DeploymentForm } from './Forms/DeploymentForm'
 import { PolicyForm } from './Forms/PolicyForm'
+import { RouteE } from './Routes'
 
-export enum RouteE {
-    Home = '.',
-    Ansible = '?wizard=ansible',
-    Application = '?wizard=application',
-    Cluster = '?wizard=cluster',
-    Credentials = '?wizard=credentials',
-    Deployment = '?wizard=deployment',
-    Policy = '?wizard=policy',
+interface IWizard {
+    name: string
+    description?: string
+    route: RouteE
 }
+
+const wizards: IWizard[] = [
+    {
+        name: 'Create Ansible',
+        route: RouteE.Ansible,
+    },
+    {
+        name: 'Create application',
+        route: RouteE.Application,
+    },
+    {
+        name: 'Create cluster',
+        route: RouteE.Cluster,
+    },
+    {
+        name: 'Add credentials',
+        route: RouteE.Credentials,
+    },
+    {
+        name: 'Create deployment',
+        route: RouteE.Deployment,
+    },
+    {
+        name: 'Create policy',
+        route: RouteE.Policy,
+    },
+]
 
 export default function App() {
     return (
@@ -62,6 +90,8 @@ export function AppMain() {
             return <DeploymentForm />
         case RouteE.Policy:
             return <PolicyForm />
+        case RouteE.Results:
+            return <ResultYaml />
         default:
             return <AppHome />
     }
@@ -72,41 +102,21 @@ function AppHome() {
         <Page
             additionalGroupedContent={
                 <PageSection variant="light">
-                    <Title headingLevel="h2">PatternFly React Form Wizard Examples</Title>
-                    {/* <Text component="p">The InputForm is used to create forms for editing data.</Text> */}
+                    <Title headingLevel="h2">Wizards</Title>
                 </PageSection>
             }
             groupProps={{ sticky: 'top' }}
         >
             <PageSection>
-                <Gallery hasGutter>
-                    {Object.keys(RouteE)
-                        .filter((route) => !['Home'].includes(route))
-                        .map((route) => (
-                            <AppCard
-                                key={route}
-                                // title={route}
-                                route={
-                                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                                    (RouteE as any)[route] // eslint-disable-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-explicit-any
-                                }
-                            >
-                                {`Create ${route} Wizard`}
-                            </AppCard>
-                        ))}
-                </Gallery>
+                <Masonry size={300}>
+                    {wizards.map((wizard, index) => (
+                        <AppCard key={index} title={wizard.name} route={wizard.route}>
+                            {wizard.description}
+                        </AppCard>
+                    ))}
+                </Masonry>
             </PageSection>
         </Page>
-    )
-}
-
-function AppCard(props: { title?: string; children?: ReactNode; route: string }) {
-    const history = useHistory()
-    return (
-        <Card isRounded isHoverable onClick={() => history.push(props.route)}>
-            {props.title && <CardTitle>{props.title}</CardTitle>}
-            {props.children && <CardBody>{props.children}</CardBody>}
-        </Card>
     )
 }
 
@@ -129,7 +139,7 @@ function AppHeader() {
                     </svg>
                     <div style={{ color: 'white' }}>
                         <Title headingLevel="h4" style={{ fontWeight: 'bold', lineHeight: 1.3 }}>
-                            PatternFly
+                            PatternFly Labs
                         </Title>
                         <Title headingLevel="h3" style={{ fontWeight: 'lighter', lineHeight: 1.3 }}>
                             React Form Wizard
@@ -143,33 +153,57 @@ function AppHeader() {
 }
 
 function AppSidebar() {
+    const location = useLocation()
+
     return (
         <PageSidebar
             nav={
                 <Nav>
                     <NavList>
-                        <NavItem>
+                        <NavItem isActive={location.search === ''}>
                             <Link to={RouteE.Home}>Home</Link>
                         </NavItem>
                         <NavExpandable title="Wizards" isExpanded={true}>
-                            {Object.keys(RouteE)
-                                .filter((r) => r !== 'Home')
-                                .map((route) => (
-                                    <NavItem key={route}>
-                                        <Link
-                                            to={
-                                                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                                                (RouteE as any)[route] // eslint-disable-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-explicit-any
-                                            }
-                                        >
-                                            {route}
-                                        </Link>
-                                    </NavItem>
-                                ))}
+                            {wizards.map((wizard, index) => (
+                                <NavItem key={index} isActive={location.search === (RouteE as any)[wizard]}>
+                                    <Link to={wizard.route}>{wizard.name}</Link>
+                                </NavItem>
+                            ))}
                         </NavExpandable>
                     </NavList>
                 </Nav>
             }
         />
+    )
+}
+
+function AppCard(props: { title?: string; children?: ReactNode; route: string }) {
+    const history = useHistory()
+    return (
+        <Card isRounded isHoverable onClick={() => history.push(props.route)}>
+            {props.title && <CardTitle>{props.title}</CardTitle>}
+            {props.children && <CardBody>{props.children}</CardBody>}
+        </Card>
+    )
+}
+
+function Masonry(props: { size: number; children?: ReactNode }) {
+    const target = useRef(null)
+    const [columns, setColumns] = useState(2)
+    useResizeObserver(target, (entry) => setColumns(Math.max(Math.floor(entry.contentRect.width / props.size), 1)))
+    return (
+        <div ref={target}>
+            <Split hasGutter>
+                {new Array(columns).fill(0).map((_, index) => (
+                    <SplitItem isFilled key={index}>
+                        <Stack hasGutter>
+                            {Children.toArray(props.children)
+                                .filter((_, i) => (i - index) % columns === 0)
+                                .map((child) => child)}
+                        </Stack>
+                    </SplitItem>
+                ))}
+            </Split>
+        </div>
     )
 }

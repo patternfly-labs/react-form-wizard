@@ -35,6 +35,8 @@ Handlebars.registerHelper('if_ne', function (this: unknown, arg1: string, arg2: 
     return arg1 !== arg2 ? options.fn(this) : options.inverse(this)
 })
 
+export type FormSubmit = (data: object) => Promise<void>
+
 export function FormWizardPage(props: {
     title: string
     description?: string
@@ -42,6 +44,7 @@ export function FormWizardPage(props: {
     defaultData?: object
     template: string
     breadcrumb?: { label: string; to?: string }[]
+    onSubmit?: FormSubmit
 }) {
     const [data, setData] = useState(props.defaultData ?? {})
     const [devMode, setDevMode] = useState(false)
@@ -102,6 +105,7 @@ export function FormWizardPage(props: {
                                     editMode: InputEditMode.Create,
                                     showValidation,
                                     setShowValidation,
+                                    onSubmit: props.onSubmit,
                                 }}
                             >
                                 <FormWizardItemContext.Provider value={data}>
