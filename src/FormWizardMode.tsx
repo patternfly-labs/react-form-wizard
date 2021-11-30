@@ -77,7 +77,6 @@ export function FormWizardWizardView(props: { data: object; children: ReactNode;
             onGoToStep={stepChange}
             onSave={() => {
                 const data = props.template(props.data)
-                console.log(data)
                 void formWizardContext.onSubmit?.(YAML.parse(data))
             }}
         />

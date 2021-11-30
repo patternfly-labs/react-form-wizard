@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router'
 import { RouteE } from '../Routes'
 import { AnsibleForm } from './AnsibleForm'
@@ -13,5 +13,6 @@ export function AnsibleExample() {
         },
         [history]
     )
-    return <AnsibleForm onSubmit={onSubmit} />
+    const credentials = useMemo(() => ['my-ansible-creds'], [])
+    return <AnsibleForm onSubmit={onSubmit} credentials={credentials} />
 }

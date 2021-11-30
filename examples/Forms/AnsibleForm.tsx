@@ -1,5 +1,5 @@
 import { Split } from '@patternfly/react-core'
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 import {
     FormSubmit,
     FormWizardArrayInput,
@@ -13,29 +13,18 @@ import {
 } from '../../src'
 import AnsibleHandlebars from './Ansible.hbs'
 
-export function AnsibleForm(props: { onSubmit?: FormSubmit }) {
-    const credentials = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
+export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[] }) {
     return (
         <FormWizardPage
-            title="Create Ansible template"
+            title="Create Ansible automation template"
             template={AnsibleHandlebars}
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
             onSubmit={props.onSubmit}
         >
             <FormWizardStep label="Details">
-                <FormWizardSection
-                    label="Details"
-                    prompt="Configure the Ansible job template"
-                    description="The Ansible job templates that you select appear automatically during cluster creation. To create a sequence of events, select multiple jobs."
-                >
-                    <FormWizardTextInput id="name" label="Template name" placeholder="Enter the template name" required />
-                    <FormWizardSelect
-                        id="credential"
-                        label="Ansible Automation Platform credential"
-                        placeholder="Select the credential"
-                        options={credentials}
-                        required
-                    />
+                <FormWizardSection label="Details" prompt="Configure the automation template">
+                    <FormWizardTextInput id="name" label="Name" required />
+                    <FormWizardSelect id="credential" label="Ansible credential" options={props.credentials} required />
                 </FormWizardSection>
             </FormWizardStep>
 
