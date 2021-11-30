@@ -165,7 +165,7 @@ function AppSidebar() {
                         </NavItem>
                         <NavExpandable title="Wizards" isExpanded={true}>
                             {wizards.map((wizard, index) => (
-                                <NavItem key={index} isActive={location.search === (RouteE as any)[wizard]}>
+                                <NavItem key={index} isActive={location.search === wizard.route}>
                                     <Link to={wizard.route}>{wizard.name}</Link>
                                 </NavItem>
                             ))}
