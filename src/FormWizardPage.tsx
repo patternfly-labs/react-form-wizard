@@ -91,7 +91,11 @@ export function FormWizardPage(props: {
         >
             {/* <Drawer isExpanded={drawerExpanded} isInline={drawerInline}> */}
             <Drawer isExpanded={drawerExpanded} isInline>
-                <DrawerContent panelContent={<FormWizardPageDrawer data={data} template={template} devMode={devMode} />}>
+                <DrawerContent
+                    panelContent={
+                        <FormWizardPageDrawer data={data} template={template} templateString={props.template} devMode={devMode} />
+                    }
+                >
                     <DrawerContentBody>
                         <PageSection
                             variant="light"
@@ -127,7 +131,7 @@ export function FormWizardPage(props: {
     )
 }
 
-function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template: HandlebarsTemplateDelegate }) {
+function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template: HandlebarsTemplateDelegate; templateString: string }) {
     const [activeKey, setActiveKey] = useState<number | string>(0)
 
     return (
@@ -154,7 +158,7 @@ function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template
                         </Tab>
                         <Tab eventKey={1} title={<TabTitleText>Template</TabTitleText>}>
                             <PageSection>
-                                <YamlHighlighter yaml={props.template(props.data)}></YamlHighlighter>
+                                <YamlHighlighter yaml={props.templateString}></YamlHighlighter>
                             </PageSection>
                         </Tab>
                     </Tabs>

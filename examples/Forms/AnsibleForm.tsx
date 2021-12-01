@@ -20,22 +20,42 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
             template={AnsibleHandlebars}
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
             onSubmit={props.onSubmit}
+            defaultData={{
+                apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+                kind: 'ClusterCurator',
+            }}
         >
             <FormWizardStep label="Details">
                 <FormWizardSection label="Details" prompt="Configure the automation template">
-                    <FormWizardTextInput id="name" label="Name" required />
-                    <FormWizardSelect id="credential" label="Ansible credential" options={props.credentials} required />
+                    <FormWizardTextInput id="metadata.name" label="Name" required />
+                    <FormWizardSelect
+                        id="metadata.namespace"
+                        label="Namespace"
+                        placeholder="Select the namespace"
+                        helperText="The namespace on the hub cluster where the resources will be created."
+                        options={['default']}
+                        required
+                    />
                 </FormWizardSection>
             </FormWizardStep>
 
             <FormWizardStep label="Install">
+                <FormWizardSelect
+                    id="spec.install.towerAuthSecret"
+                    label="Ansible credentials for install"
+                    helperText="Ansible credentials for the running Ansible jobs during cluster install."
+                    options={props.credentials}
+                    required
+                />
+
                 <FormWizardSection
+                    id="pre-install"
                     label="Pre-install jobs"
                     prompt="Pre-install Ansible job templates"
                     description="Ansible job templates run before cluster installation."
                 >
                     <FormWizardArrayInput
-                        id={`install.preJobs`}
+                        id="spec.install.prehook"
                         placeholder="Add job template"
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
@@ -44,12 +64,13 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
                     </FormWizardArrayInput>
                 </FormWizardSection>
                 <FormWizardSection
-                    label="Pre-install jobs"
+                    id="post-install"
+                    label="Post-install jobs"
                     prompt="Post-install Ansible job templates"
                     description="Ansible job templates run after cluster installation."
                 >
                     <FormWizardArrayInput
-                        id={`install.postJobs`}
+                        id="spec.install.posthook"
                         placeholder="Add job template"
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
@@ -60,13 +81,21 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
             </FormWizardStep>
 
             <FormWizardStep label="Upgrade">
+                <FormWizardSelect
+                    id="spec.upgrade.towerAuthSecret"
+                    label="Ansible credentials for upgrade"
+                    helperText="Ansible credentials for the running Ansible jobs during cluster upgrade."
+                    options={props.credentials}
+                    required
+                />
                 <FormWizardSection
+                    id="pre-upgrade"
                     label="Pre-upgrade jobs"
                     prompt="Pre-upgrade Ansible job templates"
                     description="Ansible job templates run before cluster upgrade."
                 >
                     <FormWizardArrayInput
-                        id={`upgrade.preJobs`}
+                        id="spec.upgrade.prehook"
                         placeholder="Add job template"
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
@@ -75,12 +104,13 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
                     </FormWizardArrayInput>
                 </FormWizardSection>
                 <FormWizardSection
+                    id="post-upgrade"
                     label="Post-upgrade jobs"
                     prompt="Post-upgrade Ansible job templates"
                     description="Ansible job templates run after cluster upgrade."
                 >
                     <FormWizardArrayInput
-                        id={`upgrade.postJobs`}
+                        id="spec.upgrade.posthook"
                         placeholder="Add job template"
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
@@ -91,11 +121,6 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
             </FormWizardStep>
         </FormWizardPage>
     )
-}
-
-interface IAnsibleVariableData {
-    variable: string
-    value: string
 }
 
 function AnsibleJobTemplates() {
@@ -114,7 +139,7 @@ function AnsibleJobTemplates() {
                 collapsedText={
                     <Fragment>
                         <FormWizardTextDetail id="variable" placeholder="Expand to enter the variable" />
-                        <FormWizardHidden hidden={(item: IAnsibleVariableData) => item.variable === undefined}>
+                        <FormWizardHidden hidden={(item: { variable: string }) => item.variable === undefined}>
                             &nbsp;=&nbsp;
                             <FormWizardTextDetail id="value" />
                         </FormWizardHidden>
