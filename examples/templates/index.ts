@@ -13,7 +13,7 @@ import specRoles from './spec-roles.yaml'
 import specScc from './spec-scc.yaml'
 import YAML from 'yaml'
 
-export const Specifications = [
+export const Specifications: { name: string; description: string; replacements: { policyTemplates: object[] } }[] = [
     specCertmgmtexp,
     specClusteradminrole,
     specCompOperator,
@@ -28,3 +28,6 @@ export const Specifications = [
     specRoles,
     specScc,
 ].map((specification) => YAML.parse(specification))
+
+// TODO: strongly type the template values in a generic template type
+// TODO: convert the template values in each template to arrays (from strings)

@@ -8,13 +8,16 @@ import {
     DataListItemRow,
     DescriptionListDescription,
     Divider,
+    Dropdown,
+    DropdownItem,
+    DropdownToggle,
     FormAlert,
     FormFieldGroupHeader,
     Stack,
 } from '@patternfly/react-core'
-import { ArrowDownIcon, ArrowUpIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
+import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
-import { Fragment, ReactNode, useContext, useState } from 'react'
+import { Children, Fragment, ReactNode, useCallback, useContext, useState } from 'react'
 import set from 'set-value'
 import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
@@ -25,7 +28,7 @@ export function FormWizardArrayInput(props: {
     label?: string
     path?: string
     children: ReactNode
-    placeholder: string
+    placeholder: string | { label: string; action: () => object }[]
     collapsedText: ReactNode
     collapsedDescription?: ReactNode
     sortable?: boolean
@@ -37,8 +40,23 @@ export function FormWizardArrayInput(props: {
 
     const formWizardContext = useContext(FormWizardContext)
     const item = useContext(FormWizardItemContext)
-    let values = get(item, path) as []
+    let values = get(item, path) as object[]
     if (!Array.isArray(values)) values = []
+
+    const addItem = useCallback(
+        (newItem: object | object[]) => {
+            let newArray = values
+            if (Array.isArray(newItem)) {
+                newArray = [...newArray, ...newItem]
+            } else {
+                newArray.push(newItem as never)
+            }
+
+            set(item, path, newArray)
+            formWizardContext.updateContext()
+        },
+        [values, item, path, formWizardContext]
+    )
 
     if (formWizardContext.mode === InputMode.Details) {
         return (
@@ -66,7 +84,6 @@ export function FormWizardArrayInput(props: {
             </DataList>
         )
     }
-
     return (
         <Fragment>
             {props.label && (
@@ -163,23 +180,45 @@ export function FormWizardArrayInput(props: {
             )}
             <div style={{ display: 'flex', alignItems: 'baseline', marginTop: -20, marginBottom: -8, gap: 8 }}>
                 {/* <div style={{ flexGrow: 1 }} /> */}
-                <Button
-                    variant="link"
-                    isSmall
-                    aria-label="Action"
-                    onClick={() => {
-                        if (values) {
-                            values.push({} as never)
-                        } else {
-                            values = []
-                        }
-                        set(item, path, values)
-                        formWizardContext.updateContext()
-                    }}
-                >
-                    <PlusIcon /> &nbsp; {props.placeholder}
-                </Button>
+                {typeof props.placeholder === 'string' ? (
+                    <Button
+                        variant="link"
+                        isSmall
+                        aria-label="Action"
+                        onClick={() => {
+                            addItem({})
+                        }}
+                    >
+                        <PlusIcon /> &nbsp; {props.placeholder}
+                    </Button>
+                ) : (
+                    <Dropdown2>
+                        {props.placeholder.map((item, index) => {
+                            return (
+                                <DropdownItem key={index} onClick={() => addItem(item.action())}>
+                                    {item.label}
+                                </DropdownItem>
+                            )
+                        })}
+                    </Dropdown2>
+                )}
             </div>
         </Fragment>
+    )
+}
+
+function Dropdown2(props: { children?: ReactNode }) {
+    const [open, setOpen] = useState(false)
+    const onToggle = useCallback(() => setOpen((open: boolean) => !open), [])
+    return (
+        <Dropdown
+            dropdownItems={Children.toArray(props.children)}
+            toggle={
+                <DropdownToggle id="toggle-id" onToggle={onToggle} toggleIndicator={CaretDownIcon}>
+                    Dropdown
+                </DropdownToggle>
+            }
+            isOpen={open}
+        />
     )
 }

@@ -1,4 +1,5 @@
 import { Button } from '@patternfly/react-core'
+import { templates } from 'handlebars'
 import { useMemo } from 'react'
 import {
     FormWizardArrayInput,
@@ -73,7 +74,7 @@ export function PolicyForm() {
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
             template={PolicyTemplate}
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Governance' }]}
-            defaultData={{ templates: [{}] }}
+            defaultData={{ templates: [] }}
         >
             <FormWizardStep label="Details">
                 <FormWizardSection label="Details">
@@ -125,27 +126,32 @@ export function PolicyForm() {
                 <FormWizardSection label="Specification">
                     <FormWizardArrayInput
                         id="templates"
-                        placeholder="Add policy template"
+                        placeholder={Specifications.map((specification) => {
+                            return {
+                                label: specification.description,
+                                action: () => specification.replacements.policyTemplates,
+                            }
+                        })}
                         collapsedText={<FormWizardTextDetail id="template.description" placeholder="Expand to select the template" />}
                         collapsedDescription={
                             <FormWizardTextDetail id="template.replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory" />
                         }
                     >
-                        <FormWizardSelect
+                        {/* <FormWizardSelect
                             id="template"
                             label="Template"
                             keyPath="name"
                             placeholder="Select template"
                             options={specifications}
                             required
-                        />
-                        {/* <FormWizardTextDetail id="replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory" /> */}
+                        /> */}
+                        <FormWizardTextDetail id="objectDefinition.kind" />
                         <FormWizardTextInput
                             id="template.replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory"
                             label="Memory limit"
                             placeholder="Enter memory limit"
                             required
-                            hidden={(template) => template.template?.name !== 'LimitRange'}
+                            // hidden={(template: any) => template.objectDefinition?.spec?["object-templates"]?.[0]?.kind === 'LimitRange'}
                             helperText="Examples: 512Mi, 2Gi"
                         />
                     </FormWizardArrayInput>
