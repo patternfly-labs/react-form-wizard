@@ -139,7 +139,7 @@ function AnsibleJobTemplates() {
                 collapsedText={
                     <Fragment>
                         <FormWizardTextDetail id="variable" placeholder="Expand to enter the variable" />
-                        <FormWizardHidden hidden={(item: IAnsibleVariableData) => item.variable === undefined}>
+                        <FormWizardHidden hidden={(item: { variable: string }) => item.variable === undefined}>
                             &nbsp;=&nbsp;
                             <FormWizardTextDetail id="value" />
                         </FormWizardHidden>
