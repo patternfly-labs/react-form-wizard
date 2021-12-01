@@ -126,7 +126,8 @@ export function PolicyForm() {
                 <FormWizardSection label="Specification">
                     <FormWizardArrayInput
                         id="templates"
-                        placeholder={Specifications.map((specification) => {
+                        placeholder="Add policy template"
+                        dropdownItems={Specifications.map((specification) => {
                             return {
                                 label: specification.description,
                                 action: () => specification.replacements.policyTemplates,

@@ -28,7 +28,8 @@ export function FormWizardArrayInput(props: {
     label?: string
     path?: string
     children: ReactNode
-    placeholder: string | { label: string; action: () => object }[]
+    dropdownItems?: { label: string; action: () => object }[]
+    placeholder: string
     collapsedText: ReactNode
     collapsedDescription?: ReactNode
     sortable?: boolean
@@ -180,7 +181,7 @@ export function FormWizardArrayInput(props: {
             )}
             <div style={{ display: 'flex', alignItems: 'baseline', marginTop: -20, marginBottom: -8, gap: 8 }}>
                 {/* <div style={{ flexGrow: 1 }} /> */}
-                {typeof props.placeholder === 'string' ? (
+                {!props.dropdownItems ? (
                     <Button
                         variant="link"
                         isSmall
@@ -192,8 +193,8 @@ export function FormWizardArrayInput(props: {
                         <PlusIcon /> &nbsp; {props.placeholder}
                     </Button>
                 ) : (
-                    <Dropdown2>
-                        {props.placeholder.map((item, index) => {
+                    <Dropdown2 placeholder={props.placeholder}>
+                        {props.dropdownItems.map((item, index) => {
                             return (
                                 <DropdownItem key={index} onClick={() => addItem(item.action())}>
                                     {item.label}
@@ -207,11 +208,12 @@ export function FormWizardArrayInput(props: {
     )
 }
 
-function Dropdown2(props: { children?: ReactNode }) {
+function Dropdown2(props: { children?: ReactNode; placeholder: string }) {
     const [open, setOpen] = useState(false)
     const onToggle = useCallback(() => setOpen((open: boolean) => !open), [])
     return (
         <Dropdown
+            placeholder={props.placeholder}
             dropdownItems={Children.toArray(props.children)}
             toggle={
                 <DropdownToggle id="toggle-id" onToggle={onToggle} toggleIndicator={CaretDownIcon}>
