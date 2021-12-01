@@ -1,26 +1,42 @@
-apiVersion: app.k8s.io/v1beta1
-kind: Application
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: ClusterCurator
 metadata:
-  name: {{name}}
-  namespace: {{namespace}}
+  name: {{metadata.name}}
+  namespace: {{metadata.namespace}}
 spec:
-  componentKinds:
-  - group: apps.open-cluster-management.io
-    kind: Subscription
-  descriptor: {}
-{{#if name}}
-  selector:
-    matchExpressions:
-      - key: app
-        operator: In
-        values: 
-          - {{name}}
-{{/if}}
-{{#each repositories}}
----
-kind: Application
-spec:
-  - type: {{type}}
----
-kind: Application
-{{/each}}
+  install:
+    towerAuthSecret: {{spec.install.towerAuthSecret}}
+    prehook:
+    {{#each spec.install.prehook}}
+      - name: {{name}}
+        extra_vars:
+        {{#each variables}}
+          {{variable}}: "{{value}}"
+        {{/each}}
+    {{/each}}
+    posthook:
+    {{#each spec.install.posthook}}
+      - name: {{name}}
+        extra_vars:
+        {{#each variables}}
+          {{variable}}: "{{value}}"
+        {{/each}}
+    {{/each}}
+  upgrade:
+    towerAuthSecret: {{spec.upgrade.towerAuthSecret}}
+    prehook:
+    {{#each spec.upgrade.prehook}}
+      - name: {{name}}
+        extra_vars:
+        {{#each variables}}
+          {{variable}}: "{{value}}"
+        {{/each}}
+    {{/each}}
+    posthook:
+    {{#each spec.upgrade.posthook}}
+      - name: {{name}}
+        extra_vars:
+        {{#each variables}}
+          {{variable}}: "{{value}}"
+        {{/each}}
+    {{/each}}

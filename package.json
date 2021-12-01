@@ -18,8 +18,7 @@
         "eslint": "eslint src examples",
         "reinstall": "rm -rf node_modules package-lock.json && npm install && npm audit fix && npm dedup",
         "cypress:open": "cypress open",
-        "cypress:run": "cypress run --config video=false",
-        "cypress:test": "concurrently npm:start npm:cypress:run -k --success first"
+        "update": "ncu -x react-router-dom -u --doctor"
     },
     "repository": {
         "type": "git",
