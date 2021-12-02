@@ -1,0 +1,53 @@
+# an available choice for the specs control
+name: ImageManifestVulnPolicy
+description: Detect image vulnerabilities
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        DE.CM Security Continuous Monitoring
+    controls: |
+        DE.CM-8 Vulnerability Scans
+    namespaceSelector: |
+        namespaces:
+          exclude: ["kube-*"]
+          include: ["*"]
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: '{{name}}-subscription'
+              spec:
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  severity: high
+                  object-templates:
+                      - complianceType: musthave
+                        objectDefinition:
+                            apiVersion: operators.coreos.com/v1alpha1
+                            kind: Subscription
+                            metadata:
+                                name: container-security-operator
+                                namespace: openshift-operators
+                            spec:
+                                installPlanApproval: Automatic
+                                name: container-security-operator
+                                source: redhat-operators
+                                sourceNamespace: openshift-marketplace
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: '{{name}}-image-vulnerability'
+              spec:
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  severity: high
+                  namespaceSelector:
+                      exclude: ['kube-*']
+                      include: ['*']
+                  object-templates:
+                      - complianceType: mustnothave # mustnothave any ImageManifestVuln object
+                        objectDefinition:
+                            apiVersion: secscan.quay.redhat.com/v1alpha1
+                            kind: ImageManifestVuln # checking for a kind

@@ -1,0 +1,24 @@
+# an available choice for the specs control
+name: CertificatePolicy
+description: Certificate management expiration
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        PR.DS Data Security
+    controls: |
+        PR.DS-2 Data-in-transit
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: CertificatePolicy # cert management expiration
+              metadata:
+                  name: '{{name}}-cert-expiration'
+              spec:
+                  namespaceSelector:
+                      include: ['default']
+                      exclude: ['kube-*']
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  severity: low
+                  minimumDuration: 300h

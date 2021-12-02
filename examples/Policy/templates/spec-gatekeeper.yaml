@@ -1,0 +1,61 @@
+# an available choice for the specs control
+name: GatekeeperOperator
+description: Install the Gatekeeper operator
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        PR.IP Information Protection Processes and Procedures
+    controls: |
+        PR.IP-1 Baseline Configuration
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: gatekeeper-operator-product-sub
+              spec:
+                  remediationAction: inform
+                  severity: high
+                  object-templates:
+                      - complianceType: musthave
+                        objectDefinition:
+                            apiVersion: operators.coreos.com/v1alpha1
+                            kind: Subscription
+                            metadata:
+                                name: gatekeeper-operator-product
+                                namespace: openshift-operators
+                            spec:
+                                channel: stable
+                                installPlanApproval: Automatic
+                                name: gatekeeper-operator-product
+                                source: redhat-operators
+                                sourceNamespace: openshift-marketplace
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: gatekeeper
+              spec:
+                  remediationAction: inform
+                  severity: high
+                  object-templates:
+                      - complianceType: musthave
+                        objectDefinition:
+                            apiVersion: operator.gatekeeper.sh/v1alpha1
+                            kind: Gatekeeper
+                            metadata:
+                                name: gatekeeper
+                            spec:
+                                audit:
+                                    logLevel: INFO
+                                    replicas: 1
+                                image:
+                                    image: 'registry.redhat.io/rhacm2/gatekeeper-rhel8:v3.3.0'
+                                validatingWebhook: Enabled
+                                mutatingWebhook: Disabled
+                                webhook:
+                                    emitAdmissionEvents: Enabled
+                                    logLevel: INFO
+                                    replicas: 2
