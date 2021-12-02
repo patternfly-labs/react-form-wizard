@@ -140,7 +140,8 @@ export function PolicyForm() {
                         collapsedText={
                             <Fragment>
                                 <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
-                                <FormWizardTextDetail id="objectDefinition.spec.object-templates.0.objectDefinition.kind" />
+                                <FormWizardTextDetail id="objectDefinition.spec.object-templates.0.objectDefinition.kind" /> -{' '}
+                                <FormWizardTextDetail id="objectDefinition.metadata.name" />
                             </Fragment>
                         }
                     >
@@ -154,12 +155,12 @@ export function PolicyForm() {
                         /> */}
                         <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
                         <FormWizardTextDetail id="objectDefinition.spec.object-templates.0.objectDefinition.kind" />
+                        <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
                         <FormWizardHidden
                             hidden={(template: any) =>
                                 template?.objectDefinition?.spec?.['object-templates']?.[0]?.objectDefinition?.kind !== 'LimitRange'
                             }
                         >
-                            <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
                             <FormWizardSection label="Namespace selector">
                                 <FormWizardLabels id="objectDefinition.spec.namespaceSelector.include" label="Include namespaces" />
                                 <FormWizardLabels id="objectDefinition.spec.namespaceSelector.exclude" label="Exclude namespaces" />
