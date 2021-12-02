@@ -1,0 +1,33 @@
+# an available choice for the specs control
+name: EtcdEncryption
+description: Enable etcd encryption
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        PR.DS Data Security
+    controls: |
+        PR.DS-1 Data-at-rest
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: '{{name}}-etcd-encryption'
+              spec:
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  severity: med
+                  namespaceSelector:
+                      exclude: ['kube-*']
+                      include: ['default']
+                  object-templates:
+                      - complianceType: musthave
+                        objectDefinition:
+                            apiVersion: config.openshift.io/v1
+                            kind: APIServer
+                            metadata:
+                                name: cluster
+                            spec:
+                                encryption:
+                                    type: aescbc

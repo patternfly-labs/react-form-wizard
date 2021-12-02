@@ -1,0 +1,38 @@
+# an available choice for the specs control
+name: RoleBinding
+description: Role binding must exist
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        PR.AC Identity Management and Access Control
+    controls: |
+        PR.AC-4 Access Control
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: '{{name}}-operatoruser-rolebinding'
+              spec:
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  severity: high
+                  namespaceSelector:
+                      exclude: ['kube-*']
+                      include: ['default']
+                  object-templates:
+                      - complianceType: musthave
+                        objectDefinition:
+                            kind: RoleBinding # role binding must exist
+                            apiVersion: rbac.authorization.k8s.io/v1
+                            metadata:
+                                name: operatoruser-rolebinding
+                            subjects:
+                                - kind: User
+                                  name: admin # Name is case sensitive
+                                  apiGroup: rbac.authorization.k8s.io
+                            roleRef:
+                                kind: Role #this must be Role or ClusterRole
+                                name: operator # this must match the name of the Role or ClusterRole you wish to bind to
+                                apiGroup: rbac.authorization.k8s.io
