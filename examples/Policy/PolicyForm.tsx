@@ -75,13 +75,13 @@ export function PolicyForm() {
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
             template={PolicyTemplate}
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Governance' }]}
-            defaultData={{ templates: [] }}
+            defaultData={{ apiVersion: 'policy.open-cluster-management.io/v1', kind: 'Policy', metadata: { name: '', namespace: '' } }}
         >
             <FormWizardStep label="Details">
                 <FormWizardSection label="Details">
-                    <FormWizardTextInput id="name" label="Name" placeholder="Enter name" required />
+                    <FormWizardTextInput id="metadata.name" label="Name" placeholder="Enter name" required />
                     <FormWizardSelect
-                        id="namespace"
+                        id="metadata.namespace"
                         label="Namespace"
                         placeholder="Select namespace"
                         helperText="The namespace on the hub cluster where the policy resources will be created."
@@ -94,13 +94,13 @@ export function PolicyForm() {
                         }
                     />
                     <FormWizardSelect
-                        id="severity"
+                        id="spec.severity"
                         label="Severity"
                         placeholder="Select severity"
                         options={['Low', 'Medium', 'High']}
                         required
                     />
-                    <FormWizardRadioGroup id="remediation" label="Remediation" path="remediation" required>
+                    <FormWizardRadioGroup id="spec.remediationAction" label="Remediation" path="remediation" required>
                         <FormWizardRadio
                             id="inform"
                             label="Inform"
@@ -115,7 +115,7 @@ export function PolicyForm() {
                         />
                     </FormWizardRadioGroup>
                     <FormWizardCheckbox
-                        id="disable"
+                        id="spec.disabled"
                         label="Disable policy"
                         path="disabled"
                         helperText="Select to disable the policy from being propagated to the managed cluster."
@@ -129,7 +129,7 @@ export function PolicyForm() {
                     description="A policy containe multiple templates that create policy resources on managed clusters."
                 >
                     <FormWizardArrayInput
-                        id="templates"
+                        id="spec.policy-templates"
                         placeholder="Add policy template"
                         dropdownItems={Specifications.map((specification) => {
                             return {
@@ -161,18 +161,7 @@ export function PolicyForm() {
                                 template?.objectDefinition?.spec?.['object-templates']?.[0]?.objectDefinition?.kind !== 'LimitRange'
                             }
                         >
-                            <FormWizardSection label="Namespace selector">
-                                <FormWizardLabels id="objectDefinition.spec.namespaceSelector.include" label="Include namespaces" />
-                                <FormWizardLabels id="objectDefinition.spec.namespaceSelector.exclude" label="Exclude namespaces" />
-                            </FormWizardSection>
                             <FormWizardSection label="Resource Limits">
-                                <FormWizardTextInput
-                                    id="objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.defaultRequest.memory"
-                                    label="Memory request"
-                                    placeholder="Enter memory request"
-                                    required
-                                    helperText="Examples: 512Mi, 2Gi"
-                                />
                                 <FormWizardTextInput
                                     id="objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory"
                                     label="Memory limit"
@@ -180,6 +169,17 @@ export function PolicyForm() {
                                     required
                                     helperText="Examples: 512Mi, 2Gi"
                                 />
+                                <FormWizardTextInput
+                                    id="objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.defaultRequest.memory"
+                                    label="Memory request"
+                                    placeholder="Enter memory request"
+                                    required
+                                    helperText="Examples: 512Mi, 2Gi"
+                                />
+                            </FormWizardSection>
+                            <FormWizardSection label="Namespace selector">
+                                <FormWizardLabels id="objectDefinition.spec.namespaceSelector.include" label="Include namespaces" />
+                                <FormWizardLabels id="objectDefinition.spec.namespaceSelector.exclude" label="Exclude namespaces" />
                             </FormWizardSection>
                         </FormWizardHidden>
                     </FormWizardArrayInput>
