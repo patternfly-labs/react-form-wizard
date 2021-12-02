@@ -1,5 +1,5 @@
 import { Button } from '@patternfly/react-core'
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import {
     FormWizardArrayInput,
     FormWizardCheckbox,
@@ -137,9 +137,11 @@ export function PolicyForm() {
                                 action: () => specification.replacements.policyTemplates,
                             }
                         })}
-                        collapsedText={<FormWizardTextDetail id="template.description" placeholder="Expand to select the template" />}
-                        collapsedDescription={
-                            <FormWizardTextDetail id="template.replacements.policyTemplates.0.objectDefinition.spec.object-templates.0.objectDefinition.spec.limits.0.default.memory" />
+                        collapsedText={
+                            <Fragment>
+                                <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
+                                <FormWizardTextDetail id="objectDefinition.spec.object-templates.0.objectDefinition.kind" />
+                            </Fragment>
                         }
                     >
                         {/* <FormWizardSelect
