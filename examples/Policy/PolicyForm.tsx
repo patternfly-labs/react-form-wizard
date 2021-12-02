@@ -29,10 +29,10 @@ export function PolicyForm() {
     //         })),
     //     []
     // )
-    const specifications = useMemo(
-        () => Specifications.map((specification) => ({ id: specification.name, label: specification.description, value: specification })),
-        []
-    )
+    // const specifications = useMemo(
+    //     () => Specifications.map((specification) => ({ id: specification.name, label: specification.description, value: specification })),
+    //     []
+    // )
     // const standards = useMemo(
     //     () =>
     //         ['NIST', 'NIST-CSF', 'PCI', 'FISMA', 'HIPAA', 'NIST SP 800-53'].map((standard) => ({
