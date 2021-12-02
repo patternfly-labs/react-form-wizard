@@ -1,0 +1,34 @@
+# an available choice for the specs control
+name: Role
+description: Role must follow defined permissions
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        PR.AC Identity Management and Access Control
+    controls: |
+        PR.AC-4 Access Control
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: '{{name}}-deployments-role'
+              spec:
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  severity: high
+                  namespaceSelector:
+                      exclude: ['kube-*']
+                      include: ['default']
+                  object-templates:
+                      - complianceType: mustonlyhave # role definition should exact match
+                        objectDefinition:
+                            apiVersion: rbac.authorization.k8s.io/v1
+                            kind: Role
+                            metadata:
+                                name: deployments-role
+                            rules:
+                                - apiGroups: ['extensions', 'apps']
+                                  resources: ['deployments']
+                                  verbs: ['get', 'list', 'watch', 'delete', 'patch']

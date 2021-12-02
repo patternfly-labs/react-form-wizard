@@ -25,7 +25,7 @@ import { AppForm } from './Forms/AppForm'
 import { ClusterForm } from './Forms/ClusterForm'
 import { CredentialsForm } from './Forms/CredentialsForm'
 import { DeploymentForm } from './Forms/DeploymentForm'
-import { PolicyForm } from './Forms/PolicyForm'
+import { PolicyForm } from './Policy/PolicyForm'
 import { RouteE } from './Routes'
 
 interface IWizard {

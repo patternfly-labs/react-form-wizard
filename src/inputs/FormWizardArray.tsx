@@ -213,11 +213,11 @@ function Dropdown2(props: { children?: ReactNode; placeholder: string }) {
     const onToggle = useCallback(() => setOpen((open: boolean) => !open), [])
     return (
         <Dropdown
-            placeholder={props.placeholder}
+            isPlain
             dropdownItems={Children.toArray(props.children)}
             toggle={
                 <DropdownToggle id="toggle-id" onToggle={onToggle} toggleIndicator={CaretDownIcon}>
-                    Dropdown
+                    {props.placeholder}
                 </DropdownToggle>
             }
             isOpen={open}

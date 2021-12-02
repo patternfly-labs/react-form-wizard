@@ -1,0 +1,36 @@
+# an available choice for the specs control
+name: Pod
+description: Nginx pod must exist
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        PR.PT Protective Technology
+    controls: |
+        PR.PT-3 Least Functionality
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: ConfigurationPolicy
+              metadata:
+                  name: '{{name}}-nginx-pod'
+              spec:
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  severity: low
+                  namespaceSelector:
+                      exclude: ['kube-*']
+                      include: ['default']
+                  object-templates:
+                      - complianceType: musthave
+                        objectDefinition:
+                            apiVersion: v1
+                            kind: Pod # nginx pod must exist
+                            metadata:
+                                name: nginx-pod
+                            spec:
+                                containers:
+                                    - image: nginx:1.18.0
+                                      name: nginx
+                                      ports:
+                                          - containerPort: 80
