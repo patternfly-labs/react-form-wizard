@@ -1,50 +1,70 @@
 import {
-    FormWizardCheckbox,
-    FormWizardPage,
-    FormWizardRadio,
-    FormWizardRadioGroup,
-    FormWizardSelect,
-    FormWizardStep,
-    FormWizardTextInput,
-    FormWizardTile,
-    FormWizardTiles,
+    FormWizardCheckbox as Checkbox,
+    FormWizardLabels as Labels,
+    FormWizardPage as Wizard,
+    FormWizardRadio as Radio,
+    FormWizardRadioGroup as RadioGroup,
+    FormWizardSection as Section,
+    FormWizardSelect as Select,
+    FormWizardStep as Step,
+    FormWizardTextInput as TextInput,
+    FormWizardTile as Tile,
+    FormWizardTiles as Tiles,
 } from '../../src'
 
-export function InputsForm() {
+export function InputsWizard() {
     return (
-        <FormWizardPage
+        <Wizard
             title="Inputs wizard"
             description="Example wizard showing inputs examples"
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Inputs' }]}
         >
-            <FormWizardStep label="Text Input">
-                <FormWizardTextInput id="text-input" label="Text input" required />
-            </FormWizardStep>
+            <Step label="Text Input">
+                <Section label="Text input examples">
+                    <TextInput id="text-input" label="Text input" required />
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Select">
-                <FormWizardSelect id="select" label="Select" options={['Option 1', 'Option 2']} />
-                <FormWizardSelect id="select" label="Select" options={['Option 1', 'Option 2']} required />
-            </FormWizardStep>
+            <Step label="Select">
+                <Section label="Select input examples">
+                    <Select id="select" label="Select" options={['Option 1', 'Option 2']} />
+                    <Select id="select" label="Select" options={['Option 1', 'Option 2']} required />
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Tiles">
-                <FormWizardTiles id="tiles" path="tile" label="Tiles" required>
-                    <FormWizardTile id="tile1" value="tile1" label="Tile 1" />
-                    <FormWizardTile id="tile2" value="tile2" label="Tile 2" />
-                    <FormWizardTile id="tile3" value="tile3" label="Tile 3" />
-                </FormWizardTiles>
-            </FormWizardStep>
+            <Step label="Tiles">
+                <Section label="Tile input examples">
+                    <Tiles id="tiles" path="tile" label="Tiles" required>
+                        <Tile id="tile1" value="tile1" label="Tile 1" />
+                        <Tile id="tile2" value="tile2" label="Tile 2" />
+                        <Tile id="tile3" value="tile3" label="Tile 3" />
+                    </Tiles>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Radio">
-                <FormWizardRadioGroup id="radio" path="radio" label="Radio" required>
-                    <FormWizardRadio id="radio-1" label="Radio 1" value="radio-1" description="Radio 1 description" />
-                    <FormWizardRadio id="radio-2" label="Radio 2" value="radio-2" description="Radio 2 description" />
-                </FormWizardRadioGroup>
-            </FormWizardStep>
+            <Step label="Radio">
+                <Section label="Radio input examples">
+                    <RadioGroup id="radio" path="radio" label="Radio" required>
+                        <Radio id="radio-1" label="Radio 1" value="radio-1" description="Radio 1 description" />
+                        <Radio id="radio-2" label="Radio 2" value="radio-2" description="Radio 2 description" />
+                    </RadioGroup>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Checkbox">
-                <FormWizardCheckbox id="checkbox" label="Checkbox" helperText="Checkbox helper text." />
-                <FormWizardCheckbox id="checkbox-2" label="Checkbox" helperText="Checkbox helper text." />
-            </FormWizardStep>
-        </FormWizardPage>
+            <Step label="Checkbox">
+                <Section label="Checkbox input examples">
+                    <Checkbox id="checkbox" label="Checkbox" helperText="Checkbox helper text." />
+                    <Checkbox id="checkbox-2" label="Checkbox" helperText="Checkbox helper text." />
+                </Section>
+            </Step>
+
+            <Step label="Metadata">
+                <Section label="Metadata input example">
+                    <TextInput id="metadata.name" label="Name" required />
+                    <Select id="metadata.namespace" label="Namespace" required options={['namespace-1', 'namespace-2']} />
+                    <Labels id="metadata.labels" label="Labels" />
+                </Section>
+            </Step>
+        </Wizard>
     )
 }

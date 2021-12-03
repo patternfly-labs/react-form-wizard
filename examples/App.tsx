@@ -30,7 +30,7 @@ import { AppForm } from './Application/AppForm'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsForm } from './Credentials/CredentialsForm'
-import { InputsForm } from './Inputs/InputsForm'
+import { InputsWizard } from './Inputs/InputsForm'
 import { PolicyForm } from './Policy/PolicyForm'
 import { RouteE } from './Routes'
 
@@ -102,7 +102,7 @@ export function AppMain() {
         case RouteE.Policy:
             return <PolicyForm />
         case RouteE.Inputs:
-            return <InputsForm />
+            return <InputsWizard />
         case RouteE.Results:
             return <ResultYaml />
         default:
