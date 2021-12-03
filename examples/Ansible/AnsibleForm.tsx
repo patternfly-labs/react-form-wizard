@@ -11,13 +11,12 @@ import {
     FormWizardTextDetail,
     FormWizardTextInput,
 } from '../../src'
-import AnsibleHandlebars from './Ansible.hbs'
 
 export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[] }) {
     return (
         <FormWizardPage
             title="Create Ansible automation template"
-            template={AnsibleHandlebars}
+            // template={AnsibleHandlebars}
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
             onSubmit={props.onSubmit}
             defaultData={{
