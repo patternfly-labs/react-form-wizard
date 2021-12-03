@@ -1,3 +1,4 @@
+import YAML from 'yaml'
 import specCertmgmtexp from './spec-certmgmtexp.yaml'
 import specClusteradminrole from './spec-clusteradminrole.yaml'
 import specCompOperator from './spec-comp-operator.yaml'
@@ -11,7 +12,6 @@ import specPodSecurity from './spec-pod-security.yaml'
 import specRolebinding from './spec-rolebinding.yaml'
 import specRoles from './spec-roles.yaml'
 import specScc from './spec-scc.yaml'
-import YAML from 'yaml'
 
 export const Specifications: { name: string; description: string; replacements: { policyTemplates: object[] } }[] = [
     specCertmgmtexp,
