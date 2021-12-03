@@ -15,4 +15,5 @@ jobs:
                   start: npm start
                   browser: chrome
                   headless: true
+                  record: false
             - run: npm test

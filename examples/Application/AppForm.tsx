@@ -1,6 +1,5 @@
 import { Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon } from '@patternfly/react-icons'
-// handlebars
 import Handlebars from 'handlebars'
 import { Fragment, useMemo } from 'react'
 import {
@@ -20,7 +19,6 @@ import {
     FormWizardTiles,
     FormWizardTimeRange,
 } from '../../src'
-
 import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
 import ArgoTemplateGit from './applicationTemplates/argoApplicationSet/templateArgoGit.hbs'
@@ -31,12 +29,10 @@ import SubscriptionGitHandlebars from './applicationTemplates/subscription/templ
 import SubscriptionHelmHandlebars from './applicationTemplates/subscription/templateSubscriptionHelm.hbs'
 import SubscriptionObjHandlebars from './applicationTemplates/subscription/templateSubscriptionObj.hbs'
 import SubscriptionPlacementHandlebars from './applicationTemplates/subscription/templateSubscriptionPlacement.hbs'
-
-//icons
-import SubscriptionIcon from './Logo/SubscriptionIcon.svg'
-import ArgoIcon from './Logo/ArgoIcon.svg'
-import ObjectStore from './Logo/ObjectStore.svg'
-import HelmIcon from './Logo/HelmIcon.svg'
+import ArgoIcon from './logos/ArgoIcon.svg'
+import HelmIcon from './logos/HelmIcon.svg'
+import ObjectStore from './logos/ObjectStore.svg'
+import SubscriptionIcon from './logos/SubscriptionIcon.svg'
 
 export function AppForm() {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
