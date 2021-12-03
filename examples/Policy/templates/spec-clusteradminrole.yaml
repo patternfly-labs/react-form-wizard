@@ -1,0 +1,24 @@
+# an available choice for the specs control
+name: IamPolicy
+description: Limit clusteradmin roles
+multiselect: specs
+replacements: # if user select this choice, the template variable names and values to use
+    standards: |
+        NIST-CSF
+    categories: |
+        PR.AC Identity Management and Access Control
+    controls: |
+        PR.AC-4 Access Control
+    policyTemplates:
+        - objectDefinition:
+              apiVersion: policy.open-cluster-management.io/v1
+              kind: IamPolicy # limit clusteradmin roles
+              metadata:
+                  name: '{{name}}-limit-clusteradmin'
+              spec:
+                  severity: medium
+                  namespaceSelector:
+                      include: ['*']
+                      exclude: ['kube-*', 'openshift-*']
+                  remediationAction: inform # will be overridden by remediationAction in parent policy
+                  maxClusterRoleBindingUsers: 5
