@@ -43,22 +43,27 @@ const wizards: IWizard[] = [
     {
         name: 'Create application',
         route: RouteE.Application,
+        description: 'Create an ACM application or a ArgoCD application.',
     },
     {
         name: 'Create cluster',
         route: RouteE.Cluster,
+        description: 'Create a kubernetes cluster.',
     },
     {
         name: 'Add credentials',
         route: RouteE.Credentials,
+        description: 'Add credentials for cloud providers or other external automation. Credentials are stored as Kubernetes secrets.',
     },
     {
         name: 'Create policy',
         route: RouteE.Policy,
+        description: 'Create a policy.',
     },
     {
         name: 'Input example wizard',
         route: RouteE.Inputs,
+        description: 'Wizard showing the different types of inputs supported by the form wizard framework.',
     },
 ]
 

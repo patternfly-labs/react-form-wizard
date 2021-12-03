@@ -77,20 +77,18 @@ export function FormWizardPage(props: {
             isBreadcrumbGrouped
             additionalGroupedContent={
                 <PageSection variant="light">
-                    <Flex alignItems={{ default: 'alignItemsFlexEnd' }} wrap="noWrap" style={{ flexWrap: 'nowrap' }}>
-                        <FlexItem grow={{ default: 'grow' }}>
+                    <Flex alignItems={{ default: 'alignItemsCenter' }} wrap="noWrap" style={{ flexWrap: 'nowrap', gap: 8 }}>
+                        <FlexItem>
                             <Title headingLevel="h1">{props.title}</Title>
                             {props.description && <Text component="small">{props.description}</Text>}
                         </FlexItem>
-                        <Flex alignItems={{ default: 'alignItemsFlexEnd' }} wrap="noWrap" style={{ flexWrap: 'nowrap', gap: 16 }}>
-                            {process.env.NODE_ENV === 'development' && (
-                                <Switch label="FORM" isChecked={isForm} onChange={() => setIsForm(!isForm)} />
-                            )}
-                            {process.env.NODE_ENV === 'development' && (
-                                <Switch label="DEV" isChecked={devMode} onChange={() => setDevMode(!devMode)} />
-                            )}
-                            <Switch label="YAML" isChecked={drawerExpanded} onChange={() => toggleDrawerExpanded()} />
-                        </Flex>
+                        <Switch label="YAML" isChecked={drawerExpanded} onChange={() => toggleDrawerExpanded()} />
+                        {process.env.NODE_ENV === 'development' && (
+                            <Switch label="FORM" isChecked={isForm} onChange={() => setIsForm(!isForm)} />
+                        )}
+                        {process.env.NODE_ENV === 'development' && props.template && (
+                            <Switch label="DEV" isChecked={devMode} onChange={() => setDevMode(!devMode)} />
+                        )}
                     </Flex>
                 </PageSection>
             }
