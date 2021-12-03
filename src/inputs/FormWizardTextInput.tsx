@@ -17,7 +17,7 @@ export type FormWizardTextInputProps = InputCommonProps<string> & {
 export function FormWizardTextInput(props: FormWizardTextInputProps) {
     const formWizardContext = useContext(FormWizardContext)
 
-    const [value, setValue] = useInputValue(props)
+    const [value, setValue] = useInputValue(props, '')
     const { validated } = useInputValidation(props)
 
     const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`

@@ -19,11 +19,11 @@ export type InputCommonProps<ValueT = any> = {
     helperText?: string
 }
 
-export function useInputValue(props: InputCommonProps): [value: any, setValue: (value: any) => void] {
+export function useInputValue(props: InputCommonProps, defaultValue: any): [value: any, setValue: (value: any) => void] {
     const item = useContext(FormWizardItemContext)
     const formWizardContext = useContext(FormWizardContext)
     const path = props.path ?? props.id
-    const value = get(item, path) ?? null
+    const value = get(item, path) ?? defaultValue
     const setValue = (value: any) => {
         inputSetValue(props, item, value, formWizardContext)
     }
