@@ -1,13 +1,12 @@
 import { Chip, ChipGroup, Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core'
-import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import set from 'set-value'
 import { FormWizardTextDetail } from '..'
-import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
-import { lowercaseFirst } from './FormWizardInput'
+import { InputCommonProps, lowercaseFirst } from './FormWizardInput'
+import { FormWizardInputLabel } from './FormWizardInputLabel'
 import './FormWizardSelect.css'
 
 export interface FormWizardOption<T> {
@@ -25,24 +24,14 @@ export interface FormWizardOptionGroup<T> {
     options: (FormWizardOption<T> | string | number)[]
 }
 
-interface FormWizardSelectCommonProps {
-    id: string
-    label: string
+type FormWizardSelectCommonProps<T> = InputCommonProps<T> & {
     placeholder?: string
-    readonly?: boolean
-    disabled?: boolean
-    required?: boolean
-    labelHelp?: string
-    labelHelpTitle?: string
-    helperText?: string
     footer?: ReactNode
-    path?: string
 
     /** key path is the path to get the key of the value
      * Used in cases where the value is an object, but we need to track select by a string or number
      */
     keyPath?: string
-    hidden?: (values: unknown) => boolean
 }
 
 export enum FormWizardSelectVariant {
@@ -52,28 +41,24 @@ export enum FormWizardSelectVariant {
     MultiGrouped = 'multi-grouped',
 }
 
-interface FormWizardSingleSelectProps<T> extends FormWizardSelectCommonProps {
+interface FormWizardSingleSelectProps<T> extends FormWizardSelectCommonProps<T> {
     variant: 'single'
     options: (FormWizardOption<T> | string | number)[]
-    validation?: (value: T) => string | undefined
 }
 
-interface FormWizardMultiselectProps<T> extends FormWizardSelectCommonProps {
+interface FormWizardMultiselectProps<T> extends FormWizardSelectCommonProps<T[]> {
     variant: 'multi'
     options: (FormWizardOption<T> | string | number)[]
-    validation?: (values: T[]) => string | undefined
 }
 
-interface FormWizardGroupedSingleSelectProps<T> extends FormWizardSelectCommonProps {
+interface FormWizardGroupedSingleSelectProps<T> extends FormWizardSelectCommonProps<T> {
     variant: 'single-grouped'
     groups: FormWizardOptionGroup<T>[]
-    validation?: (value: T) => string | undefined
 }
 
-interface FormWizardGroupedMultiselectProps<T> extends FormWizardSelectCommonProps {
+interface FormWizardGroupedMultiselectProps<T> extends FormWizardSelectCommonProps<T[]> {
     variant: 'multi-grouped'
     groups: FormWizardOptionGroup<T>[]
-    validation?: (values: T[]) => string | undefined
 }
 
 export function FormWizardSelect<T>(props: Omit<FormWizardSingleSelectProps<T>, 'variant'>) {
@@ -287,17 +272,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
     }
 
     return (
-        <FormGroup
-            className="form-multiselect"
-            id={id}
-            fieldId={`select-${id}`}
-            label={props.label}
-            labelIcon={<FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
-            helperText={props.helperText}
-            helperTextInvalid={error}
-            validated={validated}
-            isRequired={props.required}
-        >
+        <FormWizardInputLabel {...props}>
             <Select
                 id={`select-${id}`}
                 variant={variant}
@@ -343,6 +318,6 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
                     </SelectOption>
                 ))}
             </Select>
-        </FormGroup>
+        </FormWizardInputLabel>
     )
 }

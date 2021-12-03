@@ -24,6 +24,7 @@ import { AppForm } from './Application/AppForm'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsForm } from './Credentials/CredentialsForm'
+import { InputsForm } from './Inputs/InputsForm'
 import { PolicyForm } from './Policy/PolicyForm'
 import { RouteE } from './Routes'
 
@@ -55,6 +56,10 @@ const wizards: IWizard[] = [
         name: 'Create policy',
         route: RouteE.Policy,
     },
+    {
+        name: 'Input example wizard',
+        route: RouteE.Inputs,
+    },
 ]
 
 export default function App() {
@@ -85,6 +90,8 @@ export function AppMain() {
             return <CredentialsForm />
         case RouteE.Policy:
             return <PolicyForm />
+        case RouteE.Inputs:
+            return <InputsForm />
         case RouteE.Results:
             return <ResultYaml />
         default:

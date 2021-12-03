@@ -5,5 +5,6 @@ export enum RouteE {
     Cluster = '?route=cluster',
     Credentials = '?route=credentials',
     Policy = '?route=policy',
+    Inputs = '?route=inputs',
     Results = '?route=results',
 }

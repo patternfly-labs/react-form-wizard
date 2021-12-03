@@ -1,8 +1,7 @@
 import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Stack } from '@patternfly/react-core'
-import get from 'get-value'
-import { Fragment, ReactNode, useContext } from 'react'
+import { Fragment, ReactNode } from 'react'
 import { FormWizardIndented } from '../components/FormWizardIndented'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { useInputHidden, useInputValue } from './FormWizardInput'
 
 export function FormWizardTextDetail(props: {
     id: string
@@ -13,17 +12,11 @@ export function FormWizardTextDetail(props: {
     hidden?: (item: any) => boolean
     children?: ReactNode
 }) {
-    const id = props.id
-    const path = props.path ?? props.id
-
-    const item = useContext(FormWizardItemContext)
-
     // TODO - Support hiding sercets
     // const [showSecrets, setShowSecrets] = useState(false)
 
-    const value = get(item, path)
-
-    const hidden = props.hidden ? props.hidden(item) : false
+    const value = useInputValue(props, '')
+    const hidden = useInputHidden(props)
     if (hidden) return <Fragment />
 
     if (!props.label) {
@@ -44,7 +37,7 @@ export function FormWizardTextDetail(props: {
 
     return (
         <Stack>
-            <DescriptionListGroup id={id}>
+            <DescriptionListGroup id={props.id}>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
                 <DescriptionListDescription>{value}</DescriptionListDescription>
             </DescriptionListGroup>

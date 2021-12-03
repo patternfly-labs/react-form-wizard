@@ -19,7 +19,10 @@ export type InputCommonProps<ValueT = any> = {
     helperText?: string
 }
 
-export function useInputValue(props: InputCommonProps, defaultValue: any): [value: any, setValue: (value: any) => void] {
+export function useInputValue(
+    props: Pick<InputCommonProps, 'id' | 'path'>,
+    defaultValue: any
+): [value: any, setValue: (value: any) => void] {
     const item = useContext(FormWizardItemContext)
     const formWizardContext = useContext(FormWizardContext)
     const path = props.path ?? props.id
@@ -30,19 +33,24 @@ export function useInputValue(props: InputCommonProps, defaultValue: any): [valu
     return [value, setValue]
 }
 
-export function inputGetValue(props: InputCommonProps, item: object) {
+export function inputGetValue(props: Pick<InputCommonProps, 'id' | 'path'>, item: object) {
     const path = props.path ?? props.id
     const value = get(item, path) ?? null
     return value
 }
 
-export function inputSetValue<T = any>(props: InputCommonProps, item: object, value: T, formWizardContext: IFormWizardContext) {
+export function inputSetValue<T = any>(
+    props: Pick<InputCommonProps, 'id' | 'path'>,
+    item: object,
+    value: T,
+    formWizardContext: IFormWizardContext
+) {
     const path = props.path ?? props.id
     set(item, path, value)
     formWizardContext.updateContext()
 }
 
-export function useInputValidation(props: InputCommonProps) {
+export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' | 'label' | 'required' | 'validation'>) {
     const item = useContext(FormWizardItemContext)
     const formWizardContext = useContext(FormWizardContext)
 
