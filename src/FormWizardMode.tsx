@@ -7,7 +7,7 @@ import { FormWizardItemContext } from './contexts/FormWizardItemContext'
 import { FormWizardDetailsView } from './FormWizardDetails'
 import { hasValidationErrorsProps, InputCommonProps, isFormWizardHiddenProps } from './inputs/FormWizardInput'
 
-export function FormWizardWizardView(props: { data: object; children: ReactNode; template: HandlebarsTemplateDelegate }) {
+export function FormWizardWizardView(props: { data: object; children: ReactNode; template?: HandlebarsTemplateDelegate }) {
     const steps: WizardStep[] = []
     const formWizardContext = useContext(FormWizardContext)
     const item = useContext(FormWizardItemContext)
@@ -76,8 +76,12 @@ export function FormWizardWizardView(props: { data: object; children: ReactNode;
             onNext={stepChange}
             onGoToStep={stepChange}
             onSave={() => {
-                const data = props.template(props.data)
-                void formWizardContext.onSubmit?.(YAML.parse(data))
+                if (props.template) {
+                    const data = props.template(props.data)
+                    void formWizardContext.onSubmit?.(YAML.parse(data))
+                } else {
+                    void formWizardContext.onSubmit?.(props.data)
+                }
             }}
         />
     )

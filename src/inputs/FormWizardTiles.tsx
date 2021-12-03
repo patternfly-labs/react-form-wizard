@@ -28,7 +28,7 @@ export function FormWizardTiles(props: {
     const state: IRadioGroupContextState = {
         value: get(item, path),
         setValue: (value) => {
-            set(item, path, value)
+            set(item, path, value, { preservePaths: false })
             formWizardContext.updateContext()
         },
         readonly: props.readonly,

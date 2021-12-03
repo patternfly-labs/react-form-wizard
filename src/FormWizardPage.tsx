@@ -19,7 +19,7 @@ import {
     Title,
 } from '@patternfly/react-core'
 import Handlebars, { HelperOptions } from 'handlebars'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import YAML from 'yaml'
 import { FormWizardWizardView } from '.'
 import { YamlHighlighter } from './components/YamlHighlighter'
@@ -42,17 +42,24 @@ export function FormWizardPage(props: {
     description?: string
     children: ReactNode
     defaultData?: object
-    template: string
+    template?: string
     breadcrumb?: { label: string; to?: string }[]
     onSubmit?: FormSubmit
 }) {
-    const [template] = useState(() => Handlebars.compile(props.template))
+    const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const [data, setData] = useState(props.defaultData ?? {})
     const [devMode, setDevMode] = useState(false)
     const [isForm, setIsForm] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
 
-    const [drawerExpanded, setDrawerExpanded] = useState(false)
+    const [drawerExpanded, setDrawerExpanded] = useState(localStorage.getItem('yaml') === 'true')
+    const toggleDrawerExpanded = useCallback(() => {
+        setDrawerExpanded((drawerExpanded) => {
+            localStorage.setItem('yaml', (!drawerExpanded).toString())
+            return !drawerExpanded
+        })
+    }, [])
+
     const mode = isForm ? InputMode.Form : InputMode.Wizard
     return (
         <Page
@@ -82,7 +89,7 @@ export function FormWizardPage(props: {
                             {process.env.NODE_ENV === 'development' && (
                                 <Switch label="DEV" isChecked={devMode} onChange={() => setDevMode(!devMode)} />
                             )}
-                            <Switch label="YAML" isChecked={drawerExpanded} onChange={() => setDrawerExpanded(!drawerExpanded)} />
+                            <Switch label="YAML" isChecked={drawerExpanded} onChange={() => toggleDrawerExpanded()} />
                         </Flex>
                     </Flex>
                 </PageSection>
@@ -131,12 +138,12 @@ export function FormWizardPage(props: {
     )
 }
 
-function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template: HandlebarsTemplateDelegate; templateString: string }) {
+function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template?: HandlebarsTemplateDelegate; templateString?: string }) {
     const [activeKey, setActiveKey] = useState<number | string>(0)
 
     return (
         <DrawerPanelContent isResizable={true} colorVariant={DrawerColorVariant.light200} defaultSize="50%">
-            {props.devMode ? (
+            {props.template && props.devMode ? (
                 <div style={{ height: '100%' }}>
                     <Tabs
                         activeKey={activeKey}
@@ -158,14 +165,14 @@ function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template
                         </Tab>
                         <Tab eventKey={1} title={<TabTitleText>Template</TabTitleText>}>
                             <PageSection>
-                                <YamlHighlighter yaml={props.templateString}></YamlHighlighter>
+                                <YamlHighlighter yaml={props.templateString ?? ''}></YamlHighlighter>
                             </PageSection>
                         </Tab>
                     </Tabs>
                 </div>
             ) : (
                 <PageSection>
-                    <YamlHighlighter yaml={props.template(props.data)}></YamlHighlighter>
+                    <YamlHighlighter yaml={props.template ? props.template(props.data) : YAML.stringify(props.data)}></YamlHighlighter>
                 </PageSection>
             )}
         </DrawerPanelContent>
