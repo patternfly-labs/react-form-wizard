@@ -5,7 +5,7 @@ import { FormWizardStep } from '.'
 import { FormWizardContext } from './contexts/FormWizardContext'
 import { FormWizardItemContext } from './contexts/FormWizardItemContext'
 import { FormWizardDetailsView } from './FormWizardDetails'
-import { hasValidationErrorsProps, InputCommonProps, isFormWizardHiddenProps } from './utils/input-utils'
+import { hasValidationErrorsProps, InputCommonProps, isFormWizardHiddenProps } from './inputs/FormWizardInput'
 
 export function FormWizardWizardView(props: { data: object; children: ReactNode; template: HandlebarsTemplateDelegate }) {
     const steps: WizardStep[] = []

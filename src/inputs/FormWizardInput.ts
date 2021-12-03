@@ -1,12 +1,69 @@
 import get from 'get-value'
-import { Children, isValidElement, ReactNode } from 'react'
+import { Children, isValidElement, ReactNode, useContext } from 'react'
+import set from 'set-value'
+import { FormWizardContext, IFormWizardContext } from '../contexts/FormWizardContext'
+import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
-export interface InputCommonProps {
+export type InputCommonProps<ValueT = any> = {
     id: string
-    path: string
+    path?: string
     hidden?: (item: unknown) => boolean
-    validation?: (value: any) => string | undefined
+    validation?: (value: ValueT) => string | undefined
     required?: boolean
+    readonly?: boolean
+    disabled?: boolean
+
+    label: string
+    labelHelp?: string
+    labelHelpTitle?: string
+    helperText?: string
+}
+
+export function useInputValue(props: InputCommonProps): [value: any, setValue: (value: any) => void] {
+    const item = useContext(FormWizardItemContext)
+    const formWizardContext = useContext(FormWizardContext)
+    const path = props.path ?? props.id
+    const value = get(item, path) ?? null
+    const setValue = (value: any) => {
+        inputSetValue(props, item, value, formWizardContext)
+    }
+    return [value, setValue]
+}
+
+export function inputGetValue(props: InputCommonProps, item: object) {
+    const path = props.path ?? props.id
+    const value = get(item, path) ?? null
+    return value
+}
+
+export function inputSetValue<T = any>(props: InputCommonProps, item: object, value: T, formWizardContext: IFormWizardContext) {
+    const path = props.path ?? props.id
+    set(item, path, value)
+    formWizardContext.updateContext()
+}
+
+export function useInputValidation(props: InputCommonProps) {
+    const item = useContext(FormWizardItemContext)
+    const formWizardContext = useContext(FormWizardContext)
+
+    const value = inputGetValue(props, item)
+    let error: string | undefined = undefined
+    let validated: 'error' | undefined = undefined
+    if (formWizardContext.showValidation) {
+        if (props.required && !value) {
+            error = `${props.label} is required`
+        } else if (props.validation) {
+            error = props.validation(value)
+        }
+        validated = error ? 'error' : undefined
+    }
+    return { validated, error }
+}
+
+export function useInputHidden(props: { hidden?: (item: any) => boolean }) {
+    const item = useContext(FormWizardItemContext)
+    const hidden = props.hidden ? props.hidden(item) : false
+    return hidden
 }
 
 export function isFormWizardHiddenProps(props: unknown, item: unknown) {

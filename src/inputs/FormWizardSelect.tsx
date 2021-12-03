@@ -7,7 +7,7 @@ import { FormWizardTextDetail } from '..'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
-import { lowercaseFirst } from '../utils/input-utils'
+import { lowercaseFirst } from './FormWizardInput'
 import './FormWizardSelect.css'
 
 export interface FormWizardOption<T> {
