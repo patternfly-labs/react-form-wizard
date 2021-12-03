@@ -1,9 +1,8 @@
-import { Fragment, ReactNode, useContext } from 'react'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { Fragment, ReactNode } from 'react'
+import { useInputHidden } from './FormWizardInput'
 
 export function FormWizardHidden(props: { children: ReactNode; hidden?: (item: any) => boolean }) {
-    const item = useContext(FormWizardItemContext)
-    const hidden = props.hidden ? props.hidden(item) : false
+    const hidden = useInputHidden(props)
     if (hidden) return <Fragment />
     return <Fragment>{props.children}</Fragment>
 }
