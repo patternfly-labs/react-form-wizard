@@ -14,7 +14,7 @@ import {
     FormWizardTextDetail,
     FormWizardTextInput,
 } from '../../src'
-import { Placement } from '../Forms/AppForm'
+import { Placement } from '../Application/AppForm'
 import PolicyTemplate from './PolicyTemplate.hbs'
 import { Specifications } from './templates'
 

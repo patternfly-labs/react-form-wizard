@@ -19,12 +19,11 @@ import {
 import useResizeObserver from '@react-hook/resize-observer'
 import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
+import { AnsibleExample } from './Ansible/AnsibleExample'
+import { AppForm } from './Application/AppForm'
+import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
-import { AnsibleExample } from './Forms/AnsibleExample'
-import { AppForm } from './Forms/AppForm'
-import { ClusterForm } from './Forms/ClusterForm'
-import { CredentialsForm } from './Forms/CredentialsForm'
-import { DeploymentForm } from './Forms/DeploymentForm'
+import { CredentialsForm } from './Credentials/CredentialsForm'
 import { PolicyForm } from './Policy/PolicyForm'
 import { RouteE } from './Routes'
 
@@ -51,10 +50,6 @@ const wizards: IWizard[] = [
     {
         name: 'Add credentials',
         route: RouteE.Credentials,
-    },
-    {
-        name: 'Create deployment',
-        route: RouteE.Deployment,
     },
     {
         name: 'Create policy',
@@ -88,8 +83,6 @@ export function AppMain() {
             return <ClusterForm />
         case RouteE.Credentials:
             return <CredentialsForm />
-        case RouteE.Deployment:
-            return <DeploymentForm />
         case RouteE.Policy:
             return <PolicyForm />
         case RouteE.Results:
