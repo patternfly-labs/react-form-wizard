@@ -46,15 +46,15 @@ export function FormWizardPage(props: {
     breadcrumb?: { label: string; to?: string }[]
     onSubmit?: FormSubmit
 }) {
-    const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : null))
+    const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const [data, setData] = useState(props.defaultData ?? {})
     const [devMode, setDevMode] = useState(false)
     const [isForm, setIsForm] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
 
-    const [drawerExpanded, setDrawerExpanded2] = useState(localStorage.getItem('yaml') === 'true')
-    const setDrawerExpanded = useCallback(() => {
-        setDrawerExpanded2((drawerExpanded) => {
+    const [drawerExpanded, setDrawerExpanded] = useState(localStorage.getItem('yaml') === 'true')
+    const toggleDrawerExpanded = useCallback(() => {
+        setDrawerExpanded((drawerExpanded) => {
             localStorage.setItem('yaml', (!drawerExpanded).toString())
             return !drawerExpanded
         })
@@ -89,7 +89,7 @@ export function FormWizardPage(props: {
                             {process.env.NODE_ENV === 'development' && (
                                 <Switch label="DEV" isChecked={devMode} onChange={() => setDevMode(!devMode)} />
                             )}
-                            <Switch label="YAML" isChecked={drawerExpanded} onChange={() => setDrawerExpanded(!drawerExpanded)} />
+                            <Switch label="YAML" isChecked={drawerExpanded} onChange={() => toggleDrawerExpanded()} />
                         </Flex>
                     </Flex>
                 </PageSection>
