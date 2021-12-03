@@ -7,7 +7,7 @@ import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 export type InputCommonProps<ValueT = any> = {
     id: string
     path?: string
-    hidden?: (item: unknown) => boolean
+    hidden?: (item: any) => boolean
     validation?: (value: ValueT) => string | undefined
     required?: boolean
     readonly?: boolean
