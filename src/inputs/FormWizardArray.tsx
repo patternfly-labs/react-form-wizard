@@ -28,7 +28,7 @@ export function FormWizardArrayInput(props: {
     label?: string
     path?: string
     children: ReactNode
-    dropdownItems?: { label: string; action: () => object }[]
+    dropdownItems?: { label: string; action: () => object; dependentFieldsToChange: () => object }[]
     placeholder: string
     collapsedText: ReactNode
     collapsedDescription?: ReactNode
@@ -45,15 +45,14 @@ export function FormWizardArrayInput(props: {
     if (!Array.isArray(values)) values = []
 
     const addItem = useCallback(
-        (newItem: object | object[]) => {
+        (newItem: object | object[], newItemPath: string = path) => {
             let newArray = values
             if (Array.isArray(newItem)) {
                 newArray = [...newArray, ...newItem]
             } else {
                 newArray.push(newItem as never)
             }
-
-            set(item, path, newArray)
+            set(item, newItemPath, newArray)
             formWizardContext.updateContext()
         },
         [values, item, path, formWizardContext]
@@ -196,7 +195,15 @@ export function FormWizardArrayInput(props: {
                     <Dropdown2 placeholder={props.placeholder}>
                         {props.dropdownItems.map((item, index) => {
                             return (
-                                <DropdownItem key={index} onClick={() => addItem(item.action())}>
+                                <DropdownItem
+                                    key={index}
+                                    onClick={() => {
+                                        for (const [key, value] of Object.entries(item.dependentFieldsToChange())) {
+                                            addItem(value, key)
+                                        }
+                                        addItem(item.action())
+                                    }}
+                                >
                                     {item.label}
                                 </DropdownItem>
                             )

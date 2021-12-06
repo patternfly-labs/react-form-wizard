@@ -13,7 +13,11 @@ import specRolebinding from './spec-rolebinding.yaml'
 import specRoles from './spec-roles.yaml'
 import specScc from './spec-scc.yaml'
 
-export const Specifications: { name: string; description: string; replacements: { policyTemplates: object[] } }[] = [
+export const Specifications: {
+    name: string
+    description: string
+    replacements: { categories: string; standards: string; policyTemplates: object[] }
+}[] = [
     specCertmgmtexp,
     specClusteradminrole,
     specCompOperator,
