@@ -79,6 +79,10 @@ export function PolicyForm() {
                 apiVersion: 'policy.open-cluster-management.io/v1',
                 kind: 'Policy',
                 metadata: { name: '', namespace: '' },
+                annotations: {
+                    'policy.open-cluster-management.io/standards': '',
+                    'policy.open-cluster-management.io/categories': '',
+                },
                 spec: { remediationAction: 'inform' },
             }}
         >
@@ -139,6 +143,14 @@ export function PolicyForm() {
                             return {
                                 label: specification.description,
                                 action: () => specification.replacements.policyTemplates,
+                                dependentFieldsToChange: () => ({
+                                    annotations: {
+                                        'policy.open-cluster-management.io/categories':
+                                            specification.replacements.categories ?? specification.replacements.categories,
+                                        'policy.open-cluster-management.io/standards':
+                                            specification.replacements.standards ?? specification.replacements.standards,
+                                    },
+                                }),
                             }
                         })}
                         collapsedText={
@@ -246,6 +258,12 @@ export function PolicyForm() {
                     placeholder="Select controls"
                 />
             </InputStep> */}
+
+            <FormWizardStep label="Standards">
+                <FormWizardSection label="Standards" description="Apply standards and categories to the policy">
+                    <FormWizardLabels id="categories" label="Categories"></FormWizardLabels>
+                </FormWizardSection>
+            </FormWizardStep>
 
             <FormWizardStep label="Placement">
                 <Placement />
