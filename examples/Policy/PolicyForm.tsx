@@ -159,6 +159,10 @@ export function PolicyWizard() {
             <FormWizardStep label="Placement">
                 <PolicyWizardPlacement />
             </FormWizardStep>
+
+            <FormWizardStep label="Categories"></FormWizardStep>
+            <FormWizardStep label="Standards"></FormWizardStep>
+            <FormWizardStep label="Controls"></FormWizardStep>
         </FormWizardPage>
     )
 }
