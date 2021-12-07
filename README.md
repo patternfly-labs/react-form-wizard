@@ -56,7 +56,7 @@ Input controls take a hidden function that can conditionally hide the control.
 
 ### Examples
 
-See the examples directory for example wizards.
+See the [examples](https://github.com/patternfly-labs/react-form-wizard/tree/main/examples) directory for example wizards.
 
 ## Development
 
