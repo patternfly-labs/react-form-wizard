@@ -15,9 +15,7 @@ export function FormWizardKeyValue(props: { id: string; label?: string; path?: s
 
     const value = get(item, path) ?? {}
 
-    const [pairs, setPairs] = useState<{ key: string; value: string }[]>(() =>
-        Object.keys(value).map((key) => ({ key, value: value[key] }))
-    )
+    const [pairs] = useState<{ key: string; value: string }[]>(() => Object.keys(value).map((key) => ({ key, value: value[key] })))
 
     const onKeyChange = (index: number, newKey: string) => {
         pairs[index].key = newKey

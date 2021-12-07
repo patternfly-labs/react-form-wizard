@@ -44,7 +44,7 @@ export function FormWizardArrayInput(props: {
 
     const formWizardContext = useContext(FormWizardContext)
     const item = useContext(FormWizardItemContext)
-    let sourceArray = get(item, path) as object[]
+    let sourceArray = get(item, path as string) as object[]
 
     if (!Array.isArray(sourceArray)) sourceArray = []
 
