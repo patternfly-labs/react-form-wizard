@@ -83,23 +83,23 @@ export function PolicyWizard() {
                     metadata: { name: '', namespace: '' },
                     spec: { remediationAction: 'inform' },
                 },
-                { apiVersion: 'apps.open-cluster-management.io/v1', kind: 'PlacementRule', metadata: {} },
+                {
+                    apiVersion: 'policy.open-cluster-management.io/v1',
+                    kind: 'PlacementRule',
+                    metadata: {},
+                    spec: {
+                        clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
+                        clusterSelector: {
+                            matchExpressions: [],
+                        },
+                    },
+                },
                 {
                     apiVersion: 'policy.open-cluster-management.io/v1',
                     kind: 'PlacementBinding',
                     metadata: {},
-                    placementRef: {
-                        name: 'placement-policy-grc',
-                        kind: 'PlacementRule',
-                        apiGroup: 'apps.open-cluster-management.io',
-                    },
-                    subjects: [
-                        {
-                            name: 'policy-grc',
-                            kind: 'Policy',
-                            apiGroup: 'policy.open-cluster-management.io',
-                        },
-                    ],
+                    placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                    subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
                 },
             ]}
             // sync={{
@@ -281,7 +281,7 @@ export function PolicyWizardPlacement() {
         <Fragment>
             <FormWizardSection
                 label="Placement bindings"
-                description="Policies are applied to clusters using placement bindings. The placement binding can contain multiple policies."
+                description="Policies are applied to clusters using placement bindings. Placement bindings bind policies to a placement rule."
             >
                 <FormWizardArrayInput
                     id="placementBindings"
@@ -293,12 +293,32 @@ export function PolicyWizardPlacement() {
                         apiVersion: 'policy.open-cluster-management.io/v1',
                         kind: 'PlacementBinding',
                         metadata: {},
+                        placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                        subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
                     }}
                 >
-                    <FormWizardTextInput id="metadata.name" label="Name" required />
+                    <FormWizardTextInput id="metadata.name" label="Placement binding name" required />
+                    <FormWizardTextInput id="placementRef.name" label="Placement rule name" required />
+                    <FormWizardArrayInput
+                        id="sss"
+                        path="subjects"
+                        label="Placement subjects"
+                        placeholder="Add placement subject"
+                        collapsedText="name"
+                        newValue={{
+                            apiGroup: 'policy.open-cluster-management.io',
+                            kind: 'Policy',
+                        }}
+                    >
+                        <FormWizardTextInput id="name" label="Subject name" required />
+                    </FormWizardArrayInput>
                 </FormWizardArrayInput>
             </FormWizardSection>
             <FormWizardSection label="Placement rules" description="Placement rules determine which clusters a policy will be applied.">
+                {/* <Alert variant="warning" isInline title="Note">
+                    Placement rules can be used by mulitple placement bindings. Editing the placement rule will affect all placement
+                    bindings using the rule.
+                </Alert> */}
                 <FormWizardArrayInput
                     id="placementRules"
                     path={null}
@@ -309,6 +329,12 @@ export function PolicyWizardPlacement() {
                         apiVersion: 'policy.open-cluster-management.io/v1',
                         kind: 'PlacementRule',
                         metadata: {},
+                        spec: {
+                            clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
+                            clusterSelector: {
+                                matchExpressions: [],
+                            },
+                        },
                     }}
                 >
                     <FormWizardTextInput id="metadata.name" label="Name" required />
