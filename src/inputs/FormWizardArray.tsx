@@ -19,6 +19,7 @@ import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, PlusIcon, TrashIcon } from '
 import get from 'get-value'
 import { Children, Fragment, ReactNode, useCallback, useContext, useState } from 'react'
 import set from 'set-value'
+import { FormWizardTextDetail } from '..'
 import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
@@ -26,34 +27,43 @@ import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 export function FormWizardArrayInput(props: {
     id: string
     label?: string
-    path?: string
+    path?: string | null
+    filter?: (item: any) => boolean
     children: ReactNode
     dropdownItems?: { label: string; action: () => object }[]
     placeholder: string
     collapsedText: ReactNode
     collapsedDescription?: ReactNode
     sortable?: boolean
+    newValue?: object
 }) {
     const id = props.id
-    const path = props.path ?? id
+    const path = props.path !== undefined ? props.path : id
 
     const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
 
     const formWizardContext = useContext(FormWizardContext)
     const item = useContext(FormWizardItemContext)
-    let values = get(item, path) as object[]
-    if (!Array.isArray(values)) values = []
+    let sourceArray = get(item, path as string) as object[]
+
+    if (!Array.isArray(sourceArray)) sourceArray = []
+
+    let values = sourceArray
+    if (props.filter) values = values.filter(props.filter)
 
     const addItem = useCallback(
         (newItem: object | object[]) => {
-            let newArray = values
-            if (Array.isArray(newItem)) {
-                newArray = [...newArray, ...newItem]
+            if (path === null) {
+                ;(item as any[]).push(newItem)
             } else {
-                newArray.push(newItem as never)
+                let newArray = values
+                if (Array.isArray(newItem)) {
+                    newArray = [...newArray, ...newItem]
+                } else {
+                    newArray.push(newItem as never)
+                }
+                set(item, path, newArray, { preservePaths: false })
             }
-
-            set(item, path, newArray)
             formWizardContext.updateContext()
         },
         [values, item, path, formWizardContext]
@@ -70,7 +80,11 @@ export function FormWizardArrayInput(props: {
                                     dataListCells={[
                                         <DataListCell key="primary content">
                                             <Stack id={`item-${index}`}>
-                                                {props.collapsedText}
+                                                {typeof props.collapsedText === 'string' ? (
+                                                    <FormWizardTextDetail id={props.collapsedText} path={props.collapsedText} />
+                                                ) : (
+                                                    props.collapsedText
+                                                )}
                                                 {props.collapsedDescription && (
                                                     <DescriptionListDescription>{props.collapsedDescription}</DescriptionListDescription>
                                                 )}
@@ -113,7 +127,13 @@ export function FormWizardArrayInput(props: {
                                             text: hasErrors ? (
                                                 <Alert variant="danger" title="Please fix validation errors." isInline isPlain />
                                             ) : (
-                                                props.collapsedText
+                                                <Fragment>
+                                                    {typeof props.collapsedText === 'string' ? (
+                                                        <FormWizardTextDetail id={props.collapsedText} path={props.collapsedText} />
+                                                    ) : (
+                                                        props.collapsedText
+                                                    )}
+                                                </Fragment>
                                             ),
                                             id: `nested-field-group1-titleText-id-${index}`,
                                         }}
@@ -154,7 +174,7 @@ export function FormWizardArrayInput(props: {
                                                     variant="plain"
                                                     aria-label="Remove item"
                                                     onClick={() => {
-                                                        values.splice(index, 1)
+                                                        sourceArray.splice(sourceArray.indexOf(value), 1)
                                                         formWizardContext.updateContext()
                                                     }}
                                                 >
@@ -187,7 +207,7 @@ export function FormWizardArrayInput(props: {
                         isSmall
                         aria-label="Action"
                         onClick={() => {
-                            addItem({})
+                            addItem(props.newValue ?? {})
                         }}
                     >
                         <PlusIcon /> &nbsp; {props.placeholder}

@@ -75,6 +75,8 @@ export function useInputHidden(props: { hidden?: (item: any) => boolean }) {
 }
 
 export function isFormWizardHiddenProps(props: unknown, item: unknown) {
+    if (!props) return false
+
     const hidden = (props as InputCommonProps).hidden
     if (typeof hidden === 'boolean') return hidden
     if (typeof hidden === 'function') {
@@ -87,11 +89,17 @@ export function isFormWizardHiddenProps(props: unknown, item: unknown) {
     }
 
     const children = (props as { children?: ReactNode }).children
-    if (children) {
+
+    if (typeof children === 'function') {
+        // DO NOTHING
+    } else if (children) {
         let allChildrenHidden = true
         Children.forEach(children, (child) => {
             if (!allChildrenHidden) return
-            if (!isValidElement(child)) return
+            if (!isValidElement(child)) {
+                allChildrenHidden = false
+                return
+            }
             if (!isFormWizardHiddenProps(child.props, item)) {
                 allChildrenHidden = false
             }

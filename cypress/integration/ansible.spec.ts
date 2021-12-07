@@ -9,12 +9,12 @@ describe('ansible wizard', () => {
 
     it('details', () => {
         cy.get('#metadata\\.name').type('my-ansible-autmation-template')
-        cy.get('#metadata\\.namespace').click().get('#default').click()
+        cy.get('#metadata\\.namespace-form-group').click().get('#default').click()
         cy.contains('Next').click()
     })
 
     it('install', () => {
-        cy.get('#spec\\.install\\.towerAuthSecret').click().get('#my-ansible-creds').click()
+        cy.get('#spec\\.install\\.towerAuthSecret-form-group').click().get('#my-ansible-creds').click()
 
         cy.get('#pre-install').within(() => {
             cy.contains('Add job template').click()
@@ -36,7 +36,7 @@ describe('ansible wizard', () => {
     })
 
     it('upgrade', () => {
-        cy.get('#spec\\.upgrade\\.towerAuthSecret').click().get('#my-ansible-creds').click()
+        cy.get('#spec\\.upgrade\\.towerAuthSecret-form-group').click().get('#my-ansible-creds').click()
 
         cy.get('#pre-upgrade').within(() => {
             cy.contains('Add job template').click()

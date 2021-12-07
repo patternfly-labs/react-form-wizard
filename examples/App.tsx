@@ -18,10 +18,12 @@ import {
     PageSection,
     PageSidebar,
     PageToggleButton,
+    Split,
     Stack,
+    Text,
     Title,
 } from '@patternfly/react-core'
-import { BarsIcon, GithubIcon } from '@patternfly/react-icons'
+import { BarsIcon, GithubIcon, HatWizardIcon } from '@patternfly/react-icons'
 import useResizeObserver from '@react-hook/resize-observer'
 import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
@@ -30,11 +32,12 @@ import { AppForm } from './Application/AppForm'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsForm } from './Credentials/CredentialsForm'
-import { InputsWizard } from './Inputs/InputsForm'
-import { PolicyForm } from './Policy/PolicyForm'
+import { InputsWizard } from './Inputs/InputsWizard'
+import { PolicyWizard } from './Policy/PolicyForm'
 import { RouteE } from './Routes'
 
 interface IWizard {
+    shortName: string
     name: string
     description?: string
     route: RouteE
@@ -42,32 +45,38 @@ interface IWizard {
 
 const wizards: IWizard[] = [
     {
-        name: 'Create Ansible automation template',
+        shortName: 'Ansible',
+        name: 'Ansible automation template',
         route: RouteE.Ansible,
-        description: 'Cluster management uses Ansible automation templates to run ansible jobs as during cluster creating and upgrade.',
+        description: 'Cluster management uses Ansible automation templates to run ansible jobs during cluster provisioning and upgrade.',
     },
     {
-        name: 'Create application',
+        shortName: 'Application',
+        name: 'Application',
         route: RouteE.Application,
         description: 'Create an ACM application or a ArgoCD application.',
     },
     {
-        name: 'Create cluster',
+        shortName: 'Cluster',
+        name: 'Cluster',
         route: RouteE.Cluster,
         description: 'Create a kubernetes cluster.',
     },
     {
-        name: 'Add credentials',
+        shortName: 'Credentials',
+        name: 'Credentials',
         route: RouteE.Credentials,
         description: 'Add credentials for cloud providers or other external automation. Credentials are stored as Kubernetes secrets.',
     },
     {
-        name: 'Create policy',
+        shortName: 'Policy',
+        name: 'Policy',
         route: RouteE.Policy,
         description: 'Create a policy.',
     },
     {
-        name: 'Input example wizard',
+        shortName: 'Inputs',
+        name: 'Inputs example',
         route: RouteE.Inputs,
         description: 'Wizard showing the different types of inputs supported by the form wizard framework.',
     },
@@ -80,7 +89,7 @@ export default function App() {
                 header={<AppHeader />}
                 sidebar={<AppSidebar />}
                 isManagedSidebar
-                defaultManagedSidebarIsOpen={false}
+                defaultManagedSidebarIsOpen={true}
                 style={{ height: '100vh' }}
             >
                 <AppMain />
@@ -100,7 +109,7 @@ export function AppMain() {
         case RouteE.Credentials:
             return <CredentialsForm />
         case RouteE.Policy:
-            return <PolicyForm />
+            return <PolicyWizard />
         case RouteE.Inputs:
             return <InputsWizard />
         case RouteE.Results:
@@ -115,15 +124,16 @@ function AppHome() {
         <Page
             additionalGroupedContent={
                 <PageSection variant="light">
-                    <Title headingLevel="h2">Wizards</Title>
+                    <Title headingLevel="h2">PatternFly Labs - React Form Wizard</Title>
+                    <Text>Example wizards</Text>
                 </PageSection>
             }
             groupProps={{ sticky: 'top' }}
         >
             <PageSection>
-                <Masonry size={350}>
+                <Masonry size={600}>
                     {wizards.map((wizard, index) => (
-                        <AppCard key={index} title={wizard.name} route={wizard.route}>
+                        <AppCard key={index} title={`${wizard.name} wizard`} route={wizard.route}>
                             {wizard.description}
                         </AppCard>
                     ))}
@@ -220,10 +230,10 @@ function AppSidebar() {
                         <NavItem isActive={location.search === ''}>
                             <Link to={RouteE.Home}>Home</Link>
                         </NavItem>
-                        <NavExpandable title="Wizards" isExpanded={true}>
+                        <NavExpandable title="Example Wizards" isExpanded={true}>
                             {wizards.map((wizard, index) => (
                                 <NavItem key={index} isActive={location.search === wizard.route}>
-                                    <Link to={wizard.route}>{wizard.name}</Link>
+                                    <Link to={wizard.route}>{wizard.shortName}</Link>
                                 </NavItem>
                             ))}
                         </NavExpandable>
@@ -238,7 +248,14 @@ function AppCard(props: { title?: string; children?: ReactNode; route: string })
     const history = useHistory()
     return (
         <Card isRounded isHoverable onClick={() => history.push(props.route)}>
-            {props.title && <CardTitle>{props.title}</CardTitle>}
+            {props.title && (
+                <CardTitle>
+                    <Split hasGutter>
+                        <HatWizardIcon size="md" />
+                        <span>{props.title}</span>
+                    </Split>
+                </CardTitle>
+            )}
             {props.children && <CardBody>{props.children}</CardBody>}
         </Card>
     )
