@@ -14,6 +14,7 @@ import {
     FormWizardSelect,
     FormWizardSelector,
     FormWizardStep,
+    FormWizardStringArray,
     FormWizardTextDetail,
     FormWizardTextInput,
 } from '../../src'
@@ -160,9 +161,42 @@ export function PolicyWizard() {
                 <PolicyWizardPlacement />
             </FormWizardStep>
 
-            <FormWizardStep label="Categories"></FormWizardStep>
-            <FormWizardStep label="Standards"></FormWizardStep>
-            <FormWizardStep label="Controls"></FormWizardStep>
+            <FormWizardStep label="Security groups">
+                <FormWizardSelector selectKey="kind" selectValue="Policy">
+                    <FormWizardStringArray
+                        id="categories"
+                        path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
+                        label="Categories"
+                        placeholder="Add category"
+                        map={(value: string | undefined) => {
+                            return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                        }}
+                        unmap={(values: string[]) => values.join(', ')}
+                    />
+                    <FormWizardStringArray
+                        id="standards"
+                        path={`metadata.annotations.policy\\.open-cluster-management\\.io/standards`}
+                        label="Standards"
+                        placeholder="Add standard"
+                        map={(value: string | undefined) => {
+                            return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                        }}
+                        unmap={(values: string[]) => values.join(', ')}
+                    />
+                    <FormWizardStringArray
+                        id="controls"
+                        path={`metadata.annotations.policy\\.open-cluster-management\\.io/controls`}
+                        label="Controls"
+                        placeholder="Add control"
+                        map={(value: string | undefined) => {
+                            return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                        }}
+                        unmap={(values: string[]) => values.join(', ')}
+                    />
+                </FormWizardSelector>
+            </FormWizardStep>
+            {/* <FormWizardStep label="Standards"></FormWizardStep>
+            <FormWizardStep label="Controls"></FormWizardStep> */}
         </FormWizardPage>
     )
 }
@@ -215,10 +249,10 @@ export function PolicyWizardSpecification() {
                 <FormWizardTextDetail id="objectDefinition.kind" />
                 <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
                 <FormWizardSelect
-                    id="spec.severity"
+                    id="objectDefinition.spec.severity"
                     label="Severity"
                     placeholder="Select severity"
-                    options={['Low', 'Medium', 'High']}
+                    options={['low', 'medium', 'high']}
                     required
                 />
                 <FormWizardSection
