@@ -66,7 +66,7 @@ See the [examples](https://github.com/patternfly-labs/react-form-wizard/tree/mai
    git clone git@github.com:patternfly-labs/react-form-wizard.git
    ```
 
-   If you plan on contributing, please fork the repo and create a pull request using your fork.
+   > If you plan on contributing, please fork the repo and create a pull request using your fork.
 
 2. Install dependencies
 
