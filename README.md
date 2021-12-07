@@ -60,7 +60,7 @@ See the [examples](https://github.com/patternfly-labs/react-form-wizard/tree/mai
 
 ## Development
 
-1. Clone the patternfly labs react form wizard repository.
+1. Clone the repo
 
    ```
    git clone git@github.com:patternfly-labs/react-form-wizard.git
