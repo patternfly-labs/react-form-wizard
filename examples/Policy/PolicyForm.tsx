@@ -1,5 +1,7 @@
 import { Button } from '@patternfly/react-core'
+import get from 'get-value'
 import { Fragment, useMemo } from 'react'
+import set from 'set-value'
 import {
     FormWizardArrayInput,
     FormWizardCheckbox,
@@ -10,12 +12,12 @@ import {
     FormWizardRadioGroup,
     FormWizardSection,
     FormWizardSelect,
+    FormWizardSelector,
     FormWizardStep,
     FormWizardTextDetail,
     FormWizardTextInput,
 } from '../../src'
-import { Placement } from '../Application/AppForm'
-import PolicyTemplate from './PolicyTemplate.hbs'
+import { FormWizardItemContext } from '../../src/contexts/FormWizardItemContext'
 import { Specifications } from './templates'
 
 export function PolicyForm() {
@@ -73,83 +75,130 @@ export function PolicyForm() {
         <FormWizardPage
             title="Create policy"
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
-            template={PolicyTemplate}
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Governance' }]}
-            defaultData={{
-                apiVersion: 'policy.open-cluster-management.io/v1',
-                kind: 'Policy',
-                metadata: { name: '', namespace: '' },
-                spec: { remediationAction: 'inform' },
-            }}
+            defaultData={[
+                {
+                    apiVersion: 'policy.open-cluster-management.io/v1',
+                    kind: 'Policy',
+                    metadata: { name: '', namespace: '' },
+                    spec: { remediationAction: 'inform' },
+                },
+                { apiVersion: 'apps.open-cluster-management.io/v1', kind: 'PlacementRule' },
+                {
+                    apiVersion: 'policy.open-cluster-management.io/v1',
+                    kind: 'PlacementBinding',
+                    placementRef: {
+                        name: 'placement-policy-grc',
+                        kind: 'PlacementRule',
+                        apiGroup: 'apps.open-cluster-management.io',
+                    },
+                    subjects: [
+                        {
+                            name: 'policy-grc',
+                            kind: 'Policy',
+                            apiGroup: 'policy.open-cluster-management.io',
+                        },
+                    ],
+                },
+            ]}
+            // sync={{
+            //     source: { key: 'kind', value: 'Policy', path: 'metadata.namespace' },
+            //     targets: [
+            //         { key: 'kind', value: 'PlacementBinding', path: 'metadata.namespace' },
+            //         { key: 'kind', value: 'PlacementRule', path: 'metadata.namespace' },
+            //     ],
+            // }}
         >
             <FormWizardStep label="Details">
-                <FormWizardSection label="Details">
-                    <FormWizardTextInput id="metadata.name" label="Name" placeholder="Enter name" required />
-                    <FormWizardSelect
-                        id="metadata.namespace"
-                        label="Namespace"
-                        placeholder="Select namespace"
-                        helperText="The namespace on the hub cluster where the policy resources will be created."
-                        options={namespaces}
-                        required
-                        footer={
-                            <Button variant="link" isInline>
-                                Create new namespace
-                            </Button>
-                        }
-                    />
-                    <FormWizardSelect
-                        id="spec.severity"
-                        label="Severity"
-                        placeholder="Select severity"
-                        options={['Low', 'Medium', 'High']}
-                        required
-                    />
-                    <FormWizardRadioGroup id="spec.remediationAction" path="spec.remediationAction" label="Remediation" required>
-                        <FormWizardRadio
-                            id="inform"
-                            label="Inform"
-                            value="inform"
-                            description="Reports the violation, which requires manual remediation."
+                <FormWizardSelector selectKey="kind" selectValue="Policy">
+                    <FormWizardSection label="Details">
+                        <FormWizardTextInput id="metadata.name" label="Name" placeholder="Enter name" required />
+                        <FormWizardSelect
+                            id="metadata.namespace"
+                            label="Namespace"
+                            placeholder="Select namespace"
+                            helperText="The namespace on the hub cluster where the policy resources will be created."
+                            options={namespaces}
+                            required
+                            footer={
+                                <Button variant="link" isInline>
+                                    Create new namespace
+                                </Button>
+                            }
                         />
-                        <FormWizardRadio
-                            id="enforce"
-                            label="Enforce"
-                            value="enforce"
-                            description="Automatically runs remediation action that is defined in the source, if this feature is supported."
+                        <FormWizardRadioGroup id="spec.remediationAction" path="spec.remediationAction" label="Remediation" required>
+                            <FormWizardRadio
+                                id="inform"
+                                label="Inform"
+                                value="inform"
+                                description="Reports the violation, which requires manual remediation."
+                            />
+                            <FormWizardRadio
+                                id="enforce"
+                                label="Enforce"
+                                value="enforce"
+                                description="Automatically runs remediation action that is defined in the source, if this feature is supported."
+                            />
+                        </FormWizardRadioGroup>
+                        <FormWizardCheckbox
+                            id="spec.disabled"
+                            label="Disable policy"
+                            helperText="Select to disable the policy from being propagated to the managed cluster."
                         />
-                    </FormWizardRadioGroup>
-                    <FormWizardCheckbox
-                        id="spec.disabled"
-                        label="Disable policy"
-                        helperText="Select to disable the policy from being propagated to the managed cluster."
-                    />
-                </FormWizardSection>
+                    </FormWizardSection>
+                </FormWizardSelector>
             </FormWizardStep>
 
             <FormWizardStep label="Specification">
-                <FormWizardSection
-                    label="Specification"
-                    description="A policy contains multiple templates that create policy resources on managed clusters."
-                >
-                    <FormWizardArrayInput
-                        id="spec.policy-templates"
-                        placeholder="Add policy template"
-                        dropdownItems={Specifications.map((specification) => {
-                            return {
-                                label: specification.description,
-                                action: () => specification.replacements.policyTemplates,
-                            }
-                        })}
-                        collapsedText={
-                            <Fragment>
-                                <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
-                                <FormWizardTextDetail id="objectDefinition.spec.object-templates.0.objectDefinition.kind" /> -{' '}
-                                <FormWizardTextDetail id="objectDefinition.metadata.name" />
-                            </Fragment>
-                        }
-                    >
-                        {/* <FormWizardSelect
+                <FormWizardSelector selectKey="kind" selectValue="Policy">
+                    <FormWizardItemContext.Consumer>
+                        {(policy) => (
+                            <FormWizardSection
+                                label="Specification"
+                                description="A policy contains multiple templates that create policy resources on managed clusters."
+                            >
+                                <FormWizardArrayInput
+                                    id="spec.policy-templates"
+                                    placeholder="Add policy template"
+                                    dropdownItems={Specifications.map((specification) => {
+                                        return {
+                                            label: specification.description,
+                                            action: () => {
+                                                for (const group of ['categories', 'standards', 'controls']) {
+                                                    const existingValue: string = get(
+                                                        policy,
+                                                        `metadata.annotations.policy\\.open-cluster-management\\.io/${group}`,
+                                                        ''
+                                                    )
+                                                    const addValue: string = get(specification, `replacements.${group}`, '')
+                                                    const newValue: string = existingValue
+                                                        .split(',')
+                                                        .concat(addValue.split(','))
+                                                        .map((v) => v.trim())
+                                                        .filter((value, index, array) => array.indexOf(value) === index)
+                                                        .filter((value) => value)
+                                                        .join(', ')
+                                                    set(
+                                                        policy,
+                                                        `metadata.annotations.policy\\.open-cluster-management\\.io/${group}`,
+                                                        newValue,
+                                                        { preservePaths: false }
+                                                    )
+                                                }
+
+                                                return specification.replacements.policyTemplates
+                                            },
+                                        }
+                                    })}
+                                    collapsedText={
+                                        <Fragment>
+                                            <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
+                                            <FormWizardTextDetail id="objectDefinition.spec.object-templates.0.objectDefinition.kind" /> -{' '}
+                                            <FormWizardTextDetail id="objectDefinition.metadata.name" />
+                                        </Fragment>
+                                    }
+                                >
+                                    {/* <FormWizardSelect
                             id="template"
                             label="Template"
                             keyPath="name"
@@ -157,64 +206,75 @@ export function PolicyForm() {
                             options={specifications}
                             required
                         /> */}
-                        <FormWizardTextDetail id="objectDefinition.kind" />
-                        <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
-                        <FormWizardSection
-                            label="Namespace selector"
-                            hidden={(template: any) => template?.objectDefinition?.spec?.namespaceSelector === undefined}
-                        >
-                            <FormWizardLabels id="objectDefinition.spec.namespaceSelector.include" label="Include namespaces" />
-                            <FormWizardLabels id="objectDefinition.spec.namespaceSelector.exclude" label="Exclude namespaces" />
-                        </FormWizardSection>
-                        <FormWizardHidden
-                            hidden={(template: any) =>
-                                template?.objectDefinition?.spec?.['object-templates']?.[0]?.objectDefinition?.kind !== 'LimitRange'
-                            }
-                        >
-                            <FormWizardSection label="Object templates">
-                                <FormWizardArrayInput
-                                    id="objectDefinition.spec.object-templates"
-                                    placeholder="Add resource template"
-                                    collapsedText={
-                                        <Fragment>
-                                            <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
-                                            <FormWizardTextDetail id="objectDefinition.metadata.name" />
-                                        </Fragment>
-                                    }
-                                >
                                     <FormWizardTextDetail id="objectDefinition.kind" />
                                     <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
-                                    <FormWizardArrayInput
-                                        id="objectDefinition.spec.limits"
-                                        label="Limits"
-                                        placeholder="Add limit"
-                                        collapsedText={
-                                            <Fragment>
-                                                <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
-                                                <FormWizardTextDetail id="objectDefinition.metadata.name" />
-                                            </Fragment>
+                                    <FormWizardSelect
+                                        id="spec.severity"
+                                        label="Severity"
+                                        placeholder="Select severity"
+                                        options={['Low', 'Medium', 'High']}
+                                        required
+                                    />
+                                    <FormWizardSection
+                                        label="Namespace selector"
+                                        hidden={(template: any) => template?.objectDefinition?.spec?.namespaceSelector === undefined}
+                                    >
+                                        <FormWizardLabels id="objectDefinition.spec.namespaceSelector.include" label="Include namespaces" />
+                                        <FormWizardLabels id="objectDefinition.spec.namespaceSelector.exclude" label="Exclude namespaces" />
+                                    </FormWizardSection>
+                                    <FormWizardHidden
+                                        hidden={(template: any) =>
+                                            template?.objectDefinition?.spec?.['object-templates']?.[0]?.objectDefinition?.kind !==
+                                            'LimitRange'
                                         }
                                     >
-                                        <FormWizardTextInput
-                                            id="default.memory"
-                                            label="Memory limit"
-                                            placeholder="Enter memory limit"
-                                            required
-                                            helperText="Examples: 512Mi, 2Gi"
-                                        />
-                                        <FormWizardTextInput
-                                            id="defaultRequest.memory"
-                                            label="Memory request"
-                                            placeholder="Enter memory request"
-                                            required
-                                            helperText="Examples: 512Mi, 2Gi"
-                                        />
-                                    </FormWizardArrayInput>
+                                        <FormWizardSection label="Object templates">
+                                            <FormWizardArrayInput
+                                                id="objectDefinition.spec.object-templates"
+                                                placeholder="Add resource template"
+                                                collapsedText={
+                                                    <Fragment>
+                                                        <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
+                                                        <FormWizardTextDetail id="objectDefinition.metadata.name" />
+                                                    </Fragment>
+                                                }
+                                            >
+                                                <FormWizardTextDetail id="objectDefinition.kind" />
+                                                <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
+                                                <FormWizardArrayInput
+                                                    id="objectDefinition.spec.limits"
+                                                    label="Limits"
+                                                    placeholder="Add limit"
+                                                    collapsedText={
+                                                        <Fragment>
+                                                            <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
+                                                            <FormWizardTextDetail id="objectDefinition.metadata.name" />
+                                                        </Fragment>
+                                                    }
+                                                >
+                                                    <FormWizardTextInput
+                                                        id="default.memory"
+                                                        label="Memory limit"
+                                                        placeholder="Enter memory limit"
+                                                        required
+                                                        helperText="Examples: 512Mi, 2Gi"
+                                                    />
+                                                    <FormWizardTextInput
+                                                        id="defaultRequest.memory"
+                                                        label="Memory request"
+                                                        placeholder="Enter memory request"
+                                                        required
+                                                        helperText="Examples: 512Mi, 2Gi"
+                                                    />
+                                                </FormWizardArrayInput>
+                                            </FormWizardArrayInput>
+                                        </FormWizardSection>
+                                    </FormWizardHidden>
                                 </FormWizardArrayInput>
                             </FormWizardSection>
-                        </FormWizardHidden>
-                    </FormWizardArrayInput>
-                </FormWizardSection>
+                        )}
+                    </FormWizardItemContext.Consumer>
+                </FormWizardSelector>
             </FormWizardStep>
 
             {/* <FormWizardStep label="Specification">
@@ -248,7 +308,42 @@ export function PolicyForm() {
             </InputStep> */}
 
             <FormWizardStep label="Placement">
-                <Placement />
+                {/* I want to
+                <Button variant="secondary">Create a new placement rule</Button>
+                <Button variant="secondary">Add to an exiting policy set</Button>
+                <Button variant="secondary">Place on local-cluster</Button>
+                <Button variant="secondary">Place on local-cluster and managed clusters</Button> */}
+                <FormWizardSection
+                    label="Placement bindings"
+                    description="Policies are applied to clusters using placement bindings. The placement binding can contain multiple policies."
+                >
+                    <FormWizardArrayInput
+                        id="placementBindings"
+                        path={null}
+                        placeholder="Add placement binding"
+                        collapsedText={
+                            <Fragment>
+                                <FormWizardTextDetail id="metadata.name" />
+                            </Fragment>
+                        }
+                    >
+                        <FormWizardTextInput id="metadata.name" label="Name" required />
+                    </FormWizardArrayInput>
+                </FormWizardSection>
+                <FormWizardSection label="Placement rules" description="Placement rules determine which clusters a policy will be applied.">
+                    <FormWizardArrayInput
+                        id="placementRules"
+                        path={null}
+                        placeholder="Add placement rule"
+                        collapsedText={
+                            <Fragment>
+                                <FormWizardTextDetail id="metadata.name" />
+                            </Fragment>
+                        }
+                    >
+                        <FormWizardTextInput id="metadata.name" label="Name" required />
+                    </FormWizardArrayInput>
+                </FormWizardSection>
             </FormWizardStep>
         </FormWizardPage>
     )

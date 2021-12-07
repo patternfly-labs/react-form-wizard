@@ -26,7 +26,8 @@ import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 export function FormWizardArrayInput(props: {
     id: string
     label?: string
-    path?: string
+    path?: string | null
+    filter?: (item: any) => boolean
     children: ReactNode
     dropdownItems?: { label: string; action: () => object }[]
     placeholder: string
@@ -35,14 +36,17 @@ export function FormWizardArrayInput(props: {
     sortable?: boolean
 }) {
     const id = props.id
-    const path = props.path ?? id
+    const path = props.path !== undefined ? props.path : id
 
     const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
 
     const formWizardContext = useContext(FormWizardContext)
     const item = useContext(FormWizardItemContext)
     let values = get(item, path) as object[]
+
     if (!Array.isArray(values)) values = []
+
+    if (props.filter) values = values.filter(props.filter)
 
     const addItem = useCallback(
         (newItem: object | object[]) => {
@@ -52,8 +56,7 @@ export function FormWizardArrayInput(props: {
             } else {
                 newArray.push(newItem as never)
             }
-
-            set(item, path, newArray)
+            set(item, path, newArray, { preservePaths: false })
             formWizardContext.updateContext()
         },
         [values, item, path, formWizardContext]

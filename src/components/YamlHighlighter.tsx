@@ -1,11 +1,17 @@
 import { Fragment } from 'react'
+import YAML from 'yaml'
 
-export function YamlHighlighter(props: { yaml: string }) {
-    // const [yaml, setYaml] = useState(props.yaml)
+export function YamlHighlighter(props: { value: object }) {
+    let yaml: string
+    if (Array.isArray(props.value)) {
+        yaml = props.value.map(YAML.stringify).join('---\n')
+    } else {
+        yaml = YAML.stringify(props.value)
+    }
     return (
         <pre>
             <small>
-                {props.yaml.split('\n').map((line, index) => {
+                {yaml.split('\n').map((line, index) => {
                     if (line === '---') {
                         return (
                             <div key={index} style={{ color: '#a0a' }}>
