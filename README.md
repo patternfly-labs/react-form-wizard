@@ -17,7 +17,7 @@ A wizard contains steps which contain sections which contain input controls.
    <FormWizardStep label="Details">
       <FormWizardSection label="Details" prompt="Enter the details">
           <FormWizardTextInput path="name" label="Name" required />
-          <FormWizardSelect path="namespace" label="Namespace" options={['default']} required />
+          <FormWizardSelect path="namespace" label="Namespace" options={['default']} />
       </FormWizardSection>
    </FormWizardStep>
 </FormWizardPage>
@@ -39,7 +39,7 @@ There is a special control for editing arrays of items.
 ```
 <FormWizardArrayInput path="resources" placeholder="Add new resource">
    <FormWizardTextInput path="metadata.name" label="Name" required />
-   <FormWizardTextInput path="metadata.namespace" label="Namespace" />
+   <FormWizardSelect path="metadata.namespace" label="Namespace" options={['default']} />
 </FormWizardArrayInput>
 ```
 
