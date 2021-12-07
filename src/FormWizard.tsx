@@ -164,19 +164,19 @@ function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template
                     >
                         <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
                             <PageSection>
-                                <YamlHighlighter value={YAML.parse(props.template(props.data))} />
+                                <YamlHighlighter yaml={props.template(props.data)} />
                             </PageSection>
                         </Tab>
                         <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
                             <PageSection>
-                                <YamlHighlighter value={props.data as any} />
+                                <YamlHighlighter yaml={YAML.stringify(props.data)} />
                             </PageSection>
                         </Tab>
                     </Tabs>
                 </div>
             ) : (
                 <PageSection>
-                    <YamlHighlighter value={props.template ? YAML.parse(props.template(props.data)) : props.data} />
+                    <YamlHighlighter yaml={props.template ? props.template(props.data) : YAML.stringify(props.data)} />
                 </PageSection>
             )}
         </DrawerPanelContent>
@@ -282,7 +282,7 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
             component: (
                 <Stack hasGutter>
                     <FormAlert style={{ paddingBottom: 16 }}>
-                        <Alert variant="danger" title="Fix validation errors before summitting." isInline isPlain />
+                        <Alert variant="danger" title="Fix validation errors." isInline isPlain />
                     </FormAlert>
                     <FormWizardDetailsMode>{props.children}</FormWizardDetailsMode>
                 </Stack>
