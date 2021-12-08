@@ -37,7 +37,7 @@ export function FormWizardSection(props: FormWizardSectionProps) {
         return (
             <Fragment>
                 <Title headingLevel="h2">{label}</Title>
-                <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
+                <DescriptionList id={props.id} isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
                     {props.children}
                 </DescriptionList>
             </Fragment>

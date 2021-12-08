@@ -6,6 +6,8 @@ import {
     DataListItem,
     DataListItemCells,
     DataListItemRow,
+    DescriptionList,
+    DescriptionListTerm,
     Divider,
     Dropdown,
     DropdownItem,
@@ -72,34 +74,42 @@ export function FormWizardArrayInput(props: {
     )
 
     if (formWizardContext.mode === InputMode.Details) {
+        if (values.length === 0) {
+            return <Fragment />
+        }
         return (
-            <DataList aria-label="" isCompact>
-                {values.map((value, index) => (
-                    <FormWizardItemContext.Provider key={index} value={value}>
-                        <DataListItem aria-labelledby={`item-${index}`}>
-                            <DataListItemRow>
-                                <DataListItemCells
-                                    dataListCells={[
-                                        <DataListCell key="primary content">
-                                            <Stack id={`item-${index}`}>
-                                                {typeof props.collapsedContent === 'string' ? (
-                                                    <FormWizardTextDetail
-                                                        id={props.collapsedContent}
-                                                        path={props.collapsedContent}
-                                                        placeholder={props.collapsedPlaceholder}
-                                                    />
-                                                ) : (
-                                                    props.collapsedContent
-                                                )}
-                                            </Stack>
-                                        </DataListCell>,
-                                    ]}
-                                />
-                            </DataListItemRow>
-                        </DataListItem>
-                    </FormWizardItemContext.Provider>
-                ))}
-            </DataList>
+            <Fragment>
+                <DescriptionList>
+                    <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                </DescriptionList>
+                <DataList aria-label="" isCompact id={props.id}>
+                    {values.map((value, index) => (
+                        <FormWizardItemContext.Provider key={index} value={value}>
+                            <DataListItem aria-labelledby={`item-${index}`}>
+                                <DataListItemRow>
+                                    <DataListItemCells
+                                        dataListCells={[
+                                            <DataListCell key="primary content">
+                                                <Stack id={`item-${index}`}>
+                                                    {typeof props.collapsedContent === 'string' ? (
+                                                        <FormWizardTextDetail
+                                                            id={props.collapsedContent}
+                                                            path={props.collapsedContent}
+                                                            placeholder={props.collapsedPlaceholder}
+                                                        />
+                                                    ) : (
+                                                        props.collapsedContent
+                                                    )}
+                                                </Stack>
+                                            </DataListCell>,
+                                        ]}
+                                    />
+                                </DataListItemRow>
+                            </DataListItem>
+                        </FormWizardItemContext.Provider>
+                    ))}
+                </DataList>
+            </Fragment>
         )
     }
     return (

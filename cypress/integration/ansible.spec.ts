@@ -14,7 +14,7 @@ describe('ansible wizard', () => {
     })
 
     it('install', () => {
-        cy.get('#install-secret').click().get('#my-ansible-creds').click()
+        cy.get('#install-secret').click().get('#my-install-ansible-creds').click()
 
         cy.get('#install-prehooks').within(() => {
             cy.contains('Add job template').click()
@@ -40,7 +40,7 @@ describe('ansible wizard', () => {
     })
 
     it('upgrade', () => {
-        cy.get('#upgrade-secret').click().get('#my-ansible-creds').click()
+        cy.get('#upgrade-secret').click().get('#my-upgrade-ansible-creds').click()
 
         cy.get('#upgrade-prehooks').within(() => {
             cy.contains('Add job template').click()
@@ -69,6 +69,20 @@ describe('ansible wizard', () => {
         cy.get('#name').contains('my-ansible-autmation-template')
         cy.get('#namespace').contains('default')
 
+        cy.get('#install').within(() => {
+            cy.get('#install-secret').contains('my-install-ansible-creds')
+            cy.get('#install-prehooks').contains('pre-install-name')
+            cy.get('#install-prehooks').contains('pre-install-name')
+            cy.get('#install-posthooks').contains('post-install-name')
+        })
+
+        cy.get('#upgrade').within(() => {
+            cy.get('#upgrade-secret').contains('my-upgrade-ansible-creds')
+            cy.get('#upgrade-prehooks').contains('pre-upgrade-name')
+            cy.get('#upgrade-prehooks').contains('pre-upgrade-name')
+            cy.get('#upgrade-posthooks').contains('post-upgrade-name')
+        })
+
         cy.contains('Submit').click()
     })
 
@@ -79,12 +93,12 @@ describe('ansible wizard', () => {
             metadata: { name: 'my-ansible-autmation-template', namespace: 'default' },
             spec: {
                 install: {
-                    towerAuthSecret: 'my-ansible-creds',
+                    towerAuthSecret: 'my-install-ansible-creds',
                     prehook: [{ name: 'pre-install-name', extra_vars: { 'pre-install-variable': 'pre-install-value' } }],
                     posthook: [{ name: 'post-install-name', extra_vars: { 'post-install-variable': 'post-install-value' } }],
                 },
                 upgrade: {
-                    towerAuthSecret: 'my-ansible-creds',
+                    towerAuthSecret: 'my-upgrade-ansible-creds',
                     prehook: [{ name: 'pre-upgrade-name', extra_vars: { 'pre-upgrade-variable': 'pre-upgrade-value' } }],
                     posthook: [{ name: 'post-upgrade-name', extra_vars: { 'post-upgrade-variable': 'post-upgrade-value' } }],
                 },

@@ -13,7 +13,7 @@ export function AnsibleExample() {
         },
         [history]
     )
-    const credentials = useMemo(() => ['my-ansible-creds'], [])
+    const credentials = useMemo(() => ['my-install-ansible-creds', 'my-upgrade-ansible-creds'], [])
     const namespaces = useMemo(() => ['default'], [])
     return <AnsibleWizard onSubmit={onSubmit} credentials={credentials} namespaces={namespaces} />
 }

@@ -76,7 +76,7 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
             </Step>
 
             <Step label="Upgrade">
-                <Section id="install" label="Upgrade" prompt="Upgrade Ansible job templates">
+                <Section id="upgrade" label="Upgrade" prompt="Upgrade Ansible job templates">
                     <Select
                         id="upgrade-secret"
                         path="spec.upgrade.towerAuthSecret"
