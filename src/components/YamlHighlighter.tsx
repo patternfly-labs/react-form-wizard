@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import YAML from 'yaml'
 
 const color = {
-    background: 'rgb(33, 36, 39)',
-    divider: '#a0a', // '#a0a'
-    colon: '#789', // '#999'
-    variable: '#29f', // '#04c'
-    value: '#f80', // '#c50'
+    background: 'rgb(21, 21, 21)',
+    divider: 'rgb(212, 212, 212)', // '#a0a'
+    colon: 'rgb(212, 212, 212)', // '#999'
+    variable: 'rgb(115, 188, 247)', // '#04c'
+    value: 'rgb(240, 171, 0)', // '#c50'
 }
 
 export function YamlHighlighter(props: { yaml: string; setData?: (data: any) => void }) {
