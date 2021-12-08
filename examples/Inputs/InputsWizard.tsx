@@ -1,5 +1,7 @@
 import {
+    FormWizardArrayInput,
     FormWizardCheckbox as Checkbox,
+    FormWizardKeyValue,
     FormWizardLabels as Labels,
     FormWizardPage as Wizard,
     FormWizardRadio as Radio,
@@ -58,11 +60,25 @@ export function InputsWizard() {
                 </Section>
             </Step>
 
-            <Step label="Metadata">
-                <Section label="Metadata input example">
-                    <TextInput id="metadata.name" label="Name" required />
-                    <Select id="metadata.namespace" label="Namespace" required options={['namespace-1', 'namespace-2']} />
-                    <Labels id="metadata.labels" label="Labels" />
+            <Step label="Labels">
+                <Section label="Label input example">
+                    <Labels id="labels" label="Labels" />
+                </Section>
+            </Step>
+
+            <Step label="Key-value pairs">
+                <Section label="Key value input example">
+                    <FormWizardKeyValue id="key-values" label="Key vaue pairs" placeholder="Add key value pair" />
+                </Section>
+            </Step>
+
+            <Step label="Array">
+                <Section label="Array input example">
+                    <FormWizardArrayInput id="resources" label="Resources" path="resources" placeholder="Add resource" collapsedText="TODO">
+                        <TextInput id="metadata.name" label="Name" required />
+                        <Select id="metadata.namespace" label="Namespace" required options={['namespace-1', 'namespace-2']} />
+                        <Labels id="metadata.labels" label="Labels" />
+                    </FormWizardArrayInput>
                 </Section>
             </Step>
         </Wizard>

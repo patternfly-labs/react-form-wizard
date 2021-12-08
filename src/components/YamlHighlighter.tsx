@@ -1,7 +1,6 @@
 import { Fragment } from 'react'
 
 export function YamlHighlighter(props: { yaml: string }) {
-    // const [yaml, setYaml] = useState(props.yaml)
     return (
         <pre>
             <small>
