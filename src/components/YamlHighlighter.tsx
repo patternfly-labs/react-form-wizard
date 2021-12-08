@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import YAML from 'yaml'
 
 const color = {
     background: 'rgb(33, 36, 39)',
@@ -8,13 +9,20 @@ const color = {
     value: '#f80', // '#c50'
 }
 
-export function YamlHighlighter(props: { yaml: string; setData: (data: any) => void }) {
+export function YamlHighlighter(props: { yaml: string; setData?: (data: any) => void }) {
+    const [hasFocus, setHasFocus] = useState(false)
     const [yaml, setYaml] = useState(props.yaml)
     useEffect(() => {
-        setYaml(props.yaml)
-    }, [props.yaml])
+        if (!hasFocus) {
+            setYaml(props.yaml)
+        }
+    }, [props.yaml, hasFocus])
     return (
-        <pre style={{ position: 'relative', height: '100%', width: '100%', padding: 24, backgroundColor: color.background }}>
+        <pre
+            style={{ position: 'relative', height: '100%', width: '100%', padding: 24, backgroundColor: color.background }}
+            onFocus={() => setHasFocus(true)}
+            onBlur={() => setHasFocus(false)}
+        >
             <small>
                 {yaml.split('\n').map((line, index) => {
                     if (line === '---') {
@@ -25,7 +33,7 @@ export function YamlHighlighter(props: { yaml: string; setData: (data: any) => v
                         )
                     }
                     const parts = line.split(':')
-                    if (parts[0] === '') return <div key={index} />
+                    if (parts[0] === '') return <div key={index}>&nbsp;</div>
                     if (parts.length === 1) {
                         return (
                             <div key={index} style={{ color: color.variable }}>
@@ -41,7 +49,7 @@ export function YamlHighlighter(props: { yaml: string; setData: (data: any) => v
                         </div>
                     )
                 })}
-                {/* <textarea
+                <textarea
                     style={{
                         position: 'absolute',
                         top: 0,
@@ -50,26 +58,31 @@ export function YamlHighlighter(props: { yaml: string; setData: (data: any) => v
                         width: '100%',
                         opacity: 0.5,
                         margin: '0 -34 -24 0',
-                        padding: 0,
+                        padding: 24,
                         border: 0,
                         backgroundColor: 'transparent',
                         whiteSpace: 'pre',
                         overflowWrap: 'normal',
                         overflowX: 'hidden',
                         color: 'transparent',
-                        caretColor: 'black',
+                        caretColor: 'white',
                     }}
                     value={yaml}
                     onChange={(e) => {
                         try {
-                            setYaml(e.target.value)
-                            const data = YAML.parse(e.target.value)
-                            props.setData(data)
+                            if (!e.target.value) {
+                                setYaml('')
+                                props.setData?.({})
+                            } else {
+                                setYaml(e.target.value)
+                                const data = YAML.parse(e.target.value)
+                                props.setData?.(data)
+                            }
                         } catch {
                             // DO NOTHING
                         }
                     }}
-                /> */}
+                />
             </small>
         </pre>
     )

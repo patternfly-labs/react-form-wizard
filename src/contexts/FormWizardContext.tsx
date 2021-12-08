@@ -19,7 +19,7 @@ export interface IFormWizardContext {
      * updateContext updates the input context state.
      * This should be called by the input components when they update state.
      */
-    updateContext: () => void
+    updateContext: (data?: any) => void
 
     mode: InputMode
 

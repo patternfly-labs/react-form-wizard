@@ -10,16 +10,24 @@ import {
     FormWizardTextInput as TextInput,
 } from '../../src'
 
-export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: string[]; namespaces: string[] }) {
+export function AnsibleWizard(props: {
+    onSubmit?: FormSubmit
+    credentials: string[]
+    namespaces: string[]
+    data?: any
+    breadcrumb?: { label: string; to?: string }[]
+}) {
     return (
         <Wizard
             title="Create Ansible automation template"
-            breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
+            breadcrumb={props.breadcrumb}
             onSubmit={props.onSubmit}
-            defaultData={{
-                apiVersion: 'cluster.open-cluster-management.io/v1beta1',
-                kind: 'ClusterCurator',
-            }}
+            defaultData={
+                props.data ?? {
+                    apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+                    kind: 'ClusterCurator',
+                }
+            }
         >
             <Step label="Details">
                 <Section label="Details" prompt="Configure the automation template">
