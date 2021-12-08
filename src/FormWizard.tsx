@@ -32,7 +32,7 @@ import {
     WizardStep,
 } from '@patternfly/react-core'
 import Handlebars, { HelperOptions } from 'handlebars'
-import { Children, isValidElement, ReactNode, useCallback, useContext, useState } from 'react'
+import { Children, Fragment, isValidElement, ReactNode, useCallback, useContext, useState } from 'react'
 import YAML from 'yaml'
 import { FormWizardStep } from '.'
 import { YamlHighlighter } from './components/YamlHighlighter'
@@ -106,28 +106,28 @@ export function FormWizardPage(props: {
             groupProps={{ sticky: 'top' }}
         >
             {/* <Drawer isExpanded={drawerExpanded} isInline={drawerInline}> */}
-            <Drawer isExpanded={drawerExpanded} isInline>
-                <DrawerContent
-                    panelContent={
-                        <FormWizardPageDrawer data={data} template={template} templateString={props.template} devMode={devMode} />
-                    }
-                >
-                    <DrawerContentBody>
-                        <PageSection
-                            variant="light"
-                            style={{ height: '100%' }}
-                            type={mode === InputMode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
-                            isWidthLimited
-                        >
-                            <FormWizardContext.Provider
-                                value={{
-                                    updateContext: () => setData(JSON.parse(JSON.stringify(data)) as object),
-                                    mode,
-                                    editMode: InputEditMode.Create,
-                                    showValidation,
-                                    setShowValidation,
-                                    onSubmit: props.onSubmit,
-                                }}
+            <FormWizardContext.Provider
+                value={{
+                    updateContext: (newData?: any) => setData(JSON.parse(JSON.stringify(newData ?? data)) as object),
+                    mode,
+                    editMode: InputEditMode.Create,
+                    showValidation,
+                    setShowValidation,
+                    onSubmit: props.onSubmit,
+                }}
+            >
+                <Drawer isExpanded={drawerExpanded} isInline>
+                    <DrawerContent
+                        panelContent={
+                            <FormWizardPageDrawer data={data} template={template} templateString={props.template} devMode={devMode} />
+                        }
+                    >
+                        <DrawerContentBody>
+                            <PageSection
+                                variant="light"
+                                style={{ height: '100%' }}
+                                type={mode === InputMode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
+                                isWidthLimited
                             >
                                 <FormWizardItemContext.Provider value={data}>
                                     {mode === InputMode.Wizard ? (
@@ -138,48 +138,52 @@ export function FormWizardPage(props: {
                                         <FormWizardFormMode>{props.children}</FormWizardFormMode>
                                     )}
                                 </FormWizardItemContext.Provider>
-                            </FormWizardContext.Provider>
-                        </PageSection>
-                    </DrawerContentBody>
-                </DrawerContent>
-            </Drawer>
+                            </PageSection>
+                        </DrawerContentBody>
+                    </DrawerContent>
+                </Drawer>
+            </FormWizardContext.Provider>
         </Page>
     )
 }
 
 function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template?: HandlebarsTemplateDelegate; templateString?: string }) {
     const [activeKey, setActiveKey] = useState<number | string>(0)
+    const formWizardContext = useContext(FormWizardContext)
 
     return (
-        <DrawerPanelContent isResizable={true} colorVariant={DrawerColorVariant.light200} defaultSize="50%">
-            {props.template && props.devMode ? (
-                <div style={{ height: '100%' }}>
-                    <Tabs
-                        activeKey={activeKey}
-                        onSelect={(_event, tabIndex) => setActiveKey(tabIndex)}
-                        isBox
-                        variant="light300"
-                        isFilled
-                        style={{ backgroundColor: 'white' }}
-                    >
-                        <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
-                            <PageSection>
+        <Fragment>
+            <DrawerPanelContent isResizable={true} colorVariant={DrawerColorVariant.light200} defaultSize="50%">
+                {props.template && props.devMode ? (
+                    <div style={{ height: '100%' }}>
+                        <Tabs
+                            activeKey={activeKey}
+                            onSelect={(_event, tabIndex) => setActiveKey(tabIndex)}
+                            isBox
+                            variant="light300"
+                            isFilled
+                            style={{ backgroundColor: 'white' }}
+                        >
+                            <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
                                 <YamlHighlighter yaml={props.template(props.data)} />
-                            </PageSection>
-                        </Tab>
-                        <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
-                            <PageSection>
+                            </Tab>
+                            <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
                                 <YamlHighlighter yaml={YAML.stringify(props.data)} />
-                            </PageSection>
-                        </Tab>
-                    </Tabs>
-                </div>
-            ) : (
-                <PageSection>
-                    <YamlHighlighter yaml={props.template ? props.template(props.data) : YAML.stringify(props.data)} />
-                </PageSection>
-            )}
-        </DrawerPanelContent>
+                            </Tab>
+                        </Tabs>
+                    </div>
+                ) : (
+                    // <PageSection>
+                    <YamlHighlighter
+                        yaml={props.template ? props.template(props.data) : YAML.stringify(props.data)}
+                        setData={(data: any) => {
+                            formWizardContext.updateContext(data)
+                        }}
+                    />
+                    // </PageSection>
+                )}
+            </DrawerPanelContent>
+        </Fragment>
     )
 }
 
