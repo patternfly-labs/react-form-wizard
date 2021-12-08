@@ -37,37 +37,37 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
             </FormWizardStep>
 
             <FormWizardStep label="Install">
-                <FormWizardSelect
-                    id="spec.install.towerAuthSecret"
-                    label="Ansible credentials for install"
-                    helperText="Ansible credentials for the running Ansible jobs during cluster install."
-                    options={props.credentials}
-                    required
-                />
-
                 <FormWizardSection
-                    id="pre-install"
-                    label="Pre-install jobs"
-                    prompt="Pre-install Ansible job templates"
-                    description="Ansible job templates run before cluster installation."
+                    id="install"
+                    label="Install"
+                    prompt="Install Ansible job templates"
+                    // description="Ansible job templates run during cluster installation."
                 >
+                    <FormWizardSelect
+                        id="spec.install.towerAuthSecret"
+                        label="Ansible credentials"
+                        helperText="Ansible credentials for jobs run during cluster install."
+                        options={props.credentials}
+                        required
+                    />
+
                     <FormWizardArrayInput
-                        id="spec.install.prehook"
+                        id="install-prehooks"
+                        path="spec.install.prehook"
+                        label="Pre-install jobs"
+                        description="Ansible job templates run before cluster installation."
                         placeholder="Add job template"
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
                         <AnsibleWizardJobTemplate />
                     </FormWizardArrayInput>
-                </FormWizardSection>
-                <FormWizardSection
-                    id="post-install"
-                    label="Post-install jobs"
-                    prompt="Post-install Ansible job templates"
-                    description="Ansible job templates run after cluster installation."
-                >
+
                     <FormWizardArrayInput
-                        id="spec.install.posthook"
+                        id="install-posthooks"
+                        path="spec.install.posthook"
+                        label="Post-install jobs"
+                        description="Ansible job templates run after cluster installation."
                         placeholder="Add job template"
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
@@ -78,36 +78,35 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
             </FormWizardStep>
 
             <FormWizardStep label="Upgrade">
-                <FormWizardSelect
-                    id="spec.upgrade.towerAuthSecret"
-                    label="Ansible credentials for upgrade"
-                    helperText="Ansible credentials for the running Ansible jobs during cluster upgrade."
-                    options={props.credentials}
-                    required
-                />
                 <FormWizardSection
-                    id="pre-upgrade"
-                    label="Pre-upgrade jobs"
-                    prompt="Pre-upgrade Ansible job templates"
-                    description="Ansible job templates run before cluster upgrade."
+                    id="install"
+                    label="Upgrade"
+                    prompt="Upgrade Ansible job templates"
+                    // description="Ansible job templates run during cluster upgrade."
                 >
+                    <FormWizardSelect
+                        id="spec.upgrade.towerAuthSecret"
+                        label="Ansible credentials"
+                        helperText="Ansible credentials jobs run during cluster upgrade."
+                        options={props.credentials}
+                        required
+                    />
                     <FormWizardArrayInput
-                        id="spec.upgrade.prehook"
+                        id="upgrade-prehooks"
+                        path="spec.upgrade.prehook"
+                        label="Pre-upgrade jobs"
+                        description="Ansible job templates run before cluster upgrade."
                         placeholder="Add job template"
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
                         <AnsibleWizardJobTemplate />
                     </FormWizardArrayInput>
-                </FormWizardSection>
-                <FormWizardSection
-                    id="post-upgrade"
-                    label="Post-upgrade jobs"
-                    prompt="Post-upgrade Ansible job templates"
-                    description="Ansible job templates run after cluster upgrade."
-                >
                     <FormWizardArrayInput
-                        id="spec.upgrade.posthook"
+                        id="upgrade-posthooks"
+                        path="spec.upgrade.posthook"
+                        label="Post-upgrade jobs"
+                        description="Ansible job templates run after cluster upgrade."
                         placeholder="Add job template"
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable

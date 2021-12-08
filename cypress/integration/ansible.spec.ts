@@ -16,7 +16,7 @@ describe('ansible wizard', () => {
     it('install', () => {
         cy.get('#spec\\.install\\.towerAuthSecret-form-group').click().get('#my-ansible-creds').click()
 
-        cy.get('#pre-install').within(() => {
+        cy.get('#install-prehooks').within(() => {
             cy.contains('Add job template').click()
             cy.get('#name').type('pre-install-name')
             cy.contains('Add variable').click()
@@ -26,7 +26,7 @@ describe('ansible wizard', () => {
             })
         })
 
-        cy.get('#post-install').within(() => {
+        cy.get('#install-posthooks').within(() => {
             cy.contains('Add job template').click()
             cy.get('#name').type('post-install-name')
             cy.contains('Add variable').click()
@@ -42,7 +42,7 @@ describe('ansible wizard', () => {
     it('upgrade', () => {
         cy.get('#spec\\.upgrade\\.towerAuthSecret-form-group').click().get('#my-ansible-creds').click()
 
-        cy.get('#pre-upgrade').within(() => {
+        cy.get('#upgrade-prehooks').within(() => {
             cy.contains('Add job template').click()
             cy.get('#name').type('pre-upgrade-name')
             cy.contains('Add variable').click()
@@ -52,7 +52,7 @@ describe('ansible wizard', () => {
             })
         })
 
-        cy.get('#post-upgrade').within(() => {
+        cy.get('#upgrade-posthooks').within(() => {
             cy.contains('Add job template').click()
             cy.get('#name').type('post-upgrade-name')
             cy.contains('Add variable').click()

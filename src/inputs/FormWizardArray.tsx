@@ -14,6 +14,7 @@ import {
     FormAlert,
     FormFieldGroupHeader,
     Stack,
+    Text,
 } from '@patternfly/react-core'
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
@@ -23,10 +24,12 @@ import { FormWizardTextDetail } from '..'
 import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import './FormWizardArray.css'
 
 export function FormWizardArrayInput(props: {
     id: string
     label?: string
+    description?: string
     path?: string | null
     filter?: (item: any) => boolean
     children: ReactNode
@@ -100,10 +103,11 @@ export function FormWizardArrayInput(props: {
         )
     }
     return (
-        <Fragment>
+        <div id={props.id} className="form-wizard-array-input">
             {props.label && (
-                <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16 }}>
-                    {props.label}
+                <div style={{ paddingBottom: 10 }}>
+                    <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
+                    {props.description && <Text component="small">{props.description}</Text>}
                 </div>
             )}
             {values.length === 0 ? (
@@ -115,7 +119,7 @@ export function FormWizardArrayInput(props: {
                         <FormWizardItemContext.Provider key={index} value={value}>
                             <FormWizardFieldGroup
                                 key={index}
-                                id={index.toString()}
+                                id={props.id + index.toString()}
                                 isExpanded={collapsed[index.toString()] !== true}
                                 setIsExpanded={(isExpanded) => {
                                     setCollapsed((expanded) => ({ ...expanded, ...{ [index.toString()]: !isExpanded } }))
@@ -199,7 +203,7 @@ export function FormWizardArrayInput(props: {
                     )
                 })
             )}
-            <div style={{ display: 'flex', alignItems: 'baseline', marginTop: -20, marginBottom: -8, gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                 {/* <div style={{ flexGrow: 1 }} /> */}
                 {!props.dropdownItems ? (
                     <Button
@@ -224,7 +228,7 @@ export function FormWizardArrayInput(props: {
                     </Dropdown2>
                 )}
             </div>
-        </Fragment>
+        </div>
     )
 }
 
