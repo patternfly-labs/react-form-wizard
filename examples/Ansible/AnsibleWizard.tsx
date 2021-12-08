@@ -26,6 +26,7 @@ export function AnsibleWizard(props: {
                 props.data ?? {
                     apiVersion: 'cluster.open-cluster-management.io/v1beta1',
                     kind: 'ClusterCurator',
+                    metadata: {},
                 }
             }
         >
