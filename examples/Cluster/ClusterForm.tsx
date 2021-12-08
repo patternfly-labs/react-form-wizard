@@ -88,7 +88,7 @@ export function ClusterForm() {
                         id="networks"
                         label="Networks"
                         placeholder="Add network"
-                        collapsedText={<FormWizardTextDetail id="clusterCidr" placeholder="Expand to edit the network" />}
+                        collapsedContent={<FormWizardTextDetail id="clusterCidr" placeholder="Expand to edit the network" />}
                     >
                         <FormWizardTextInput id="clusterCidr" label="Cluster network CIDR" />
                         <FormWizardTextInput id="hostPrefix" label="Network host prefix" />
@@ -173,7 +173,7 @@ export function WorkerPoolsStep() {
                 id="workerPools"
                 label="Worker pools"
                 placeholder="Add worker pool"
-                collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to edit the worker pool details" />}
+                collapsedContent={<FormWizardTextDetail id="name" placeholder="Expand to edit the worker pool details" />}
             >
                 <FormWizardTextInput id="name" label="Pool name" />
                 <FormWizardSelect id="zones" label="Zones" options={['default']} />

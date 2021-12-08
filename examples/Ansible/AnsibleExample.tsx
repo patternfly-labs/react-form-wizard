@@ -14,5 +14,6 @@ export function AnsibleExample() {
         [history]
     )
     const credentials = useMemo(() => ['my-ansible-creds'], [])
-    return <AnsibleWizard onSubmit={onSubmit} credentials={credentials} />
+    const namespaces = useMemo(() => ['default'], [])
+    return <AnsibleWizard onSubmit={onSubmit} credentials={credentials} namespaces={namespaces} />
 }

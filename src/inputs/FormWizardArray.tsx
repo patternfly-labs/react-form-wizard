@@ -6,7 +6,6 @@ import {
     DataListItem,
     DataListItemCells,
     DataListItemRow,
-    DescriptionListDescription,
     Divider,
     Dropdown,
     DropdownItem,
@@ -35,8 +34,8 @@ export function FormWizardArrayInput(props: {
     children: ReactNode
     dropdownItems?: { label: string; action: () => object }[]
     placeholder: string
-    collapsedText: ReactNode
-    collapsedDescription?: ReactNode
+    collapsedContent: ReactNode
+    collapsedPlaceholder?: ReactNode
     sortable?: boolean
     newValue?: object
 }) {
@@ -83,13 +82,14 @@ export function FormWizardArrayInput(props: {
                                     dataListCells={[
                                         <DataListCell key="primary content">
                                             <Stack id={`item-${index}`}>
-                                                {typeof props.collapsedText === 'string' ? (
-                                                    <FormWizardTextDetail id={props.collapsedText} path={props.collapsedText} />
+                                                {typeof props.collapsedContent === 'string' ? (
+                                                    <FormWizardTextDetail
+                                                        id={props.collapsedContent}
+                                                        path={props.collapsedContent}
+                                                        placeholder={props.collapsedPlaceholder}
+                                                    />
                                                 ) : (
-                                                    props.collapsedText
-                                                )}
-                                                {props.collapsedDescription && (
-                                                    <DescriptionListDescription>{props.collapsedDescription}</DescriptionListDescription>
+                                                    props.collapsedContent
                                                 )}
                                             </Stack>
                                         </DataListCell>,
@@ -132,16 +132,20 @@ export function FormWizardArrayInput(props: {
                                                 <Alert variant="danger" title="Please fix validation errors." isInline isPlain />
                                             ) : (
                                                 <Fragment>
-                                                    {typeof props.collapsedText === 'string' ? (
-                                                        <FormWizardTextDetail id={props.collapsedText} path={props.collapsedText} />
+                                                    {typeof props.collapsedContent === 'string' ? (
+                                                        <FormWizardTextDetail
+                                                            id={props.collapsedContent}
+                                                            path={props.collapsedContent}
+                                                            placeholder={props.collapsedPlaceholder}
+                                                        />
                                                     ) : (
-                                                        props.collapsedText
+                                                        props.collapsedContent
                                                     )}
                                                 </Fragment>
                                             ),
                                             id: `nested-field-group1-titleText-id-${index}`,
                                         }}
-                                        titleDescription={!hasErrors && props.collapsedDescription ? props.collapsedDescription : undefined}
+                                        // titleDescription={!hasErrors && props.collapsedDescription ? props.collapsedDescription : undefined}
                                         actions={
                                             <Fragment>
                                                 {props.sortable && (

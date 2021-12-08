@@ -7,7 +7,7 @@ export function FormWizardTextDetail(props: {
     id: string
     label?: string
     path?: string
-    placeholder?: string
+    placeholder?: ReactNode
     secret?: boolean
     hidden?: (item: any) => boolean
     children?: ReactNode
@@ -15,7 +15,7 @@ export function FormWizardTextDetail(props: {
     // TODO - Support hiding sercets
     // const [showSecrets, setShowSecrets] = useState(false)
 
-    const value = useInputValue(props, '')
+    const [value] = useInputValue(props, '')
     const hidden = useInputHidden(props)
     if (hidden) return <Fragment />
 

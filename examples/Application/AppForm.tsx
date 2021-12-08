@@ -103,7 +103,7 @@ export function AppForm() {
                     <FormWizardArrayInput
                         id="repositories"
                         placeholder="Add repository"
-                        collapsedText={<FormWizardTextDetail id="url" placeholder="Expand to enter the repository details" />}
+                        collapsedContent={<FormWizardTextDetail id="url" placeholder="Expand to enter the repository details" />}
                     >
                         <FormWizardTiles id="repositoryType" label="Repository type">
                             <FormWizardTile
@@ -532,7 +532,7 @@ export function TimeWindow() {
             <FormWizardArrayInput
                 id="timeWindows"
                 placeholder="Add time range"
-                collapsedText={
+                collapsedContent={
                     <Fragment>
                         <FormWizardTextDetail id="start" placeholder="Expand to enter the variable" />
                         <FormWizardHidden hidden={(item: ITimeRangeVariableData) => item.end === undefined}>

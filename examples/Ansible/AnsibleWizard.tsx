@@ -1,19 +1,18 @@
 import { Fragment } from 'react'
 import {
     FormSubmit,
-    FormWizardArrayInput,
-    FormWizardKeyValue,
-    FormWizardPage,
-    FormWizardSection,
-    FormWizardSelect,
-    FormWizardStep,
-    FormWizardTextDetail,
-    FormWizardTextInput,
+    FormWizardArrayInput as ArrayInput,
+    FormWizardKeyValue as KeyValue,
+    FormWizardPage as Wizard,
+    FormWizardSection as Section,
+    FormWizardSelect as Select,
+    FormWizardStep as Step,
+    FormWizardTextInput as TextInput,
 } from '../../src'
 
-export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: string[] }) {
+export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: string[]; namespaces: string[] }) {
     return (
-        <FormWizardPage
+        <Wizard
             title="Create Ansible automation template"
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
             onSubmit={props.onSubmit}
@@ -22,24 +21,24 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
                 kind: 'ClusterCurator',
             }}
         >
-            <FormWizardStep label="Details">
-                <FormWizardSection label="Details" prompt="Configure the automation template">
-                    <FormWizardTextInput id="name" path="metadata.name" label="Name" required />
-                    <FormWizardSelect
+            <Step label="Details">
+                <Section label="Details" prompt="Configure the automation template">
+                    <TextInput id="name" path="metadata.name" label="Name" required />
+                    <Select
                         id="namespace"
                         path="metadata.namespace"
                         label="Namespace"
                         placeholder="Select the namespace"
                         helperText="The namespace on the hub cluster where the resources will be created."
-                        options={['default']}
+                        options={props.namespaces}
                         required
                     />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Install">
-                <FormWizardSection id="install" label="Install" prompt="Install Ansible job templates">
-                    <FormWizardSelect
+            <Step label="Install">
+                <Section id="install" label="Install" prompt="Install Ansible job templates">
+                    <Select
                         id="install-secret"
                         path="spec.install.towerAuthSecret"
                         label="Ansible credentials"
@@ -48,35 +47,37 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
                         required
                     />
 
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id="install-prehooks"
                         path="spec.install.prehook"
                         label="Pre-install jobs"
                         description="Ansible job templates run before cluster installation."
                         placeholder="Add job template"
-                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
+                        collapsedContent="name"
+                        collapsedPlaceholder="Expand to enter the Ansible job template"
                         sortable
                     >
-                        <AnsibleWizardJobTemplate />
-                    </FormWizardArrayInput>
+                        <JobInputs />
+                    </ArrayInput>
 
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id="install-posthooks"
                         path="spec.install.posthook"
                         label="Post-install jobs"
                         description="Ansible job templates run after cluster installation."
                         placeholder="Add job template"
-                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
+                        collapsedContent="name"
+                        collapsedPlaceholder="Expand to enter the Ansible job template"
                         sortable
                     >
-                        <AnsibleWizardJobTemplate />
-                    </FormWizardArrayInput>
-                </FormWizardSection>
-            </FormWizardStep>
+                        <JobInputs />
+                    </ArrayInput>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Upgrade">
-                <FormWizardSection id="install" label="Upgrade" prompt="Upgrade Ansible job templates">
-                    <FormWizardSelect
+            <Step label="Upgrade">
+                <Section id="install" label="Upgrade" prompt="Upgrade Ansible job templates">
+                    <Select
                         id="upgrade-secret"
                         path="spec.upgrade.towerAuthSecret"
                         label="Ansible credentials"
@@ -84,44 +85,41 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
                         options={props.credentials}
                         required
                     />
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id="upgrade-prehooks"
                         path="spec.upgrade.prehook"
                         label="Pre-upgrade jobs"
                         description="Ansible job templates run before cluster upgrade."
                         placeholder="Add job template"
-                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
+                        collapsedContent="name"
+                        collapsedPlaceholder="Expand to enter the Ansible job template"
                         sortable
                     >
-                        <AnsibleWizardJobTemplate />
-                    </FormWizardArrayInput>
-                    <FormWizardArrayInput
+                        <JobInputs />
+                    </ArrayInput>
+                    <ArrayInput
                         id="upgrade-posthooks"
                         path="spec.upgrade.posthook"
                         label="Post-upgrade jobs"
                         description="Ansible job templates run after cluster upgrade."
                         placeholder="Add job template"
-                        collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
+                        collapsedContent="name"
+                        collapsedPlaceholder="Expand to enter the Ansible job template"
                         sortable
                     >
-                        <AnsibleWizardJobTemplate />
-                    </FormWizardArrayInput>
-                </FormWizardSection>
-            </FormWizardStep>
-        </FormWizardPage>
+                        <JobInputs />
+                    </ArrayInput>
+                </Section>
+            </Step>
+        </Wizard>
     )
 }
 
-function AnsibleWizardJobTemplate() {
+function JobInputs() {
     return (
         <Fragment>
-            <FormWizardTextInput
-                id="name"
-                label="Ansible job template name"
-                placeholder="Enter or select Ansible job template name"
-                required
-            />
-            <FormWizardKeyValue id="extra_vars" label="Extra variables" placeholder="Add variable" />
+            <TextInput id="name" label="Ansible job template name" placeholder="Enter or select Ansible job template name" required />
+            <KeyValue id="extra_vars" label="Extra variables" placeholder="Add variable" />
         </Fragment>
     )
 }

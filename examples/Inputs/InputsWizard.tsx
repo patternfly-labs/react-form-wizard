@@ -74,7 +74,13 @@ export function InputsWizard() {
 
             <Step label="Array">
                 <Section label="Array input example">
-                    <FormWizardArrayInput id="resources" label="Resources" path="resources" placeholder="Add resource" collapsedText="TODO">
+                    <FormWizardArrayInput
+                        id="resources"
+                        label="Resources"
+                        path="resources"
+                        placeholder="Add resource"
+                        collapsedContent="TODO"
+                    >
                         <TextInput id="metadata.name" label="Name" required />
                         <Select id="metadata.namespace" label="Namespace" required options={['namespace-1', 'namespace-2']} />
                         <Labels id="metadata.labels" label="Labels" />

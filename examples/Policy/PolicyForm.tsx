@@ -238,7 +238,7 @@ export function PolicyWizardSpecification() {
                         },
                     }
                 })}
-                collapsedText={
+                collapsedContent={
                     <Fragment>
                         <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
                         <FormWizardTextDetail id="objectDefinition.spec.object-templates.0.objectDefinition.kind" /> -{' '}
@@ -271,7 +271,7 @@ export function PolicyWizardSpecification() {
                         <FormWizardArrayInput
                             id="objectDefinition.spec.object-templates"
                             placeholder="Add resource template"
-                            collapsedText={
+                            collapsedContent={
                                 <Fragment>
                                     <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
                                     <FormWizardTextDetail id="objectDefinition.metadata.name" />
@@ -284,7 +284,7 @@ export function PolicyWizardSpecification() {
                                 id="objectDefinition.spec.limits"
                                 label="Limits"
                                 placeholder="Add limit"
-                                collapsedText={
+                                collapsedContent={
                                     <Fragment>
                                         <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
                                         <FormWizardTextDetail id="objectDefinition.metadata.name" />
@@ -326,7 +326,7 @@ export function PolicyWizardPlacement() {
                     path={null}
                     filter={(resource) => resource.kind === 'PlacementBinding'}
                     placeholder="Add placement binding"
-                    collapsedText="metadata.name"
+                    collapsedContent="metadata.name"
                     newValue={{
                         apiVersion: 'policy.open-cluster-management.io/v1',
                         kind: 'PlacementBinding',
@@ -342,7 +342,7 @@ export function PolicyWizardPlacement() {
                         path="subjects"
                         label="Placement subjects"
                         placeholder="Add placement subject"
-                        collapsedText="name"
+                        collapsedContent="name"
                         newValue={{
                             apiGroup: 'policy.open-cluster-management.io',
                             kind: 'Policy',
@@ -362,7 +362,7 @@ export function PolicyWizardPlacement() {
                     path={null}
                     filter={(resource) => resource.kind === 'PlacementRule'}
                     placeholder="Add placement rule"
-                    collapsedText="metadata.name"
+                    collapsedContent="metadata.name"
                     newValue={{
                         apiVersion: 'policy.open-cluster-management.io/v1',
                         kind: 'PlacementRule',
