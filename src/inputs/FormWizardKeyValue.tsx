@@ -71,7 +71,7 @@ export function FormWizardKeyValue(props: { id: string; label?: string; path?: s
 
     const [collapsed, setCollapsed] = useState(false)
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 0 }}>
+        <div id={props.id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 0 }}>
             <div style={{ display: 'flex', alignItems: 'baseline' }}>
                 {props.label && (
                     <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16 }}>
@@ -111,9 +111,9 @@ export function FormWizardKeyValue(props: { id: string; label?: string; path?: s
                     {pairs.map((pair, index) => {
                         return (
                             <Fragment key={index}>
-                                <TextInput value={pair.key} onChange={(e) => onKeyChange(index, e)} />
+                                <TextInput id="key" value={pair.key} onChange={(e) => onKeyChange(index, e)} />
                                 <span>=</span>
-                                <TextInput value={pair.value} onChange={(e) => onValueChange(index, e)} />
+                                <TextInput id="value" value={pair.value} onChange={(e) => onValueChange(index, e)} />
                                 <Button variant="plain" aria-label="Remove item" onClick={() => onDeleteKey(index)}>
                                     <TrashIcon />
                                 </Button>

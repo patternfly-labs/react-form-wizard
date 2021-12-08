@@ -20,16 +20,20 @@ describe('ansible wizard', () => {
             cy.contains('Add job template').click()
             cy.get('#name').type('pre-install-name')
             cy.contains('Add variable').click()
-            cy.get('#variable').type('pre-install-variable')
-            cy.get('#value').type('pre-install-value')
+            cy.get('#extra_vars').within(() => {
+                cy.get('#key').type('pre-install-variable')
+                cy.get('#value').type('pre-install-value')
+            })
         })
 
         cy.get('#post-install').within(() => {
             cy.contains('Add job template').click()
             cy.get('#name').type('post-install-name')
             cy.contains('Add variable').click()
-            cy.get('#variable').type('post-install-variable')
-            cy.get('#value').type('post-install-value')
+            cy.get('#extra_vars').within(() => {
+                cy.get('#key').type('post-install-variable')
+                cy.get('#value').type('post-install-value')
+            })
         })
 
         cy.contains('Next').click()
@@ -42,16 +46,20 @@ describe('ansible wizard', () => {
             cy.contains('Add job template').click()
             cy.get('#name').type('pre-upgrade-name')
             cy.contains('Add variable').click()
-            cy.get('#variable').type('pre-upgrade-variable')
-            cy.get('#value').type('pre-upgrade-value')
+            cy.get('#extra_vars').within(() => {
+                cy.get('#key').type('pre-upgrade-variable')
+                cy.get('#value').type('pre-upgrade-value')
+            })
         })
 
         cy.get('#post-upgrade').within(() => {
             cy.contains('Add job template').click()
             cy.get('#name').type('post-upgrade-name')
             cy.contains('Add variable').click()
-            cy.get('#variable').type('post-upgrade-variable')
-            cy.get('#value').type('post-upgrade-value')
+            cy.get('#extra_vars').within(() => {
+                cy.get('#key').type('post-upgrade-variable')
+                cy.get('#value').type('post-upgrade-value')
+            })
         })
 
         cy.contains('Next').click()

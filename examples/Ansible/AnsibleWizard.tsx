@@ -1,9 +1,8 @@
-import { Split } from '@patternfly/react-core'
 import { Fragment } from 'react'
 import {
     FormSubmit,
     FormWizardArrayInput,
-    FormWizardHidden,
+    FormWizardKeyValue,
     FormWizardPage,
     FormWizardSection,
     FormWizardSelect,
@@ -11,13 +10,11 @@ import {
     FormWizardTextDetail,
     FormWizardTextInput,
 } from '../../src'
-import AnsibleHandlebars from './Ansible.hbs'
 
-export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[] }) {
+export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: string[] }) {
     return (
         <FormWizardPage
             title="Create Ansible automation template"
-            template={AnsibleHandlebars}
             breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
             onSubmit={props.onSubmit}
             defaultData={{
@@ -60,7 +57,7 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
-                        <AnsibleJobTemplates />
+                        <AnsibleWizardJobTemplate />
                     </FormWizardArrayInput>
                 </FormWizardSection>
                 <FormWizardSection
@@ -75,7 +72,7 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
-                        <AnsibleJobTemplates />
+                        <AnsibleWizardJobTemplate />
                     </FormWizardArrayInput>
                 </FormWizardSection>
             </FormWizardStep>
@@ -100,7 +97,7 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
-                        <AnsibleJobTemplates />
+                        <AnsibleWizardJobTemplate />
                     </FormWizardArrayInput>
                 </FormWizardSection>
                 <FormWizardSection
@@ -115,7 +112,7 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
                         collapsedText={<FormWizardTextDetail id="name" placeholder="Expand to enter the Ansible job template" />}
                         sortable
                     >
-                        <AnsibleJobTemplates />
+                        <AnsibleWizardJobTemplate />
                     </FormWizardArrayInput>
                 </FormWizardSection>
             </FormWizardStep>
@@ -123,7 +120,7 @@ export function AnsibleForm(props: { onSubmit?: FormSubmit; credentials: string[
     )
 }
 
-function AnsibleJobTemplates() {
+function AnsibleWizardJobTemplate() {
     return (
         <Fragment>
             <FormWizardTextInput
@@ -132,25 +129,7 @@ function AnsibleJobTemplates() {
                 placeholder="Enter or select Ansible job template name"
                 required
             />
-            <FormWizardArrayInput
-                id="variables"
-                label="Extra variables"
-                placeholder="Add variable"
-                collapsedText={
-                    <Fragment>
-                        <FormWizardTextDetail id="variable" placeholder="Expand to enter the variable" />
-                        <FormWizardHidden hidden={(item: { variable: string }) => item.variable === undefined}>
-                            &nbsp;=&nbsp;
-                            <FormWizardTextDetail id="value" />
-                        </FormWizardHidden>
-                    </Fragment>
-                }
-            >
-                <Split hasGutter>
-                    <FormWizardTextInput id="variable" label="Variable" placeholder="Enter the variable name" required />
-                    <FormWizardTextInput id="value" label="Value" placeholder="Enter the value for the variable" required />
-                </Split>
-            </FormWizardArrayInput>
+            <FormWizardKeyValue id="extra_vars" label="Extra variables" placeholder="Add variable" />
         </Fragment>
     )
 }
