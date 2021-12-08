@@ -92,7 +92,7 @@ export function FormWizardPage(props: {
                 <PageSection variant="light">
                     <Flex alignItems={{ default: 'alignItemsCenter' }} wrap="noWrap" style={{ flexWrap: 'nowrap', gap: 16 }}>
                         <Title headingLevel="h1">{props.title}</Title>
-                        <Switch label="YAML" isChecked={drawerExpanded} onChange={() => toggleDrawerExpanded()} />
+                        <Switch id="yaml-switch" label="YAML" isChecked={drawerExpanded} onChange={() => toggleDrawerExpanded()} />
                         {process.env.NODE_ENV === 'development' && (
                             <Switch label="FORM" isChecked={isForm} onChange={() => setIsForm(!isForm)} />
                         )}
@@ -153,7 +153,7 @@ function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template
 
     return (
         <Fragment>
-            <DrawerPanelContent isResizable={true} colorVariant={DrawerColorVariant.light200} defaultSize="50%">
+            <DrawerPanelContent isResizable={true} colorVariant={DrawerColorVariant.light200} defaultSize="600px">
                 {props.template && props.devMode ? (
                     <div style={{ height: '100%' }}>
                         <Tabs

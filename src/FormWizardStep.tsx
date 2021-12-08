@@ -7,8 +7,8 @@ export function FormWizardStep(props: { label: string; children: ReactNode; hidd
 
     switch (formWizardContext.mode) {
         case InputMode.Wizard:
-            return <Form>{props.children}</Form>
+            return <Form key={props.label}>{props.children}</Form>
         default:
-            return <Fragment>{props.children}</Fragment>
+            return <Fragment key={props.label}>{props.children}</Fragment>
     }
 }

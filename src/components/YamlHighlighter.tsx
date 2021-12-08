@@ -50,6 +50,7 @@ export function YamlHighlighter(props: { yaml: string; setData?: (data: any) => 
                     )
                 })}
                 <textarea
+                    id="yaml-editor"
                     style={{
                         position: 'absolute',
                         top: 0,
