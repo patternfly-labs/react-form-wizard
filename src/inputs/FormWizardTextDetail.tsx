@@ -37,9 +37,9 @@ export function FormWizardTextDetail(props: {
 
     return (
         <Stack>
-            <DescriptionListGroup id={props.id}>
+            <DescriptionListGroup>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                <DescriptionListDescription>{value}</DescriptionListDescription>
+                <DescriptionListDescription id={props.id}>{value}</DescriptionListDescription>
             </DescriptionListGroup>
             {props.children && <FormWizardIndented>{props.children}</FormWizardIndented>}
         </Stack>

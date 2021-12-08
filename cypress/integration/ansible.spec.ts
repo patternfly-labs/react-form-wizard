@@ -66,6 +66,8 @@ describe('ansible wizard', () => {
     })
 
     it('summary', () => {
+        cy.get('#metadata\\.name').contains('my-ansible-autmation-template')
+
         cy.contains('Submit').click()
     })
 
