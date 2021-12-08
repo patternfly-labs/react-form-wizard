@@ -31,7 +31,7 @@ export function AnsibleWizard(props: {
             }
         >
             <Step label="Details">
-                <Section label="Details" prompt="Configure the automation template">
+                <Section id="details" label="Details" prompt="Configure the automation template">
                     <TextInput id="name" path="metadata.name" label="Name" required />
                     <Select
                         id="namespace"
@@ -127,8 +127,14 @@ export function AnsibleWizard(props: {
 function JobInputs() {
     return (
         <Fragment>
-            <TextInput id="name" label="Ansible job template name" placeholder="Enter or select Ansible job template name" required />
-            <KeyValue id="extra_vars" label="Extra variables" placeholder="Add variable" />
+            <TextInput
+                id="name"
+                path="name"
+                label="Ansible job template name"
+                placeholder="Enter or select Ansible job template name"
+                required
+            />
+            <KeyValue id="extra_vars" path="extra_vars" label="Extra variables" placeholder="Add variable" />
         </Fragment>
     )
 }
