@@ -272,52 +272,53 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
     }
 
     return (
-        <FormWizardInputLabel {...props}>
-            <Select
-                id={`select-${id}`}
-                variant={variant}
-                isOpen={open}
-                onToggle={setOpen}
-                selections={selections}
-                onSelect={onSelect}
-                onClear={props.required ? undefined : onClear}
-                // isCreatable
-                // onCreateOption
-                validated={validated}
-                isGrouped={isGrouped}
-                hasInlineFilter
-                onFilter={onFilter}
-                footer={props.footer}
-                placeholderText={
-                    Array.isArray(selections) ? (
-                        selections.length === 0 ? (
-                            placeholder
+        <div id={id}>
+            <FormWizardInputLabel {...props}>
+                <Select
+                    variant={variant}
+                    isOpen={open}
+                    onToggle={setOpen}
+                    selections={selections}
+                    onSelect={onSelect}
+                    onClear={props.required ? undefined : onClear}
+                    // isCreatable
+                    // onCreateOption
+                    validated={validated}
+                    isGrouped={isGrouped}
+                    hasInlineFilter
+                    onFilter={onFilter}
+                    footer={props.footer}
+                    placeholderText={
+                        Array.isArray(selections) ? (
+                            selections.length === 0 ? (
+                                placeholder
+                            ) : (
+                                <ChipGroup style={{ marginTop: -8, marginBottom: -8 }} numChips={9999}>
+                                    {selections.map((selection) => (
+                                        <Chip isReadOnly key={selection.id}>
+                                            {selection.label}
+                                        </Chip>
+                                    ))}
+                                </ChipGroup>
+                            )
                         ) : (
-                            <ChipGroup style={{ marginTop: -8, marginBottom: -8 }} numChips={9999}>
-                                {selections.map((selection) => (
-                                    <Chip isReadOnly key={selection.id}>
-                                        {selection.label}
-                                    </Chip>
-                                ))}
-                            </ChipGroup>
+                            placeholder
                         )
-                    ) : (
-                        placeholder
-                    )
-                }
-            >
-                {selectOptions.map((option) => (
-                    <SelectOption
-                        key={option.id}
-                        id={option.id}
-                        value={option}
-                        description={option.description}
-                        isDisabled={option.disabled}
-                    >
-                        {option.toString()}
-                    </SelectOption>
-                ))}
-            </Select>
-        </FormWizardInputLabel>
+                    }
+                >
+                    {selectOptions.map((option) => (
+                        <SelectOption
+                            key={option.id}
+                            id={option.id}
+                            value={option}
+                            description={option.description}
+                            isDisabled={option.disabled}
+                        >
+                            {option.toString()}
+                        </SelectOption>
+                    ))}
+                </Select>
+            </FormWizardInputLabel>
+        </div>
     )
 }

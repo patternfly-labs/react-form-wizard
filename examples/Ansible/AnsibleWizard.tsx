@@ -40,7 +40,8 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
             <FormWizardStep label="Install">
                 <FormWizardSection id="install" label="Install" prompt="Install Ansible job templates">
                     <FormWizardSelect
-                        id="spec.install.towerAuthSecret"
+                        id="install-secret"
+                        path="spec.install.towerAuthSecret"
                         label="Ansible credentials"
                         helperText="Ansible credentials for jobs run during cluster install."
                         options={props.credentials}
@@ -76,7 +77,8 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
             <FormWizardStep label="Upgrade">
                 <FormWizardSection id="install" label="Upgrade" prompt="Upgrade Ansible job templates">
                     <FormWizardSelect
-                        id="spec.upgrade.towerAuthSecret"
+                        id="upgrade-secret"
+                        path="spec.upgrade.towerAuthSecret"
                         label="Ansible credentials"
                         helperText="Ansible credentials jobs run during cluster upgrade."
                         options={props.credentials}
