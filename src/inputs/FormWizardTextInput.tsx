@@ -27,7 +27,7 @@ export function FormWizardTextInput(props: FormWizardTextInputProps) {
     if (hidden) return <Fragment />
 
     if (formWizardContext.mode === InputMode.Details) {
-        return <FormWizardTextDetail id={props.id} label={props.label} />
+        return <FormWizardTextDetail id={props.id} path={props.path} label={props.label} />
     }
 
     return (

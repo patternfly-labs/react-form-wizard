@@ -24,9 +24,10 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
         >
             <FormWizardStep label="Details">
                 <FormWizardSection label="Details" prompt="Configure the automation template">
-                    <FormWizardTextInput id="metadata.name" label="Name" required />
+                    <FormWizardTextInput id="name" path="metadata.name" label="Name" required />
                     <FormWizardSelect
-                        id="metadata.namespace"
+                        id="namespace"
+                        path="metadata.namespace"
                         label="Namespace"
                         placeholder="Select the namespace"
                         helperText="The namespace on the hub cluster where the resources will be created."
@@ -37,12 +38,7 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
             </FormWizardStep>
 
             <FormWizardStep label="Install">
-                <FormWizardSection
-                    id="install"
-                    label="Install"
-                    prompt="Install Ansible job templates"
-                    // description="Ansible job templates run during cluster installation."
-                >
+                <FormWizardSection id="install" label="Install" prompt="Install Ansible job templates">
                     <FormWizardSelect
                         id="spec.install.towerAuthSecret"
                         label="Ansible credentials"
@@ -78,12 +74,7 @@ export function AnsibleWizard(props: { onSubmit?: FormSubmit; credentials: strin
             </FormWizardStep>
 
             <FormWizardStep label="Upgrade">
-                <FormWizardSection
-                    id="install"
-                    label="Upgrade"
-                    prompt="Upgrade Ansible job templates"
-                    // description="Ansible job templates run during cluster upgrade."
-                >
+                <FormWizardSection id="install" label="Upgrade" prompt="Upgrade Ansible job templates">
                     <FormWizardSelect
                         id="spec.upgrade.towerAuthSecret"
                         label="Ansible credentials"
