@@ -9,7 +9,6 @@ import {
     Button,
     DescriptionList,
     Drawer,
-    DrawerColorVariant,
     DrawerContent,
     DrawerContentBody,
     DrawerPanelContent,
@@ -35,7 +34,7 @@ import Handlebars, { HelperOptions } from 'handlebars'
 import { Children, Fragment, isValidElement, ReactNode, useCallback, useContext, useState } from 'react'
 import YAML from 'yaml'
 import { FormWizardStep } from '.'
-import { YamlHighlighter } from './components/YamlEditor'
+import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { FormWizardContext, InputEditMode, InputMode } from './contexts/FormWizardContext'
 import { FormWizardItemContext } from './contexts/FormWizardItemContext'
 import { hasValidationErrorsProps, InputCommonProps, isFormWizardHiddenProps } from './inputs/FormWizardInput'
@@ -153,7 +152,7 @@ function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template
 
     return (
         <Fragment>
-            <DrawerPanelContent isResizable={true} colorVariant={DrawerColorVariant.light200} defaultSize="600px">
+            <DrawerPanelContent isResizable={true} defaultSize="600px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
                 {props.template && props.devMode ? (
                     <div style={{ height: '100%' }}>
                         <Tabs
@@ -165,17 +164,17 @@ function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template
                             style={{ backgroundColor: 'white' }}
                         >
                             <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
-                                <YamlHighlighter yaml={props.template(props.data)} />
+                                <YamlEditor data={YamlToObject(props.template(props.data))} />
                             </Tab>
                             <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
-                                <YamlHighlighter yaml={YAML.stringify(props.data)} />
+                                <YamlEditor data={props.data} />
                             </Tab>
                         </Tabs>
                     </div>
                 ) : (
                     // <PageSection>
-                    <YamlHighlighter
-                        yaml={props.template ? props.template(props.data) : YAML.stringify(props.data)}
+                    <YamlEditor
+                        data={props.template ? YamlToObject(props.template(props.data)) : props.data}
                         setData={(data: any) => {
                             formWizardContext.updateContext(data)
                         }}
