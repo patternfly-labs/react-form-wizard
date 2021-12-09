@@ -3,10 +3,10 @@ import YAML from 'yaml'
 
 const color = {
     background: 'rgb(21, 21, 21)',
-    divider: 'rgb(212, 212, 212)', // '#a0a'
-    colon: 'rgb(212, 212, 212)', // '#999'
-    variable: 'rgb(115, 188, 247)', // '#04c'
-    value: 'rgb(240, 171, 0)', // '#c50'
+    divider: 'rgb(212, 212, 212)',
+    colon: 'rgb(212, 212, 212)',
+    variable: 'rgb(115, 188, 247)',
+    value: 'rgb(240, 171, 0)',
 }
 
 export function YamlHighlighter(props: { yaml: string; setData?: (data: any) => void }) {
@@ -67,6 +67,7 @@ export function YamlHighlighter(props: { yaml: string; setData?: (data: any) => 
                         overflowX: 'hidden',
                         color: 'transparent',
                         caretColor: 'white',
+                        resize: 'none',
                     }}
                     value={yaml}
                     onChange={(e) => {
