@@ -492,6 +492,9 @@ export function Placement() {
 export function DeploymentWindow() {
     return (
         <FormWizardSection
+            hidden={(data) => {
+                return data.deployType === 'ArgoCD'
+            }}
             id="deploymentWindow.title"
             label="Deployment window"
             description="Schedule a time window for deployments"
