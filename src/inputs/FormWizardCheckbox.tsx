@@ -1,6 +1,5 @@
-import { Checkbox, DescriptionListDescription, Split } from '@patternfly/react-core'
+import { Checkbox, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Split } from '@patternfly/react-core'
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
-import { CheckIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
@@ -46,12 +45,12 @@ export function FormWizardCheckbox(props: {
     if (props.hidden) return <Fragment />
 
     if (formWizardContext.mode === InputMode.Details) {
-        if (!value) return <Fragment />
+        if (value === undefined) return <Fragment />
         return (
-            <Split hasGutter>
-                <CheckIcon />
-                <DescriptionListDescription>{props.label}</DescriptionListDescription>
-            </Split>
+            <DescriptionListGroup id={props.id}>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription>{value ? 'True' : 'False'}</DescriptionListDescription>
+            </DescriptionListGroup>
         )
     }
 

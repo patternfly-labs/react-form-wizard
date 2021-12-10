@@ -1,4 +1,4 @@
-import { Radio as PfRadio, Stack } from '@patternfly/react-core'
+import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Radio as PfRadio, Stack } from '@patternfly/react-core'
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import get from 'get-value'
 import { Children, createContext, Fragment, isValidElement, ReactElement, ReactNode, useContext } from 'react'
@@ -53,13 +53,18 @@ export function FormWizardRadioGroup(props: {
             if (isValidElement(child)) {
                 const value = child.props.value
                 if (value === state.value) {
-                    selectedChild = child
+                    selectedChild = child.props.label
                 }
             }
         })
 
         if (!selectedChild) return <Fragment />
-        return <Fragment>{selectedChild}</Fragment>
+        return (
+            <DescriptionListGroup id={props.id}>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription>{selectedChild}</DescriptionListDescription>
+            </DescriptionListGroup>
+        )
     }
 
     return (

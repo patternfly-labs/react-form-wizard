@@ -83,24 +83,24 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                     metadata: { name: '', namespace: '' },
                     spec: { remediationAction: 'inform' },
                 },
-                {
-                    apiVersion: 'policy.open-cluster-management.io/v1',
-                    kind: 'PlacementRule',
-                    metadata: {},
-                    spec: {
-                        clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
-                        clusterSelector: {
-                            matchExpressions: [],
-                        },
-                    },
-                },
-                {
-                    apiVersion: 'policy.open-cluster-management.io/v1',
-                    kind: 'PlacementBinding',
-                    metadata: {},
-                    placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
-                    subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
-                },
+                // {
+                //     apiVersion: 'policy.open-cluster-management.io/v1',
+                //     kind: 'PlacementRule',
+                //     metadata: {},
+                //     spec: {
+                //         clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
+                //         clusterSelector: {
+                //             matchExpressions: [],
+                //         },
+                //     },
+                // },
+                // {
+                //     apiVersion: 'policy.open-cluster-management.io/v1',
+                //     kind: 'PlacementBinding',
+                //     metadata: {},
+                //     placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                //     subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
+                // },
             ]}
             // sync={{
             //     source: { key: 'kind', value: 'Policy', path: 'metadata.namespace' },
@@ -362,7 +362,7 @@ export function PolicyWizardPlacement() {
                         newValue={{
                             key: '',
                             operator: 'In',
-                            values: [],
+                            values: [''],
                         }}
                     >
                         <FormWizardTextInput id="key" path="key" label="Label" />
