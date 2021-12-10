@@ -46,9 +46,9 @@ interface IWizard {
 const wizards: IWizard[] = [
     {
         shortName: 'Ansible',
-        name: 'Ansible automation template',
+        name: 'Ansible automation',
         route: RouteE.Ansible,
-        description: 'Cluster management uses Ansible automation templates to run ansible jobs during cluster provisioning and upgrade.',
+        description: 'Cluster management uses Ansible automation to run ansible jobs during cluster provisioning and upgrade.',
     },
     {
         shortName: 'Application',

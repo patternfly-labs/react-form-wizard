@@ -15,7 +15,6 @@ import {
     FormWizardSelector,
     FormWizardStep,
     FormWizardStringArray,
-    FormWizardTextDetail,
     FormWizardTextInput,
 } from '../../src'
 import { FormWizardItemContext } from '../../src/contexts/FormWizardItemContext'
@@ -83,24 +82,6 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                     metadata: { name: '', namespace: '' },
                     spec: { remediationAction: 'inform' },
                 },
-                // {
-                //     apiVersion: 'policy.open-cluster-management.io/v1',
-                //     kind: 'PlacementRule',
-                //     metadata: {},
-                //     spec: {
-                //         clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
-                //         clusterSelector: {
-                //             matchExpressions: [],
-                //         },
-                //     },
-                // },
-                // {
-                //     apiVersion: 'policy.open-cluster-management.io/v1',
-                //     kind: 'PlacementBinding',
-                //     metadata: {},
-                //     placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
-                //     subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
-                // },
             ]}
             // sync={{
             //     source: { key: 'kind', value: 'Policy', path: 'metadata.namespace' },
@@ -154,7 +135,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
 
             <FormWizardStep label="Templates">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
-                    <PolicyWizardSpecification />
+                    <PolicyWizardTemplates />
                 </FormWizardSelector>
             </FormWizardStep>
 
@@ -199,7 +180,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
     )
 }
 
-export function PolicyWizardSpecification() {
+export function PolicyWizardTemplates() {
     const policy = useContext(FormWizardItemContext)
     return (
         <FormWizardSection
@@ -252,54 +233,77 @@ export function PolicyWizardSpecification() {
                 })}
                 collapsedContent="objectDefinition.metadata.name"
             >
-                {/* <FormWizardTextDetail id="objectDefinition.kind" /> */}
                 <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
-                <FormWizardHidden
-                    hidden={(template: any) =>
-                        template?.objectDefinition?.spec?.['object-templates']?.[0]?.objectDefinition?.kind !== 'LimitRange'
-                    }
-                >
+
+                {/* CertificatePolicy */}
+                <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'CertificatePolicy'}>
+                    <FormWizardTextInput id="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
+                </FormWizardHidden>
+
+                {/* IamPolicy */}
+                <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'IamPolicy'}>
+                    {/* TODO FormWizardNumberInput */}
+                    <FormWizardTextInput
+                        id="objectDefinition.spec.maxClusterRoleBindingUsers"
+                        label="Limit cluster role bindings"
+                        required
+                    />
+                </FormWizardHidden>
+
+                {/* LimitRange */}
+                <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ConfigurationPolicy'}>
                     <FormWizardArrayInput
                         id="objectDefinition.spec.object-templates"
                         label="Object templates"
                         placeholder="Add resource template"
                         collapsedContent="objectDefinition.metadata.name"
                     >
-                        {/* <FormWizardTextDetail id="objectDefinition.kind" /> */}
-                        <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
-                        <FormWizardArrayInput
-                            id="objectDefinition.spec.limits"
-                            label="Limits"
-                            placeholder="Add limit"
-                            collapsedContent={'default.memory'}
-                        >
-                            <FormWizardTextInput
-                                id="default.memory"
-                                label="Memory limit"
-                                placeholder="Enter memory limit"
-                                required
-                                helperText="Examples: 512Mi, 2Gi"
-                            />
-                            <FormWizardTextInput
-                                id="defaultRequest.memory"
-                                label="Memory request"
-                                placeholder="Enter memory request"
-                                required
-                                helperText="Examples: 512Mi, 2Gi"
-                            />
-                        </FormWizardArrayInput>
+                        {/* Namespace */}
+                        <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'Namespace'}>
+                            <FormWizardTextInput id="objectDefinition.metadata.name" label="Namespace" required />
+                        </FormWizardHidden>
+
+                        {/* LimitRange */}
+                        <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'LimitRange'}>
+                            <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
+                            <FormWizardArrayInput
+                                id="objectDefinition.spec.limits"
+                                label="Limits"
+                                placeholder="Add limit"
+                                collapsedContent={'default.memory'}
+                            >
+                                <FormWizardTextInput
+                                    id="default.memory"
+                                    label="Memory limit"
+                                    placeholder="Enter memory limit"
+                                    required
+                                    helperText="Examples: 512Mi, 2Gi"
+                                />
+                                <FormWizardTextInput
+                                    id="defaultRequest.memory"
+                                    label="Memory request"
+                                    placeholder="Enter memory request"
+                                    required
+                                    helperText="Examples: 512Mi, 2Gi"
+                                />
+                            </FormWizardArrayInput>
+                        </FormWizardHidden>
                     </FormWizardArrayInput>
                 </FormWizardHidden>
-                <FormWizardStringArray
-                    id="include-namespaces"
-                    path="objectDefinition.spec.namespaceSelector.include"
-                    label="Include namespaces"
-                />
-                <FormWizardStringArray
-                    id="exclude-namespaces"
-                    path="objectDefinition.spec.namespaceSelector.exclude"
-                    label="Exclude namespaces"
-                />
+
+                <FormWizardHidden hidden={(template: any) => template.objectDefinition.spec.namespaceSelector === undefined}>
+                    <FormWizardStringArray
+                        id="include-namespaces"
+                        path="objectDefinition.spec.namespaceSelector.include"
+                        label="Include namespaces"
+                    />
+                    <FormWizardStringArray
+                        id="exclude-namespaces"
+                        path="objectDefinition.spec.namespaceSelector.exclude"
+                        label="Exclude namespaces"
+                    />
+                </FormWizardHidden>
+
                 <FormWizardSelect
                     id="objectDefinition.spec.severity"
                     label="Severity"
@@ -324,6 +328,7 @@ export function PolicyWizardPlacement() {
                     filter={(resource) => resource.kind === 'PlacementRule'}
                     placeholder="Add placement rule"
                     collapsedContent="metadata.name"
+                    collapsedPlaceholder="Expand to enter placement rule"
                     newValue={{
                         apiVersion: 'policy.open-cluster-management.io/v1',
                         kind: 'PlacementRule',
@@ -343,22 +348,13 @@ export function PolicyWizardPlacement() {
                         required
                         helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
                     />
-                    {/* <FormWizardStringArray id="hhh" path="spec.clusterSelector.matchExpressions" /> */}
                     <FormWizardArrayInput
                         id="matchExpressions"
                         label="Match expressions"
                         path="spec.clusterSelector.matchExpressions"
                         placeholder="Add expression"
-                        collapsedContent={
-                            <div>
-                                <FormWizardTextDetail id="key" path="key" />
-                                &nbsp;
-                                <FormWizardTextDetail id="key" path="operator" />
-                                &nbsp;
-                                <FormWizardTextDetail id="key" path="values" />
-                                &nbsp;
-                            </div>
-                        }
+                        collapsedPlaceholder="Expand to enter expression"
+                        collapsedContent={'key'}
                         newValue={{
                             key: '',
                             operator: 'In',
@@ -378,6 +374,7 @@ export function PolicyWizardPlacement() {
                     filter={(resource) => resource.kind === 'PlacementBinding'}
                     placeholder="Add placement binding"
                     collapsedContent="metadata.name"
+                    collapsedPlaceholder="Expand to enter placement binding"
                     newValue={{
                         apiVersion: 'policy.open-cluster-management.io/v1',
                         kind: 'PlacementBinding',

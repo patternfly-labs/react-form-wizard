@@ -119,7 +119,7 @@ export function FormWizardArrayInput(props: {
                         <FormWizardItemContext.Provider key={index} value={value}>
                             <FormWizardFieldGroup
                                 key={index}
-                                id={props.id + '-' + index.toString()}
+                                id={props.id + '-' + (index + 1).toString()}
                                 isExpanded={expanded[index.toString()] === true}
                                 setIsExpanded={(isExpanded) => {
                                     setExpanded((expanded) => ({ ...expanded, ...{ [index.toString()]: isExpanded } }))

@@ -91,9 +91,9 @@ export function FormWizardKeyValue(props: { id: string; label: string; path: str
                 {pairs.map((pair, index) => {
                     return (
                         <Fragment key={index}>
-                            <TextInput id="key" value={pair.key} onChange={(e) => onKeyChange(index, e)} />
+                            <TextInput id={`key-${index + 1}`} value={pair.key} onChange={(e) => onKeyChange(index, e)} />
                             <span>=</span>
-                            <TextInput id="value" value={pair.value} onChange={(e) => onValueChange(index, e)} />
+                            <TextInput id={`value-${index + 1}`} value={pair.value} onChange={(e) => onValueChange(index, e)} />
                             <Button variant="plain" aria-label="Remove item" onClick={() => onDeleteKey(index)}>
                                 <TrashIcon />
                             </Button>

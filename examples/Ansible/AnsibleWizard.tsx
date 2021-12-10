@@ -19,7 +19,7 @@ export function AnsibleWizard(props: {
 }) {
     return (
         <Wizard
-            title="Create Ansible automation template"
+            title="Create Ansible automation"
             breadcrumb={props.breadcrumb}
             onSubmit={props.onSubmit}
             defaultData={
@@ -31,7 +31,12 @@ export function AnsibleWizard(props: {
             }
         >
             <Step label="Details">
-                <Section id="details" label="Details" prompt="Configure the automation template">
+                <Section
+                    id="details"
+                    label="Details"
+                    prompt="Configure the automation"
+                    description="Automation is accomplished by creating a ClusterCurator resource which can be selected during cluster creation to automate ansible jobs."
+                >
                     <TextInput id="name" path="metadata.name" label="Name" required />
                     <Select
                         id="namespace"
