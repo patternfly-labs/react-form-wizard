@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router'
 import { RouteE } from '../Routes'
 import { PolicyWizard } from './PolicyWizard'
@@ -13,5 +13,6 @@ export function PolicyExample() {
         },
         [history]
     )
-    return <PolicyWizard onSubmit={onSubmit} />
+    const namespaces = useMemo(() => ['default'], [])
+    return <PolicyWizard onSubmit={onSubmit} namespaces={namespaces} />
 }

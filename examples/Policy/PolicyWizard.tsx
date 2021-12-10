@@ -1,6 +1,6 @@
 import { Button } from '@patternfly/react-core'
 import get from 'get-value'
-import { Fragment, useContext, useMemo } from 'react'
+import { Fragment, useContext } from 'react'
 import set from 'set-value'
 import {
     FormSubmit,
@@ -21,8 +21,7 @@ import {
 import { FormWizardItemContext } from '../../src/contexts/FormWizardItemContext'
 import { Specifications } from './templates'
 
-export function PolicyWizard(props: { onSubmit?: FormSubmit }) {
-    const namespaces = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
+export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[] }) {
     // const clusterSelectors = useMemo(
     //     () =>
     //         ['cloud: "Amazon"', 'namespace-1', 'namespace-2'].map((selector) => ({
@@ -115,13 +114,14 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit }) {
             <FormWizardStep label="Details">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
                     <FormWizardSection label="Details">
-                        <FormWizardTextInput id="metadata.name" label="Name" placeholder="Enter name" required />
+                        <FormWizardTextInput id="name" path="metadata.name" label="Name" placeholder="Enter name" required />
                         <FormWizardSelect
-                            id="metadata.namespace"
+                            id="namespace"
+                            path="metadata.namespace"
                             label="Namespace"
                             placeholder="Select namespace"
                             helperText="The namespace on the hub cluster where the policy resources will be created."
-                            options={namespaces}
+                            options={props.namespaces}
                             required
                             footer={
                                 <Button variant="link" isInline>
