@@ -33,7 +33,7 @@ import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsForm } from './Credentials/CredentialsForm'
 import { InputsWizard } from './Inputs/InputsWizard'
-import { PolicyWizard } from './Policy/PolicyForm'
+import { PolicyExample } from './Policy/PolicyExample'
 import { RouteE } from './Routes'
 
 interface IWizard {
@@ -109,7 +109,7 @@ export function AppMain() {
         case RouteE.Credentials:
             return <CredentialsForm />
         case RouteE.Policy:
-            return <PolicyWizard />
+            return <PolicyExample />
         case RouteE.Inputs:
             return <InputsWizard />
         case RouteE.Results:

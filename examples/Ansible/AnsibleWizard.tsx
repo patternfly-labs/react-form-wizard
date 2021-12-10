@@ -134,7 +134,7 @@ function JobInputs() {
                 placeholder="Enter or select Ansible job template name"
                 required
             />
-            <KeyValue id="extra_vars" path="extra_vars" label="Extra variables" placeholder="Add variable" />
+            <KeyValue id="extra_vars" path="extra_vars" label="Extra variables" />
         </Fragment>
     )
 }

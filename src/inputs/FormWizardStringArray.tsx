@@ -1,16 +1,24 @@
-import { Button, Chip, ChipGroup, Split, TextInput } from '@patternfly/react-core'
-import { AngleDownIcon, AngleUpIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
+import {
+    Button,
+    Chip,
+    ChipGroup,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Split,
+    TextInput,
+} from '@patternfly/react-core'
+import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, useContext } from 'react'
 import set from 'set-value'
-import { FormWizardContext } from '../contexts/FormWizardContext'
+import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 
 export function FormWizardStringArray(props: {
     id: string
-    label?: string
+    label: string
     path?: string
-    placeholder: string
     map?: (value: any) => string[]
     unmap?: (values: string[]) => any
 }) {
@@ -48,53 +56,49 @@ export function FormWizardStringArray(props: {
         formWizardContext.updateContext()
     }
 
-    const [collapsed, setCollapsed] = useState(false)
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 8 : 0 }}>
-            <div style={{ display: 'flex', alignItems: 'baseline' }}>
-                {props.label && (
-                    <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16 }}>
-                        {props.label}
-                    </div>
-                )}
-                <Button variant="plain" isSmall aria-label="Action" onClick={() => setCollapsed(!collapsed)}>
-                    {collapsed ? <AngleUpIcon /> : <AngleDownIcon />}
-                </Button>
-                {collapsed && (
-                    <ChipGroup>
+    if (formWizardContext.mode === InputMode.Details) {
+        return (
+            <DescriptionListGroup>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription id={props.id}>
+                    <ChipGroup numChips={999}>
                         {values.map((pair, index) => {
                             return <Fragment key={index}>{pair && <Chip isReadOnly>{pair}</Chip>}</Fragment>
                         })}
                     </ChipGroup>
-                )}
+                </DescriptionListDescription>
+            </DescriptionListGroup>
+        )
+    }
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 4 : 0 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16, flexGrow: 1 }}>
+                    {props.label}
+                </div>
+                <Button variant="plain" isSmall aria-label="Action" onClick={onNewKey}>
+                    <PlusIcon />
+                </Button>
             </div>
-            {!collapsed && (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        rowGap: 8,
-                    }}
-                >
-                    {values.map((pair, index) => {
-                        return (
-                            <Split key={index}>
-                                <TextInput value={pair} onChange={(e) => onKeyChange(index, e)} />
-                                <Button variant="plain" aria-label="Remove item" onClick={() => onDeleteKey(index)}>
-                                    <TrashIcon />
-                                </Button>
-                            </Split>
-                        )
-                    })}
-                </div>
-            )}
-            {!collapsed && (
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                    <Button variant="link" isSmall aria-label="Action" onClick={onNewKey}>
-                        <PlusIcon /> &nbsp; {props.placeholder}
-                    </Button>
-                </div>
-            )}
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    rowGap: 0,
+                }}
+            >
+                {values.map((pair, index) => {
+                    return (
+                        <Split key={index}>
+                            <TextInput value={pair} onChange={(e) => onKeyChange(index, e)} />
+                            <Button variant="plain" aria-label="Remove item" onClick={() => onDeleteKey(index)}>
+                                <TrashIcon />
+                            </Button>
+                        </Split>
+                    )
+                })}
+            </div>
         </div>
     )
 }
