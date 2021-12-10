@@ -234,27 +234,62 @@ export function PolicyWizardSpecification() {
                                 })
                             }
 
-                            return specification.replacements.policyTemplates
+                            const copy = JSON.parse(JSON.stringify(specification.replacements.policyTemplates)) as any[]
+
+                            const policyName = get(policy, 'metadata.name')
+                            if (policyName) {
+                                copy.forEach((t) => {
+                                    const name: string = get(t, 'objectDefinition.metadata.name')
+                                    if (name) {
+                                        set(t, 'objectDefinition.metadata.name', name.replace('{{name}}', policyName))
+                                    }
+                                })
+                            }
+
+                            return copy
                         },
                     }
                 })}
-                collapsedContent={
-                    <Fragment>
-                        <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
-                        <FormWizardTextDetail id="objectDefinition.spec.object-templates.0.objectDefinition.kind" /> -{' '}
-                        <FormWizardTextDetail id="objectDefinition.metadata.name" />
-                    </Fragment>
-                }
+                collapsedContent="objectDefinition.metadata.name"
             >
-                <FormWizardTextDetail id="objectDefinition.kind" />
+                {/* <FormWizardTextDetail id="objectDefinition.kind" /> */}
                 <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
-                <FormWizardSelect
-                    id="objectDefinition.spec.severity"
-                    label="Severity"
-                    placeholder="Select severity"
-                    options={['low', 'medium', 'high']}
-                    required
-                />
+                <FormWizardHidden
+                    hidden={(template: any) =>
+                        template?.objectDefinition?.spec?.['object-templates']?.[0]?.objectDefinition?.kind !== 'LimitRange'
+                    }
+                >
+                    <FormWizardArrayInput
+                        id="objectDefinition.spec.object-templates"
+                        label="Object templates"
+                        placeholder="Add resource template"
+                        collapsedContent="objectDefinition.metadata.name"
+                    >
+                        {/* <FormWizardTextDetail id="objectDefinition.kind" /> */}
+                        <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
+                        <FormWizardArrayInput
+                            id="objectDefinition.spec.limits"
+                            label="Limits"
+                            placeholder="Add limit"
+                            collapsedContent={'default.memory'}
+                        >
+                            <FormWizardTextInput
+                                id="default.memory"
+                                label="Memory limit"
+                                placeholder="Enter memory limit"
+                                required
+                                helperText="Examples: 512Mi, 2Gi"
+                            />
+                            <FormWizardTextInput
+                                id="defaultRequest.memory"
+                                label="Memory request"
+                                placeholder="Enter memory request"
+                                required
+                                helperText="Examples: 512Mi, 2Gi"
+                            />
+                        </FormWizardArrayInput>
+                    </FormWizardArrayInput>
+                </FormWizardHidden>
                 <FormWizardStringArray
                     id="include-namespaces"
                     path="objectDefinition.spec.namespaceSelector.include"
@@ -265,53 +300,13 @@ export function PolicyWizardSpecification() {
                     path="objectDefinition.spec.namespaceSelector.exclude"
                     label="Exclude namespaces"
                 />
-                <FormWizardHidden
-                    hidden={(template: any) =>
-                        template?.objectDefinition?.spec?.['object-templates']?.[0]?.objectDefinition?.kind !== 'LimitRange'
-                    }
-                >
-                    <FormWizardSection label="Object templates">
-                        <FormWizardArrayInput
-                            id="objectDefinition.spec.object-templates"
-                            placeholder="Add resource template"
-                            collapsedContent={
-                                <Fragment>
-                                    <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
-                                    <FormWizardTextDetail id="objectDefinition.metadata.name" />
-                                </Fragment>
-                            }
-                        >
-                            <FormWizardTextDetail id="objectDefinition.kind" />
-                            <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
-                            <FormWizardArrayInput
-                                id="objectDefinition.spec.limits"
-                                label="Limits"
-                                placeholder="Add limit"
-                                collapsedContent={
-                                    <Fragment>
-                                        <FormWizardTextDetail id="objectDefinition.kind" /> -{' '}
-                                        <FormWizardTextDetail id="objectDefinition.metadata.name" />
-                                    </Fragment>
-                                }
-                            >
-                                <FormWizardTextInput
-                                    id="default.memory"
-                                    label="Memory limit"
-                                    placeholder="Enter memory limit"
-                                    required
-                                    helperText="Examples: 512Mi, 2Gi"
-                                />
-                                <FormWizardTextInput
-                                    id="defaultRequest.memory"
-                                    label="Memory request"
-                                    placeholder="Enter memory request"
-                                    required
-                                    helperText="Examples: 512Mi, 2Gi"
-                                />
-                            </FormWizardArrayInput>
-                        </FormWizardArrayInput>
-                    </FormWizardSection>
-                </FormWizardHidden>
+                <FormWizardSelect
+                    id="objectDefinition.spec.severity"
+                    label="Severity"
+                    placeholder="Select severity"
+                    options={['low', 'medium', 'high']}
+                    required
+                />
             </FormWizardArrayInput>
         </FormWizardSection>
     )
@@ -322,7 +317,7 @@ export function PolicyWizardPlacement() {
         <Fragment>
             <FormWizardSection label="Placement">
                 <FormWizardArrayInput
-                    id="placementRules"
+                    id="placement-rules"
                     label="Placement rules"
                     description="Placement rules determine which clusters a policy will be applied."
                     path={null}
@@ -376,7 +371,7 @@ export function PolicyWizardPlacement() {
                 </FormWizardArrayInput>
 
                 <FormWizardArrayInput
-                    id="placementBindings"
+                    id="placement-bindings"
                     label="Placement bindings"
                     description="Policies are applied to clusters using placement bindings. Placement bindings bind policies to a placement rule."
                     path={null}

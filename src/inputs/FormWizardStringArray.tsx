@@ -72,12 +72,12 @@ export function FormWizardStringArray(props: {
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 4 : 0 }}>
+        <div id={props.id} style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 4 : 0 }}>
             <div style={{ display: 'flex', alignItems: 'baseline' }}>
                 <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16, flexGrow: 1 }}>
                     {props.label}
                 </div>
-                <Button variant="plain" isSmall aria-label="Action" onClick={onNewKey}>
+                <Button id="add-button" variant="plain" isSmall aria-label="Action" onClick={onNewKey}>
                     <PlusIcon />
                 </Button>
             </div>
@@ -91,7 +91,7 @@ export function FormWizardStringArray(props: {
                 {values.map((pair, index) => {
                     return (
                         <Split key={index}>
-                            <TextInput value={pair} onChange={(e) => onKeyChange(index, e)} />
+                            <TextInput id={`${props.id}-${index + 1}`} value={pair} onChange={(e) => onKeyChange(index, e)} />
                             <Button variant="plain" aria-label="Remove item" onClick={() => onDeleteKey(index)}>
                                 <TrashIcon />
                             </Button>

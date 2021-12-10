@@ -1,12 +1,8 @@
 import {
     Alert,
     Button,
-    DataList,
-    DataListCell,
-    DataListItem,
-    DataListItemCells,
-    DataListItemRow,
-    DescriptionList,
+    DescriptionListDescription,
+    DescriptionListGroup,
     DescriptionListTerm,
     Divider,
     Dropdown,
@@ -25,7 +21,7 @@ import { FormWizardTextDetail } from '..'
 import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
-import './FormWizardArray.css'
+import './FormWizardArrayInput.css'
 
 export function FormWizardArrayInput(props: {
     id: string
@@ -82,44 +78,34 @@ export function FormWizardArrayInput(props: {
             return <Fragment />
         }
         return (
-            <Fragment>
-                <DescriptionList>
-                    <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                </DescriptionList>
-                <DataList aria-label="" isCompact id={props.id}>
-                    {values.map((value, index) => (
-                        <FormWizardItemContext.Provider key={index} value={value}>
-                            <DataListItem aria-labelledby={`item-${index}`}>
-                                <DataListItemRow>
-                                    <DataListItemCells
-                                        dataListCells={[
-                                            <DataListCell key="primary content">
-                                                <Stack id={`item-${index}`}>
-                                                    {typeof props.collapsedContent === 'string' ? (
-                                                        <FormWizardTextDetail
-                                                            id={props.collapsedContent}
-                                                            path={props.collapsedContent}
-                                                            placeholder={props.collapsedPlaceholder}
-                                                        />
-                                                    ) : (
-                                                        props.collapsedContent
-                                                    )}
-                                                </Stack>
-                                            </DataListCell>,
-                                        ]}
-                                    />
-                                </DataListItemRow>
-                            </DataListItem>
-                        </FormWizardItemContext.Provider>
-                    ))}
-                </DataList>
-            </Fragment>
+            <DescriptionListGroup id={props.id}>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription>
+                    <Stack hasGutter>
+                        {values.map((value, index) => (
+                            <div key={index}>
+                                <FormWizardItemContext.Provider value={value}>
+                                    {typeof props.collapsedContent === 'string' ? (
+                                        <FormWizardTextDetail
+                                            id={props.collapsedContent}
+                                            path={props.collapsedContent}
+                                            placeholder={props.collapsedPlaceholder}
+                                        />
+                                    ) : (
+                                        props.collapsedContent
+                                    )}
+                                </FormWizardItemContext.Provider>
+                            </div>
+                        ))}
+                    </Stack>
+                </DescriptionListDescription>
+            </DescriptionListGroup>
         )
     }
     return (
         <div id={props.id} className="form-wizard-array-input">
             {props.label && (
-                <div style={{ paddingBottom: 10 }}>
+                <div style={{ paddingBottom: 10, paddingTop: 4 }}>
                     <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
                     {props.description && <Text component="small">{props.description}</Text>}
                 </div>
@@ -224,7 +210,7 @@ export function FormWizardArrayInput(props: {
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                 {/* <div style={{ flexGrow: 1 }} /> */}
                 {!props.dropdownItems ? (
-                    <Button variant="link" isSmall aria-label="Action" onClick={() => addItem(props.newValue ?? {})}>
+                    <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={() => addItem(props.newValue ?? {})}>
                         <PlusIcon /> &nbsp; {props.placeholder}
                     </Button>
                 ) : (
