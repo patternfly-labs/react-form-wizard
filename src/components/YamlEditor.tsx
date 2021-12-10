@@ -46,7 +46,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void }) 
 
     return (
         <pre
-            style={{ position: 'relative', height: '100%', width: '100%', padding: '24px', backgroundColor: color.background }}
+            style={{ position: 'relative', padding: '24px', backgroundColor: color.background }}
             onFocus={() => setHasFocus(true)}
             onBlur={() => setHasFocus(false)}
         >
@@ -95,6 +95,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void }) 
                         overflowX: 'hidden',
                         overflowY: 'hidden',
                         color: 'transparent',
+                        // color: 'red',
                         caretColor: 'white',
                         resize: 'none',
                     }}

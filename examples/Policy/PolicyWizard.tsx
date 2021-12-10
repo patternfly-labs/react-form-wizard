@@ -1,4 +1,4 @@
-import { Button } from '@patternfly/react-core'
+import { Button, Text, Title } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useContext } from 'react'
 import set from 'set-value'
@@ -183,10 +183,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
 export function PolicyWizardTemplates() {
     const policy = useContext(FormWizardItemContext)
     return (
-        <FormWizardSection
-            label="Templates"
-            description="A policy contains multiple templates that create policy resources on managed clusters."
-        >
+        <FormWizardSection label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
             <FormWizardArrayInput
                 id="templates"
                 path="spec.policy-templates"
@@ -233,15 +230,35 @@ export function PolicyWizardTemplates() {
                 })}
                 collapsedContent="objectDefinition.metadata.name"
             >
-                <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
-
                 {/* CertificatePolicy */}
                 <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'CertificatePolicy'}>
+                    <div>
+                        <Title headingLevel="h6">Certificate Policy</Title>
+                        {/* <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text> */}
+                    </div>
+
+                    <FormWizardTextInput
+                        id="objectDefinition.metadata.name"
+                        label="Name"
+                        required
+                        helperText="Name needs to be unique to the namespace on each of the managed clusters."
+                    />
                     <FormWizardTextInput id="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
                 </FormWizardHidden>
 
                 {/* IamPolicy */}
                 <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'IamPolicy'}>
+                    <div>
+                        <Title headingLevel="h6">IAM Policy</Title>
+                        {/* <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text> */}
+                    </div>
+
+                    <FormWizardTextInput
+                        id="objectDefinition.metadata.name"
+                        label="Name"
+                        required
+                        helperText="Name needs to be unique to the namespace on each of the managed clusters."
+                    />
                     {/* TODO FormWizardNumberInput */}
                     <FormWizardTextInput
                         id="objectDefinition.spec.maxClusterRoleBindingUsers"
@@ -250,12 +267,24 @@ export function PolicyWizardTemplates() {
                     />
                 </FormWizardHidden>
 
-                {/* LimitRange */}
+                {/* ConfigurationPolicy */}
                 <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ConfigurationPolicy'}>
+                    <div>
+                        <Title headingLevel="h6">Configuration Policy</Title>
+                        <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text>
+                    </div>
+
+                    <FormWizardTextInput
+                        id="objectDefinition.metadata.name"
+                        label="Name"
+                        required
+                        helperText="Name needs to be unique to the namespace on each of the managed clusters."
+                    />
+
                     <FormWizardArrayInput
                         id="objectDefinition.spec.object-templates"
-                        label="Object templates"
-                        placeholder="Add resource template"
+                        label="Configuration objects"
+                        placeholder="Add configuration object"
                         collapsedContent="objectDefinition.metadata.name"
                     >
                         {/* Namespace */}
@@ -265,7 +294,12 @@ export function PolicyWizardTemplates() {
 
                         {/* LimitRange */}
                         <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'LimitRange'}>
-                            <FormWizardTextInput id="objectDefinition.metadata.name" label="Name" required />
+                            <FormWizardTextInput
+                                id="objectDefinition.metadata.name"
+                                label="Name"
+                                required
+                                helperText="Name needs to be unique to the namespace on each of the managed clusters."
+                            />
                             <FormWizardArrayInput
                                 id="objectDefinition.spec.limits"
                                 label="Limits"
@@ -287,6 +321,23 @@ export function PolicyWizardTemplates() {
                                     helperText="Examples: 512Mi, 2Gi"
                                 />
                             </FormWizardArrayInput>
+                        </FormWizardHidden>
+
+                        {/* SecurityContextConstraints */}
+                        <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'SecurityContextConstraints'}>
+                            <FormWizardTextInput
+                                id="objectDefinition.metadata.name"
+                                label="Name"
+                                required
+                                helperText="Name needs to be unique to the namespace on each of the managed clusters."
+                            />
+                            <FormWizardCheckbox id="objectDefinition.allowHostDirVolumePlugin" label="Allow host dir volume plugin" />
+                            <FormWizardCheckbox id="objectDefinition.allowHostIPC" label="Allow host IPC" />
+                            <FormWizardCheckbox id="objectDefinition.allowHostNetwork" label="Allow host network" />
+                            <FormWizardCheckbox id="objectDefinition.allowHostPID" label="Allow host PID" />
+                            <FormWizardCheckbox id="objectDefinition.allowHostPorts" label="Allow host ports" />
+                            <FormWizardCheckbox id="objectDefinition.allowPrivilegeEscalation" label="Allow privilege escalation" />
+                            <FormWizardCheckbox id="objectDefinition.allowPrivilegedContainer" label="Allow privileged container" />
                         </FormWizardHidden>
                     </FormWizardArrayInput>
                 </FormWizardHidden>
@@ -336,7 +387,7 @@ export function PolicyWizardPlacement() {
                         spec: {
                             clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
                             clusterSelector: {
-                                matchExpressions: [],
+                                matchExpressions: [{ key: '', operator: 'In', values: [''] }],
                             },
                         },
                     }}
@@ -397,12 +448,13 @@ export function PolicyWizardPlacement() {
                         description="Placement bindings can have multiple subjects which the placement is applied to."
                         placeholder="Add placement subject"
                         collapsedContent="name"
+                        collapsedPlaceholder="Expand to enter subject"
                         newValue={{
                             apiGroup: 'policy.open-cluster-management.io',
                             kind: 'Policy',
                         }}
                     >
-                        <FormWizardTextInput id="name" label="Subject name" required />
+                        <FormWizardTextInput id="name" path="name" label="Subject name" required />
                     </FormWizardArrayInput>
                 </FormWizardArrayInput>
             </FormWizardSection>

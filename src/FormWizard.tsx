@@ -152,7 +152,7 @@ function FormWizardPageDrawer(props: { data: unknown; devMode: boolean; template
 
     return (
         <Fragment>
-            <DrawerPanelContent isResizable={true} defaultSize="600px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
+            <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
                 {props.template && props.devMode ? (
                     <div style={{ height: '100%' }}>
                         <Tabs
