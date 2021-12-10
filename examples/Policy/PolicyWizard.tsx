@@ -3,10 +3,10 @@ import get from 'get-value'
 import { Fragment, useContext, useMemo } from 'react'
 import set from 'set-value'
 import {
+    FormSubmit,
     FormWizardArrayInput,
     FormWizardCheckbox,
     FormWizardHidden,
-    FormWizardLabels,
     FormWizardPage,
     FormWizardRadio,
     FormWizardRadioGroup,
@@ -21,7 +21,7 @@ import {
 import { FormWizardItemContext } from '../../src/contexts/FormWizardItemContext'
 import { Specifications } from './templates'
 
-export function PolicyWizard() {
+export function PolicyWizard(props: { onSubmit?: FormSubmit }) {
     const namespaces = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
     // const clusterSelectors = useMemo(
     //     () =>
@@ -110,6 +110,7 @@ export function PolicyWizard() {
             //         { key: 'kind', value: 'PlacementRule', path: 'metadata.namespace' },
             //     ],
             // }}
+            onSubmit={props.onSubmit}
         >
             <FormWizardStep label="Details">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
@@ -145,13 +146,13 @@ export function PolicyWizard() {
                         <FormWizardCheckbox
                             id="spec.disabled"
                             label="Disable policy"
-                            helperText="Select to disable the policy from being propagated to the managed cluster."
+                            helperText="Select to disable the policy from being propagated to managed clusters."
                         />
                     </FormWizardSection>
                 </FormWizardSelector>
             </FormWizardStep>
 
-            <FormWizardStep label="Specification">
+            <FormWizardStep label="Templates">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
                     <PolicyWizardSpecification />
                 </FormWizardSelector>
@@ -163,40 +164,37 @@ export function PolicyWizard() {
 
             <FormWizardStep label="Security groups">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
-                    <FormWizardStringArray
-                        id="categories"
-                        path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
-                        label="Categories"
-                        placeholder="Add category"
-                        map={(value: string | undefined) => {
-                            return value !== undefined ? value.split(',').map((v) => v.trim()) : []
-                        }}
-                        unmap={(values: string[]) => values.join(', ')}
-                    />
-                    <FormWizardStringArray
-                        id="standards"
-                        path={`metadata.annotations.policy\\.open-cluster-management\\.io/standards`}
-                        label="Standards"
-                        placeholder="Add standard"
-                        map={(value: string | undefined) => {
-                            return value !== undefined ? value.split(',').map((v) => v.trim()) : []
-                        }}
-                        unmap={(values: string[]) => values.join(', ')}
-                    />
-                    <FormWizardStringArray
-                        id="controls"
-                        path={`metadata.annotations.policy\\.open-cluster-management\\.io/controls`}
-                        label="Controls"
-                        placeholder="Add control"
-                        map={(value: string | undefined) => {
-                            return value !== undefined ? value.split(',').map((v) => v.trim()) : []
-                        }}
-                        unmap={(values: string[]) => values.join(', ')}
-                    />
+                    <FormWizardSection label="Security groups">
+                        <FormWizardStringArray
+                            id="categories"
+                            path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
+                            label="Categories"
+                            map={(value: string | undefined) => {
+                                return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                            }}
+                            unmap={(values: string[]) => values.join(', ')}
+                        />
+                        <FormWizardStringArray
+                            id="standards"
+                            path={`metadata.annotations.policy\\.open-cluster-management\\.io/standards`}
+                            label="Standards"
+                            map={(value: string | undefined) => {
+                                return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                            }}
+                            unmap={(values: string[]) => values.join(', ')}
+                        />
+                        <FormWizardStringArray
+                            id="controls"
+                            path={`metadata.annotations.policy\\.open-cluster-management\\.io/controls`}
+                            label="Controls"
+                            map={(value: string | undefined) => {
+                                return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                            }}
+                            unmap={(values: string[]) => values.join(', ')}
+                        />
+                    </FormWizardSection>
                 </FormWizardSelector>
             </FormWizardStep>
-            {/* <FormWizardStep label="Standards"></FormWizardStep>
-            <FormWizardStep label="Controls"></FormWizardStep> */}
         </FormWizardPage>
     )
 }
@@ -205,11 +203,13 @@ export function PolicyWizardSpecification() {
     const policy = useContext(FormWizardItemContext)
     return (
         <FormWizardSection
-            label="Specification"
+            label="Templates"
             description="A policy contains multiple templates that create policy resources on managed clusters."
         >
             <FormWizardArrayInput
-                id="spec.policy-templates"
+                id="templates"
+                path="spec.policy-templates"
+                label="Policy templates"
                 placeholder="Add policy template"
                 dropdownItems={Specifications.map((specification) => {
                     return {
@@ -255,13 +255,16 @@ export function PolicyWizardSpecification() {
                     options={['low', 'medium', 'high']}
                     required
                 />
-                <FormWizardSection
-                    label="Namespace selector"
-                    hidden={(template: any) => template?.objectDefinition?.spec?.namespaceSelector === undefined}
-                >
-                    <FormWizardLabels id="objectDefinition.spec.namespaceSelector.include" label="Include namespaces" />
-                    <FormWizardLabels id="objectDefinition.spec.namespaceSelector.exclude" label="Exclude namespaces" />
-                </FormWizardSection>
+                <FormWizardStringArray
+                    id="include-namespaces"
+                    path="objectDefinition.spec.namespaceSelector.include"
+                    label="Include namespaces"
+                />
+                <FormWizardStringArray
+                    id="exclude-namespaces"
+                    path="objectDefinition.spec.namespaceSelector.exclude"
+                    label="Exclude namespaces"
+                />
                 <FormWizardHidden
                     hidden={(template: any) =>
                         template?.objectDefinition?.spec?.['object-templates']?.[0]?.objectDefinition?.kind !== 'LimitRange'
@@ -317,48 +320,11 @@ export function PolicyWizardSpecification() {
 export function PolicyWizardPlacement() {
     return (
         <Fragment>
-            <FormWizardSection
-                label="Placement bindings"
-                description="Policies are applied to clusters using placement bindings. Placement bindings bind policies to a placement rule."
-            >
-                <FormWizardArrayInput
-                    id="placementBindings"
-                    path={null}
-                    filter={(resource) => resource.kind === 'PlacementBinding'}
-                    placeholder="Add placement binding"
-                    collapsedContent="metadata.name"
-                    newValue={{
-                        apiVersion: 'policy.open-cluster-management.io/v1',
-                        kind: 'PlacementBinding',
-                        metadata: {},
-                        placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
-                        subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
-                    }}
-                >
-                    <FormWizardTextInput id="metadata.name" label="Placement binding name" required />
-                    <FormWizardTextInput id="placementRef.name" label="Placement rule name" required />
-                    <FormWizardArrayInput
-                        id="sss"
-                        path="subjects"
-                        label="Placement subjects"
-                        placeholder="Add placement subject"
-                        collapsedContent="name"
-                        newValue={{
-                            apiGroup: 'policy.open-cluster-management.io',
-                            kind: 'Policy',
-                        }}
-                    >
-                        <FormWizardTextInput id="name" label="Subject name" required />
-                    </FormWizardArrayInput>
-                </FormWizardArrayInput>
-            </FormWizardSection>
-            <FormWizardSection label="Placement rules" description="Placement rules determine which clusters a policy will be applied.">
-                {/* <Alert variant="warning" isInline title="Note">
-                    Placement rules can be used by mulitple placement bindings. Editing the placement rule will affect all placement
-                    bindings using the rule.
-                </Alert> */}
+            <FormWizardSection label="Placement">
                 <FormWizardArrayInput
                     id="placementRules"
+                    label="Placement rules"
+                    description="Placement rules determine which clusters a policy will be applied."
                     path={null}
                     filter={(resource) => resource.kind === 'PlacementRule'}
                     placeholder="Add placement rule"
@@ -375,7 +341,77 @@ export function PolicyWizardPlacement() {
                         },
                     }}
                 >
-                    <FormWizardTextInput id="metadata.name" label="Name" required />
+                    <FormWizardTextInput
+                        id="name"
+                        path="metadata.name"
+                        label="Name"
+                        required
+                        helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
+                    />
+                    {/* <FormWizardStringArray id="hhh" path="spec.clusterSelector.matchExpressions" /> */}
+                    <FormWizardArrayInput
+                        id="matchExpressions"
+                        label="Match expressions"
+                        path="spec.clusterSelector.matchExpressions"
+                        placeholder="Add expression"
+                        collapsedContent={
+                            <div>
+                                <FormWizardTextDetail id="key" path="key" />
+                                &nbsp;
+                                <FormWizardTextDetail id="key" path="operator" />
+                                &nbsp;
+                                <FormWizardTextDetail id="key" path="values" />
+                                &nbsp;
+                            </div>
+                        }
+                        newValue={{
+                            key: '',
+                            operator: 'In',
+                            values: [],
+                        }}
+                    >
+                        <FormWizardTextInput id="key" path="key" label="Label" />
+                        <FormWizardStringArray id="values" path="values" label="Equals one of" />
+                    </FormWizardArrayInput>
+                </FormWizardArrayInput>
+
+                <FormWizardArrayInput
+                    id="placementBindings"
+                    label="Placement bindings"
+                    description="Policies are applied to clusters using placement bindings. Placement bindings bind policies to a placement rule."
+                    path={null}
+                    filter={(resource) => resource.kind === 'PlacementBinding'}
+                    placeholder="Add placement binding"
+                    collapsedContent="metadata.name"
+                    newValue={{
+                        apiVersion: 'policy.open-cluster-management.io/v1',
+                        kind: 'PlacementBinding',
+                        metadata: {},
+                        placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                        subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
+                    }}
+                >
+                    <FormWizardTextInput id="metadata.name" label="Binding name" required />
+                    <FormWizardTextInput
+                        id="placementRef.name"
+                        label="Rule name"
+                        helperText="The placement rule name that his placement binding is binding to the subjects."
+                        required
+                    />
+                    <FormWizardArrayInput
+                        id="sss"
+                        path="subjects"
+                        label="Subjects"
+                        description="Placement bindings can have multiple subjects which the placement is applied to."
+                        placeholder="Add placement subject"
+                        collapsedContent="name"
+                        newValue={{
+                            apiGroup: 'policy.open-cluster-management.io',
+                            kind: 'Policy',
+                        }}
+                    >
+                        <FormWizardTextInput id="name" label="Subject name" required />
+                    </FormWizardArrayInput>
                 </FormWizardArrayInput>
             </FormWizardSection>
         </Fragment>

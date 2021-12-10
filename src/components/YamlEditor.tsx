@@ -31,7 +31,7 @@ export function ObjectToYaml(data: any) {
 
 export function YamlEditor(props: { data: any; setData?: (data: any) => void }) {
     const [hasFocus, setHasFocus] = useState(false)
-    const [error, setError] = useState('')
+    const [, setError] = useState('')
     const [errorLine, setErrorLine] = useState(-1)
     const [yaml, setYaml] = useState(() => {
         return ObjectToYaml(props.data) ?? ''

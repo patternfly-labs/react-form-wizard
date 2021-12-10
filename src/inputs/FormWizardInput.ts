@@ -156,7 +156,7 @@ export function hasValidationErrorsProps(props: InputCommonProps, item: unknown)
 
 export function inputHasValue(props: unknown, item: unknown) {
     const path = (props as InputCommonProps).path
-    if (path) {
+    if (path !== undefined) {
         const value = get(item as object, path)
         if (value === undefined) return false
         if (typeof value === 'string') {

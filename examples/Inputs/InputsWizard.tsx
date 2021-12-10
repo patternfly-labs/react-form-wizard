@@ -68,7 +68,7 @@ export function InputsWizard() {
 
             <Step label="Key-value pairs">
                 <Section label="Key value input example">
-                    <FormWizardKeyValue id="key-values" label="Key vaue pairs" placeholder="Add key value pair" />
+                    <FormWizardKeyValue id="key-values" path="key-values" label="Key vaue pairs" />
                 </Section>
             </Step>
 

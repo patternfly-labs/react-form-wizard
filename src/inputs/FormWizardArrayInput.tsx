@@ -44,7 +44,7 @@ export function FormWizardArrayInput(props: {
     const id = props.id
     const path = props.path !== undefined ? props.path : id
 
-    const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
+    const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
     const formWizardContext = useContext(FormWizardContext)
     const item = useContext(FormWizardItemContext)
@@ -57,8 +57,10 @@ export function FormWizardArrayInput(props: {
 
     const addItem = useCallback(
         (newItem: object | object[]) => {
+            let index = 0
             if (path === null) {
                 ;(item as any[]).push(newItem)
+                index = values.length
             } else {
                 let newArray = values
                 if (Array.isArray(newItem)) {
@@ -66,9 +68,11 @@ export function FormWizardArrayInput(props: {
                 } else {
                     newArray.push(newItem as never)
                 }
+                index = newArray.length - 1
                 set(item, path, newArray, { preservePaths: false })
             }
             formWizardContext.updateContext()
+            setExpanded((expanded) => ({ ...expanded, ...{ [index.toString()]: true } }))
         },
         [values, item, path, formWizardContext]
     )
@@ -130,9 +134,9 @@ export function FormWizardArrayInput(props: {
                             <FormWizardFieldGroup
                                 key={index}
                                 id={props.id + '-' + index.toString()}
-                                isExpanded={collapsed[index.toString()] !== true}
+                                isExpanded={expanded[index.toString()] === true}
                                 setIsExpanded={(isExpanded) => {
-                                    setCollapsed((expanded) => ({ ...expanded, ...{ [index.toString()]: !isExpanded } }))
+                                    setExpanded((expanded) => ({ ...expanded, ...{ [index.toString()]: isExpanded } }))
                                 }}
                                 toggleAriaLabel="Details"
                                 header={
@@ -220,14 +224,7 @@ export function FormWizardArrayInput(props: {
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                 {/* <div style={{ flexGrow: 1 }} /> */}
                 {!props.dropdownItems ? (
-                    <Button
-                        variant="link"
-                        isSmall
-                        aria-label="Action"
-                        onClick={() => {
-                            addItem(props.newValue ?? {})
-                        }}
-                    >
+                    <Button variant="link" isSmall aria-label="Action" onClick={() => addItem(props.newValue ?? {})}>
                         <PlusIcon /> &nbsp; {props.placeholder}
                     </Button>
                 ) : (
