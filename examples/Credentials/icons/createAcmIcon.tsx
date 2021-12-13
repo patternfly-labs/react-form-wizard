@@ -9,6 +9,7 @@ export function createSvgIcon(iconDefinition: {
     yOffset?: number
     svgPaths: ReactNode
 }) {
+    // eslint-disable-next-line react/display-name
     return (props: SVGIconProps) => {
         const { size, color, title, noVerticalAlign, ...otherProps } = props
         const hasTitle = Boolean(title)
