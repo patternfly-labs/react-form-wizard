@@ -33,7 +33,10 @@ describe('credentials wizard - aws', () => {
         cy.contains('Next').click()
     })
 
-    it('summary', () => {})
+    it('summary', () => {
+        cy.get('#name').contains('my-credentials')
+        cy.get('#namespace').contains('default')
+    })
 
     it('results', () => {
         const expected = {
