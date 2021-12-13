@@ -31,7 +31,7 @@ import { AnsibleExample } from './Ansible/AnsibleExample'
 import { AppForm } from './Application/AppForm'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
-import { CredentialsForm } from './Credentials/CredentialsForm'
+import { CredentialsExample } from './Credentials/CredentialsExample'
 import { InputsWizard } from './Inputs/InputsWizard'
 import { PolicyExample } from './Policy/PolicyExample'
 import { RouteE } from './Routes'
@@ -107,7 +107,7 @@ export function AppMain() {
         case RouteE.Cluster:
             return <ClusterForm />
         case RouteE.Credentials:
-            return <CredentialsForm />
+            return <CredentialsExample />
         case RouteE.Policy:
             return <PolicyExample />
         case RouteE.Inputs:
