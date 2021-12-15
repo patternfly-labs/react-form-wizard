@@ -70,7 +70,7 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
         },
         devServer: {
             port: 3000,
-            open: true,
+            open: false,
             historyApiFallback: true,
             compress: true,
             hot: true,
