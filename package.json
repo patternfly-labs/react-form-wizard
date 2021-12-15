@@ -20,7 +20,7 @@
         "cypress": "concurrently npm:start npm:cypress:run --prefix-colors cyan,green --kill-others --success first",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run --config video=false",
-        "update": "ncu --update --doctor --target latest --reject react-router-dom && ncu --update --doctor --target minor && ncu --update --doctor --target patch"
+        "upgrade": "ncu --upgrade --doctor --target latest --reject react-router-dom && ncu --upgrade --doctor --target minor && ncu --upgrade --doctor --target patch"
     },
     "repository": {
         "type": "git",
