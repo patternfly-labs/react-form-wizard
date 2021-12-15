@@ -13,12 +13,14 @@
         "build": "tsc --build --clean && tsc",
         "start": "TS_NODE_PROJECT=webpack.tsconfig.json webpack serve --mode development",
         "pages": "TS_NODE_PROJECT=webpack.tsconfig.json webpack --mode production",
-        "test": "npm run tsc:noEmit && npm run eslint",
-        "tsc:noEmit": "tsc --noEmit -p tsconfig.eslint.json",
+        "test": "concurrently npm:tsc npm:eslint npm:prettier npm:cypress npm:pages --prefix-colors cyan,green,blue,magenta,yellow",
+        "tsc": "tsc --noEmit -p tsconfig.eslint.json",
         "eslint": "eslint src examples",
-        "reinstall": "rm -rf node_modules package-lock.json && npm install && npm audit fix && npm dedup",
+        "prettier": "prettier --check src examples !**/*.hbs",
+        "cypress": "concurrently npm:start npm:cypress:run --prefix-colors cyan,green --kill-others --success first",
         "cypress:open": "cypress open",
-        "update": "ncu -x react-router-dom -u --doctor && npm audit fix && npm dedup"
+        "cypress:run": "cypress run --config video=false",
+        "update": "ncu --update --doctor --target latest --reject react-router-dom && ncu --update --doctor --target minor && ncu --update --doctor --target patch"
     },
     "repository": {
         "type": "git",
