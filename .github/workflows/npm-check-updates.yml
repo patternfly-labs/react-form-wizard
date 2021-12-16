@@ -11,7 +11,7 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - run: npx ncu --upgrade --doctor --reject react-router-dom,@types/react-router-dom,@types/node
-    - run: npx ncu --upgrade --doctor --target minor
-    - run: npx ncu --upgrade --doctor --target patch
+    - run: npx npm-check-updates --upgrade --doctor --reject react-router-dom,@types/react-router-dom,@types/node
+    - run: npx npm-check-updates --upgrade --doctor --target minor
+    - run: npx npm-check-updates --upgrade --doctor --target patch
     - uses: EndBug/add-and-commit@v7
