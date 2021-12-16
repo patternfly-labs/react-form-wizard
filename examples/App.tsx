@@ -34,6 +34,7 @@ import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { InputsWizard } from './Inputs/InputsWizard'
 import { PolicyExample } from './Policy/PolicyExample'
+import { RosaWizard } from './ROSA/RosaWizard'
 import { RouteE } from './Routes'
 
 interface IWizard {
@@ -75,6 +76,12 @@ const wizards: IWizard[] = [
         description: 'Create a policy.',
     },
     {
+        shortName: 'ROSA',
+        name: 'ROSA',
+        route: RouteE.ROSA,
+        description: 'Create a ROSA cluster.',
+    },
+    {
         shortName: 'Inputs',
         name: 'Inputs example',
         route: RouteE.Inputs,
@@ -110,6 +117,8 @@ export function AppMain() {
             return <CredentialsExample />
         case RouteE.Policy:
             return <PolicyExample />
+        case RouteE.ROSA:
+            return <RosaWizard />
         case RouteE.Inputs:
             return <InputsWizard />
         case RouteE.Results:
