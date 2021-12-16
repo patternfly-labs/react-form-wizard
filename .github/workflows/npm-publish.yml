@@ -1,9 +1,9 @@
-name: Node.js Package
+name: NPM Publish
 on:
     release:
         types: [created]
 jobs:
-    build:
+    npm-publish:
         runs-on: ubuntu-latest
         permissions:
             contents: read

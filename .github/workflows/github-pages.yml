@@ -1,9 +1,9 @@
-name: GH Pages
+name: GitHub Pages
 on:
     push:
         branches: main
 jobs:
-    pages:
+    github-pages:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
