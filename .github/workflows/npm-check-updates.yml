@@ -18,5 +18,5 @@ jobs:
 #     - run: npx npm-check-updates --upgrade --doctor --target patch
     - uses: EndBug/add-and-commit@v7
       with:
-        default_author: github-actions
+        default_author: github_actions
         message: npm-check-updates
