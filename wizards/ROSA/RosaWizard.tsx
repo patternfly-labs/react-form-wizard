@@ -213,7 +213,14 @@ export function RosaWizard() {
                             label="Automatic"
                             description="Clusters will be automatically updared beased on your defined day and start time when new versions are available."
                         >
-                            <FormWizardTimeRange id="time" path="time" label="Select a day and start time" />
+                            <FormWizardSelect
+                                id="day"
+                                path="day"
+                                label="Day"
+                                options={['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Firday', 'Saturday']}
+                                required
+                            />
+                            <FormWizardTimeRange id="time" path="time" label="Start time" />
                         </FormWizardRadio>
                     </FormWizardRadioGroup>
                 </FormWizardSection>
@@ -222,7 +229,13 @@ export function RosaWizard() {
                     label="Node draining"
                     description="You may set a grace period for how long Pod Disruption Budget-protected workloads will be respected during upgrades. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted."
                 >
-                    <FormWizardSelect id="grace-period" path="gracePeriod" label="Grace period" options={['TODO']} required />
+                    <FormWizardSelect
+                        id="grace-period"
+                        path="gracePeriod"
+                        label="Grace period"
+                        options={['Every hour', 'Every day']}
+                        required
+                    />
                 </FormWizardSection>
             </FormWizardStep>
 
@@ -246,13 +259,6 @@ export function RosaWizard() {
                             description="Clusters will be automatically updared beased on your defined day and start time when new versions are available."
                         />
                     </FormWizardTiles>
-                </FormWizardSection>
-
-                <FormWizardSection
-                    label="Node draining"
-                    description="You may set a grace period for how long Pod Disruption Budget-protected workloads will be respected during upgrades. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted."
-                >
-                    <FormWizardSelect id="grace-period" path="gracePeriod" label="Grace period" options={['TODO']} required />
                 </FormWizardSection>
             </FormWizardStep>
         </FormWizardPage>

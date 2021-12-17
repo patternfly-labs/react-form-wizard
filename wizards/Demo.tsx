@@ -121,16 +121,16 @@ function DemoHome() {
                 <PageSection variant="light">
                     <Stack hasGutter>
                         <Stack>
-                            <Title headingLevel="h2">Welcome to the React Form Wizard by PatternFly labs</Title>
-                            <Text>An framework for building wizards using PatternFly</Text>
+                            <Title headingLevel="h2">Welcome to the React Form Wizard by PatternFly Labs</Title>
+                            <Text>An framework for building wizards using PatternFly.</Text>
                         </Stack>
-                        <Text>
+                        {/* <Text>
                             Patternfly defines how wizards should look and how input validation errors should look. This framework adds
                             functionality for tying that together focusing on making a easy but powerful developer experience.
-                        </Text>
-                        <Text>
+                        </Text> */}
+                        {/* <Text>
                             Get started by viewing the <Link to={RouteE.Tutorial}>tutorial</Link>.
-                        </Text>
+                        </Text> */}
                     </Stack>
                 </PageSection>
             }

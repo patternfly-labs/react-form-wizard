@@ -2,7 +2,7 @@ name: NPM Check Updates
 on:
     workflow_dispatch:
     schedule:
-        - cron: '0 16 * * *'
+        - cron: '0 9 * * 1'
 jobs:
     npm-check-updates:
         runs-on: ubuntu-latest
