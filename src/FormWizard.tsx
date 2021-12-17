@@ -268,14 +268,36 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
 
         const label = (child.props as { label: ReactNode }).label
         if (label) {
-            steps.push({
-                name: (
-                    <Split style={{ color: color }}>
-                        <SplitItem>{label}</SplitItem>
-                    </Split>
-                ),
-                component: child,
+            const childSteps: WizardStep[] = []
+            Children.forEach(child.props.children as ReactNode, (grandchild) => {
+                if (isValidElement(grandchild)) {
+                    if (grandchild.type !== FormWizardStep) return
+                    const title = grandchild.props.label
+                    if (title) {
+                        childSteps.push({ name: title })
+                    }
+                }
             })
+
+            if (childSteps.length) {
+                steps.push({
+                    name: (
+                        <Split style={{ color: color }}>
+                            <SplitItem>{label}</SplitItem>
+                        </Split>
+                    ),
+                    steps: childSteps,
+                })
+            } else {
+                steps.push({
+                    name: (
+                        <Split style={{ color: color }}>
+                            <SplitItem>{label}</SplitItem>
+                        </Split>
+                    ),
+                    component: child,
+                })
+            }
         }
     })
 

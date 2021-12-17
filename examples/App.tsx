@@ -30,6 +30,7 @@ import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { PolicyExample } from './Policy/PolicyExample'
+import { RosaWizard } from './ROSA/RosaWizard'
 import { RouteE } from './Routes'
 import { Tutorial } from './Tutorial/Tutorial'
 
@@ -51,11 +52,11 @@ const wizards: IWizard[] = [
         name: 'Application',
         route: RouteE.Application,
     },
-    {
-        shortName: 'Cluster',
-        name: 'Cluster',
-        route: RouteE.Cluster,
-    },
+    // {
+    //     shortName: 'Cluster',
+    //     name: 'Cluster',
+    //     route: RouteE.Cluster,
+    // },
     {
         shortName: 'Credentials',
         name: 'Credentials',
@@ -66,6 +67,11 @@ const wizards: IWizard[] = [
         name: 'Policy',
         route: RouteE.Policy,
     },
+    // {
+    //     shortName: 'ROSA',
+    //     name: 'ROSA',
+    //     route: RouteE.ROSA,
+    // },
 ]
 
 export default function App() {
@@ -96,6 +102,8 @@ export function AppMain(): JSX.Element {
             return <CredentialsExample />
         case RouteE.Policy:
             return <PolicyExample />
+        case RouteE.ROSA:
+            return <RosaWizard />
         case RouteE.Tutorial:
             return <Tutorial />
         case RouteE.Results:

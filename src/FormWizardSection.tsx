@@ -12,7 +12,7 @@ interface FormWizardSectionProps {
     id?: string
     prompt?: string
     description?: string
-    children: ReactNode
+    children?: ReactNode
     hidden?: (item: any) => boolean
 }
 

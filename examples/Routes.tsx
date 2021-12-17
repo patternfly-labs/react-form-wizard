@@ -5,6 +5,7 @@ export enum RouteE {
     Cluster = '?route=cluster',
     Credentials = '?route=credentials',
     Policy = '?route=policy',
+    ROSA = '?route=rosa',
     Tutorial = '?route=tutorial',
     Results = '?route=results',
 }
