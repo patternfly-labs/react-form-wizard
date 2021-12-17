@@ -38,7 +38,7 @@ export function RosaWizard() {
 
             <FormWizardStep label="Cluster settings">
                 <FormWizardStep label="Details">
-                    <FormWizardSection label="Cluster details">
+                    <FormWizardSection label="Cluster details" prompt="Enter the cluster details">
                         <FormWizardTextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
                         <FormWizardCheckbox id="use-roles-prefix" path="useRolesPrefix" label="Use operator roles prefix">
                             <FormWizardTextInput
@@ -62,7 +62,7 @@ export function RosaWizard() {
                             id="monitoring"
                             path="monitoring"
                             label="Enable use workload monitoring"
-                            description="Monitor you own projects in isolation from Red Hat Site reliability (SRE) platform metrics."
+                            helperText="Monitor you own projects in isolation from Red Hat Site reliability (SRE) platform metrics."
                         />
                         {/* </FormWizardSection> */}
 
@@ -71,13 +71,13 @@ export function RosaWizard() {
                             id="etcd-encryption"
                             path="etcdEncryption"
                             label="Enable etcd encryption"
-                            description="Add another layer of data security to your cluster."
+                            helperText="Add another layer of data security to your cluster."
                         />
                         <FormWizardCheckbox
                             id="ebs-encryption"
                             path="ebsEncryption"
                             label="Encrypt EBS with customer keys"
-                            description="Use your own AWS KMS keys to enable encryption of AWS EBS volumes for the cluster."
+                            helperText="Use your own AWS KMS keys to enable encryption of AWS EBS volumes for the cluster."
                         />
                     </FormWizardSection>
                 </FormWizardStep>
@@ -106,7 +106,7 @@ export function RosaWizard() {
                             id="autoscaling"
                             path="autoscaling"
                             label="Enable autoscaling"
-                            description="Autoscaling automatically adds and removes worker (compute) nodes from the cluster based on resource requirments."
+                            helperText="Autoscaling automatically adds and removes worker (compute) nodes from the cluster based on resource requirments."
                         >
                             <FormWizardTextInput id="minimum-nodes" path="minimumNodes" label="Minimum nodes per zone" required />
                             <FormWizardTextInput id="maximim-nodes" path="maximumNodes" label="Maximum nodes per zone" required />
@@ -119,37 +119,41 @@ export function RosaWizard() {
 
             <FormWizardStep label="Networking">
                 <FormWizardStep label="Configuration">
-                    <FormWizardSection label="Networking configuration" description="Configure network access for your cluster." />
-                    <FormWizardSection label="Virtual Private Cloud (VPC)">
-                        <FormWizardCheckbox id="vpc" path="vpc" label="Install into an existing Virtual Private Cloud (VPC).">
+                    <FormWizardSection label="Networking configuration" description="Configure network access for your cluster.">
+                        <FormWizardCheckbox
+                            id="vpc"
+                            path="vpc"
+                            title="Virtual Private Cloud (VPC) subnets"
+                            label="Install into an existing Virtual Private Cloud (VPC)."
+                        >
                             <FormWizardTextInput id="existing-vpc-id" path="existingVpcId" label="Existing VPC ID" required />
                             <FormWizardCheckbox
                                 id="private-link"
                                 path="privateLink"
                                 label="Use a PrivateLink"
-                                description="To provide support, Red Hat Site Reliability Engineer (SRE) would connect to the cluster using only AWS PrivateLink endpoints instead of public endpoints. This option cannot be changed after a cluster is created."
+                                helperText="To provide support, Red Hat Site Reliability Engineer (SRE) would connect to the cluster using only AWS PrivateLink endpoints instead of public endpoints. This option cannot be changed after a cluster is created."
                             ></FormWizardCheckbox>
                         </FormWizardCheckbox>
+                        <FormWizardRadioGroup
+                            id="cluster-privacy"
+                            path="clusterPrivacy"
+                            label="Cluster privacy"
+                            // description="Install your cluster with all public or all private API endpoint and aplication routes. You can customize therre options after installation."
+                        >
+                            <FormWizardRadio
+                                id="public"
+                                value="public"
+                                label="Public"
+                                description="Access master API endpoint and application routes from the internet."
+                            />
+                            <FormWizardRadio
+                                id="private"
+                                value="private"
+                                label="Private"
+                                description="Access master API endpoint and application routes from durect private connections only."
+                            />
+                        </FormWizardRadioGroup>
                     </FormWizardSection>
-                    <FormWizardRadioGroup
-                        id="cluster-privacy"
-                        path="clusterPrivacy"
-                        label="Cluster privacy"
-                        // description="Install your cluster with all public or all private API endpoint and aplication routes. You can customize therre options after installation."
-                    >
-                        <FormWizardRadio
-                            id="public"
-                            value="public"
-                            label="Public"
-                            description="Access master API endpoint and application routes from the internet."
-                        />
-                        <FormWizardRadio
-                            id="private"
-                            value="private"
-                            label="Private"
-                            description="Access master API endpoint and application routes from durect private connections only."
-                        />
-                    </FormWizardRadioGroup>
                 </FormWizardStep>
 
                 <FormWizardStep label="VPC settings">
