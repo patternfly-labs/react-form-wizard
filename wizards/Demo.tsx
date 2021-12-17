@@ -74,22 +74,22 @@ const wizards: IWizard[] = [
     // },
 ]
 
-export default function App() {
+export default function Demo() {
     return (
         <BrowserRouter>
             <Page
-                header={<AppHeader />}
-                sidebar={<AppSidebar />}
+                header={<DemoHeader />}
+                sidebar={<DemoSidebar />}
                 isManagedSidebar
                 defaultManagedSidebarIsOpen={true}
                 style={{ height: '100vh' }}
             >
-                <AppMain />
+                <DemoRouter />
             </Page>
         </BrowserRouter>
     )
 }
-export function AppMain(): JSX.Element {
+export function DemoRouter(): JSX.Element {
     const location = useLocation()
     switch (location.search) {
         case RouteE.Ansible:
@@ -109,11 +109,11 @@ export function AppMain(): JSX.Element {
         case RouteE.Results:
             return <ResultYaml />
         default:
-            return <AppHome />
+            return <DemoHome />
     }
 }
 
-function AppHome() {
+function DemoHome() {
     const history = useHistory()
     return (
         <Page
@@ -157,7 +157,7 @@ function AppHome() {
     )
 }
 
-function AppHeader() {
+function DemoHeader() {
     return (
         <Masthead>
             <MastheadToggle>
@@ -201,7 +201,7 @@ function AppHeader() {
     )
 }
 
-function AppSidebar() {
+function DemoSidebar() {
     const location = useLocation()
     return (
         <PageSidebar
@@ -211,9 +211,9 @@ function AppSidebar() {
                         <NavItem isActive={location.search === ''}>
                             <Link to={RouteE.Home}>Home</Link>
                         </NavItem>
-                        <NavItem isActive={location.search === RouteE.Tutorial}>
+                        {/* <NavItem isActive={location.search === RouteE.Tutorial}>
                             <Link to={RouteE.Tutorial}>Tutorial</Link>
-                        </NavItem>
+                        </NavItem> */}
                         <NavExpandable title="Wizards" isExpanded={true}>
                             {wizards.map((wizard, index) => (
                                 <NavItem key={index} isActive={location.search === wizard.route}>

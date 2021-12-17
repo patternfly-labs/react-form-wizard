@@ -35,7 +35,6 @@ export function CredentialsWizard() {
     return (
         <FormWizardPage
             title="Add credentials"
-            breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Automation' }]}
             defaultData={{
                 apiVersion: 'v1',
                 kind: 'Secret',

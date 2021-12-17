@@ -74,7 +74,6 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
         <FormWizardPage
             title="Create policy"
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
-            breadcrumb={[{ label: 'Home', to: '.' }, { label: 'Governance' }]}
             defaultData={[
                 {
                     apiVersion: 'policy.open-cluster-management.io/v1',
