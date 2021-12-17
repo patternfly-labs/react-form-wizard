@@ -19,8 +19,8 @@ export function RosaWizard() {
             <FormWizardStep label="Account and roles">
                 <FormWizardSection
                     label="Account and roles"
-                    prompt="Welcome to the Red Hat openShift service on AWS (ROSA)"
-                    description="Red Hat OpenShift Service on AWS (ROSA) provides a model that allows Red Hat to deploy clusters into a customer's existing Amazon Web Service (AWS) account."
+                    prompt="Welcome to the Red Hat OpenShift service on AWS (ROSA)"
+                    description="Red Hat OpenShift Service on AWS provides a model that allows Red Hat to deploy clusters into a customer's existing Amazon Web Service (AWS) account."
                 >
                     <FormWizardSelect id="account" path="account" label="Associated AWS account" options={['TODO']} />
                     <FormWizardSelect id="role" path="role" label="OpenShift Cluster Manager role (ocm-role)" options={['TODO']} />

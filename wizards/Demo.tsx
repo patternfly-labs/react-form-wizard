@@ -67,11 +67,11 @@ const wizards: IWizard[] = [
         name: 'Policy',
         route: RouteE.Policy,
     },
-    // {
-    //     shortName: 'ROSA',
-    //     name: 'ROSA',
-    //     route: RouteE.ROSA,
-    // },
+    {
+        shortName: 'ROSA',
+        name: 'Red Hat OpenShift service on AWS',
+        route: RouteE.ROSA,
+    },
 ]
 
 export default function Demo() {
