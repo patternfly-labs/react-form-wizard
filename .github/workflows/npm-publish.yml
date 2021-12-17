@@ -1,6 +1,11 @@
 name: NPM Publish
 on:
     workflow_dispatch:
+        inputs:
+            versionIncrement:
+                description: 'Version Increment (major, minor, patch)'
+                required: true
+                default: 'patch'
 jobs:
     npm-publish:
         runs-on: ubuntu-latest
@@ -13,7 +18,7 @@ jobs:
                   node-version: '14'
                   registry-url: https://registry.npmjs.org/
                   cache: 'npm'
-            - name: npm version patch
+            - name: npm version ${{ github.event.inputs.versionIncrement }}
               run: |
                   TAG=$(npm version patch --no-git-tag-version)
                   echo "TAG=$(echo $TAG)" >> $GITHUB_ENV
