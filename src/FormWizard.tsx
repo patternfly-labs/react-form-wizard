@@ -272,9 +272,24 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
             Children.forEach(child.props.children as ReactNode, (grandchild) => {
                 if (isValidElement(grandchild)) {
                     if (grandchild.type !== FormWizardStep) return
+
+                    let c: string | undefined = undefined
+                    if (hasValidationErrorsProps(grandchild.props as InputCommonProps, item)) {
+                        if (formWizardContext.showValidation) {
+                            c = '#C9190B'
+                        }
+                    }
+
                     const title = grandchild.props.label
                     if (title) {
-                        childSteps.push({ name: title, component: grandchild })
+                        childSteps.push({
+                            name: (
+                                <Split style={{ color: c }}>
+                                    <SplitItem>{title}</SplitItem>
+                                </Split>
+                            ),
+                            component: grandchild,
+                        })
                     }
                 }
             })

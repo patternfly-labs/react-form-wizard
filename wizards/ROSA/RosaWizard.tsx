@@ -61,12 +61,16 @@ export function RosaWizard() {
                         <FormWizardCheckbox
                             id="monitoring"
                             path="monitoring"
+                            title="Monitoring"
                             label="Enable use workload monitoring"
                             helperText="Monitor you own projects in isolation from Red Hat Site reliability (SRE) platform metrics."
                         />
-                        {/* </FormWizardSection> */}
+                    </FormWizardSection>
 
-                        {/* <FormWizardSection label="Encryption"> */}
+                    <FormWizardSection
+                        label="Encryption"
+                        description="Add additional encryption to your cluster. Note that cloud storage already encrypts storage as rest."
+                    >
                         <FormWizardCheckbox
                             id="etcd-encryption"
                             path="etcdEncryption"
@@ -105,6 +109,7 @@ export function RosaWizard() {
                         <FormWizardCheckbox
                             id="autoscaling"
                             path="autoscaling"
+                            title="Autoscaling"
                             label="Enable autoscaling"
                             helperText="Autoscaling automatically adds and removes worker (compute) nodes from the cluster based on resource requirments."
                         >
