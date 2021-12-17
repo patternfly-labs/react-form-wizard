@@ -2,7 +2,7 @@
 
 A PatternFly React wizard framework.
 
-![GitHub package.json version](https://img.shields.io/github/package-json/v/patternfly-labs/react-form-wizard)
+[![GitHub package.json version](https://img.shields.io/github/package-json/v/patternfly-labs/react-form-wizard)](https://www.npmjs.com/package/@patternfly-labs/react-form-wizard)
 
 [Demo](https://patternfly-labs.github.io/react-form-wizard/)
 
