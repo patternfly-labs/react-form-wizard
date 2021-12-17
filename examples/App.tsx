@@ -32,6 +32,7 @@ import { CredentialsExample } from './Credentials/CredentialsExample'
 import { PolicyExample } from './Policy/PolicyExample'
 import { RosaWizard } from './ROSA/RosaWizard'
 import { RouteE } from './Routes'
+import { Tutorial } from './Tutorial/Tutorial'
 
 interface IWizard {
     shortName: string
