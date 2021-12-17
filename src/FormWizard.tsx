@@ -274,7 +274,7 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
                     if (grandchild.type !== FormWizardStep) return
                     const title = grandchild.props.label
                     if (title) {
-                        childSteps.push({ name: title })
+                        childSteps.push({ name: title, component: grandchild })
                     }
                 }
             })
