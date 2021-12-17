@@ -6,6 +6,6 @@ export enum RouteE {
     Credentials = '?route=credentials',
     Policy = '?route=policy',
     ROSA = '?route=rosa',
-    Inputs = '?route=inputs',
+    Tutorial = '?route=tutorial',
     Results = '?route=results',
 }
