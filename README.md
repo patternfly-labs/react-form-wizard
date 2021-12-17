@@ -2,6 +2,8 @@
 
 A PatternFly React wizard framework.
 
+![GitHub package.json version](https://img.shields.io/github/package-json/v/patternfly-labs/react-form-wizard)
+
 [Demo](https://patternfly-labs.github.io/react-form-wizard/)
 
 Patternfly defines how wizards should look and how input validation errors should look. This opinionated framework adds functionality for tying that together focusing on making a easy but powerful developer experience.
