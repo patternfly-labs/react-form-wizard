@@ -11,7 +11,7 @@ export function FormWizardIndented(props: { children?: ReactNode; hidden?: (item
     if (hidden) return <Fragment />
 
     return (
-        <Stack hasGutter style={{ paddingLeft: 48 }}>
+        <Stack hasGutter style={{ paddingLeft: 24 }}>
             {props.children}
         </Stack>
     )

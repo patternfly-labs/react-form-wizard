@@ -1,4 +1,4 @@
-import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Radio as PfRadio, Stack } from '@patternfly/react-core'
+import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Radio as PfRadio } from '@patternfly/react-core'
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import get from 'get-value'
 import { Children, createContext, Fragment, isValidElement, ReactElement, ReactNode, useContext } from 'react'
@@ -78,7 +78,7 @@ export function FormWizardRadioGroup(props: {
                 isRequired={props.required}
                 // tODO validation.... required...
             >
-                <Stack hasGutter>{props.children}</Stack>
+                <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>{props.children}</div>
             </FormGroup>
         </RadioGroupContext.Provider>
     )
