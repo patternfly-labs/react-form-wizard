@@ -142,7 +142,7 @@ function DemoHome() {
                         {wizards.map((wizard, index) => (
                             <Tile
                                 key={index}
-                                title={`${wizard.name} wizard`}
+                                title={`${wizard.name}`}
                                 onClick={() => {
                                     history.push(wizard.route)
                                 }}
