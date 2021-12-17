@@ -1,7 +1,4 @@
 import {
-    Card,
-    CardBody,
-    CardTitle,
     Grid,
     GridItem,
     gridSpans,
@@ -18,12 +15,12 @@ import {
     PageSection,
     PageSidebar,
     PageToggleButton,
-    Split,
     Stack,
     Text,
+    Tile,
     Title,
 } from '@patternfly/react-core'
-import { BarsIcon, GithubIcon, HatWizardIcon } from '@patternfly/react-icons'
+import { BarsIcon, GithubIcon } from '@patternfly/react-icons'
 import useResizeObserver from '@react-hook/resize-observer'
 import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
@@ -32,9 +29,9 @@ import { AppForm } from './Application/AppForm'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
-import { InputsWizard } from './Inputs/InputsWizard'
 import { PolicyExample } from './Policy/PolicyExample'
 import { RouteE } from './Routes'
+import { Tutorial } from './Tutorial/Tutorial'
 
 interface IWizard {
     shortName: string
@@ -48,37 +45,26 @@ const wizards: IWizard[] = [
         shortName: 'Ansible',
         name: 'Ansible automation',
         route: RouteE.Ansible,
-        description: 'Cluster management uses Ansible automation to run ansible jobs during cluster provisioning and upgrade.',
     },
     {
         shortName: 'Application',
         name: 'Application',
         route: RouteE.Application,
-        description: 'Create an ACM application or a ArgoCD application.',
     },
     {
         shortName: 'Cluster',
         name: 'Cluster',
         route: RouteE.Cluster,
-        description: 'Create a kubernetes cluster.',
     },
     {
         shortName: 'Credentials',
         name: 'Credentials',
         route: RouteE.Credentials,
-        description: 'Add credentials for cloud providers or other external automation. Credentials are stored as Kubernetes secrets.',
     },
     {
         shortName: 'Policy',
         name: 'Policy',
         route: RouteE.Policy,
-        description: 'Create a policy.',
-    },
-    {
-        shortName: 'Inputs',
-        name: 'Inputs example',
-        route: RouteE.Inputs,
-        description: 'Wizard showing the different types of inputs supported by the form wizard framework.',
     },
 ]
 
@@ -97,7 +83,7 @@ export default function App() {
         </BrowserRouter>
     )
 }
-export function AppMain() {
+export function AppMain(): JSX.Element {
     const location = useLocation()
     switch (location.search) {
         case RouteE.Ansible:
@@ -110,8 +96,8 @@ export function AppMain() {
             return <CredentialsExample />
         case RouteE.Policy:
             return <PolicyExample />
-        case RouteE.Inputs:
-            return <InputsWizard />
+        case RouteE.Tutorial:
+            return <Tutorial />
         case RouteE.Results:
             return <ResultYaml />
         default:
@@ -120,24 +106,44 @@ export function AppMain() {
 }
 
 function AppHome() {
+    const history = useHistory()
     return (
         <Page
             additionalGroupedContent={
                 <PageSection variant="light">
-                    <Title headingLevel="h2">PatternFly Labs - React Form Wizard</Title>
-                    <Text>Example wizards</Text>
+                    <Stack hasGutter>
+                        <Stack>
+                            <Title headingLevel="h2">Welcome to the React Form Wizard by PatternFly labs</Title>
+                            <Text>An framework for building wizards using PatternFly</Text>
+                        </Stack>
+                        <Text>
+                            Patternfly defines how wizards should look and how input validation errors should look. This framework adds
+                            functionality for tying that together focusing on making a easy but powerful developer experience.
+                        </Text>
+                        <Text>
+                            Get started by viewing the <Link to={RouteE.Tutorial}>tutorial</Link>.
+                        </Text>
+                    </Stack>
                 </PageSection>
             }
             groupProps={{ sticky: 'top' }}
         >
             <PageSection>
-                <Masonry size={600}>
-                    {wizards.map((wizard, index) => (
-                        <AppCard key={index} title={`${wizard.name} wizard`} route={wizard.route}>
-                            {wizard.description}
-                        </AppCard>
-                    ))}
-                </Masonry>
+                <Stack hasGutter>
+                    <Masonry size={300}>
+                        {wizards.map((wizard, index) => (
+                            <Tile
+                                key={index}
+                                title={`${wizard.name} wizard`}
+                                onClick={() => {
+                                    history.push(wizard.route)
+                                }}
+                            >
+                                {wizard.description}
+                            </Tile>
+                        ))}
+                    </Masonry>
+                </Stack>
             </PageSection>
         </Page>
     )
@@ -180,48 +186,15 @@ function AppHeader() {
             <MastheadContent>
                 <span style={{ flexGrow: 1 }} />
                 <a href="https://github.com/patternfly-labs/react-form-wizard" style={{ color: 'white' }}>
-                    <GithubIcon size="xl" />
+                    <GithubIcon size="lg" />
                 </a>
             </MastheadContent>
         </Masthead>
-        // <PageHeader
-        //     logo={
-        //         <div style={{ display: 'flex', gap: 8, alignItems: 'start' }}>
-        // <svg width="45" height="40.5" viewBox="0 0 30 27" xmlns="http://www.w3.org/2000/svg">
-        //     <defs>
-        //         <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="prefix__a">
-        //             <stop stopColor="#7DC3E8" stopOpacity=".6" offset="0%" />
-        //             <stop stopColor="#007BBA" offset="100%" />
-        //         </linearGradient>
-        //     </defs>
-        //     <path
-        //         d="M29.305 13.607L14.803.092 14.696 0l-.136.092L.087 13.607 0 13.69l.068.092 5.756 7.789.058.074h.097l4.3-.925 4.281 5.716.117.158.116-.158 4.3-5.753 4.29.925h.098l.058-.074 5.766-7.789.068-.092-.068-.046zm-8.31 1.563l.506 1.082-2.718 3.626-1.204-.259 3.417-4.449zm.166-1.425l-5.077-10.97L23.22 11.1l-2.058 2.645zm1.165 2.655l.048-.065v-.074l-.815-1.757 2.553-3.404h.058l-.068-.083-5.145-6.004 9.455 8.806L26.47 16.4l-3.32 4.486-3.6-.786 2.776-3.7zm-10.057 3.848l2.398 3.127.126.166.117-.166 2.213-3.127 1.194.268-3.62 4.847-3.622-4.847 1.194-.268zm.602-.425l1.825-16.937 1.806 16.937-1.748 2.47-1.883-2.47zm.97-16.475l-1.717 15.466-3.388-4.393 5.106-11.073zM6.175 11.1l7.144-8.325-5.087 10.97L6.174 11.1zm4.26-6.105L5.29 10.998l-.068.102.068.083 2.592 3.367-.815 1.758v.138L9.794 20.1l-3.591.786L.97 13.773l9.464-8.778zm1.38 14.652l-1.204.259L7.9 16.252l.495-1.082 3.417 4.477zM15.53 3.348l5.115 11.1-3.378 4.394-1.737-15.494z"
-        //         fill="url(#prefix__a)"
-        //     />
-        // </svg>
-        // <div style={{ color: 'white' }}>
-        //     <Title headingLevel="h4" style={{ fontWeight: 'bold', lineHeight: 1.3 }}>
-        //         PatternFly Labs
-        //     </Title>
-        //     <Title headingLevel="h3" style={{ fontWeight: 'lighter', lineHeight: 1.3 }}>
-        //         React Form Wizard
-        //     </Title>
-        // </div>
-        //         </div>
-        //     }
-        //     showNavToggle
-        //     headerTools={
-        // <a href="https://github.com/patternfly-labs/react-form-wizard">
-        //     <GithubIcon size="xl" />
-        // </a>
-        //     }
-        // />
     )
 }
 
 function AppSidebar() {
     const location = useLocation()
-
     return (
         <PageSidebar
             nav={
@@ -230,7 +203,10 @@ function AppSidebar() {
                         <NavItem isActive={location.search === ''}>
                             <Link to={RouteE.Home}>Home</Link>
                         </NavItem>
-                        <NavExpandable title="Example Wizards" isExpanded={true}>
+                        <NavItem isActive={location.search === RouteE.Tutorial}>
+                            <Link to={RouteE.Tutorial}>Tutorial</Link>
+                        </NavItem>
+                        <NavExpandable title="Wizards" isExpanded={true}>
                             {wizards.map((wizard, index) => (
                                 <NavItem key={index} isActive={location.search === wizard.route}>
                                     <Link to={wizard.route}>{wizard.shortName}</Link>
@@ -241,23 +217,6 @@ function AppSidebar() {
                 </Nav>
             }
         />
-    )
-}
-
-function AppCard(props: { title?: string; children?: ReactNode; route: string }) {
-    const history = useHistory()
-    return (
-        <Card isRounded isHoverable onClick={() => history.push(props.route)}>
-            {props.title && (
-                <CardTitle>
-                    <Split hasGutter>
-                        <HatWizardIcon size="md" />
-                        <span>{props.title}</span>
-                    </Split>
-                </CardTitle>
-            )}
-            {props.children && <CardBody>{props.children}</CardBody>}
-        </Card>
     )
 }
 
