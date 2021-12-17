@@ -13,7 +13,7 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
     const isDevelopment = !isProduction
 
     const config: webpack.Configuration & { devServer: DevServerConfiguration } = {
-        entry: './examples',
+        entry: './wizards',
         resolve: {
             extensions: ['.ts', '.tsx', '.js', '.jsx'],
             alias: { handlebars: 'handlebars/dist/handlebars.js' },
@@ -48,7 +48,7 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
             }),
             isProduction && new CompressionPlugin({ algorithm: 'gzip' }),
             isDevelopment && new ReactRefreshWebpackPlugin(),
-            new HtmlWebpackPlugin({ title: 'Form Wizard', favicon: 'examples/assets/favicon.svg' }),
+            new HtmlWebpackPlugin({ title: 'Form Wizard', favicon: 'wizards/assets/favicon.svg' }),
             new MiniCssExtractPlugin({
                 filename: '[name].[contenthash:8].css',
                 chunkFilename: '[id].[contenthash:8].css',
