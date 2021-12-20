@@ -4,10 +4,12 @@ import {
     FormWizardSection,
     FormWizardSelect,
     FormWizardStep,
+    FormWizardTextArea,
     FormWizardTextInput,
     FormWizardTile,
     FormWizardTiles,
 } from '../../src'
+import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
 import GCPIcon from './icons/GCPIcon'
@@ -108,8 +110,8 @@ export function CredentialsWizard() {
             </FormWizardStep>
 
             <FormWizardStep label="Basic Information">
-                <FormWizardSection label="Details" prompt="Enter the credentials details">
-                    <FormWizardTextInput id="name" path="metadata.name" label="Name" required />
+                <FormWizardSection label="Details" prompt="Enter the details for the credentials">
+                    <FormWizardTextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
                     <FormWizardSelect
                         id="namespace"
                         path="metadata.namespace"
@@ -145,8 +147,8 @@ export function CredentialsWizard() {
 
             <FormWizardStep label="Pull secret and SSH">
                 <FormWizardSection label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
-                    <FormWizardTextInput id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
-                    <FormWizardTextInput
+                    <FormWizardTextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
+                    <FormWizardTextArea
                         id="ssh-private-key"
                         path="stringData.ssh-privatekey"
                         label="SSH private key"
@@ -154,7 +156,7 @@ export function CredentialsWizard() {
                         required
                         secret
                     />
-                    <FormWizardTextInput
+                    <FormWizardTextArea
                         id="ssh-public-key"
                         path="stringData.ssh-publickey"
                         label="SSH public key"

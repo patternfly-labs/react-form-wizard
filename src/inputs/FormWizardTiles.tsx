@@ -2,7 +2,7 @@ import { FormGroup, Gallery, Tile } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
-import { FormWizardTextDetail, IRadioGroupContextState, RadioGroupContext } from '..'
+import { IRadioGroupContextState, RadioGroupContext } from '..'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
@@ -38,7 +38,7 @@ export function FormWizardTiles(props: {
     if (props.hidden) return <Fragment />
 
     if (formWizardContext.mode === InputMode.Details) {
-        return <FormWizardTextDetail id={props.id} label={props.label} />
+        return <Fragment />
     }
 
     return (
