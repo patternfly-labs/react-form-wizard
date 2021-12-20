@@ -75,7 +75,7 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
             compress: true,
             hot: true,
         },
-        devtool: 'source-map',
+        devtool: isDevelopment && 'source-map',
     }
 
     return config

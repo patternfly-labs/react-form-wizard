@@ -51,6 +51,7 @@ export function validatePrivateSshKey(value: string, t: TFunction, requireNewlin
     if (requireNewline && !/[\r\n]$/.test(value)) {
         return t('validate.mustEndWithNewline')
     }
+    return undefined
 }
 
 export function validateCertificate(value: string, t: TFunction) {
