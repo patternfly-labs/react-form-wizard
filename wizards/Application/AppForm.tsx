@@ -19,7 +19,6 @@ import {
     FormWizardTiles,
     FormWizardTimeRange,
 } from '../../src'
-import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
 import ArgoTemplateGit from './applicationTemplates/argoApplicationSet/templateArgoGit.hbs'
 import ArgoTemplateHelm from './applicationTemplates/argoApplicationSet/templateArgoHelm.hbs'
@@ -29,10 +28,22 @@ import SubscriptionGitHandlebars from './applicationTemplates/subscription/templ
 import SubscriptionHelmHandlebars from './applicationTemplates/subscription/templateSubscriptionHelm.hbs'
 import SubscriptionObjHandlebars from './applicationTemplates/subscription/templateSubscriptionObj.hbs'
 import SubscriptionPlacementHandlebars from './applicationTemplates/subscription/templateSubscriptionPlacement.hbs'
+import { isValidKubernetesName } from '../components/validation'
 import ArgoIcon from './logos/ArgoIcon.svg'
 import HelmIcon from './logos/HelmIcon.svg'
 import ObjectStore from './logos/ObjectStore.svg'
 import SubscriptionIcon from './logos/SubscriptionIcon.svg'
+
+export const AppsType = {
+    argoCD: {
+        apiVersion: 'argoproj.io/v1alpha1',
+        kind: 'ApplicationSet',
+    },
+    subscription: {
+        apiVersion: 'app.k8s.io/v1beta1',
+        kind: 'Application',
+    },
+}
 
 export function AppForm() {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
@@ -56,25 +67,31 @@ export function AppForm() {
     return (
         <FormWizardPage
             title="Create application"
-            template={ApplicationHandlebars}
-            defaultData={{ curlyServer: '{{server}}', curlyName: '{{name}}' }}
+            defaultData={{
+                apiVersion: '',
+                kind: '',
+                metadata: { name: '', namespace: '' },
+                // curlyServer: '{{server}}',
+                // curlyName: '{{name}}',
+            }}
         >
             <FormWizardStep label="Type">
                 <FormWizardSection label="Type" prompt="Type">
                     <FormWizardTiles
                         id="deployType"
                         label="Select the application management type to deploy this application into clusters."
+                        path="kind"
                     >
                         <FormWizardTile
-                            id="subscription"
-                            value="Subscription"
+                            id={AppsType.subscription.kind}
+                            value={AppsType.subscription.kind}
                             label="Subscription"
                             icon={<SubscriptionIcon />}
                             description="Subscriptions are Kubernetes resources within channels (source repositories)"
                         />
                         <FormWizardTile
-                            id="argoCD"
-                            value="ArgoCD"
+                            id={AppsType.argoCD.kind}
+                            value={AppsType.argoCD.kind}
                             label="Argo CD ApplicationSet"
                             icon={<ArgoIcon />}
                             description="Supports deployments to large numbers of clusters, deployments of large monorepos, and enabling secure Application self-service."
@@ -83,12 +100,19 @@ export function AppForm() {
                 </FormWizardSection>
             </FormWizardStep>
 
-            <FormWizardStep label="Details" hidden={(item) => item.deployType !== 'Subscription'}>
+            <FormWizardStep label="Details" hidden={(item) => item.kind !== AppsType.subscription.kind}>
                 <FormWizardSection label="Details" prompt="Enter the details of the application">
-                    <FormWizardTextInput id="name" label="Application name" required />
+                    <FormWizardTextInput
+                        id="name"
+                        path="metadata.name"
+                        label="Application name"
+                        validation={isValidKubernetesName}
+                        required
+                    />
                     <FormWizardSelect
                         id="namespace"
                         label="Namespace"
+                        path="metadata.namespace"
                         placeholder="Select the namespace"
                         helperText="The namespace on the hub cluster where the application resources will be created."
                         options={namespaces}
@@ -97,7 +121,7 @@ export function AppForm() {
                 </FormWizardSection>
             </FormWizardStep>
 
-            <FormWizardStep label="Repositories" hidden={(item) => item.deployType !== 'Subscription'}>
+            <FormWizardStep label="Repositories" hidden={(item) => item.kind !== AppsType.subscription.kind}>
                 <FormWizardSection label="Repositories" prompt="Enter the application repositories">
                     <FormWizardArrayInput
                         id="repositories"
@@ -311,7 +335,7 @@ export function AppForm() {
                 </FormWizardSection>
             </FormWizardStep>
 
-            <FormWizardStep label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
+            <FormWizardStep label="General" hidden={(item) => item.kind !== AppsType.argoCD.kind}>
                 <FormWizardSection label="General">
                     <FormWizardTextInput
                         id="appSetName"
@@ -336,7 +360,7 @@ export function AppForm() {
                     />
                 </FormWizardSection>
             </FormWizardStep>
-            <FormWizardStep label="Template" hidden={(item) => item.deployType !== 'ArgoCD'}>
+            <FormWizardStep label="Template" hidden={(item) => item.kind !== AppsType.argoCD.kind}>
                 <FormWizardSection label="Source">
                     <FormWizardTiles id="repositoryType" label="Repository type">
                         <FormWizardTile id="git" value="Git" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
@@ -403,7 +427,7 @@ export function AppForm() {
                 </FormWizardSection>
             </FormWizardStep>
 
-            <FormWizardStep label="Sync policy" hidden={(item) => item.deployType !== 'ArgoCD'}>
+            <FormWizardStep label="Sync policy" hidden={(item) => item.kind !== AppsType.argoCD.kind}>
                 <FormWizardSection
                     label="Sync policy"
                     description="Settings used to configure application syncing when there are differences between the desired state and the live cluster state."
@@ -433,7 +457,7 @@ export function AppForm() {
                 </FormWizardSection>
             </FormWizardStep>
 
-            <FormWizardStep label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
+            <FormWizardStep label="Placement" hidden={(item) => item.kind !== AppsType.argoCD.kind}>
                 <Placement />
             </FormWizardStep>
         </FormWizardPage>
