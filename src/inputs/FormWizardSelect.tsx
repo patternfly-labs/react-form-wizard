@@ -5,6 +5,7 @@ import set from 'set-value'
 import { FormWizardTextDetail } from '..'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { FormWizardValidationContext } from '../contexts/FormWizardValidationContext'
 import { InputCommonProps, lowercaseFirst } from './FormWizardInput'
 import { FormWizardInputLabel } from './FormWizardInputLabel'
 import './FormWizardSelect.css'
@@ -85,6 +86,8 @@ export type FormWizardSelectProps<T> =
 
 function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
     const formWizardContext = useContext(FormWizardContext)
+    const validationContext = useContext(FormWizardValidationContext)
+
     const item = useContext(FormWizardItemContext)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
 
@@ -184,7 +187,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
 
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
-    if (formWizardContext.showValidation) {
+    if (validationContext.showValidation) {
         if (props.required && !selections) {
             error = `${props.label} is required`
         } else if (props.validation) {

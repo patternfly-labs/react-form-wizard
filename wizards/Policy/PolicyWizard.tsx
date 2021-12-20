@@ -8,8 +8,6 @@ import {
     FormWizardCheckbox,
     FormWizardHidden,
     FormWizardPage,
-    FormWizardRadio,
-    FormWizardRadioGroup,
     FormWizardSection,
     FormWizardSelect,
     FormWizardSelector,
@@ -109,7 +107,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                                 </Button>
                             }
                         />
-                        <FormWizardRadioGroup id="spec.remediationAction" path="spec.remediationAction" label="Remediation" required>
+                        {/* <FormWizardRadioGroup id="spec.remediationAction" path="spec.remediationAction" label="Remediation" required>
                             <FormWizardRadio
                                 id="inform"
                                 label="Inform"
@@ -127,7 +125,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                             id="spec.disabled"
                             label="Disable policy"
                             helperText="Select to disable the policy from being propagated to managed clusters."
-                        />
+                        /> */}
                     </FormWizardSection>
                 </FormWizardSelector>
             </FormWizardStep>
@@ -390,6 +388,7 @@ export function PolicyWizardPlacement() {
                             },
                         },
                     }}
+                    // hidden={(rules) => !rules.length}
                 >
                     <FormWizardTextInput
                         id="name"
@@ -432,6 +431,7 @@ export function PolicyWizardPlacement() {
                         placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
                         subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
                     }}
+                    // hidden={(bindings) => !bindings.length}
                 >
                     <FormWizardTextInput id="metadata.name" label="Binding name" required />
                     <FormWizardTextInput

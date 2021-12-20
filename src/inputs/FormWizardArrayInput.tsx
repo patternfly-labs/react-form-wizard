@@ -23,6 +23,16 @@ import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
 import './FormWizardArrayInput.css'
 
+export function wizardArrayItems(props: any, item: any) {
+    const id = props.id
+    const path = props.path !== undefined ? props.path : id
+    let sourceArray = get(item, path as string) as object[]
+    if (!Array.isArray(sourceArray)) sourceArray = []
+    let values = sourceArray
+    if (props.filter) values = values.filter(props.filter)
+    return values
+}
+
 export function FormWizardArrayInput(props: {
     id: string
     label?: string
@@ -44,12 +54,9 @@ export function FormWizardArrayInput(props: {
 
     const formWizardContext = useContext(FormWizardContext)
     const item = useContext(FormWizardItemContext)
-    let sourceArray = get(item, path as string) as object[]
+    const sourceArray = get(item, path as string) as object[]
 
-    if (!Array.isArray(sourceArray)) sourceArray = []
-
-    let values = sourceArray
-    if (props.filter) values = values.filter(props.filter)
+    const values = wizardArrayItems(props, item)
 
     const addItem = useCallback(
         (newItem: object | object[]) => {
