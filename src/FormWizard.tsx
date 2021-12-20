@@ -349,6 +349,8 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
 
     return (
         <Wizard
+            // title="dd"
+            // description="description"
             steps={steps}
             onNext={stepChange}
             onGoToStep={stepChange}
@@ -360,6 +362,9 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
                     void formWizardContext.onSubmit?.(props.data)
                 }
             }}
+            // backButtonText
+            // cancelButtonText
+            // nextButtonText
         />
     )
 }
