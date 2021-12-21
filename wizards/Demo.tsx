@@ -26,6 +26,7 @@ import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { AppForm } from './Application/AppForm'
+import { SubscriptionWizard } from './Subscription/SubscriptionWizard'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
@@ -51,6 +52,11 @@ const wizards: IWizard[] = [
         shortName: 'Application',
         name: 'Application',
         route: RouteE.Application,
+    },
+    {
+        shortName: 'Subscription App Wizard',
+        name: 'Subscription App Wizard',
+        route: RouteE.AppSubscription,
     },
     // {
     //     shortName: 'Cluster',
@@ -96,6 +102,8 @@ export function DemoRouter(): JSX.Element {
             return <AnsibleExample />
         case RouteE.Application:
             return <AppForm />
+        case RouteE.AppSubscription:
+            return <SubscriptionWizard />
         case RouteE.Cluster:
             return <ClusterForm />
         case RouteE.Credentials:
