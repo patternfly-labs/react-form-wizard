@@ -1,5 +1,7 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
 import {
+    FormCancel,
+    FormSubmit,
     FormWizardPage,
     FormWizardSection,
     FormWizardSelect,
@@ -33,7 +35,7 @@ export enum CredentialsType {
     other = 'other',
 }
 
-export function CredentialsWizard() {
+export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: FormCancel }) {
     return (
         <FormWizardPage
             title="Add credentials"
@@ -47,6 +49,8 @@ export function CredentialsWizard() {
                     labels: { 'cluster.open-cluster-management.io/credentials': '' },
                 },
             }}
+            onSubmit={props.onSubmit}
+            onCancel={props.onCancel}
         >
             <FormWizardStep label="Credential type">
                 <FormWizardTiles

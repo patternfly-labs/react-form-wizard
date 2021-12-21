@@ -65,6 +65,7 @@ export function FormWizardPage(props: {
     breadcrumb?: { label: string; to?: string }[]
     onSubmit?: FormSubmit // TODO make required
     onCancel?: FormCancel // TODO make required
+    yaml?: boolean
 }) {
     const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const [data, setData] = useState(props.defaultData ?? {})
@@ -72,7 +73,7 @@ export function FormWizardPage(props: {
     const [isForm, setIsForm] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
 
-    const [drawerExpanded, setDrawerExpanded] = useState(localStorage.getItem('yaml') === 'true')
+    const [drawerExpanded, setDrawerExpanded] = useState(props.yaml !== false && localStorage.getItem('yaml') === 'true')
     const toggleDrawerExpanded = useCallback(() => {
         setDrawerExpanded((drawerExpanded) => {
             localStorage.setItem('yaml', (!drawerExpanded).toString())
@@ -100,10 +101,12 @@ export function FormWizardPage(props: {
                 <PageSection variant="light">
                     <Flex alignItems={{ default: 'alignItemsCenter' }} wrap="noWrap" style={{ flexWrap: 'nowrap', gap: 16 }}>
                         <Title headingLevel="h1">{props.title}</Title>
-                        <Switch id="yaml-switch" label="YAML" isChecked={drawerExpanded} onChange={() => toggleDrawerExpanded()} />
-                        {process.env.NODE_ENV === 'development' && (
-                            <Switch label="FORM" isChecked={isForm} onChange={() => setIsForm(!isForm)} />
+                        {props.yaml !== false && (
+                            <Switch id="yaml-switch" label="YAML" isChecked={drawerExpanded} onChange={() => toggleDrawerExpanded()} />
                         )}
+                        {/* {process.env.NODE_ENV === 'development' && (
+                            <Switch label="FORM" isChecked={isForm} onChange={() => setIsForm(!isForm)} />
+                        )} */}
                         {process.env.NODE_ENV === 'development' && props.template && (
                             <Switch label="DEV" isChecked={devMode} onChange={() => setDevMode(!devMode)} />
                         )}
@@ -120,6 +123,7 @@ export function FormWizardPage(props: {
                     mode,
                     editMode: InputEditMode.Create,
                     onSubmit: props.onSubmit,
+                    onCancel: props.onCancel,
                 }}
             >
                 <FormWizardValidationContext.Provider value={{ showValidation, setShowValidation }}>
@@ -442,6 +446,7 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
             // cancelButtonText
             // nextButtonText
             footer={Footer}
+            onClose={() => formWizardContext.onCancel?.()}
         />
     )
 }

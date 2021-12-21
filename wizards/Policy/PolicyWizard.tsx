@@ -8,6 +8,8 @@ import {
     FormWizardCheckbox,
     FormWizardHidden,
     FormWizardPage,
+    FormWizardRadio,
+    FormWizardRadioGroup,
     FormWizardSection,
     FormWizardSelect,
     FormWizardSelector,
@@ -91,7 +93,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
         >
             <FormWizardStep label="Details">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
-                    <FormWizardSection label="Details">
+                    <FormWizardSection label="Details" prompt="Enter the details for the policy">
                         <FormWizardTextInput id="name" path="metadata.name" label="Name" placeholder="Enter name" required />
                         <FormWizardSelect
                             id="namespace"
@@ -107,7 +109,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                                 </Button>
                             }
                         />
-                        {/* <FormWizardRadioGroup id="spec.remediationAction" path="spec.remediationAction" label="Remediation" required>
+                        <FormWizardRadioGroup id="spec.remediationAction" path="spec.remediationAction" label="Remediation" required>
                             <FormWizardRadio
                                 id="inform"
                                 label="Inform"
@@ -125,7 +127,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                             id="spec.disabled"
                             label="Disable policy"
                             helperText="Select to disable the policy from being propagated to managed clusters."
-                        /> */}
+                        />
                     </FormWizardSection>
                 </FormWizardSelector>
             </FormWizardStep>

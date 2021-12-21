@@ -137,6 +137,7 @@ export function wizardInputHasValidationErrors(reactElement: ReactElement, item:
         }
         default:
             {
+                if (!reactElement.props) break
                 const path = props.path
                 if (path) {
                     const value = get(item, path) as unknown
