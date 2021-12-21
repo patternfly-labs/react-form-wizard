@@ -93,7 +93,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
         >
             <FormWizardStep label="Details">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
-                    <FormWizardSection label="Details">
+                    <FormWizardSection label="Details" prompt="Enter the details for the policy">
                         <FormWizardTextInput id="name" path="metadata.name" label="Name" placeholder="Enter name" required />
                         <FormWizardSelect
                             id="namespace"
@@ -390,6 +390,7 @@ export function PolicyWizardPlacement() {
                             },
                         },
                     }}
+                    // hidden={(rules) => !rules.length}
                 >
                     <FormWizardTextInput
                         id="name"
@@ -432,6 +433,7 @@ export function PolicyWizardPlacement() {
                         placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
                         subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
                     }}
+                    // hidden={(bindings) => !bindings.length}
                 >
                     <FormWizardTextInput id="metadata.name" label="Binding name" required />
                     <FormWizardTextInput

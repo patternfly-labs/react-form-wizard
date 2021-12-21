@@ -1,5 +1,7 @@
+import { useHistory } from 'react-router-dom'
 import { CredentialsWizard } from './CredentialsWizard'
 
 export function CredentialsExample() {
-    return <CredentialsWizard />
+    const history = useHistory()
+    return <CredentialsWizard onCancel={() => history.push('.')} />
 }

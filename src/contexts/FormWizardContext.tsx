@@ -25,10 +25,11 @@ export interface IFormWizardContext {
 
     editMode: InputEditMode
 
-    showValidation: boolean
-    setShowValidation: (show: boolean) => void
+    // showValidation: boolean
+    // setShowValidation: (show: boolean) => void
 
     onSubmit?: (data: object) => Promise<void>
+    onCancel?: () => void
 }
 
 /**
@@ -40,8 +41,8 @@ export const FormWizardContext = createContext<IFormWizardContext>({
     },
     mode: InputMode.Wizard,
     editMode: InputEditMode.Create,
-    showValidation: true,
-    setShowValidation: () => {
-        /* Do nothing. */
-    },
+    // showValidation: true,
+    // setShowValidation: () => {
+    //     /* Do nothing. */
+    // },
 })

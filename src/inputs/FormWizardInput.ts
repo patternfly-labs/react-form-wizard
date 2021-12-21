@@ -1,8 +1,10 @@
 import get from 'get-value'
-import { Children, isValidElement, ReactNode, useContext } from 'react'
+import { Children, isValidElement, ReactElement, ReactNode, useContext } from 'react'
 import set from 'set-value'
+import { FormWizardArrayInput, FormWizardSelector, wizardArrayItems, wizardSelectorItem } from '..'
 import { FormWizardContext, IFormWizardContext } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { FormWizardValidationContext } from '../contexts/FormWizardValidationContext'
 
 export type InputCommonProps<ValueT = any> = {
     id: string
@@ -27,9 +29,7 @@ export function useInputValue(
     const formWizardContext = useContext(FormWizardContext)
     const path = props.path ?? props.id
     const value = get(item, path) ?? defaultValue
-    const setValue = (value: any) => {
-        inputSetValue(props, item, value, formWizardContext)
-    }
+    const setValue = (value: any) => inputSetValue(props, item, value, formWizardContext)
     return [value, setValue]
 }
 
@@ -52,12 +52,12 @@ export function inputSetValue<T = any>(
 
 export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' | 'label' | 'required' | 'validation'>) {
     const item = useContext(FormWizardItemContext)
-    const formWizardContext = useContext(FormWizardContext)
+    const validationContext = useContext(FormWizardValidationContext)
 
     const value = inputGetValue(props, item)
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
-    if (formWizardContext.showValidation) {
+    if (validationContext.showValidation) {
         if (props.required && !value) {
             error = `${props.label} is required`
         } else if (props.validation) {
@@ -106,6 +106,63 @@ export function isFormWizardHiddenProps(props: unknown, item: unknown) {
         })
         return allChildrenHidden
     }
+    return false
+}
+
+export function wizardInputHasValidationErrors(reactElement: ReactElement, item: any): boolean {
+    const { props } = reactElement
+    if (isFormWizardHiddenProps(props, item)) return false
+
+    switch (reactElement.type) {
+        case FormWizardArrayInput:
+            {
+                const arrayItems = wizardArrayItems(reactElement.props, item)
+                for (const arrayItem of arrayItems) {
+                    for (const child of Children.toArray(reactElement.props.children)) {
+                        if (!isValidElement(child)) continue
+                        if (wizardInputHasValidationErrors(child, arrayItem)) return true
+                    }
+                }
+            }
+            break
+        case FormWizardSelector: {
+            const selectorItem = wizardSelectorItem(reactElement.props, item)
+            if (selectorItem) {
+                for (const child of Children.toArray(reactElement.props.children)) {
+                    if (!isValidElement(child)) continue
+                    if (wizardInputHasValidationErrors(child, selectorItem)) return true
+                }
+            }
+            break
+        }
+        default:
+            {
+                if (!reactElement.props) break
+                const path = props.path
+                if (path) {
+                    const value = get(item, path) as unknown
+
+                    const required = props.required
+                    if (required && !value) return true
+
+                    const validation = props.validation as (value: any) => string | undefined
+                    if (typeof validation === 'function') {
+                        try {
+                            const result = validation(value)
+                            if (typeof result === 'string') return true
+                        } catch {
+                            // Do nothing
+                        }
+                    }
+                }
+                for (const child of Children.toArray(reactElement.props.children)) {
+                    if (!isValidElement(child)) continue
+                    if (wizardInputHasValidationErrors(child, item)) return true
+                }
+            }
+            break
+    }
+
     return false
 }
 
