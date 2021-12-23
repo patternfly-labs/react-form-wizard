@@ -46,11 +46,13 @@ const wizards: IWizard[] = [
         shortName: 'Ansible',
         name: 'Ansible automation',
         route: RouteE.Ansible,
+        description: 'Advanced Cluster Management uses ansible automation run ansible jobs during cluster provisioning and upgrade.',
     },
     {
         shortName: 'Application',
         name: 'Application',
         route: RouteE.Application,
+        description: 'Advanced Cluster Management configures applications for deployment to clusters managed by ACM.',
     },
     // {
     //     shortName: 'Cluster',
@@ -61,16 +63,22 @@ const wizards: IWizard[] = [
         shortName: 'Credentials',
         name: 'Credentials',
         route: RouteE.Credentials,
+        description:
+            'Advanced Cluster Management uses credentials to provision clusters on cloud providers. Credentials are also used for integrations such as automation using Ansible.',
     },
     {
         shortName: 'Policy',
         name: 'Policy',
         route: RouteE.Policy,
+        description:
+            'Advanced Cluster Management uses policies to generate reports and validate a cluster compliance based on specified security standards, categories, and controls.',
     },
     {
         shortName: 'ROSA',
-        name: 'Red Hat OpenShift service on AWS',
+        name: 'ROSA',
         route: RouteE.ROSA,
+        description:
+            "Red Hat OpenShift Service on AWS provides a model that allows Red Hat to deploy clusters into a customer's existing Amazon Web Service (AWS) account.",
     },
 ]
 
@@ -142,7 +150,7 @@ function DemoHome() {
                         {wizards.map((wizard, index) => (
                             <Tile
                                 key={index}
-                                title={`${wizard.name}`}
+                                title={wizard.name}
                                 onClick={() => {
                                     history.push(wizard.route)
                                 }}
