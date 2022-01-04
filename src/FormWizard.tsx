@@ -70,7 +70,7 @@ export function FormWizardPage(props: {
     const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const [data, setData] = useState(props.defaultData ?? {})
     const [devMode, setDevMode] = useState(false)
-    const [isForm, setIsForm] = useState(false)
+    const [isForm] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
 
     const [drawerExpanded, setDrawerExpanded] = useState(props.yaml !== false && localStorage.getItem('yaml') === 'true')

@@ -25,7 +25,7 @@ jobs:
                   cache: 'npm'
             - name: npm version ${{ github.event.inputs.versionIncrement }}
               run: |
-                  TAG=$(npm version patch --no-git-tag-version)
+                  TAG=$(npm version ${{ github.event.inputs.versionIncrement }} --no-git-tag-version)
                   echo "TAG=$(echo $TAG)" >> $GITHUB_ENV
             - run: npm ci
             - run: npm run build

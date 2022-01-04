@@ -16,7 +16,7 @@
         "build:copy:wizards": "copyfiles -u 1 wizards/**/*.svg wizards/**/*.yaml wizards/**/*.hbs lib/wizards",
         "start": "TS_NODE_PROJECT=webpack.tsconfig.json webpack serve --mode development",
         "pages": "TS_NODE_PROJECT=webpack.tsconfig.json webpack --mode production",
-        "test": "concurrently npm:tsc npm:eslint npm:prettier npm:cypress npm:pages --prefix-colors cyan,green,blue,magenta,yellow",
+        "test": "concurrently npm:tsc npm:eslint npm:prettier npm:cypress npm:pages --prefix-colors cyan,green,blue,magenta,gray",
         "tsc": "tsc --noEmit -p tsconfig.eslint.json",
         "eslint": "eslint src wizards",
         "prettier": "prettier --check src wizards !**/*.hbs",
