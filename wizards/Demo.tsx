@@ -26,6 +26,7 @@ import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { AppForm } from './Application/AppForm'
+import { AppTest } from './AppTest/AppTest'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
@@ -104,6 +105,8 @@ export function DemoRouter(): JSX.Element {
             return <AnsibleExample />
         case RouteE.Application:
             return <AppForm />
+        case RouteE.App:
+            return <AppTest />
         case RouteE.Cluster:
             return <ClusterForm />
         case RouteE.Credentials:
