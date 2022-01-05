@@ -46,7 +46,7 @@ export function inputSetValue<T = any>(
     formWizardContext: IFormWizardContext
 ) {
     const path = props.path ?? props.id
-    set(item, path, value)
+    set(item, path, value, { preservePaths: false })
     formWizardContext.updateContext()
 }
 

@@ -93,7 +93,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
 
     const id = props.id
     const path = props.path ?? id
-    const keyPath = props.keyPath
+    const keyPath = props.keyPath ?? props.path
 
     const [open, setOpen] = useState(false)
 
@@ -201,7 +201,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
             switch (props.variant) {
                 case 'single':
                 case 'single-grouped':
-                    set(item, path, selectOptionObject.value)
+                    set(item, path, selectOptionObject.value, { preservePaths: false })
                     setOpen(false)
                     break
                 case 'multi':
@@ -213,7 +213,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
                     } else {
                         newValues.push(selectOptionObject.value)
                     }
-                    set(item, path, newValues)
+                    set(item, path, newValues, { preservePaths: false })
                     break
                 }
             }
