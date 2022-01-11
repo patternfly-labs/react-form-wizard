@@ -1,11 +1,12 @@
 import { FormGroup, Gallery, Tile } from '@patternfly/react-core'
 import get from 'get-value'
-import { Fragment, ReactNode, useContext } from 'react'
+import { Fragment, ReactNode, useCallback, useContext, useState } from 'react'
 import set from 'set-value'
 import { IRadioGroupContextState, RadioGroupContext } from '..'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
 import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { wizardArrayItems } from '..'
 
 export function FormWizardTiles(props: {
     id: string
@@ -65,8 +66,38 @@ export function FormWizardTile(props: {
     description?: string
     icon?: ReactNode
     children?: ReactNode
+    newValue?: object
+    path?: string | null
 }) {
+    const id = props.id
+    const path = props.path !== undefined ? props.path : id
+    const [expanded, setExpanded] = useState<Record<string, boolean>>({})
+
     const context = useContext(RadioGroupContext)
+    const formWizardContext = useContext(FormWizardContext)
+    const item = useContext(FormWizardItemContext)
+    const values = wizardArrayItems(props, item)
+    const addItem = useCallback(
+        (newItem: object | object[]) => {
+            let index = 0
+            if (path === null) {
+                ;(item as any[]).push(newItem)
+                index = values.length
+            } else {
+                let newArray = values
+                if (Array.isArray(newItem)) {
+                    newArray = [...newArray, ...newItem]
+                } else {
+                    newArray.push(newItem as never)
+                }
+                index = newArray.length - 1
+                set(item, path, newArray, { preservePaths: false })
+            }
+            formWizardContext.updateContext()
+            setExpanded((expanded) => ({ ...expanded, ...{ [index.toString()]: true } }))
+        },
+        [values, item, path, formWizardContext]
+    )
     return (
         <Tile
             id={props.id}
@@ -75,7 +106,13 @@ export function FormWizardTile(props: {
             isDisabled={context.disabled}
             readOnly={context.readonly}
             isSelected={context.value === props.value}
-            onClick={() => context.setValue?.(props.value)}
+            onClick={() => {
+                if (props.newValue) {
+                    addItem(props.newValue ?? {})
+                } else {
+                    context.setValue?.(props.value)
+                }
+            }}
             icon={props.icon}
             isDisplayLarge
             isStacked

@@ -27,6 +27,8 @@ import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { AppForm } from './Application/AppForm'
 import { AppTest } from './AppTest/AppTest'
+import { AppTest2 } from './AppTest2/AppTest2'
+import { ArgoWizard } from './Argo/ArgoWizard'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
@@ -55,6 +57,13 @@ const wizards: IWizard[] = [
         route: RouteE.Application,
         description: 'Advanced Cluster Management configures applications for deployment to clusters managed by ACM.',
     },
+    {
+        shortName: 'Argo',
+        name: 'Argo',
+        route: RouteE.Argo,
+        description: 'Advanced Cluster Management configures Argo applications for deployment to clusters managed by ACM.',
+    },
+
     // {
     //     shortName: 'Cluster',
     //     name: 'Cluster',
@@ -107,6 +116,10 @@ export function DemoRouter(): JSX.Element {
             return <AppForm />
         case RouteE.App:
             return <AppTest />
+        case RouteE.AppTest:
+            return <AppTest2 />
+        case RouteE.Argo:
+            return <ArgoWizard />
         case RouteE.Cluster:
             return <ClusterForm />
         case RouteE.Credentials:
