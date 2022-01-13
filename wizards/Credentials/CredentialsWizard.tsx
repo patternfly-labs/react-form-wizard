@@ -148,7 +148,34 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                     />
                 </FormWizardSection>
             </FormWizardStep>
-
+            <FormWizardStep label="Proxy">
+                <FormWizardSection label="Proxy" prompt="">
+                    <FormWizardTextInput
+                        id="http-proxy"
+                        path="stringData.httpProxy"
+                        label="HTTP Proxy"
+                        placeholder="Enter the HTTP Proxy url"
+                    />
+                    <FormWizardTextInput
+                        id="https-proxy"
+                        path="stringData.httpsProxy"
+                        label="HTTPS Proxy"
+                        placeholder="Enter the HTTPS Proxy url"
+                    />
+                    <FormWizardTextInput
+                        id="no-proxy"
+                        path="stringData.noProxy"
+                        label="No Proxy"
+                        placeholder="Enter the comma deliminated list of urls that do not require a proxy"
+                    />
+                    <FormWizardTextArea
+                        id="trust-bundle"
+                        path="stringData.additionalTrustBundle"
+                        label="Additional Trust Bundle"
+                        placeholder="Enter your additional trust bundle"
+                    />
+                </FormWizardSection>
+            </FormWizardStep>
             <FormWizardStep label="Pull secret and SSH">
                 <FormWizardSection label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
                     <FormWizardTextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
