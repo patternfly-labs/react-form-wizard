@@ -3,7 +3,7 @@ import { Fragment, ReactNode, useContext } from 'react'
 import { FormWizardLabelHelp } from './components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from './contexts/FormWizardContext'
 import { FormWizardItemContext } from './contexts/FormWizardItemContext'
-import { inputHasValue, isFormWizardHiddenProps } from './inputs/FormWizardInput'
+import { inputHasValue, useInputHidden } from './inputs/FormWizardInput'
 
 interface FormWizardSectionProps {
     label: string
@@ -27,7 +27,7 @@ export function FormWizardSection(props: FormWizardSectionProps) {
         }
     }
 
-    const hidden = isFormWizardHiddenProps(props, item)
+    const hidden = useInputHidden(props)
     if (hidden) return <Fragment />
 
     if (formWizardContext.mode === InputMode.Details) {

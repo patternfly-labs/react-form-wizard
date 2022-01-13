@@ -41,7 +41,7 @@ import { FormWizardContext, InputEditMode, InputMode } from './contexts/FormWiza
 import { FormWizardItemContext } from './contexts/FormWizardItemContext'
 import { FormWizardValidationContext } from './contexts/FormWizardValidationContext'
 import './FormWizard.css'
-import { isFormWizardHiddenProps, wizardInputHasValidationErrors } from './inputs/FormWizardInput'
+import { isHidden, wizardInputHasValidationErrors } from './inputs/FormWizardInput'
 
 Handlebars.registerHelper('if_eq', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
     return arg1 == arg2 ? options.fn(this) : options.inverse(this)
@@ -271,7 +271,7 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
     Children.forEach(props.children, (child) => {
         if (!isValidElement(child)) return
         if (child.type !== FormWizardStep) return
-        if (isFormWizardHiddenProps(child.props, item)) return
+        if (isHidden(child, item)) return
 
         const stepHasValidationErrors = wizardInputHasValidationErrors(child, item)
 
