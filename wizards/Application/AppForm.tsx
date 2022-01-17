@@ -472,16 +472,6 @@ export function Placement() {
                         required
                     />
                 </FormWizardCheckbox>
-                <FormWizardCheckbox
-                    id="placement.allClusters"
-                    label="Deploy to all online clusters and local cluster"
-                    labelHelp="Deploy your application resources on all online clusters, including your local cluster."
-                ></FormWizardCheckbox>
-                <FormWizardCheckbox
-                    id="placement.local"
-                    label="Deploy on local cluster"
-                    labelHelp="Deploy application resources on local cluster only"
-                ></FormWizardCheckbox>
             </FormWizardSection>
             <DeploymentWindow />
         </Fragment>
