@@ -26,6 +26,14 @@ describe('credentials wizard - aws', () => {
         cy.contains('Next').click()
     })
 
+    it('proxy', () => {
+        cy.get('#http-proxy').type('my-http-proxy')
+        cy.get('#https-proxy').type('my-https-proxy')
+        cy.get('#no-proxy').type('my-no-proxy')
+        cy.get('#trust-bundle').type('my-trust-bundle')
+        cy.contains('Next').click()
+    })
+
     it('pull secret and ssh', () => {
         cy.get('#pull-secret').type('my-pull-secret')
         cy.get('#ssh-public-key').type('my-ssh-public')
@@ -54,6 +62,10 @@ describe('credentials wizard - aws', () => {
             stringData: {
                 aws_access_key_id: 'my-key-id',
                 aws_secret_access_key: 'my-access-key',
+                httpProxy: 'my-http-proxy',
+                httpsProxy: 'my-https-proxy',
+                noProxy: 'my-no-proxy',
+                additionalTrustBundle: 'my-trust-bundle',
                 pullSecret: 'my-pull-secret',
                 'ssh-publickey': 'my-ssh-public',
                 'ssh-privatekey': 'my-ssh-private',
