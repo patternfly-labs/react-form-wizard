@@ -13,8 +13,9 @@ import get from 'get-value'
 import { Fragment, useContext, useState } from 'react'
 import set from 'set-value'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { Mode, useMode } from '../contexts/ModeContext'
 
 export function FormWizardLabels(props: {
     id: string
@@ -39,7 +40,9 @@ export function FormWizardLabels(props: {
     const id = props.id
     const path = props.path ?? id
 
-    const formWizardContext = useContext(FormWizardContext)
+    const { update } = useData()
+    const mode = useMode()
+
     const item = useContext(ItemContext)
 
     const [open, setOpen] = useState(false)
@@ -66,7 +69,7 @@ export function FormWizardLabels(props: {
     const hidden = props.hidden ? props.hidden(item) : false
     if (hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         return (
             <DescriptionListGroup>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
@@ -107,7 +110,7 @@ export function FormWizardLabels(props: {
                         ? undefined
                         : () => {
                               set(item, path, '', { preservePaths: false })
-                              formWizardContext.updateContext()
+                              update()
                           }
                 }
                 selections={selections}
@@ -123,7 +126,7 @@ export function FormWizardLabels(props: {
                         value = parts.slice(1).join('=')
                     }
                     set(item, path + '.' + key, value)
-                    formWizardContext.updateContext()
+                    update()
                 }}
             >
                 {props.options?.map((option) => {

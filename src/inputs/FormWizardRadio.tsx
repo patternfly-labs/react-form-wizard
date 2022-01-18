@@ -5,8 +5,9 @@ import { Children, createContext, Fragment, isValidElement, ReactElement, ReactN
 import set from 'set-value'
 import { FormWizardIndented } from '../components/FormWizardIndented'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { Mode, useMode } from '../contexts/ModeContext'
 
 export interface IRadioGroupContextState {
     value?: any
@@ -30,14 +31,15 @@ export function FormWizardRadioGroup(props: {
     helperText?: string
     children?: ReactNode
 }) {
-    const formWizardContext = useContext(FormWizardContext)
+    const { update } = useData()
+    const mode = useMode()
     const item = useContext(ItemContext)
 
     const state: IRadioGroupContextState = {
         value: get(item, props.path),
         setValue: (value) => {
             set(item, props.path, value)
-            formWizardContext.updateContext()
+            update()
         },
         readonly: props.readonly,
         disabled: props.disabled,
@@ -45,7 +47,7 @@ export function FormWizardRadioGroup(props: {
 
     if (props.hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         if (!state.value) return <Fragment />
 
         let selectedChild: ReactElement | undefined

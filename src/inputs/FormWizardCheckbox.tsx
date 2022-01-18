@@ -5,8 +5,9 @@ import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
 import { FormWizardIndented } from '../components/FormWizardIndented'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { Mode, useMode } from '../contexts/ModeContext'
 
 export function FormWizardCheckbox(props: {
     id: string
@@ -27,7 +28,8 @@ export function FormWizardCheckbox(props: {
     const id = props.id
     const path = props.path ?? id
 
-    const formWizardContext = useContext(FormWizardContext)
+    const { update } = useData()
+    const mode = useMode()
     const item = useContext(ItemContext)
 
     const value = get(item, path)
@@ -44,7 +46,7 @@ export function FormWizardCheckbox(props: {
 
     if (props.hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         if (value === undefined) return <Fragment />
         return (
             <DescriptionListGroup id={props.id}>
@@ -71,7 +73,7 @@ export function FormWizardCheckbox(props: {
                             isChecked={value}
                             onChange={(value) => {
                                 set(item, path, value)
-                                formWizardContext.updateContext()
+                                update()
                             }}
                             label={props.label}
                             value={value}

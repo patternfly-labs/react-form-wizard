@@ -12,8 +12,9 @@ import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useContext } from 'react'
 import set from 'set-value'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { Mode, useMode } from '../contexts/ModeContext'
 
 export function FormWizardStringArray(props: {
     id: string
@@ -25,7 +26,8 @@ export function FormWizardStringArray(props: {
     const id = props.id
     const path = props.path ?? id
 
-    const formWizardContext = useContext(FormWizardContext)
+    const { update } = useData()
+    const mode = useMode()
     const item = useContext(ItemContext)
 
     let values: string[] = get(item, path)
@@ -37,7 +39,7 @@ export function FormWizardStringArray(props: {
         let newValue = values
         if (props.unmap) newValue = props.unmap(values)
         set(item, path, newValue, { preservePaths: false })
-        formWizardContext.updateContext()
+        update()
     }
 
     const onNewKey = () => {
@@ -45,7 +47,7 @@ export function FormWizardStringArray(props: {
         let newValue = values
         if (props.unmap) newValue = props.unmap(values)
         set(item, path, newValue, { preservePaths: false })
-        formWizardContext.updateContext()
+        update()
     }
 
     const onDeleteKey = (index: number) => {
@@ -53,10 +55,10 @@ export function FormWizardStringArray(props: {
         let newValue = values
         if (props.unmap) newValue = props.unmap(values)
         set(item, path, newValue, { preservePaths: false })
-        formWizardContext.updateContext()
+        update()
     }
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         return (
             <DescriptionListGroup>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>

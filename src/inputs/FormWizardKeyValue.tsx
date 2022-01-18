@@ -3,14 +3,14 @@ import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useContext, useState } from 'react'
 import set from 'set-value'
-import { FormWizardContext } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 
 export function FormWizardKeyValue(props: { id: string; label: string; path: string }) {
     const id = props.id
     const path = props.path ?? id
 
-    const formWizardContext = useContext(FormWizardContext)
+    const { update } = useData()
     const item = useContext(ItemContext)
 
     const value = get(item, path) ?? {}
@@ -27,7 +27,7 @@ export function FormWizardKeyValue(props: { id: string; label: string; path: str
                 return result
             }, {} as Record<string, string>)
         )
-        formWizardContext.updateContext()
+        update()
     }
 
     const onValueChange = (index: number, newValue: string) => {
@@ -40,7 +40,7 @@ export function FormWizardKeyValue(props: { id: string; label: string; path: str
                 return result
             }, {} as Record<string, string>)
         )
-        formWizardContext.updateContext()
+        update()
     }
 
     const onNewKey = () => {
@@ -53,7 +53,7 @@ export function FormWizardKeyValue(props: { id: string; label: string; path: str
                 return result
             }, {} as Record<string, string>)
         )
-        formWizardContext.updateContext()
+        update()
     }
 
     const onDeleteKey = (index: number) => {
@@ -66,7 +66,7 @@ export function FormWizardKeyValue(props: { id: string; label: string; path: str
                 return result
             }, {} as Record<string, string>)
         )
-        formWizardContext.updateContext()
+        update()
     }
 
     return (

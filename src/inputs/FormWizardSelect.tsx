@@ -3,8 +3,9 @@ import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import set from 'set-value'
 import { FormWizardTextDetail } from '..'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './FormWizardInput'
 import { FormWizardInputLabel } from './FormWizardInputLabel'
 import './FormWizardSelect.css'
@@ -86,7 +87,7 @@ export type FormWizardSelectProps<T> =
 function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
     const { mode, value, setValue, validated, hidden, id, path } = useInput(props)
 
-    const formWizardContext = useContext(FormWizardContext)
+    const { update } = useData()
 
     const item = useContext(ItemContext)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
@@ -202,9 +203,9 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
                     break
                 }
             }
-            formWizardContext.updateContext()
+            update()
         },
-        [item, props, formWizardContext, path, value]
+        [item, props, update, path, value]
     )
 
     const isGrouped = useMemo(() => {
@@ -220,8 +221,8 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
 
     const onClear = useCallback(() => {
         // set(item, props.path, '', { preservePaths: false })
-        formWizardContext.updateContext()
-    }, [formWizardContext])
+        update()
+    }, [update])
 
     const onFilter = useCallback(
         (_, value: string) =>
@@ -254,7 +255,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
 
     if (hidden) return <Fragment />
 
-    if (mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         return <FormWizardTextDetail id={id} path={props.path} label={props.label} />
     }
 

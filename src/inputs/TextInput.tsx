@@ -5,7 +5,7 @@ import { FormWizardTextDetail } from '..'
 import { ClearInputButton } from '../components/ClearInputButton'
 import { PasteInputButton } from '../components/PasteInputButton'
 import { ShowSecretsButton } from '../components/ShowSecretsButton'
-import { InputMode } from '../contexts/FormWizardContext'
+import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './FormWizardInput'
 import { InputLabel } from './FormWizardInputLabel'
 
@@ -20,7 +20,7 @@ export function TextInput(props: TextInputProps) {
 
     if (hidden) return <Fragment />
 
-    if (mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         return <FormWizardTextDetail id={id} path={props.path} label={props.label} />
     }
 

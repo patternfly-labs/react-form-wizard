@@ -2,8 +2,9 @@ import get from 'get-value'
 import { Children, isValidElement, ReactElement, ReactNode, useContext, useEffect } from 'react'
 import set from 'set-value'
 import { FormWizardArrayInput, FormWizardSelector, wizardArrayItems, wizardSelectorItem } from '..'
-import { FormWizardContext, IFormWizardContext, useMode } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { useMode } from '../contexts/ModeContext'
 import { useShowValidation } from '../contexts/ShowValidationProvider'
 import { useSetValid, useValidate } from '../contexts/ValidProvider'
 
@@ -28,22 +29,17 @@ export function useValue(
     defaultValue: any
 ): [value: any, setValue: (value: any) => void] {
     const item = useContext(ItemContext)
-    const formWizardContext = useContext(FormWizardContext)
+    const { update } = useData()
     const path = props.path ?? props.label.toLowerCase().split(' ').join('-')
     const value = get(item, path) ?? defaultValue
-    const setValue = (value: any) => inputSetValue(props, item, value, formWizardContext)
+    const setValue = (value: any) => inputSetValue(props, item, value, update)
     return [value, setValue]
 }
 
-export function inputSetValue<T = any>(
-    props: Pick<InputCommonProps, 'id' | 'path' | 'label'>,
-    item: object,
-    value: T,
-    formWizardContext: IFormWizardContext
-) {
+export function inputSetValue<T = any>(props: Pick<InputCommonProps, 'id' | 'path' | 'label'>, item: object, value: T, update: () => void) {
     const path = props.path ?? props.label.toLowerCase().split(' ').join('-')
     set(item, path, value, { preservePaths: false })
-    formWizardContext.updateContext()
+    update()
 }
 
 export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' | 'label' | 'required' | 'validation'>) {

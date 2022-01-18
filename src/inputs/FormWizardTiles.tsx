@@ -4,8 +4,9 @@ import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
 import { IRadioGroupContextState, RadioGroupContext } from '..'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { Mode, useMode } from '../contexts/ModeContext'
 
 export function FormWizardTiles(props: {
     id: string
@@ -22,14 +23,15 @@ export function FormWizardTiles(props: {
 }) {
     const path = props.path ?? props.id
 
-    const formWizardContext = useContext(FormWizardContext)
+    const mode = useMode()
+    const { update } = useData()
     const item = useContext(ItemContext)
 
     const state: IRadioGroupContextState = {
         value: get(item, path),
         setValue: (value) => {
             set(item, path, value, { preservePaths: false })
-            formWizardContext.updateContext()
+            update()
         },
         readonly: props.readonly,
         disabled: props.disabled,
@@ -37,7 +39,7 @@ export function FormWizardTiles(props: {
 
     if (props.hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         return <Fragment />
     }
 

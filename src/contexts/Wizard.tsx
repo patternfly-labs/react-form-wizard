@@ -1,25 +1,24 @@
 import { Alert, Button } from '@patternfly/react-core'
 import { Children, isValidElement, ReactElement, ReactNode, useCallback, useState } from 'react'
-import { DataContext, InputMode } from './FormWizardContext'
+import { DataContext } from './DataContext'
 import { ItemContext } from './ItemContext'
+import { Mode, ModeContext } from './ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './ShowValidationProvider'
 import { Step } from './Step'
 import { useValid, ValidProvider } from './ValidProvider'
 
 export function Wizard(props: { title: string; children: ReactNode }) {
     const [data, setData] = useState({})
+    const update = useCallback(() => setData((data) => JSON.parse(JSON.stringify(data))), [])
     return (
-        <DataContext.Provider
-            value={{
-                updateContext: () => setData((data) => JSON.parse(JSON.stringify(data))),
-                mode: InputMode.Wizard,
-            }}
-        >
-            <ItemContext.Provider value={data}>
-                <ValidProvider>
-                    <WizardInternal>{props.children}</WizardInternal>
-                </ValidProvider>
-            </ItemContext.Provider>
+        <DataContext.Provider value={{ update }}>
+            <ModeContext.Provider value={Mode.Wizard}>
+                <ItemContext.Provider value={data}>
+                    <ValidProvider>
+                        <WizardInternal>{props.children}</WizardInternal>
+                    </ValidProvider>
+                </ItemContext.Provider>
+            </ModeContext.Provider>
         </DataContext.Provider>
     )
 }

@@ -37,9 +37,10 @@ import { Children, Fragment, isValidElement, ReactNode, useCallback, useContext,
 import YAML from 'yaml'
 import { FormWizardStep } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
-import { FormWizardContext, InputMode } from './contexts/FormWizardContext'
+import { DataContext, useData } from './contexts/DataContext'
 import { FormWizardValidationContext } from './contexts/FormWizardValidationContext'
 import { ItemContext } from './contexts/ItemContext'
+import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider } from './contexts/ShowValidationProvider'
 import './FormWizard.css'
 import { isHidden, wizardInputHasValidationErrors } from './inputs/FormWizardInput'
@@ -84,7 +85,7 @@ export function FormWizardPage(props: {
         })
     }, [])
 
-    const mode = isForm ? InputMode.Form : InputMode.Wizard
+    const mode = isForm ? Mode.Form : Mode.Wizard
     return (
         <Page
             className="form-wizard"
@@ -120,51 +121,51 @@ export function FormWizardPage(props: {
             groupProps={{ sticky: 'top' }}
         >
             {/* <Drawer isExpanded={drawerExpanded} isInline={drawerInline}> */}
-            <FormWizardContext.Provider
-                value={{
-                    updateContext: (newData?: any) => setData(JSON.parse(JSON.stringify(newData ?? data)) as object),
-                    mode,
-                    onSubmit: props.onSubmit,
-                    onCancel: props.onCancel,
-                }}
-            >
-                <ShowValidationProvider>
-                    <FormWizardValidationContext.Provider value={{ showValidation, setShowValidation }}>
-                        <Drawer isExpanded={drawerExpanded} isInline>
-                            <DrawerContent
-                                panelContent={
-                                    <FormWizardPageDrawer
-                                        data={data}
-                                        template={template}
-                                        template2={template2}
-                                        templateString={props.template}
-                                        devMode={devMode}
-                                    />
-                                }
-                            >
-                                <DrawerContentBody>
-                                    <PageSection
-                                        variant="light"
-                                        style={{ height: '100%' }}
-                                        type={mode === InputMode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
-                                        isWidthLimited
-                                    >
-                                        <ItemContext.Provider value={data}>
-                                            {mode === InputMode.Wizard ? (
-                                                <FormWizardWizardMode template={template} data={data}>
-                                                    {props.children}
-                                                </FormWizardWizardMode>
-                                            ) : (
-                                                <FormWizardFormMode>{props.children}</FormWizardFormMode>
-                                            )}
-                                        </ItemContext.Provider>
-                                    </PageSection>
-                                </DrawerContentBody>
-                            </DrawerContent>
-                        </Drawer>
-                    </FormWizardValidationContext.Provider>
-                </ShowValidationProvider>
-            </FormWizardContext.Provider>
+            <DataContext.Provider value={{ update: (newData?: any) => setData(JSON.parse(JSON.stringify(newData ?? data)) as object) }}>
+                <ModeContext.Provider value={mode}>
+                    <ShowValidationProvider>
+                        <FormWizardValidationContext.Provider value={{ showValidation, setShowValidation }}>
+                            <Drawer isExpanded={drawerExpanded} isInline>
+                                <DrawerContent
+                                    panelContent={
+                                        <FormWizardPageDrawer
+                                            data={data}
+                                            template={template}
+                                            template2={template2}
+                                            templateString={props.template}
+                                            devMode={devMode}
+                                        />
+                                    }
+                                >
+                                    <DrawerContentBody>
+                                        <PageSection
+                                            variant="light"
+                                            style={{ height: '100%' }}
+                                            type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
+                                            isWidthLimited
+                                        >
+                                            <ItemContext.Provider value={data}>
+                                                {mode === Mode.Wizard ? (
+                                                    <FormWizardWizardMode
+                                                        template={template}
+                                                        data={data}
+                                                        onSubmit={props.onSubmit}
+                                                        onCancel={props.onCancel}
+                                                    >
+                                                        {props.children}
+                                                    </FormWizardWizardMode>
+                                                ) : (
+                                                    <FormWizardFormMode>{props.children}</FormWizardFormMode>
+                                                )}
+                                            </ItemContext.Provider>
+                                        </PageSection>
+                                    </DrawerContentBody>
+                                </DrawerContent>
+                            </Drawer>
+                        </FormWizardValidationContext.Provider>
+                    </ShowValidationProvider>
+                </ModeContext.Provider>
+            </DataContext.Provider>
         </Page>
     )
 }
@@ -177,8 +178,7 @@ function FormWizardPageDrawer(props: {
     templateString?: string
 }) {
     const [activeKey, setActiveKey] = useState<number | string>(0)
-    const formWizardContext = useContext(FormWizardContext)
-
+    const { update } = useData()
     return (
         <Fragment>
             <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
@@ -198,7 +198,7 @@ function FormWizardPageDrawer(props: {
                                     setData={(data: any) => {
                                         let newData = data
                                         if (props.template2) newData = YamlToObject(props.template2(data))
-                                        formWizardContext.updateContext(newData)
+                                        update(newData)
                                     }}
                                 />
                             </Tab>
@@ -214,7 +214,7 @@ function FormWizardPageDrawer(props: {
                         setData={(data: any) => {
                             let newData = data
                             if (props.template2) newData = YamlToObject(props.template2(data))
-                            formWizardContext.updateContext(newData)
+                            update(newData)
                         }}
                     />
                     // </PageSection>
@@ -285,9 +285,14 @@ export function FormWizardFormMode(props: { children: ReactNode }) {
     )
 }
 
-export function FormWizardWizardMode(props: { data: object; children: ReactNode; template?: HandlebarsTemplateDelegate }) {
+export function FormWizardWizardMode(props: {
+    data: object
+    children: ReactNode
+    template?: HandlebarsTemplateDelegate
+    onSubmit?: FormSubmit
+    onCancel?: FormCancel
+}) {
     const steps: FormWizardStep[] = []
-    const formWizardContext = useContext(FormWizardContext)
     const validationContext = useContext(FormWizardValidationContext)
     const item = useContext(ItemContext)
     const [showStepValidation, setShowStepValidation] = useState<Record<string, boolean | undefined>>({})
@@ -464,25 +469,24 @@ export function FormWizardWizardMode(props: { data: object; children: ReactNode;
             onSave={() => {
                 if (props.template) {
                     const data = props.template(props.data)
-                    void formWizardContext.onSubmit?.(YAML.parse(data))
+                    void props.onSubmit?.(YAML.parse(data))
                 } else {
-                    void formWizardContext.onSubmit?.(props.data)
+                    void props.onSubmit?.(props.data)
                 }
             }}
             // backButtonText
             // cancelButtonText
             // nextButtonText
             footer={Footer}
-            onClose={() => formWizardContext.onCancel?.()}
+            onClose={() => props.onCancel?.()}
         />
     )
 }
 
 export function FormWizardDetailsMode(props: { children: ReactNode }) {
-    const formWizardContext = useContext(FormWizardContext)
     return (
-        <FormWizardContext.Provider value={{ ...formWizardContext, ...{ mode: InputMode.Details } }}>
+        <ModeContext.Provider value={Mode.Details}>
             <DescriptionList isHorizontal>{props.children}</DescriptionList>
-        </FormWizardContext.Provider>
+        </ModeContext.Provider>
     )
 }

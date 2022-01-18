@@ -19,8 +19,9 @@ import { Children, Fragment, ReactNode, useCallback, useContext, useState } from
 import set from 'set-value'
 import { FormWizardTextDetail } from '..'
 import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
+import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { Mode, useMode } from '../contexts/ModeContext'
 import './FormWizardArrayInput.css'
 
 export function wizardArrayItems(props: any, item: any) {
@@ -52,7 +53,8 @@ export function FormWizardArrayInput(props: {
 
     const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
-    const formWizardContext = useContext(FormWizardContext)
+    const { update } = useData()
+    const mode = useMode()
     const item = useContext(ItemContext)
     const sourceArray = get(item, path as string) as object[]
 
@@ -74,13 +76,13 @@ export function FormWizardArrayInput(props: {
                 index = newArray.length - 1
                 set(item, path, newArray, { preservePaths: false })
             }
-            formWizardContext.updateContext()
+            update()
             setExpanded((expanded) => ({ ...expanded, ...{ [index.toString()]: true } }))
         },
-        [values, item, path, formWizardContext]
+        [path, update, item, values]
     )
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         if (values.length === 0) {
             return <Fragment />
         }
@@ -165,7 +167,7 @@ export function FormWizardArrayInput(props: {
                                                                 const temp = values[index]
                                                                 values[index] = values[index - 1]
                                                                 values[index - 1] = temp
-                                                                formWizardContext.updateContext()
+                                                                update()
                                                             }}
                                                         >
                                                             <ArrowUpIcon />
@@ -178,7 +180,7 @@ export function FormWizardArrayInput(props: {
                                                                 const temp = values[index]
                                                                 values[index] = values[index + 1]
                                                                 values[index + 1] = temp
-                                                                formWizardContext.updateContext()
+                                                                update()
                                                             }}
                                                         >
                                                             <ArrowDownIcon />
@@ -190,7 +192,7 @@ export function FormWizardArrayInput(props: {
                                                     aria-label="Remove item"
                                                     onClick={() => {
                                                         sourceArray.splice(sourceArray.indexOf(value), 1)
-                                                        formWizardContext.updateContext()
+                                                        update()
                                                     }}
                                                 >
                                                     <TrashIcon />
