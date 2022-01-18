@@ -1,11 +1,11 @@
 import { Alert, Button } from '@patternfly/react-core'
 import { Children, isValidElement, ReactElement, ReactNode, useCallback, useState } from 'react'
-import { DataContext } from './DataContext'
-import { ItemContext } from './ItemContext'
-import { Mode, ModeContext } from './ModeContext'
-import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './ShowValidationProvider'
+import { DataContext } from './contexts/DataContext'
+import { ItemContext } from './contexts/ItemContext'
+import { Mode, ModeContext } from './contexts/ModeContext'
+import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
 import { Step } from './Step'
-import { useValid, ValidProvider } from './ValidProvider'
+import { useValid, ValidProvider } from './contexts/ValidProvider'
 
 export function Wizard(props: { title: string; children: ReactNode }) {
     const [data, setData] = useState({})

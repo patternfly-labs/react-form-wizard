@@ -11,9 +11,9 @@ import {
     FormWizardTile as Tile,
     FormWizardTiles as Tiles,
 } from '../../src'
-import { Section } from '../../src/contexts/Section'
-import { Step } from '../../src/contexts/Step'
-import { Wizard } from '../../src/contexts/Wizard'
+import { Section } from '../../src/Section'
+import { Step } from '../../src/Step'
+import { Wizard } from '../../src/Wizard'
 
 export function Tutorial() {
     return (

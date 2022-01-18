@@ -3,7 +3,6 @@ import {
     ActionList,
     ActionListGroup,
     ActionListItem,
-    Alert,
     Breadcrumb,
     BreadcrumbItem,
     Button,
@@ -38,7 +37,6 @@ import YAML from 'yaml'
 import { FormWizardStep } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { DataContext, useData } from './contexts/DataContext'
-import { FormWizardValidationContext } from './contexts/FormWizardValidationContext'
 import { ItemContext } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider } from './contexts/ShowValidationProvider'
@@ -75,7 +73,7 @@ export function FormWizardPage(props: {
     const [data, setData] = useState(props.defaultData ?? {})
     const [devMode, setDevMode] = useState(false)
     const [isForm] = useState(false)
-    const [showValidation, setShowValidation] = useState(false)
+    // const [showValidation, setShowValidation] = useState(false)
 
     const [drawerExpanded, setDrawerExpanded] = useState(props.yaml !== false && localStorage.getItem('yaml') === 'true')
     const toggleDrawerExpanded = useCallback(() => {
@@ -124,45 +122,43 @@ export function FormWizardPage(props: {
             <DataContext.Provider value={{ update: (newData?: any) => setData(JSON.parse(JSON.stringify(newData ?? data)) as object) }}>
                 <ModeContext.Provider value={mode}>
                     <ShowValidationProvider>
-                        <FormWizardValidationContext.Provider value={{ showValidation, setShowValidation }}>
-                            <Drawer isExpanded={drawerExpanded} isInline>
-                                <DrawerContent
-                                    panelContent={
-                                        <FormWizardPageDrawer
-                                            data={data}
-                                            template={template}
-                                            template2={template2}
-                                            templateString={props.template}
-                                            devMode={devMode}
-                                        />
-                                    }
-                                >
-                                    <DrawerContentBody>
-                                        <PageSection
-                                            variant="light"
-                                            style={{ height: '100%' }}
-                                            type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
-                                            isWidthLimited
-                                        >
-                                            <ItemContext.Provider value={data}>
-                                                {mode === Mode.Wizard ? (
-                                                    <FormWizardWizardMode
-                                                        template={template}
-                                                        data={data}
-                                                        onSubmit={props.onSubmit}
-                                                        onCancel={props.onCancel}
-                                                    >
-                                                        {props.children}
-                                                    </FormWizardWizardMode>
-                                                ) : (
-                                                    <FormWizardFormMode>{props.children}</FormWizardFormMode>
-                                                )}
-                                            </ItemContext.Provider>
-                                        </PageSection>
-                                    </DrawerContentBody>
-                                </DrawerContent>
-                            </Drawer>
-                        </FormWizardValidationContext.Provider>
+                        <Drawer isExpanded={drawerExpanded} isInline>
+                            <DrawerContent
+                                panelContent={
+                                    <FormWizardPageDrawer
+                                        data={data}
+                                        template={template}
+                                        template2={template2}
+                                        templateString={props.template}
+                                        devMode={devMode}
+                                    />
+                                }
+                            >
+                                <DrawerContentBody>
+                                    <PageSection
+                                        variant="light"
+                                        style={{ height: '100%' }}
+                                        type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
+                                        isWidthLimited
+                                    >
+                                        <ItemContext.Provider value={data}>
+                                            {mode === Mode.Wizard ? (
+                                                <FormWizardWizardMode
+                                                    template={template}
+                                                    data={data}
+                                                    onSubmit={props.onSubmit}
+                                                    onCancel={props.onCancel}
+                                                >
+                                                    {props.children}
+                                                </FormWizardWizardMode>
+                                            ) : (
+                                                <FormWizardFormMode>{props.children}</FormWizardFormMode>
+                                            )}
+                                        </ItemContext.Provider>
+                                    </PageSection>
+                                </DrawerContentBody>
+                            </DrawerContent>
+                        </Drawer>
                     </ShowValidationProvider>
                 </ModeContext.Provider>
             </DataContext.Provider>
@@ -293,7 +289,6 @@ export function FormWizardWizardMode(props: {
     onCancel?: FormCancel
 }) {
     const steps: FormWizardStep[] = []
-    const validationContext = useContext(FormWizardValidationContext)
     const item = useContext(ItemContext)
     const [showStepValidation, setShowStepValidation] = useState<Record<string, boolean | undefined>>({})
 
@@ -305,11 +300,7 @@ export function FormWizardWizardMode(props: {
 
         const stepHasValidationErrors = wizardInputHasValidationErrors(child, item)
 
-        let color: string | undefined = undefined
         if (stepHasValidationErrors) {
-            if (validationContext.showValidation) {
-                color = '#C9190B'
-            }
             formHasValidationErrors = true
         }
 
@@ -322,21 +313,14 @@ export function FormWizardWizardMode(props: {
 
                     const childStepHasValidationErrors = wizardInputHasValidationErrors(grandchild.props, item)
 
-                    let c: string | undefined = undefined
-                    if (childStepHasValidationErrors) {
-                        if (validationContext.showValidation) {
-                            c = '#C9190B'
-                        }
-                    }
-
                     const title = grandchild.props.label
                     if (title) {
                         childSteps.push({
                             id: title,
                             name: (
-                                <Split style={{ color: c, alignItems: 'baseline', columnGap: 8 }}>
+                                <Split style={{ alignItems: 'baseline', columnGap: 8 }}>
                                     <SplitItem isFilled>{title}</SplitItem>
-                                    {c && <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />}
+                                    {<ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />}
                                 </Split>
                             ),
                             component: grandchild,
@@ -350,9 +334,8 @@ export function FormWizardWizardMode(props: {
                 steps.push({
                     id: label as string,
                     name: (
-                        <Split style={{ color: color, alignItems: 'baseline', columnGap: 8 }}>
+                        <Split style={{ alignItems: 'baseline', columnGap: 8 }}>
                             <SplitItem isFilled>{label}</SplitItem>
-                            {color && <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />}
                         </Split>
                     ),
                     steps: childSteps,
@@ -362,25 +345,11 @@ export function FormWizardWizardMode(props: {
                 steps.push({
                     id: label as string,
                     name: (
-                        <Split style={{ color: color, alignItems: 'baseline', columnGap: 8 }}>
+                        <Split style={{ alignItems: 'baseline', columnGap: 8 }}>
                             <SplitItem isFilled>{label}</SplitItem>
-                            {color && <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />}
                         </Split>
                     ),
-                    component: (
-                        <ShowValidationProvider>
-                            <FormWizardValidationContext.Provider
-                                value={{
-                                    showValidation: showStepValidation[label as string] ?? false,
-                                    setShowValidation: () => {
-                                        /**/
-                                    },
-                                }}
-                            >
-                                {child}
-                            </FormWizardValidationContext.Provider>
-                        </ShowValidationProvider>
-                    ),
+                    component: <ShowValidationProvider>{child}</ShowValidationProvider>,
                     hasValidationErrors: stepHasValidationErrors,
                 })
             }
@@ -396,14 +365,11 @@ export function FormWizardWizardMode(props: {
         hasValidationErrors: formHasValidationErrors,
     })
 
-    const stepChange = useCallback(
-        (step) => {
-            if ((step as { name: string }).name === 'Review') {
-                validationContext.setShowValidation(true)
-            }
-        },
-        [validationContext]
-    )
+    const stepChange = useCallback((step) => {
+        if ((step as { name: string }).name === 'Review') {
+            // validationContext.setShowValidation(true)
+        }
+    }, [])
 
     const isSubmitting = false
     const Footer = (
@@ -412,12 +378,12 @@ export function FormWizardWizardMode(props: {
                 {({ activeStep, onNext, onBack, onClose }) => {
                     return (
                         <Stack style={{ width: '100%' }}>
-                            {validationContext.showValidation ||
+                            {/* {validationContext.showValidation ||
                                 (showStepValidation[activeStep.id as string] && (activeStep as FormWizardStep).hasValidationErrors && (
                                     <div className="footer-alert-container">
                                         <Alert isInline variant="danger" title="Please fix validation errors" className="footer-alert" />
                                     </div>
-                                ))}
+                                ))} */}
                             <ActionGroup>
                                 <ActionList>
                                     <ActionListGroup>
@@ -430,10 +396,10 @@ export function FormWizardWizardMode(props: {
                                                 }
                                                 onNext()
                                             }}
-                                            isDisabled={
-                                                (validationContext.showValidation || showStepValidation[activeStep.id as string]) &&
-                                                (activeStep as FormWizardStep).hasValidationErrors
-                                            }
+                                            // isDisabled={
+                                            //     (validationContext.showValidation || showStepValidation[activeStep.id as string]) &&
+                                            //     (activeStep as FormWizardStep).hasValidationErrors
+                                            // }
                                         >
                                             {(activeStep as FormWizardStep).nextButtonText ?? 'Next'}
                                         </Button>

@@ -1,9 +1,9 @@
 import { DescriptionList, Divider, Split, SplitItem, Title } from '@patternfly/react-core'
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useState } from 'react'
-import { Mode, useMode } from './ModeContext'
-import { useShowValidation } from './ShowValidationProvider'
-import { ValidContext, ValidProvider } from './ValidProvider'
+import { Mode, useMode } from './contexts/ModeContext'
+import { useShowValidation } from './contexts/ShowValidationProvider'
+import { ValidContext, ValidProvider } from './contexts/ValidProvider'
 
 export function Section(props: { label: string; children?: ReactNode; defaultExpanded?: boolean }) {
     const mode = useMode()
