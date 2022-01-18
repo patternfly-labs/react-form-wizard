@@ -5,10 +5,11 @@ import { Fragment, useContext, useState } from 'react'
 import set from 'set-value'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { useID, usePath } from './FormWizardInput'
 
-export function FormWizardKeyValue(props: { id: string; label: string; path: string }) {
-    const id = props.id
-    const path = props.path ?? id
+export function FormWizardKeyValue(props: { id?: string; label?: string; path?: string }) {
+    const id = useID(props)
+    const path = usePath(props)
 
     const { update } = useData()
     const item = useContext(ItemContext)
@@ -70,7 +71,7 @@ export function FormWizardKeyValue(props: { id: string; label: string; path: str
     }
 
     return (
-        <div id={props.id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 0 }}>
+        <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 0 }}>
             <div style={{ display: 'flex', alignItems: 'baseline' }}>
                 <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16, flexGrow: 1 }}>
                     {props.label}

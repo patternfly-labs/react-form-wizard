@@ -11,6 +11,7 @@ import { InputCommonProps, lowercaseFirst, useInput } from './FormWizardInput'
 import { InputLabel } from './FormWizardInputLabel'
 
 export type TextAreaProps = InputCommonProps<string> & {
+    label: string
     placeholder?: string
     secret?: boolean
 }

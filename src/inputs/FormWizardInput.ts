@@ -1,5 +1,5 @@
 import get from 'get-value'
-import { Children, isValidElement, ReactElement, ReactNode, useContext, useEffect } from 'react'
+import { Children, isValidElement, ReactElement, ReactNode, useCallback, useContext, useEffect } from 'react'
 import set from 'set-value'
 import { FormWizardArrayInput, FormWizardSelector, wizardArrayItems, wizardSelectorItem } from '..'
 import { useData } from '../contexts/DataContext'
@@ -18,10 +18,24 @@ export type InputCommonProps<ValueT = any> = {
     required?: boolean
     readonly?: boolean
     disabled?: boolean
-    label: string
+    label?: string
     labelHelp?: string
     labelHelpTitle?: string
     helperText?: string
+}
+
+export function useID(props: { id?: string; path?: string; label?: string }) {
+    if (props.id) return props.id
+    if (props.label) return props.label.split(' ').join('-')
+    if (props.path) return props.path.split('.').join('-')
+    return 'unknown'
+}
+
+export function usePath(props: { id?: string; path?: string; label?: string }) {
+    if (props.path) return props.path
+    if (props.id) return props.id
+    if (props.label) return props.label.split(' ').join('.')
+    return 'unknown'
 }
 
 export function useValue(
@@ -30,16 +44,16 @@ export function useValue(
 ): [value: any, setValue: (value: any) => void] {
     const item = useContext(ItemContext)
     const { update } = useData()
-    const path = props.path ?? props.label.toLowerCase().split(' ').join('-')
+    const path = usePath(props)
     const value = get(item, path) ?? defaultValue
-    const setValue = (value: any) => inputSetValue(props, item, value, update)
+    const setValue = useCallback(
+        (value: any) => {
+            set(item, path, value, { preservePaths: false })
+            update()
+        },
+        [item, path, update]
+    )
     return [value, setValue]
-}
-
-export function inputSetValue<T = any>(props: Pick<InputCommonProps, 'id' | 'path' | 'label'>, item: object, value: T, update: () => void) {
-    const path = props.path ?? props.label.toLowerCase().split(' ').join('-')
-    set(item, path, value, { preservePaths: false })
-    update()
 }
 
 export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' | 'label' | 'required' | 'validation'>) {
@@ -49,7 +63,8 @@ export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' |
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
     if (props.required && !value) {
-        error = `${props.label} is required`
+        if (props.label) error = `${props.label} is required`
+        else error = 'Required'
     } else if (props.validation) {
         error = props.validation(value)
     }
@@ -247,8 +262,8 @@ export function useInput(props: InputCommonProps) {
     const validate = useValidate()
     useEffect(() => validate(), [error, validate])
 
-    const path = props.path ?? props.label.toLowerCase().split(' ').join('-')
-    const id = props.id ?? path.split('.').join('-')
+    const path = usePath(props)
+    const id = useID(props)
 
     return {
         id,

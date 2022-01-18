@@ -17,7 +17,7 @@ export function FormWizardCheckbox(props: {
     secret?: boolean
     readonly?: boolean
     disabled?: boolean
-    hidden?: boolean
+    hidden?: () => boolean
     labelHelp?: string
     labelHelpTitle?: string
     helperText?: string

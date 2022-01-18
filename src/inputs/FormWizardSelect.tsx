@@ -28,6 +28,7 @@ export interface FormWizardOptionGroup<T> {
 type FormWizardSelectCommonProps<T> = InputCommonProps<T> & {
     placeholder?: string
     footer?: ReactNode
+    label: string
 
     /** key path is the path to get the key of the value
      * Used in cases where the value is an object, but we need to track select by a string or number
@@ -85,7 +86,7 @@ export type FormWizardSelectProps<T> =
     | FormWizardGroupedMultiselectProps<T>
 
 function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
-    const { mode, value, setValue, validated, hidden, id, path } = useInput(props)
+    const { mode, value, validated, hidden, id, path } = useInput(props)
 
     const { update } = useData()
 
