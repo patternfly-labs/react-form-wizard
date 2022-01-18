@@ -7,7 +7,7 @@ import {
     FormWizardSection,
     FormWizardSelect,
     FormWizardStep,
-    FormWizardTextInput,
+    TextInput,
     FormWizardTile,
     FormWizardTiles,
     FormWizardTimeRange,
@@ -29,19 +29,19 @@ export function RosaWizard() {
                     label="Account roles ARNs"
                     description="The following roles were detected according to the associated account. The ARNs can be edited according to your preferences."
                 >
-                    <FormWizardTextInput id="installer-role" path="installerRole" label="Installer role" required />
-                    <FormWizardTextInput id="support-role" path="supportRole" label="Support role" required />
-                    <FormWizardTextInput id="worker-role" path="workerRole" label="Worker role" required />
-                    <FormWizardTextInput id="control-plane-role" path="controlPlaneRole" label="Control plane role" required />
+                    <TextInput id="installer-role" path="installerRole" label="Installer role" required />
+                    <TextInput id="support-role" path="supportRole" label="Support role" required />
+                    <TextInput id="worker-role" path="workerRole" label="Worker role" required />
+                    <TextInput id="control-plane-role" path="controlPlaneRole" label="Control plane role" required />
                 </FormWizardSection>
             </FormWizardStep>
 
             <FormWizardStep label="Cluster settings">
                 <FormWizardStep label="Details">
                     <FormWizardSection label="Cluster details" prompt="Enter the cluster details">
-                        <FormWizardTextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
+                        <TextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
                         <FormWizardCheckbox id="use-roles-prefix" path="useRolesPrefix" label="Use operator roles prefix">
-                            <FormWizardTextInput
+                            <TextInput
                                 id="roles-prefix"
                                 path="rolesPrefix"
                                 label="Operator roles prefix"
@@ -113,8 +113,8 @@ export function RosaWizard() {
                             label="Enable autoscaling"
                             helperText="Autoscaling automatically adds and removes worker (compute) nodes from the cluster based on resource requirments."
                         >
-                            <FormWizardTextInput id="minimum-nodes" path="minimumNodes" label="Minimum nodes per zone" required />
-                            <FormWizardTextInput id="maximim-nodes" path="maximumNodes" label="Maximum nodes per zone" required />
+                            <TextInput id="minimum-nodes" path="minimumNodes" label="Minimum nodes per zone" required />
+                            <TextInput id="maximim-nodes" path="maximumNodes" label="Maximum nodes per zone" required />
                         </FormWizardCheckbox>
 
                         <FormWizardLabels id="node-labels" path="nodeLabels" label="Extra node labels" />
@@ -131,7 +131,7 @@ export function RosaWizard() {
                             title="Virtual Private Cloud (VPC) subnets"
                             label="Install into an existing Virtual Private Cloud (VPC)."
                         >
-                            <FormWizardTextInput id="existing-vpc-id" path="existingVpcId" label="Existing VPC ID" required />
+                            <TextInput id="existing-vpc-id" path="existingVpcId" label="Existing VPC ID" required />
                             <FormWizardCheckbox
                                 id="private-link"
                                 path="privateLink"
@@ -172,28 +172,28 @@ export function RosaWizard() {
 
                 <FormWizardStep label="CIDR ranges">
                     <FormWizardSection label="CIDR ranges">
-                        <FormWizardTextInput
+                        <TextInput
                             id="machine-cidr"
                             path="machineCIDR"
                             label="Machine CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask is /23."
                         />
-                        <FormWizardTextInput
+                        <TextInput
                             id="service-cidr"
                             path="serviceCIDR"
                             label="Service CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask is /24."
                         />
-                        <FormWizardTextInput
+                        <TextInput
                             id="pod-cidr"
                             path="podCIDR"
                             label="Pod CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask ust allow at lease 32 nodes."
                         />
-                        <FormWizardTextInput
+                        <TextInput
                             id="host-prefix"
                             path="hostPrefix"
                             label="Host prefix"

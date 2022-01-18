@@ -2,7 +2,7 @@ import { DescriptionList, FormSection, Split, Stack, Text, Title } from '@patter
 import { Fragment, ReactNode, useContext } from 'react'
 import { FormWizardLabelHelp } from './components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from './contexts/FormWizardContext'
-import { FormWizardItemContext } from './contexts/FormWizardItemContext'
+import { ItemContext } from './contexts/ItemContext'
 import { inputHasValue, useInputHidden } from './inputs/FormWizardInput'
 
 interface FormWizardSectionProps {
@@ -18,7 +18,7 @@ interface FormWizardSectionProps {
 
 export function FormWizardSection(props: FormWizardSectionProps) {
     const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+    const item = useContext(ItemContext)
 
     let label = props.label
     if (formWizardContext.mode == InputMode.Wizard) {

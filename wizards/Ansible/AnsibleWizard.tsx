@@ -7,7 +7,7 @@ import {
     FormWizardSection as Section,
     FormWizardSelect as Select,
     FormWizardStep as Step,
-    FormWizardTextInput as TextInput,
+    TextInput as TextInput,
 } from '../../src'
 
 export function AnsibleWizard(props: {

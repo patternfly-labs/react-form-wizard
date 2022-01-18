@@ -6,7 +6,7 @@ import set from 'set-value'
 import { FormWizardIndented } from '../components/FormWizardIndented'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { ItemContext } from '../contexts/ItemContext'
 
 export function FormWizardCheckbox(props: {
     id: string
@@ -28,7 +28,7 @@ export function FormWizardCheckbox(props: {
     const path = props.path ?? id
 
     const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+    const item = useContext(ItemContext)
 
     const value = get(item, path)
 

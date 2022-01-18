@@ -4,14 +4,14 @@ import get from 'get-value'
 import { Fragment, useContext, useState } from 'react'
 import set from 'set-value'
 import { FormWizardContext } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { ItemContext } from '../contexts/ItemContext'
 
 export function FormWizardKeyValue(props: { id: string; label: string; path: string }) {
     const id = props.id
     const path = props.path ?? id
 
     const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+    const item = useContext(ItemContext)
 
     const value = get(item, path) ?? {}
 

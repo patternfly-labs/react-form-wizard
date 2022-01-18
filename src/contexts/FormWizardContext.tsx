@@ -1,14 +1,9 @@
-import { createContext } from 'react'
+import { createContext, useContext } from 'react'
 
 export enum InputMode {
     Wizard,
     Form,
     Details,
-}
-
-export enum InputEditMode {
-    Create,
-    Edit,
 }
 
 /**
@@ -23,11 +18,6 @@ export interface IFormWizardContext {
 
     mode: InputMode
 
-    editMode: InputEditMode
-
-    // showValidation: boolean
-    // setShowValidation: (show: boolean) => void
-
     onSubmit?: (data: object) => Promise<void>
     onCancel?: () => void
 }
@@ -40,9 +30,12 @@ export const FormWizardContext = createContext<IFormWizardContext>({
         /* Do nothing. */
     },
     mode: InputMode.Wizard,
-    editMode: InputEditMode.Create,
-    // showValidation: true,
-    // setShowValidation: () => {
-    //     /* Do nothing. */
-    // },
 })
+
+export const WizardContext = FormWizardContext
+export const DataContext = FormWizardContext
+
+export function useMode() {
+    const wizardContext = useContext(FormWizardContext)
+    return wizardContext.mode
+}

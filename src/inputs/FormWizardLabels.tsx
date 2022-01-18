@@ -14,7 +14,7 @@ import { Fragment, useContext, useState } from 'react'
 import set from 'set-value'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { ItemContext } from '../contexts/ItemContext'
 
 export function FormWizardLabels(props: {
     id: string
@@ -40,7 +40,7 @@ export function FormWizardLabels(props: {
     const path = props.path ?? id
 
     const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+    const item = useContext(ItemContext)
 
     const [open, setOpen] = useState(false)
 

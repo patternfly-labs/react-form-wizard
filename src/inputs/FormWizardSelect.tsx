@@ -4,9 +4,8 @@ import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 
 import set from 'set-value'
 import { FormWizardTextDetail } from '..'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
-import { FormWizardValidationContext } from '../contexts/FormWizardValidationContext'
-import { InputCommonProps, lowercaseFirst } from './FormWizardInput'
+import { ItemContext } from '../contexts/ItemContext'
+import { InputCommonProps, lowercaseFirst, useInput } from './FormWizardInput'
 import { FormWizardInputLabel } from './FormWizardInputLabel'
 import './FormWizardSelect.css'
 
@@ -85,14 +84,13 @@ export type FormWizardSelectProps<T> =
     | FormWizardGroupedMultiselectProps<T>
 
 function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
-    const formWizardContext = useContext(FormWizardContext)
-    const validationContext = useContext(FormWizardValidationContext)
+    const { mode, value, setValue, validated, hidden, id, path } = useInput(props)
 
-    const item = useContext(FormWizardItemContext)
+    const formWizardContext = useContext(FormWizardContext)
+
+    const item = useContext(ItemContext)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
 
-    const id = props.id
-    const path = props.path ?? id
     const keyPath = props.keyPath ?? props.path
 
     const [open, setOpen] = useState(false)
@@ -151,8 +149,6 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
         }
     }, [props, keyPath])
 
-    const value = useMemo(() => get(item, path), [item, path])
-
     const keyedValue = useMemo(() => {
         if (typeof value === 'undefined') return ''
         if (typeof value === 'string') return value
@@ -184,17 +180,6 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
             return selectOptions.find((selectOption) => keyedValue === selectOption.keyedValue)
         }
     }, [keyedValue, selectOptions])
-
-    let error: string | undefined = undefined
-    let validated: 'error' | undefined = undefined
-    if (validationContext.showValidation) {
-        if (props.required && !selections) {
-            error = `${props.label} is required`
-        } else if (props.validation) {
-            error = props.validation(value)
-        }
-        validated = error ? 'error' : undefined
-    }
 
     const onSelect = useCallback(
         (_, selectOptionObject) => {
@@ -267,11 +252,10 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
         }
     }, [props.variant])
 
-    const hidden = props.hidden ? props.hidden(item) : false
     if (hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
-        return <FormWizardTextDetail id={props.id} path={props.path} label={props.label} />
+    if (mode === InputMode.Details) {
+        return <FormWizardTextDetail id={id} path={props.path} label={props.label} />
     }
 
     return (

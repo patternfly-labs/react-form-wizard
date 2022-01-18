@@ -6,7 +6,7 @@ import {
     FormWizardSelect,
     FormWizardSelector,
     FormWizardStep as Step,
-    FormWizardTextInput as TextInput,
+    TextInput as TextInput,
 } from '../../src'
 
 export function AppTest() {

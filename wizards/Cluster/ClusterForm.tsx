@@ -10,7 +10,7 @@ import {
     FormWizardSelect,
     FormWizardStep,
     FormWizardTextDetail,
-    FormWizardTextInput,
+    TextInput,
     FormWizardTile,
     FormWizardTiles,
 } from '../../src'
@@ -46,7 +46,7 @@ export function ClusterForm() {
 
             <FormWizardStep label="Cluster details">
                 <FormWizardSection label="Cluster details" prompt="Enter the cluster details">
-                    <FormWizardTextInput id="name" label="Cluster name" placeholder="Enter the cluster name" required />
+                    <TextInput id="name" label="Cluster name" placeholder="Enter the cluster name" required />
                     <FormWizardSelect id="region" label="Region" options={Object.keys(awsRegions)} />
                     <FormWizardSelect
                         id="clusterSet"
@@ -56,7 +56,7 @@ export function ClusterForm() {
                         options={['default']}
                         required
                     />
-                    <FormWizardTextInput id="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
+                    <TextInput id="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
                     <FormWizardSelect
                         id="releaseImage"
                         label="Release image"
@@ -90,10 +90,10 @@ export function ClusterForm() {
                         placeholder="Add network"
                         collapsedContent={<FormWizardTextDetail id="clusterCidr" placeholder="Expand to edit the network" />}
                     >
-                        <FormWizardTextInput id="clusterCidr" label="Cluster network CIDR" />
-                        <FormWizardTextInput id="hostPrefix" label="Network host prefix" />
-                        <FormWizardTextInput id="serviceCidr" label="Service network Cidr" />
-                        <FormWizardTextInput id="machienCidr" label="Machine CIDR" />
+                        <TextInput id="clusterCidr" label="Cluster network CIDR" />
+                        <TextInput id="hostPrefix" label="Network host prefix" />
+                        <TextInput id="serviceCidr" label="Service network Cidr" />
+                        <TextInput id="machienCidr" label="Machine CIDR" />
                     </FormWizardArrayInput>
                 </FormWizardSection>
             </FormWizardStep>
@@ -105,27 +105,27 @@ export function ClusterForm() {
                     description="Production environments can deny direct access to the Internet and instead have an HTTP or HTTPS proxy available. You can configure a new OpenShift Container Platform cluster to use a proxy by configuring the proxy settings."
                 >
                     <FormWizardCheckbox id="useProxy" label="Use proxy" />
-                    <FormWizardTextInput
+                    <TextInput
                         id="httpProxy"
                         label="Http Proxy "
                         helperText="Requires this format: http://<username>:<pswd>@<ip>:<port>"
                         required
                         hidden={(item) => !item.useProxy}
                     />
-                    <FormWizardTextInput
+                    <TextInput
                         id="httpsProxy"
                         label="Https Proxy"
                         helperText="Requires this format: https://<username>:<pswd>@<ip>:<port>"
                         required
                         hidden={(item) => !item.useProxy}
                     />
-                    <FormWizardTextInput
+                    <TextInput
                         id="noProxy"
                         label="No Proxy"
                         helperText="By default, all cluster egress traffic is proxied, including calls to hosting cloud provider APIs. Add sites to No Proxy to bypass the proxy if necessary."
                         hidden={(item) => !item.useProxy}
                     />
-                    <FormWizardTextInput id="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
+                    <TextInput id="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
                 </FormWizardSection>
             </FormWizardStep>
 
@@ -175,7 +175,7 @@ export function WorkerPoolsStep() {
                 placeholder="Add worker pool"
                 collapsedContent={<FormWizardTextDetail id="name" placeholder="Expand to edit the worker pool details" />}
             >
-                <FormWizardTextInput id="name" label="Pool name" />
+                <TextInput id="name" label="Pool name" />
                 <FormWizardSelect id="zones" label="Zones" options={['default']} />
                 <FormWizardSelect id="instanceType" label="Instance type" options={['default']} />
                 {/* <FormWizardnumber */}

@@ -15,9 +15,9 @@ import {
     FormWizardSelector,
     FormWizardStep,
     FormWizardStringArray,
-    FormWizardTextInput,
+    TextInput,
 } from '../../src'
-import { FormWizardItemContext } from '../../src/contexts/FormWizardItemContext'
+import { ItemContext } from '../../src/contexts/ItemContext'
 import { Specifications } from './templates'
 
 export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[] }) {
@@ -94,7 +94,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
             <FormWizardStep label="Details">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
                     <FormWizardSection label="Details" prompt="Enter the details for the policy">
-                        <FormWizardTextInput id="name" path="metadata.name" label="Name" placeholder="Enter name" required />
+                        <TextInput id="name" path="metadata.name" label="Name" placeholder="Enter name" required />
                         <FormWizardSelect
                             id="namespace"
                             path="metadata.namespace"
@@ -180,7 +180,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
 }
 
 export function PolicyWizardTemplates() {
-    const policy = useContext(FormWizardItemContext)
+    const policy = useContext(ItemContext)
     return (
         <FormWizardSection label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
             <FormWizardArrayInput
@@ -236,13 +236,13 @@ export function PolicyWizardTemplates() {
                         {/* <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text> */}
                     </div>
 
-                    <FormWizardTextInput
+                    <TextInput
                         id="objectDefinition.metadata.name"
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
-                    <FormWizardTextInput id="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
+                    <TextInput id="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
                 </FormWizardHidden>
 
                 {/* IamPolicy */}
@@ -252,18 +252,14 @@ export function PolicyWizardTemplates() {
                         {/* <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text> */}
                     </div>
 
-                    <FormWizardTextInput
+                    <TextInput
                         id="objectDefinition.metadata.name"
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
                     {/* TODO FormWizardNumberInput */}
-                    <FormWizardTextInput
-                        id="objectDefinition.spec.maxClusterRoleBindingUsers"
-                        label="Limit cluster role bindings"
-                        required
-                    />
+                    <TextInput id="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
                 </FormWizardHidden>
 
                 {/* ConfigurationPolicy */}
@@ -273,7 +269,7 @@ export function PolicyWizardTemplates() {
                         <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text>
                     </div>
 
-                    <FormWizardTextInput
+                    <TextInput
                         id="objectDefinition.metadata.name"
                         label="Name"
                         required
@@ -288,12 +284,12 @@ export function PolicyWizardTemplates() {
                     >
                         {/* Namespace */}
                         <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'Namespace'}>
-                            <FormWizardTextInput id="objectDefinition.metadata.name" label="Namespace" required />
+                            <TextInput id="objectDefinition.metadata.name" label="Namespace" required />
                         </FormWizardHidden>
 
                         {/* LimitRange */}
                         <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'LimitRange'}>
-                            <FormWizardTextInput
+                            <TextInput
                                 id="objectDefinition.metadata.name"
                                 label="Name"
                                 required
@@ -305,14 +301,14 @@ export function PolicyWizardTemplates() {
                                 placeholder="Add limit"
                                 collapsedContent={'default.memory'}
                             >
-                                <FormWizardTextInput
+                                <TextInput
                                     id="default.memory"
                                     label="Memory limit"
                                     placeholder="Enter memory limit"
                                     required
                                     helperText="Examples: 512Mi, 2Gi"
                                 />
-                                <FormWizardTextInput
+                                <TextInput
                                     id="defaultRequest.memory"
                                     label="Memory request"
                                     placeholder="Enter memory request"
@@ -324,7 +320,7 @@ export function PolicyWizardTemplates() {
 
                         {/* SecurityContextConstraints */}
                         <FormWizardHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'SecurityContextConstraints'}>
-                            <FormWizardTextInput
+                            <TextInput
                                 id="objectDefinition.metadata.name"
                                 label="Name"
                                 required
@@ -392,7 +388,7 @@ export function PolicyWizardPlacement() {
                     }}
                     // hidden={(rules) => !rules.length}
                 >
-                    <FormWizardTextInput
+                    <TextInput
                         id="name"
                         path="metadata.name"
                         label="Name"
@@ -412,7 +408,7 @@ export function PolicyWizardPlacement() {
                             values: [''],
                         }}
                     >
-                        <FormWizardTextInput id="key" path="key" label="Label" />
+                        <TextInput id="key" path="key" label="Label" />
                         <FormWizardStringArray id="values" path="values" label="Equals one of" />
                     </FormWizardArrayInput>
                 </FormWizardArrayInput>
@@ -435,8 +431,8 @@ export function PolicyWizardPlacement() {
                     }}
                     // hidden={(bindings) => !bindings.length}
                 >
-                    <FormWizardTextInput id="metadata.name" label="Binding name" required />
-                    <FormWizardTextInput
+                    <TextInput id="metadata.name" label="Binding name" required />
+                    <TextInput
                         id="placementRef.name"
                         label="Rule name"
                         helperText="The placement rule name that his placement binding is binding to the subjects."
@@ -455,7 +451,7 @@ export function PolicyWizardPlacement() {
                             kind: 'Policy',
                         }}
                     >
-                        <FormWizardTextInput id="name" path="name" label="Subject name" required />
+                        <TextInput id="name" path="name" label="Subject name" required />
                     </FormWizardArrayInput>
                 </FormWizardArrayInput>
             </FormWizardSection>

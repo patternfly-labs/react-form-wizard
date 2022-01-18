@@ -6,8 +6,8 @@ import {
     FormWizardSection,
     FormWizardSelect,
     FormWizardStep,
-    FormWizardTextArea,
-    FormWizardTextInput,
+    TextArea,
+    TextInput,
     FormWizardTile,
     FormWizardTiles,
 } from '../../src'
@@ -115,7 +115,7 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
 
             <FormWizardStep label="Basic Information">
                 <FormWizardSection label="Details" prompt="Enter the details for the credentials">
-                    <FormWizardTextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
+                    <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
                     <FormWizardSelect
                         id="namespace"
                         path="metadata.namespace"
@@ -124,7 +124,7 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                         options={['default']}
                         required
                     />
-                    <FormWizardTextInput
+                    <TextInput
                         id="base-domain"
                         path="stringData.baseDomain"
                         label="Base DNS domain"
@@ -138,21 +138,15 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                 hidden={(item) => item.metadata?.labels?.['cluster.open-cluster-management.io/type'] !== CredentialsType.aws}
             >
                 <FormWizardSection label="Amazon Web Services" prompt="Enter the Amazon Web Services credentials">
-                    <FormWizardTextInput id="aws-key-id" path="stringData.aws_access_key_id" label="Access key ID" required />
-                    <FormWizardTextInput
-                        id="aws-access-key"
-                        path="stringData.aws_secret_access_key"
-                        label="Secret access key"
-                        required
-                        secret
-                    />
+                    <TextInput id="aws-key-id" path="stringData.aws_access_key_id" label="Access key ID" required />
+                    <TextInput id="aws-access-key" path="stringData.aws_secret_access_key" label="Secret access key" required secret />
                 </FormWizardSection>
             </FormWizardStep>
 
             <FormWizardStep label="Pull secret and SSH">
                 <FormWizardSection label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
-                    <FormWizardTextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
-                    <FormWizardTextArea
+                    <TextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
+                    <TextArea
                         id="ssh-private-key"
                         path="stringData.ssh-privatekey"
                         label="SSH private key"
@@ -160,7 +154,7 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                         required
                         secret
                     />
-                    <FormWizardTextArea
+                    <TextArea
                         id="ssh-public-key"
                         path="stringData.ssh-publickey"
                         label="SSH public key"

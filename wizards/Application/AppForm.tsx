@@ -14,7 +14,7 @@ import {
     FormWizardSelect,
     FormWizardStep,
     FormWizardTextDetail,
-    FormWizardTextInput,
+    TextInput,
     FormWizardTile,
     FormWizardTiles,
     FormWizardTimeRange,
@@ -85,7 +85,7 @@ export function AppForm() {
 
             <FormWizardStep label="Details" hidden={(item) => item.deployType !== 'Subscription'}>
                 <FormWizardSection label="Details" prompt="Enter the details of the application">
-                    <FormWizardTextInput id="name" label="Application name" required />
+                    <TextInput id="name" label="Application name" required />
                     <FormWizardSelect
                         id="namespace"
                         label="Namespace"
@@ -137,13 +137,13 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.git.username"
                                 label="Username"
                                 placeholder="Enter the Git user name"
                                 labelHelp="The username if this is a private Git repository and requires connection."
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.git.accessToken"
                                 label="Access token"
                                 placeholder="Enter the Git access token"
@@ -166,14 +166,14 @@ export function AppForm() {
                                 required
                             />
 
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.git.commitHash"
                                 label="Commit hash"
                                 placeholder="Enter a specific commit hash"
                                 labelHelp="If you want to subscribe to a specific commit, you need to specify the desired commit hash. You might need to specify git-clone-depth annotation if your desired commit is older than the last 20 commits."
                             />
 
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.git.tag"
                                 label="Tag"
                                 placeholder="Enter a specific tag"
@@ -218,33 +218,33 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.helm.username"
                                 label="Username"
                                 placeholder="Enter the Helm repository username"
                                 labelHelp="The username if this is a private Helm repository and requires connection."
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.helm.password"
                                 label="Password"
                                 placeholder="Enter the Helm repository password"
                                 labelHelp="The password if this is a private Helm repository and requires connection."
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.helm.chart"
                                 label="Chart name"
                                 placeholder="Enter the name of the target Helm chart"
                                 labelHelp="The specific name for the target Helm chart."
                                 required
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.helm.packageAlias"
                                 label="Package alias"
                                 placeholder="Enter the alias name of the target Helm chart"
                                 labelHelp="The alias name for the target Helm chart."
                                 required
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.helm.packageVersion"
                                 label="Package version"
                                 placeholder="Enter the version or versions"
@@ -278,25 +278,25 @@ export function AppForm() {
                                 options={urls}
                                 required
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.obj.accessKey"
                                 label="Access key"
                                 placeholder="Enter the object store access key"
                                 labelHelp="The access key for accessing the object store."
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.obj.secretKey"
                                 label="Secret key"
                                 placeholder="Enter the object store secret key"
                                 labelHelp="The secret key for accessing the object store."
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.obj.region"
                                 label="Region"
                                 placeholder="Enter the AWS region of the S3 bucket"
                                 labelHelp="The AWS Region of the S3 bucket. This field is required for Amazon S3 buckets only."
                             />
-                            <FormWizardTextInput
+                            <TextInput
                                 id="subscription.obj.subfolder"
                                 label="Subfolder"
                                 placeholder="Enter the Amazon S3 or MinIO subfolder bucket path"
@@ -313,12 +313,7 @@ export function AppForm() {
 
             <FormWizardStep label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <FormWizardSection label="General">
-                    <FormWizardTextInput
-                        id="appSetName"
-                        label="ApplicationSet name"
-                        placeholder="Enter the application set name"
-                        required
-                    />
+                    <TextInput id="appSetName" label="ApplicationSet name" placeholder="Enter the application set name" required />
                     <FormWizardSelect
                         id="argoServer"
                         label="Argo server"
@@ -377,14 +372,14 @@ export function AppForm() {
                             options={urlOptions}
                             required
                         />
-                        <FormWizardTextInput
+                        <TextInput
                             id="helm.chart"
                             label="Chart name"
                             placeholder="Enter the name of the Helm chart"
                             labelHelp="The specific name for the target Helm chart."
                             required
                         />
-                        <FormWizardTextInput
+                        <TextInput
                             id="helm.packageVersion"
                             label="Package version"
                             placeholder="Enter the version or versions"
@@ -394,12 +389,7 @@ export function AppForm() {
                     </FormWizardHidden>
                 </FormWizardSection>
                 <FormWizardSection label="Destination">
-                    <FormWizardTextInput
-                        id="remoteNamespace"
-                        label="Remote namespace"
-                        placeholder="Enter the destination namespace"
-                        required
-                    />
+                    <TextInput id="remoteNamespace" label="Remote namespace" placeholder="Enter the destination namespace" required />
                 </FormWizardSection>
             </FormWizardStep>
 

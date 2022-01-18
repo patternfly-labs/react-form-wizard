@@ -1,15 +1,16 @@
 import get from 'get-value'
-import { Children, isValidElement, ReactElement, ReactNode, useContext } from 'react'
+import { Children, isValidElement, ReactElement, ReactNode, useContext, useEffect } from 'react'
 import set from 'set-value'
 import { FormWizardArrayInput, FormWizardSelector, wizardArrayItems, wizardSelectorItem } from '..'
-import { FormWizardContext, IFormWizardContext } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
-import { FormWizardValidationContext } from '../contexts/FormWizardValidationContext'
+import { FormWizardContext, IFormWizardContext, useMode } from '../contexts/FormWizardContext'
+import { ItemContext } from '../contexts/ItemContext'
+import { useShowValidation } from '../contexts/ShowValidationProvider'
+import { useSetValid, useValidate } from '../contexts/ValidProvider'
 
 export type HiddenFn = (item: any) => boolean
 
 export type InputCommonProps<ValueT = any> = {
-    id: string
+    id?: string
     path?: string
     hidden?: (item: any) => boolean
     validation?: (value: ValueT) => string | undefined
@@ -22,55 +23,48 @@ export type InputCommonProps<ValueT = any> = {
     helperText?: string
 }
 
-export function useInputValue(
-    props: Pick<InputCommonProps, 'id' | 'path'>,
+export function useValue(
+    props: Pick<InputCommonProps, 'id' | 'path' | 'label'>,
     defaultValue: any
 ): [value: any, setValue: (value: any) => void] {
-    const item = useContext(FormWizardItemContext)
+    const item = useContext(ItemContext)
     const formWizardContext = useContext(FormWizardContext)
-    const path = props.path ?? props.id
+    const path = props.path ?? props.label.toLowerCase().split(' ').join('-')
     const value = get(item, path) ?? defaultValue
     const setValue = (value: any) => inputSetValue(props, item, value, formWizardContext)
     return [value, setValue]
 }
 
-export function inputGetValue(props: Pick<InputCommonProps, 'id' | 'path'>, item: object) {
-    const path = props.path ?? props.id
-    const value = get(item, path) ?? null
-    return value
-}
-
 export function inputSetValue<T = any>(
-    props: Pick<InputCommonProps, 'id' | 'path'>,
+    props: Pick<InputCommonProps, 'id' | 'path' | 'label'>,
     item: object,
     value: T,
     formWizardContext: IFormWizardContext
 ) {
-    const path = props.path ?? props.id
+    const path = props.path ?? props.label.toLowerCase().split(' ').join('-')
     set(item, path, value, { preservePaths: false })
     formWizardContext.updateContext()
 }
 
 export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' | 'label' | 'required' | 'validation'>) {
-    const item = useContext(FormWizardItemContext)
-    const validationContext = useContext(FormWizardValidationContext)
+    const [value] = useValue(props, '')
+    const showValidation = useShowValidation()
 
-    const value = inputGetValue(props, item)
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
-    if (validationContext.showValidation) {
-        if (props.required && !value) {
-            error = `${props.label} is required`
-        } else if (props.validation) {
-            error = props.validation(value)
-        }
+    if (props.required && !value) {
+        error = `${props.label} is required`
+    } else if (props.validation) {
+        error = props.validation(value)
+    }
+    if (showValidation) {
         validated = error ? 'error' : undefined
     }
     return { validated, error }
 }
 
 export function useInputHidden(props: { hidden?: (item: any) => boolean }) {
-    const item = useContext(FormWizardItemContext)
+    const item = useContext(ItemContext)
     return props.hidden ? props.hidden(item) : false
 }
 
@@ -241,4 +235,33 @@ export function lowercaseFirst(label: string) {
         label = label[0].toLowerCase() + label.substr(1)
     }
     return label
+}
+
+export function useInput(props: InputCommonProps) {
+    const mode = useMode()
+    const [value, setValue] = useValue(props, '')
+    const hidden = useInputHidden(props)
+    const { validated, error } = useInputValidation(props)
+
+    // If setValid changes, it is an indication that validation is needed
+    const setValid = useSetValid()
+    useEffect(() => setValid(hidden || error === undefined), [hidden, error, setValid])
+
+    // If error changes, trigger validation
+    const validate = useValidate()
+    useEffect(() => validate(), [error, validate])
+
+    const path = props.path ?? props.label.toLowerCase().split(' ').join('-')
+    const id = props.id ?? path.split('.').join('-')
+
+    return {
+        id,
+        path,
+        mode,
+        value,
+        setValue,
+        validated,
+        error,
+        hidden,
+    }
 }

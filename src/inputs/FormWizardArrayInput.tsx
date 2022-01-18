@@ -20,7 +20,7 @@ import set from 'set-value'
 import { FormWizardTextDetail } from '..'
 import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { ItemContext } from '../contexts/ItemContext'
 import './FormWizardArrayInput.css'
 
 export function wizardArrayItems(props: any, item: any) {
@@ -53,7 +53,7 @@ export function FormWizardArrayInput(props: {
     const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
     const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+    const item = useContext(ItemContext)
     const sourceArray = get(item, path as string) as object[]
 
     const values = wizardArrayItems(props, item)
@@ -91,7 +91,7 @@ export function FormWizardArrayInput(props: {
                     <Stack hasGutter>
                         {values.map((value, index) => (
                             <div key={index}>
-                                <FormWizardItemContext.Provider value={value}>
+                                <ItemContext.Provider value={value}>
                                     {typeof props.collapsedContent === 'string' ? (
                                         <FormWizardTextDetail
                                             id={props.collapsedContent}
@@ -101,7 +101,7 @@ export function FormWizardArrayInput(props: {
                                     ) : (
                                         props.collapsedContent
                                     )}
-                                </FormWizardItemContext.Provider>
+                                </ItemContext.Provider>
                             </div>
                         ))}
                     </Stack>
@@ -123,7 +123,7 @@ export function FormWizardArrayInput(props: {
                 values.map((value, index) => {
                     const hasErrors = false
                     return (
-                        <FormWizardItemContext.Provider key={index} value={value}>
+                        <ItemContext.Provider key={index} value={value}>
                             <FormWizardFieldGroup
                                 key={index}
                                 id={props.id + '-' + (index + 1).toString()}
@@ -210,7 +210,7 @@ export function FormWizardArrayInput(props: {
                                     {/* <div className="pf-c-form__helper-text pf-m-error">Error</div> */}
                                 </Fragment>
                             </FormWizardFieldGroup>
-                        </FormWizardItemContext.Provider>
+                        </ItemContext.Provider>
                     )
                 })
             )}

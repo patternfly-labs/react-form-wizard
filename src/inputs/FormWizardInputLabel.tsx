@@ -23,3 +23,5 @@ export function FormWizardInputLabel(props: FormWizardInputLabelProps) {
         </FormGroup>
     )
 }
+
+export const InputLabel = FormWizardInputLabel

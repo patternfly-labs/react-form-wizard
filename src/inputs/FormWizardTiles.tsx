@@ -5,7 +5,7 @@ import set from 'set-value'
 import { IRadioGroupContextState, RadioGroupContext } from '..'
 import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
 import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { ItemContext } from '../contexts/ItemContext'
 
 export function FormWizardTiles(props: {
     id: string
@@ -23,7 +23,7 @@ export function FormWizardTiles(props: {
     const path = props.path ?? props.id
 
     const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+    const item = useContext(ItemContext)
 
     const state: IRadioGroupContextState = {
         value: get(item, path),
