@@ -62,5 +62,3 @@ export function TextArea(props: TextAreaProps) {
         </InputLabel>
     )
 }
-
-export const FormWizardTextArea = TextArea

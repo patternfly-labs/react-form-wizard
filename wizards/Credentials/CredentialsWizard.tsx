@@ -6,10 +6,10 @@ import {
     FormWizardSection,
     FormWizardSelect,
     FormWizardStep,
-    TextArea,
-    TextInput,
     FormWizardTile,
     FormWizardTiles,
+    TextArea,
+    TextInput,
 } from '../../src'
 import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
@@ -144,25 +144,15 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
             </FormWizardStep>
             <FormWizardStep label="Proxy">
                 <FormWizardSection label="Proxy" prompt="">
-                    <FormWizardTextInput
-                        id="http-proxy"
-                        path="stringData.httpProxy"
-                        label="HTTP Proxy"
-                        placeholder="Enter the HTTP Proxy url"
-                    />
-                    <FormWizardTextInput
-                        id="https-proxy"
-                        path="stringData.httpsProxy"
-                        label="HTTPS Proxy"
-                        placeholder="Enter the HTTPS Proxy url"
-                    />
-                    <FormWizardTextInput
+                    <TextInput id="http-proxy" path="stringData.httpProxy" label="HTTP Proxy" placeholder="Enter the HTTP Proxy url" />
+                    <TextInput id="https-proxy" path="stringData.httpsProxy" label="HTTPS Proxy" placeholder="Enter the HTTPS Proxy url" />
+                    <TextInput
                         id="no-proxy"
                         path="stringData.noProxy"
                         label="No Proxy"
                         placeholder="Enter the comma deliminated list of urls that do not require a proxy"
                     />
-                    <FormWizardTextArea
+                    <TextArea
                         id="trust-bundle"
                         path="stringData.additionalTrustBundle"
                         label="Additional Trust Bundle"

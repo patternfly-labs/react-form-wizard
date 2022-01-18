@@ -46,5 +46,3 @@ export function TextInput(props: TextInputProps) {
         </InputLabel>
     )
 }
-
-export const FormWizardTextInput = TextInput
