@@ -1,6 +1,6 @@
 import { DescriptionList, FormSection, Split, Stack, Text, Title } from '@patternfly/react-core'
 import { Fragment, ReactNode, useContext } from 'react'
-import { FormWizardLabelHelp } from './components/FormWizardLabelHelp'
+import { LabelHelp } from './components/LabelHelp'
 import { ItemContext } from './contexts/ItemContext'
 import { Mode, useMode } from './contexts/ModeContext'
 import { inputHasValue, useInputHidden } from './inputs/FormWizardInput'
@@ -49,7 +49,7 @@ export function FormWizardSection(props: FormWizardSectionProps) {
             <Stack>
                 <Split>
                     <Title headingLevel="h2">{label}</Title>
-                    {props.id && <FormWizardLabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                    {props.id && <LabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                 </Split>
                 {props.description && <Text component="small">{props.description}</Text>}
             </Stack>

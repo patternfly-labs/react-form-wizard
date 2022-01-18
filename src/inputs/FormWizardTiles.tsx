@@ -3,7 +3,7 @@ import get from 'get-value'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
 import { IRadioGroupContextState, RadioGroupContext } from '..'
-import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
@@ -49,7 +49,7 @@ export function FormWizardTiles(props: {
                 id={`${props.id}-form-group`}
                 fieldId={props.id}
                 label={props.label}
-                labelIcon={<FormWizardLabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                labelIcon={<LabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                 helperText={props.helperText}
                 isRequired={props.required}
                 // tODO validation.... required...

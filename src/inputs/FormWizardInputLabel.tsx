@@ -1,6 +1,6 @@
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import { ReactNode } from 'react'
-import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { LabelHelp } from '../components/LabelHelp'
 import { InputCommonProps, useID, useInputValidation } from './FormWizardInput'
 
 export type FormWizardInputLabelProps = InputCommonProps & { children: ReactNode }
@@ -18,7 +18,7 @@ export function FormWizardInputLabel(props: FormWizardInputLabelProps) {
             helperTextInvalid={error}
             validated={validated}
             helperText={props.helperText}
-            labelIcon={<FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+            labelIcon={<LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
         >
             {props.children}
         </FormGroup>

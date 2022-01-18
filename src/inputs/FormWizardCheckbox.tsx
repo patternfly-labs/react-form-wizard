@@ -4,7 +4,7 @@ import get from 'get-value'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
 import { FormWizardIndented } from '../components/FormWizardIndented'
-import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
+import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
@@ -78,7 +78,7 @@ export function FormWizardCheckbox(props: {
                             label={props.label}
                             value={value}
                         />
-                        <FormWizardLabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
+                        <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
                     </Split>
                 </FormGroup>
                 {props.helperText && (
