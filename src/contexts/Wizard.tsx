@@ -26,7 +26,7 @@ export function Wizard(props: { title: string; children: ReactNode }) {
 
 function WizardInternal(props: { children: ReactNode }) {
     const steps = Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
-    steps.push(<Step label="Review"></Step>)
+    steps.push(<Step label="Review">{props.children}</Step>)
 
     const [activeIndex, setActiveIndex] = useState(0)
     const next = useCallback(() => setActiveIndex((activeIndex) => activeIndex + 1), [])

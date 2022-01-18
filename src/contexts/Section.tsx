@@ -1,12 +1,30 @@
-import { Divider, Split, SplitItem } from '@patternfly/react-core'
+import { DescriptionList, Divider, Split, SplitItem, Title } from '@patternfly/react-core'
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
-import { ReactNode, useState } from 'react'
+import { Fragment, ReactNode, useState } from 'react'
+import { InputMode, useMode } from './FormWizardContext'
 import { useShowValidation } from './ShowValidationProvider'
 import { ValidContext, ValidProvider } from './ValidProvider'
 
 export function Section(props: { label: string; children?: ReactNode; defaultExpanded?: boolean }) {
+    const mode = useMode()
+    const id = props.label.split(' ').join('-')
     const showValidation = useShowValidation()
     const [expanded, setExpanded] = useState(props.defaultExpanded === undefined ? true : props.defaultExpanded)
+
+    if (mode === InputMode.Details) {
+        // if (!inputHasValue(props, item)) {
+        //     return <Fragment />
+        // }
+        return (
+            <Fragment>
+                <Title headingLevel="h2">{props.label}</Title>
+                <DescriptionList id={id} isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
+                    {props.children}
+                </DescriptionList>
+            </Fragment>
+        )
+    }
+
     return (
         <ValidProvider>
             <ValidContext.Consumer>
