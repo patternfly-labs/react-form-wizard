@@ -26,7 +26,7 @@ export type InputCommonProps<ValueT = any> = {
 
 export function useID(props: { id?: string; path?: string; label?: string }) {
     if (props.id) return props.id
-    if (props.label) return props.label.split(' ').join('-')
+    if (props.label) return props.label.toLowerCase().split(' ').join('-')
     if (props.path) return props.path.split('.').join('-')
     return 'unknown'
 }
@@ -34,7 +34,7 @@ export function useID(props: { id?: string; path?: string; label?: string }) {
 export function usePath(props: { id?: string; path?: string; label?: string }) {
     if (props.path) return props.path
     if (props.id) return props.id
-    if (props.label) return props.label.split(' ').join('.')
+    if (props.label) return props.label.toLowerCase().split(' ').join('-')
     return 'unknown'
 }
 

@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router-dom'
 import {
     FormWizardArrayInput,
     FormWizardCheckbox as Checkbox,
@@ -6,39 +7,40 @@ import {
     FormWizardRadio as Radio,
     FormWizardRadioGroup as RadioGroup,
     FormWizardSelect as Select,
-    TextArea,
-    TextInput as TextInput,
     FormWizardTile as Tile,
     FormWizardTiles as Tiles,
+    TextArea,
+    TextInput as TextInput,
 } from '../../src'
 import { Section } from '../../src/Section'
 import { Step } from '../../src/Step'
-import { Wizard } from '../../src/Wizard'
+import { WizardPage } from '../../src/WizardPage'
 
 export function Tutorial() {
+    const history = useHistory()
     return (
-        <Wizard title="Tutorial">
-            <Step label="TextInput">
-                <Section label="TextInput">
-                    <TextInput label="TextInput" required />
-                    <TextInput label="TextInput secret" required secret />
-                    <TextInput label="TextInput hidden" required hidden={() => true} />
+        <WizardPage title="Input examples" onSubmit={() => Promise.resolve()} onCancel={() => history.push('.')}>
+            <Step label="Text Input">
+                <Section label="Text Input">
+                    <TextInput label="Text input" required />
+                    <TextInput label="Text input secret" required secret />
+                    <TextInput label="Text input hidden" required hidden={() => true} />
                 </Section>
             </Step>
 
-            <Step label="TextArea">
-                <Section label="TextArea">
-                    <TextArea label="TextArea" required />
-                    <TextArea label="TextArea secret" required secret />
-                    <TextArea label="TextArea hidden" required hidden={() => true} />
+            <Step label="Text Area">
+                <Section label="Text Area">
+                    <TextArea label="Text area" required />
+                    <TextArea label="Text area secret" required secret />
+                    <TextArea label="Text area hidden" required hidden={() => true} />
                 </Section>
             </Step>
 
             <Step label="Select">
                 <Section label="Select">
-                    <Select id="select" label="Select" options={['Option 1', 'Option 2']} />
-                    <Select id="select" label="Select required" options={['Option 1', 'Option 2']} required />
-                    <Select id="select" label="Select hidden" options={['Option 1', 'Option 2']} required hidden={() => true} />
+                    <Select label="Select" options={['Option 1', 'Option 2']} />
+                    <Select label="Select required" options={['Option 1', 'Option 2']} required />
+                    <Select label="Select hidden" options={['Option 1', 'Option 2']} required hidden={() => true} />
                 </Section>
             </Step>
 
@@ -152,6 +154,6 @@ export function Tutorial() {
                     </FormWizardArrayInput>
                 </Section>
             </Step>
-        </Wizard>
+        </WizardPage>
     )
 }

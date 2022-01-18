@@ -1,25 +1,88 @@
-import { Alert, Button } from '@patternfly/react-core'
-import { Children, isValidElement, ReactElement, ReactNode, useCallback, useState } from 'react'
-import { DataContext } from './contexts/DataContext'
+import {
+    Alert,
+    Button,
+    Drawer,
+    DrawerContent,
+    DrawerContentBody,
+    DrawerPanelContent,
+    PageSection,
+    PageSectionTypes,
+    Tab,
+    Tabs,
+    TabTitleText,
+} from '@patternfly/react-core'
+import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react'
+import { FormCancel, FormSubmit } from '.'
+import { YamlEditor, YamlToObject } from './components/YamlEditor'
+import { DataContext, useData } from './contexts/DataContext'
 import { ItemContext } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
-import { Step } from './Step'
 import { useValid, ValidProvider } from './contexts/ValidProvider'
+import { Step } from './Step'
 
-export function Wizard(props: { title: string; children: ReactNode }) {
+export interface WizardProps {
+    title: string
+    description?: string
+    children: ReactNode
+    defaultData?: object
+    template?: string
+    yamlToDataTemplate?: string
+    onSubmit: FormSubmit
+    onCancel: FormCancel
+}
+
+export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
     const [data, setData] = useState({})
     const update = useCallback(() => setData((data) => JSON.parse(JSON.stringify(data))), [])
+    const [drawerExpanded, setDrawerExpanded] = useState<boolean>(props.showYaml === undefined ? false : true)
+    useEffect(() => {
+        if (props.showYaml !== undefined) {
+            setDrawerExpanded(props.showYaml)
+        }
+    }, [props.showYaml])
+    const mode = Mode.Wizard
+    const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
+    const [template2] = useState(() => (props.yamlToDataTemplate ? Handlebars.compile(props.yamlToDataTemplate) : undefined))
+
     return (
-        <DataContext.Provider value={{ update }}>
-            <ModeContext.Provider value={Mode.Wizard}>
+        <ModeContext.Provider value={mode}>
+            <DataContext.Provider value={{ update }}>
                 <ItemContext.Provider value={data}>
                     <ValidProvider>
-                        <WizardInternal>{props.children}</WizardInternal>
+                        <Drawer isExpanded={drawerExpanded} isInline>
+                            <DrawerContent
+                                panelContent={
+                                    <FormWizardPageDrawer
+                                        data={data}
+                                        template={template}
+                                        template2={template2}
+                                        templateString={props.template}
+                                    />
+                                }
+                            >
+                                <DrawerContentBody>
+                                    <PageSection
+                                        variant="light"
+                                        style={{ height: '100%' }}
+                                        type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
+                                        isWidthLimited
+                                    >
+                                        <ItemContext.Provider value={data}>
+                                            {/* {mode === Mode.Wizard ? ( */}
+                                            <WizardInternal>{props.children}</WizardInternal>
+                                            {/* ) : (
+                                                <FormWizardFormMode>{props.children}</FormWizardFormMode>
+                                            )} */}
+                                        </ItemContext.Provider>
+                                    </PageSection>
+                                </DrawerContentBody>
+                            </DrawerContent>
+                        </Drawer>
                     </ValidProvider>
                 </ItemContext.Provider>
-            </ModeContext.Provider>
-        </DataContext.Provider>
+            </DataContext.Provider>
+        </ModeContext.Provider>
     )
 }
 
@@ -137,5 +200,59 @@ export function WizardActiveStep(props: {
                 </div>
             </footer>
         </div>
+    )
+}
+
+function FormWizardPageDrawer(props: {
+    data: unknown
+    template?: HandlebarsTemplateDelegate
+    template2?: HandlebarsTemplateDelegate
+    templateString?: string
+}) {
+    const [activeKey, setActiveKey] = useState<number | string>(0)
+    const { update } = useData()
+    const devMode = process.env.NODE_ENV === 'development'
+    return (
+        <Fragment>
+            <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
+                {props.template && devMode ? (
+                    <div style={{ height: '100%' }}>
+                        <Tabs
+                            activeKey={activeKey}
+                            onSelect={(_event, tabIndex) => setActiveKey(tabIndex)}
+                            isBox
+                            variant="light300"
+                            isFilled
+                            style={{ backgroundColor: 'white' }}
+                        >
+                            <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
+                                <YamlEditor
+                                    data={props.template ? YamlToObject(props.template(props.data)) : props.data}
+                                    setData={(data: any) => {
+                                        let newData = data
+                                        if (props.template2) newData = YamlToObject(props.template2(data))
+                                        update(newData)
+                                    }}
+                                />
+                            </Tab>
+                            <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
+                                <YamlEditor data={props.data} />
+                            </Tab>
+                        </Tabs>
+                    </div>
+                ) : (
+                    // <PageSection>
+                    <YamlEditor
+                        data={props.template ? YamlToObject(props.template(props.data)) : props.data}
+                        setData={(data: any) => {
+                            let newData = data
+                            if (props.template2) newData = YamlToObject(props.template2(data))
+                            update(newData)
+                        }}
+                    />
+                    // </PageSection>
+                )}
+            </DrawerPanelContent>
+        </Fragment>
     )
 }
