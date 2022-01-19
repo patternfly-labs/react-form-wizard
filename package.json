@@ -12,8 +12,8 @@
     ],
     "scripts": {
         "build": "rimraf lib && tsc && npm run build:copy:src && npm run build:copy:wizards",
-        "build:copy:src": "copyfiles -u 1 src/**/*.svg src/*.svg src/**/*.css src/*.css lib/src",
-        "build:copy:wizards": "copyfiles -u 1 'wizards/**/*.svg' 'wizards/**/*.yaml' 'wizards/**/*.hbs' lib/wizards",
+        "build:copy:src": "cpy --parents 'src/**/*.svg' 'src/**/*.css' lib",
+        "build:copy:wizards": "cpy --parents  'wizards/**/*.svg' 'wizards/**/*.yaml' 'wizards/**/*.hbs' lib",
         "start": "TS_NODE_PROJECT=webpack.tsconfig.json webpack serve --mode development",
         "pages": "TS_NODE_PROJECT=webpack.tsconfig.json webpack --mode production",
         "test": "concurrently npm:tsc npm:eslint npm:prettier npm:cypress npm:pages --prefix-colors cyan,green,blue,magenta,gray",
@@ -68,7 +68,6 @@
         "@typescript-eslint/parser": "^5.9.1",
         "compression-webpack-plugin": "^9.2.0",
         "concurrently": "^7.0.0",
-        "copyfiles": "^2.4.1",
         "cpy-cli": "^3.1.1",
         "css-loader": "^6.5.1",
         "css-minimizer-webpack-plugin": "^3.3.1",
