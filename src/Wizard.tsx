@@ -18,7 +18,7 @@ import { DataContext, useData } from './contexts/DataContext'
 import { ItemContext } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
-import { useHasValidationError, ValidationProvider } from './contexts/ValidProvider'
+import { useHasValidationError, ValidationProvider } from './contexts/ValidationProvider'
 import { useID } from './inputs/FormWizardInput'
 import { Step } from './Step'
 

@@ -6,7 +6,7 @@ import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { useMode } from '../contexts/ModeContext'
 import { useShowValidation } from '../contexts/ShowValidationProvider'
-import { useSetHasValidationError, useValidate } from '../contexts/ValidProvider'
+import { useSetHasValidationError, useValidate } from '../contexts/ValidationProvider'
 
 export type HiddenFn = (item: any) => boolean
 

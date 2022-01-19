@@ -3,7 +3,7 @@ import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly
 import { Fragment, ReactNode, useState } from 'react'
 import { Mode, useMode } from './contexts/ModeContext'
 import { useShowValidation } from './contexts/ShowValidationProvider'
-import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidProvider'
+import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidationProvider'
 
 export function Section(props: { label: string; children?: ReactNode; defaultExpanded?: boolean }) {
     const mode = useMode()
