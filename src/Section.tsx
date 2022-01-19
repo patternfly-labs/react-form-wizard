@@ -3,7 +3,7 @@ import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly
 import { Fragment, ReactNode, useState } from 'react'
 import { Mode, useMode } from './contexts/ModeContext'
 import { useShowValidation } from './contexts/ShowValidationProvider'
-import { ValidContext, ValidProvider } from './contexts/ValidProvider'
+import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidProvider'
 
 export function Section(props: { label: string; children?: ReactNode; defaultExpanded?: boolean }) {
     const mode = useMode()
@@ -26,15 +26,15 @@ export function Section(props: { label: string; children?: ReactNode; defaultExp
     }
 
     return (
-        <ValidProvider>
-            <ValidContext.Consumer>
-                {(valid) => (
+        <ValidationProvider>
+            <HasValidationErrorContext.Consumer>
+                {(hasValidationError) => (
                     <section className="pf-c-form__section" role="group">
                         <Split hasGutter onClick={() => setExpanded(!expanded)}>
                             <SplitItem isFilled className="pf-c-form__section-title">
                                 {props.label}
                             </SplitItem>
-                            {showValidation && !expanded && !valid && (
+                            {showValidation && !expanded && hasValidationError && (
                                 <SplitItem>
                                     <ExclamationCircleIcon color="#c00" />
                                 </SplitItem>
@@ -53,7 +53,7 @@ export function Section(props: { label: string; children?: ReactNode; defaultExp
                         {!expanded && <Divider />}
                     </section>
                 )}
-            </ValidContext.Consumer>
-        </ValidProvider>
+            </HasValidationErrorContext.Consumer>
+        </ValidationProvider>
     )
 }

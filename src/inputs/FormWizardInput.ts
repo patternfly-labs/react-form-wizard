@@ -6,7 +6,7 @@ import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { useMode } from '../contexts/ModeContext'
 import { useShowValidation } from '../contexts/ShowValidationProvider'
-import { useSetValid, useValidate } from '../contexts/ValidProvider'
+import { useSetHasValidationError, useValidate } from '../contexts/ValidProvider'
 
 export type HiddenFn = (item: any) => boolean
 
@@ -252,11 +252,14 @@ export function useInput(props: InputCommonProps) {
     const mode = useMode()
     const [value, setValue] = useValue(props, '')
     const hidden = useInputHidden(props)
+
     const { validated, error } = useInputValidation(props)
 
     // If setValid changes, it is an indication that validation is needed
-    const setValid = useSetValid()
-    useEffect(() => setValid(hidden || error === undefined), [hidden, error, setValid])
+    const setHasValidationError = useSetHasValidationError()
+    useEffect(() => {
+        if (!hidden && error) setHasValidationError()
+    }, [hidden, error, setHasValidationError])
 
     // If error changes, trigger validation
     const validate = useValidate()

@@ -1,55 +1,35 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 
-const SetValidContext = createContext<(valid: boolean) => void>(() => null)
-export function useSetValid() {
-    return useContext(SetValidContext)
-}
+const SetHasValidationErrorContext = createContext<() => void>(() => null)
+export const useSetHasValidationError = () => useContext(SetHasValidationErrorContext)
 
-export const ValidContext = createContext(true)
-export function useValid() {
-    return useContext(ValidContext)
-}
+export const HasValidationErrorContext = createContext(true)
+export const useHasValidationError = () => useContext(HasValidationErrorContext)
 
 const ValidateContext = createContext<() => void>(() => null)
-export function useValidate() {
-    return useContext(ValidateContext)
-}
+export const useValidate = () => useContext(ValidateContext)
 
-export function ValidProvider(props: { children: ReactNode }) {
-    const [valid, setValidState] = useState(true)
-
-    const [setValid, setValidFunction] = useState<(valid: boolean) => void>(() => (valid: boolean) => {
-        if (!valid) setValidState(false)
-    })
-
+export function ValidationProvider(props: { children: ReactNode }) {
+    const [hasValidationErrors, setHasValidationErrorsState] = useState(false)
+    const [setHasValidationErrors, setHasValidationErrorsFunction] = useState<() => void>(() => () => setHasValidationErrorsState(true))
     const validate = useCallback(() => {
-        setValidState(true)
-        setValidFunction(() => (valid: boolean) => {
-            if (!valid) setValidState(false)
-        })
+        setHasValidationErrorsState(false)
+        setHasValidationErrorsFunction(() => () => setHasValidationErrorsState(true))
     }, [])
+    useEffect(() => validate(), [validate])
 
-    // If valid changes, have parent revalidate
     const parentValidate = useContext(ValidateContext)
+    const parentSetHasValidationError = useContext(SetHasValidationErrorContext)
     useEffect(() => {
-        parentValidate?.()
-    }, [parentValidate, valid])
-
-    // If valid changes, set parentValid
-    const parentSetValid = useContext(SetValidContext)
-    useEffect(() => {
-        if (!valid) parentSetValid?.(valid)
-    }, [parentSetValid, valid])
-
-    useEffect(() => {
-        validate()
-    }, [validate])
+        if (hasValidationErrors) parentSetHasValidationError?.()
+        else parentValidate?.()
+    }, [parentValidate, parentSetHasValidationError, hasValidationErrors])
 
     return (
         <ValidateContext.Provider value={validate}>
-            <SetValidContext.Provider value={setValid}>
-                <ValidContext.Provider value={valid}>{props.children}</ValidContext.Provider>
-            </SetValidContext.Provider>
+            <SetHasValidationErrorContext.Provider value={setHasValidationErrors}>
+                <HasValidationErrorContext.Provider value={hasValidationErrors}>{props.children}</HasValidationErrorContext.Provider>
+            </SetHasValidationErrorContext.Provider>
         </ValidateContext.Provider>
     )
 }

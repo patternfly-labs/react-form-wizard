@@ -18,7 +18,7 @@ import { DataContext, useData } from './contexts/DataContext'
 import { ItemContext } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
-import { useValid, ValidProvider } from './contexts/ValidProvider'
+import { useHasValidationError, ValidationProvider } from './contexts/ValidProvider'
 import { useID } from './inputs/FormWizardInput'
 import { Step } from './Step'
 
@@ -50,7 +50,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
         <ModeContext.Provider value={mode}>
             <DataContext.Provider value={{ update }}>
                 <ItemContext.Provider value={data}>
-                    <ValidProvider>
+                    <ValidationProvider>
                         <Drawer isExpanded={drawerExpanded} isInline>
                             <DrawerContent
                                 panelContent={
@@ -80,7 +80,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                 </DrawerContentBody>
                             </DrawerContent>
                         </Drawer>
-                    </ValidProvider>
+                    </ValidationProvider>
                 </ItemContext.Provider>
             </DataContext.Provider>
         </ModeContext.Provider>
@@ -122,16 +122,16 @@ function WizardInternal(props: { children: ReactNode }) {
                 if (step !== activeStep)
                     return (
                         <ShowValidationProvider key={step.props.label}>
-                            <ValidProvider>
+                            <ValidationProvider>
                                 <div style={{ display: 'none' }}>{step}</div>
-                            </ValidProvider>
+                            </ValidationProvider>
                         </ShowValidationProvider>
                     )
                 return (
                     <ShowValidationProvider key={step.props.label}>
-                        <ValidProvider>
+                        <ValidationProvider>
                             <WizardActiveStep activeStep={activeStep} setActiveStep={setActiveStep} steps={steps} next={next} back={back} />
-                        </ValidProvider>
+                        </ValidationProvider>
                     </ShowValidationProvider>
                 )
             })}
@@ -146,7 +146,7 @@ export function WizardActiveStep(props: {
     next: () => void
     back: () => void
 }) {
-    const valid = useValid()
+    const hasValidationError = useHasValidationError()
     const showValidation = useShowValidation()
     const setShowValidation = useSetShowValidation()
     const id = useID(props.activeStep.props)
@@ -183,15 +183,15 @@ export function WizardActiveStep(props: {
                     </div>
                 </main>
             </div>
-            {!valid && showValidation && <Alert title="Please fix validation errors." isInline variant="danger" />}
+            {hasValidationError && showValidation && <Alert title="Please fix validation errors." isInline variant="danger" />}
             <footer className="pf-c-wizard__footer">
                 <Button
                     variant="primary"
-                    isDisabled={!valid && showValidation}
+                    isDisabled={hasValidationError && showValidation}
                     type="submit"
                     onClick={() => {
                         setShowValidation(true)
-                        if (valid) {
+                        if (!hasValidationError) {
                             props.next()
                         }
                     }}
