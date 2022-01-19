@@ -25,7 +25,7 @@ import useResizeObserver from '@react-hook/resize-observer'
 import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
-import { AppForm } from './Application/AppForm'
+import { ApplicationExample } from './Application/ApplicationExample'
 import { AppTest } from './AppTest/AppTest'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
@@ -104,7 +104,7 @@ export function DemoRouter(): JSX.Element {
         case RouteE.Ansible:
             return <AnsibleExample />
         case RouteE.Application:
-            return <AppForm />
+            return <ApplicationExample />
         case RouteE.App:
             return <AppTest />
         case RouteE.Cluster:

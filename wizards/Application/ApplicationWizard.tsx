@@ -3,6 +3,7 @@ import { GitAltIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
 import { Fragment, useMemo } from 'react'
 import {
+    FormCancel,
     FormWizardArrayInput,
     FormWizardCheckbox,
     FormWizardHidden,
@@ -34,7 +35,13 @@ import HelmIcon from './logos/HelmIcon.svg'
 import ObjectStore from './logos/ObjectStore.svg'
 import SubscriptionIcon from './logos/SubscriptionIcon.svg'
 
-export function AppForm() {
+export function ApplicationWizard(props: {
+    ansibleCredentials: string[]
+    argoServers: string[]
+    namespaces: string[]
+    onCancel?: FormCancel
+    placements: string[]
+}) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
     Handlebars.registerPartial('templateSubscriptionGit', Handlebars.compile(SubscriptionGitHandlebars))
@@ -45,19 +52,17 @@ export function AppForm() {
     Handlebars.registerPartial('templateArgoGit', Handlebars.compile(ArgoTemplateGit))
     Handlebars.registerPartial('templateArgoHelm', Handlebars.compile(ArgoTemplateHelm))
     Handlebars.registerPartial('templateArgoPlacement', Handlebars.compile(ArgoTemplatePlacement))
-    const namespaces = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
     const reconcileOptions = useMemo(() => ['merge', 'replace'], [])
     const reconcileRates = useMemo(() => ['medium', 'low', 'high', 'off'], [])
-    const servers = useMemo(() => ['default', 'server-1', 'server-2'], [])
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
     const urls = useMemo(() => ['url1', 'url2'], [])
     const urlOptions = useMemo(() => ['url1', 'url2'], [])
-    const ansibleCredentials = useMemo(() => ['credential1', 'credential2'], [])
     return (
         <FormWizardPage
             title="Create application"
             template={ApplicationHandlebars}
             defaultData={{ curlyServer: '{{server}}', curlyName: '{{name}}' }}
+            onCancel={props.onCancel}
         >
             <FormWizardStep label="Type">
                 <FormWizardSection label="Type" prompt="Type">
@@ -91,7 +96,7 @@ export function AppForm() {
                         label="Namespace"
                         placeholder="Select the namespace"
                         helperText="The namespace on the hub cluster where the application resources will be created."
-                        options={namespaces}
+                        options={props.namespaces}
                         required
                     />
                 </FormWizardSection>
@@ -205,7 +210,7 @@ export function AppForm() {
                                 id="subscription.git.ansibleSecretName"
                                 label="Ansible Automation Platform credential"
                                 labelHelp="If using Configure automation for prehook and posthook tasks, select the Ansible Automation Platform credential. Click the Add credentials tab to create a new secret."
-                                options={ansibleCredentials}
+                                options={props.ansibleCredentials}
                             />
                         </FormWizardHidden>
 
@@ -305,7 +310,7 @@ export function AppForm() {
                         </FormWizardHidden>
 
                         <FormWizardHidden hidden={(data) => data.repositoryType === undefined}>
-                            <Placement />
+                            <Placement placement={props.placements} />
                         </FormWizardHidden>
                     </FormWizardArrayInput>
                 </FormWizardSection>
@@ -324,7 +329,7 @@ export function AppForm() {
                         label="Argo server"
                         placeholder="Select the Argo server"
                         labelHelp="Argo server to deploy Argo app set. Click the Add cluster sets tab to create a new cluster set."
-                        options={servers}
+                        options={props.argoServers}
                         required
                     />
                     <FormWizardSelect
@@ -434,13 +439,13 @@ export function AppForm() {
             </FormWizardStep>
 
             <FormWizardStep label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <Placement />
+                <Placement placement={props.placements} />
             </FormWizardStep>
         </FormWizardPage>
     )
 }
 
-export function Placement() {
+export function Placement(props: { placement: string[] }) {
     const labelOptions = useMemo(() => [{ id: 'amazon', label: 'cloud', value: 'Amazon' }], [])
     return (
         <Fragment>
@@ -468,7 +473,7 @@ export function Placement() {
                         id="placement.select"
                         label="Placement"
                         placeholder="Select an existing placement"
-                        options={['my-placement-rule-1']}
+                        options={props.placement}
                         required
                     />
                 </FormWizardCheckbox>
