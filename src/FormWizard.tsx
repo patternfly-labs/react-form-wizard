@@ -320,7 +320,7 @@ export function FormWizardWizardMode(props: {
                             name: (
                                 <Split style={{ alignItems: 'baseline', columnGap: 8 }}>
                                     <SplitItem isFilled>{title}</SplitItem>
-                                    {<ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />}
+                                    <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
                                 </Split>
                             ),
                             component: grandchild,

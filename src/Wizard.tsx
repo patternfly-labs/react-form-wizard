@@ -7,10 +7,13 @@ import {
     DrawerPanelContent,
     PageSection,
     PageSectionTypes,
+    Split,
+    SplitItem,
     Tab,
     Tabs,
     TabTitleText,
 } from '@patternfly/react-core'
+import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react'
 import { FormCancel, FormSubmit } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
@@ -18,6 +21,7 @@ import { DataContext, useData } from './contexts/DataContext'
 import { ItemContext } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
+import { StepValidationProvider, useStepHasValidationError } from './contexts/StepValidationProvider'
 import { useHasValidationError, ValidationProvider } from './contexts/ValidationProvider'
 import { useID } from './inputs/FormWizardInput'
 import { Step } from './Step'
@@ -47,43 +51,45 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     const [template2] = useState(() => (props.yamlToDataTemplate ? Handlebars.compile(props.yamlToDataTemplate) : undefined))
 
     return (
-        <ModeContext.Provider value={mode}>
-            <DataContext.Provider value={{ update }}>
-                <ItemContext.Provider value={data}>
-                    <ValidationProvider>
-                        <Drawer isExpanded={drawerExpanded} isInline>
-                            <DrawerContent
-                                panelContent={
-                                    <FormWizardPageDrawer
-                                        data={data}
-                                        template={template}
-                                        template2={template2}
-                                        templateString={props.template}
-                                    />
-                                }
-                            >
-                                <DrawerContentBody>
-                                    <PageSection
-                                        variant="light"
-                                        style={{ height: '100%' }}
-                                        type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
-                                        isWidthLimited
-                                    >
-                                        <ItemContext.Provider value={data}>
-                                            {/* {mode === Mode.Wizard ? ( */}
-                                            <WizardInternal>{props.children}</WizardInternal>
-                                            {/* ) : (
+        <StepValidationProvider>
+            <ModeContext.Provider value={mode}>
+                <DataContext.Provider value={{ update }}>
+                    <ItemContext.Provider value={data}>
+                        <ValidationProvider>
+                            <Drawer isExpanded={drawerExpanded} isInline>
+                                <DrawerContent
+                                    panelContent={
+                                        <FormWizardPageDrawer
+                                            data={data}
+                                            template={template}
+                                            template2={template2}
+                                            templateString={props.template}
+                                        />
+                                    }
+                                >
+                                    <DrawerContentBody>
+                                        <PageSection
+                                            variant="light"
+                                            style={{ height: '100%' }}
+                                            type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
+                                            isWidthLimited
+                                        >
+                                            <ItemContext.Provider value={data}>
+                                                {/* {mode === Mode.Wizard ? ( */}
+                                                <WizardInternal>{props.children}</WizardInternal>
+                                                {/* ) : (
                                                 <FormWizardFormMode>{props.children}</FormWizardFormMode>
                                             )} */}
-                                        </ItemContext.Provider>
-                                    </PageSection>
-                                </DrawerContentBody>
-                            </DrawerContent>
-                        </Drawer>
-                    </ValidationProvider>
-                </ItemContext.Provider>
-            </DataContext.Provider>
-        </ModeContext.Provider>
+                                            </ItemContext.Provider>
+                                        </PageSection>
+                                    </DrawerContentBody>
+                                </DrawerContent>
+                            </Drawer>
+                        </ValidationProvider>
+                    </ItemContext.Provider>
+                </DataContext.Provider>
+            </ModeContext.Provider>
+        </StepValidationProvider>
     )
 }
 
@@ -155,24 +161,14 @@ export function WizardActiveStep(props: {
             <div className="pf-c-wizard__inner-wrap">
                 <nav className="pf-c-wizard__nav" aria-label="Steps">
                     <ol className="pf-c-wizard__nav-list">
-                        {props.steps?.map((step) => {
-                            let classname = 'pf-c-wizard__nav-link'
-                            if (props.activeStep === step) {
-                                classname += ' pf-m-current'
-                            }
-                            return (
-                                <li key={step.props.label} className="pf-c-wizard__nav-item">
-                                    <button
-                                        className={classname}
-                                        onClick={() => {
-                                            props.setActiveStep(step)
-                                        }}
-                                    >
-                                        {step.props.label}
-                                    </button>
-                                </li>
-                            )
-                        })}
+                        {props.steps?.map((step) => (
+                            <StepNavItem
+                                key={step.props.label}
+                                step={step}
+                                activeStep={props.activeStep}
+                                setActiveStep={props.setActiveStep}
+                            />
+                        ))}
                     </ol>
                 </nav>
                 <main className="pf-c-wizard__main">
@@ -206,6 +202,33 @@ export function WizardActiveStep(props: {
                 </div>
             </footer>
         </div>
+    )
+}
+
+function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setActiveStep: (activeStep: ReactElement) => void }) {
+    let classname = 'pf-c-wizard__nav-link'
+    if (props.activeStep === props.step) {
+        classname += ' pf-m-current'
+    }
+    const stepHasValidationError = useStepHasValidationError()
+    return (
+        <li key={props.step.props.label} className="pf-c-wizard__nav-item">
+            <button
+                className={classname}
+                onClick={() => {
+                    props.setActiveStep(props.step)
+                }}
+            >
+                <Split>
+                    <SplitItem isFilled>{props.step.props.label}</SplitItem>
+                    {stepHasValidationError[props.step.props.label] && (
+                        <SplitItem>
+                            <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+                        </SplitItem>
+                    )}
+                </Split>
+            </button>
+        </li>
     )
 }
 
