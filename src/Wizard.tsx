@@ -19,6 +19,7 @@ import { ItemContext } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
 import { useValid, ValidProvider } from './contexts/ValidProvider'
+import { useID } from './inputs/FormWizardInput'
 import { Step } from './Step'
 
 export interface WizardProps {
@@ -33,7 +34,7 @@ export interface WizardProps {
 }
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
-    const [data, setData] = useState({})
+    const [data, setData] = useState(props.defaultData ?? {})
     const update = useCallback(() => setData((data) => JSON.parse(JSON.stringify(data))), [])
     const [drawerExpanded, setDrawerExpanded] = useState<boolean>(props.showYaml === undefined ? false : true)
     useEffect(() => {
@@ -88,7 +89,11 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
 
 function WizardInternal(props: { children: ReactNode }) {
     const steps = Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
-    steps.push(<Step label="Review">{props.children}</Step>)
+    steps.push(
+        <Step label="Review">
+            <ModeContext.Provider value={Mode.Details}>{props.children}</ModeContext.Provider>
+        </Step>
+    )
 
     const [activeIndex, setActiveIndex] = useState(0)
     const next = useCallback(() => setActiveIndex((activeIndex) => activeIndex + 1), [])
@@ -144,8 +149,9 @@ export function WizardActiveStep(props: {
     const valid = useValid()
     const showValidation = useShowValidation()
     const setShowValidation = useSetShowValidation()
+    const id = useID(props.activeStep.props)
     return (
-        <div className="pf-c-wizard__outer-wrap">
+        <div className="pf-c-wizard__outer-wrap" id={id}>
             <div className="pf-c-wizard__inner-wrap">
                 <nav className="pf-c-wizard__nav" aria-label="Steps">
                     <ol className="pf-c-wizard__nav-list">

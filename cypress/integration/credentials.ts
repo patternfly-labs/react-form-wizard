@@ -9,41 +9,54 @@ describe('credentials wizard - aws', () => {
         cy.get('h1').contains('Add credentials')
     })
 
-    it('credentials type', () => {
-        cy.get('#aws').click()
-        cy.contains('Next').click()
+    it('credential type', () => {
+        cy.get('#credential-type').within(() => {
+            cy.get('#aws').click()
+            cy.contains('Next').click()
+        })
     })
 
-    it('details', () => {
-        cy.get('#name').type('my-credentials')
-        cy.get('#namespace').click().get('#default').click()
-        cy.contains('Next').click()
+    it('basic information', () => {
+        cy.get('#basic-information').within(() => {
+            cy.get('#name').type('my-credentials')
+            cy.get('#namespace').click().get('#default').click()
+            cy.get('#base-domain').type('my-base-domain')
+            cy.contains('Next').click()
+        })
     })
 
-    it('aws', () => {
-        cy.get('#aws-key-id').type('my-key-id')
-        cy.get('#aws-access-key').type('my-access-key')
-        cy.contains('Next').click()
+    it('amazon web services', () => {
+        cy.get('#amazon-web-services').within(() => {
+            cy.get('#aws-key-id').type('my-key-id')
+            cy.get('#aws-access-key').type('my-access-key')
+            cy.contains('Next').click()
+        })
     })
 
     it('proxy', () => {
-        cy.get('#http-proxy').type('my-http-proxy')
-        cy.get('#https-proxy').type('my-https-proxy')
-        cy.get('#no-proxy').type('my-no-proxy')
-        cy.get('#trust-bundle').type('my-trust-bundle')
-        cy.contains('Next').click()
+        cy.get('#proxy').within(() => {
+            cy.get('#http-proxy').type('my-http-proxy')
+            cy.get('#https-proxy').type('my-https-proxy')
+            cy.get('#no-proxy').type('my-no-proxy')
+            cy.get('#trust-bundle').type('my-trust-bundle')
+            cy.contains('Next').click()
+        })
     })
 
     it('pull secret and ssh', () => {
-        cy.get('#pull-secret').type('my-pull-secret')
-        cy.get('#ssh-public-key').type('my-ssh-public')
-        cy.get('#ssh-private-key').type('my-ssh-private')
-        cy.contains('Next').click()
+        cy.get('#pull-secret-and-ssh').within(() => {
+            cy.get('#pull-secret').type('my-pull-secret')
+            cy.get('#ssh-private-key').type('my-ssh-private')
+            cy.get('#ssh-public-key').type('my-ssh-public')
+            cy.contains('Next').click()
+        })
     })
 
-    it('summary', () => {
-        cy.get('#name').contains('my-credentials')
-        cy.get('#namespace').contains('default')
+    it('review', () => {
+        cy.get('#review').within(() => {
+            cy.get('#name').contains('my-credentials')
+            cy.get('#namespace').contains('default')
+        })
     })
 
     it('results', () => {
@@ -60,6 +73,7 @@ describe('credentials wizard - aws', () => {
                 },
             },
             stringData: {
+                baseDomain: 'my-base-domain',
                 aws_access_key_id: 'my-key-id',
                 aws_secret_access_key: 'my-access-key',
                 httpProxy: 'my-http-proxy',
@@ -67,8 +81,8 @@ describe('credentials wizard - aws', () => {
                 noProxy: 'my-no-proxy',
                 additionalTrustBundle: 'my-trust-bundle',
                 pullSecret: 'my-pull-secret',
-                'ssh-publickey': 'my-ssh-public',
                 'ssh-privatekey': 'my-ssh-private',
+                'ssh-publickey': 'my-ssh-public',
             },
         }
 

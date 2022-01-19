@@ -2,15 +2,15 @@ import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
 import {
     FormCancel,
     FormSubmit,
-    FormWizardPage,
     FormWizardSection,
     FormWizardSelect,
-    FormWizardStep,
     FormWizardTile,
     FormWizardTiles,
     TextArea,
     TextInput,
 } from '../../src'
+import { Step } from '../../src/Step'
+import { WizardPage } from '../../src/WizardPage'
 import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
@@ -35,9 +35,9 @@ export enum CredentialsType {
     other = 'other',
 }
 
-export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: FormCancel }) {
+export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }) {
     return (
-        <FormWizardPage
+        <WizardPage
             title="Add credentials"
             defaultData={{
                 apiVersion: 'v1',
@@ -52,7 +52,7 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
         >
-            <FormWizardStep label="Credential type">
+            <Step label="Credential type">
                 <FormWizardTiles
                     id="cloudCredentials"
                     path="metadata.labels.cluster\.open-cluster-management\.io/type"
@@ -111,9 +111,9 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                 >
                     <FormWizardTile id={CredentialsType.hybrid} icon={<HybridIcon />} value={CredentialsType.hybrid} label="On premise" />
                 </FormWizardTiles>
-            </FormWizardStep>
+            </Step>
 
-            <FormWizardStep label="Basic Information">
+            <Step label="Basic Information">
                 <FormWizardSection label="Details" prompt="Enter the details for the credentials">
                     <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
                     <FormWizardSelect
@@ -131,9 +131,9 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                         placeholder="Enter the Base DNS domain"
                     />
                 </FormWizardSection>
-            </FormWizardStep>
+            </Step>
 
-            <FormWizardStep
+            <Step
                 label="Amazon Web Services"
                 hidden={(item) => item.metadata?.labels?.['cluster.open-cluster-management.io/type'] !== CredentialsType.aws}
             >
@@ -141,8 +141,8 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                     <TextInput id="aws-key-id" path="stringData.aws_access_key_id" label="Access key ID" required />
                     <TextInput id="aws-access-key" path="stringData.aws_secret_access_key" label="Secret access key" required secret />
                 </FormWizardSection>
-            </FormWizardStep>
-            <FormWizardStep label="Proxy">
+            </Step>
+            <Step label="Proxy">
                 <FormWizardSection label="Proxy" prompt="">
                     <TextInput id="http-proxy" path="stringData.httpProxy" label="HTTP Proxy" placeholder="Enter the HTTP Proxy url" />
                     <TextInput id="https-proxy" path="stringData.httpsProxy" label="HTTPS Proxy" placeholder="Enter the HTTPS Proxy url" />
@@ -159,8 +159,8 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                         placeholder="Enter your additional trust bundle"
                     />
                 </FormWizardSection>
-            </FormWizardStep>
-            <FormWizardStep label="Pull secret and SSH">
+            </Step>
+            <Step label="Pull secret and SSH">
                 <FormWizardSection label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
                     <TextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
                     <TextArea
@@ -180,7 +180,7 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                         secret
                     />
                 </FormWizardSection>
-            </FormWizardStep>
-        </FormWizardPage>
+            </Step>
+        </WizardPage>
     )
 }
