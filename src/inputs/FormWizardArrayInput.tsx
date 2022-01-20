@@ -161,7 +161,9 @@ export function FormWizardArrayInput(props: {
                                                                                 <FormWizardTextDetail
                                                                                     id={props.collapsedContent}
                                                                                     path={props.collapsedContent}
-                                                                                    placeholder={props.collapsedPlaceholder}
+                                                                                    placeholder={
+                                                                                        props.collapsedPlaceholder ?? 'Expand to edit'
+                                                                                    }
                                                                                 />
                                                                             ) : (
                                                                                 props.collapsedContent

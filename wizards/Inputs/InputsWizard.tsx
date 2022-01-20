@@ -103,7 +103,6 @@ export function InputsWizard() {
                     label="Resources"
                     path="resources"
                     placeholder="Add resource"
-                    collapsedPlaceholder="Expand to edit"
                     collapsedContent="metadata.name"
                 >
                     <TextInput label="Name" path="metadata.name" required />
@@ -114,11 +113,11 @@ export function InputsWizard() {
             <Step label="Section">
                 <Section label="Section 1">
                     <TextInput label="Text 1" required />
-                    <TextInput label="Text 2" required />
+                    <TextInput label="Text 2" />
                 </Section>
                 <Section label="Section 2">
                     <TextInput label="Text 3" required />
-                    <TextInput label="Text 4" required />
+                    <TextInput label="Text 4" />
                 </Section>
             </Step>
         </WizardPage>
