@@ -19,11 +19,22 @@ export function ValidationProvider(props: { children: ReactNode }) {
     useEffect(() => validate(), [validate])
 
     const parentValidate = useContext(ValidateContext)
+    useEffect(() => {
+        if (!hasValidationError) parentValidate?.()
+    }, [parentValidate, hasValidationError])
+
+    // When this control goes away - parentValidate
+    useEffect(
+        () => () => {
+            if (parentValidate) parentValidate()
+        },
+        [parentValidate]
+    )
+
     const parentSetHasValidationError = useContext(SetHasValidationErrorContext)
     useEffect(() => {
         if (hasValidationError) parentSetHasValidationError?.()
-        else parentValidate?.()
-    }, [parentValidate, parentSetHasValidationError, hasValidationError])
+    }, [parentSetHasValidationError, hasValidationError])
 
     return (
         <ValidateContext.Provider value={validate}>

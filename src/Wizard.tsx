@@ -179,7 +179,7 @@ export function WizardActiveStep(props: {
                     </div>
                 </main>
             </div>
-            {hasValidationError && showValidation && <Alert title="Please fix validation errors." isInline variant="danger" />}
+            {hasValidationError && showValidation && <Alert title="Please fix validation errors" isInline variant="danger" />}
             <footer className="pf-c-wizard__footer">
                 <Button
                     variant="primary"

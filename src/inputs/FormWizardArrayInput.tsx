@@ -146,7 +146,7 @@ export function FormWizardArrayInput(props: {
                                                                     showValidation && hasErrors ? (
                                                                         <Alert
                                                                             variant="danger"
-                                                                            title="Please fix validation errors."
+                                                                            title="Expand to fix validation errors"
                                                                             isInline
                                                                             isPlain
                                                                         />
