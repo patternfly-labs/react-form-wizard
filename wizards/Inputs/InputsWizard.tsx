@@ -49,56 +49,42 @@ export function InputsWizard() {
             </Step>
 
             <Step label="Radio">
-                <Section label="Radio">
-                    <RadioGroup id="radio0" path="radio" label="Radio" required>
-                        <Radio id="radio-1" label="Radio 1" value="radio-1" />
-                        <Radio id="radio-2" label="Radio 2" value="radio-2" />
-                    </RadioGroup>
-                    <RadioGroup id="radio1" path="radio1" label="Radio with sub-inputs" required>
-                        <Radio id="radio-1" label="Radio 1" value="radio-3">
-                            <TextInput
-                                id="text-input"
-                                path="text" // test
-                                label="Name"
-                                required
-                            />
-                        </Radio>
-                        <Radio id="radio-2" label="Radio 2" value="radio-4">
-                            <TextInput
-                                id="text-input"
-                                path="text" // test
-                                label="Name"
-                                required
-                            />
-                        </Radio>
-                    </RadioGroup>
-                    <RadioGroup id="radio2" path="radio2" label="Radio with descriptions" required>
-                        <Radio id="radio-1" label="Radio 1" value="radio-5" description="Radio 1 description" />
-                        <Radio id="radio-2" label="Radio 2" value="radio-6" description="Radio 2 description" />
-                    </RadioGroup>
-                    <RadioGroup id="radio3" path="radio3" label="Radio with descriptions and sub-inputs" required>
-                        <Radio id="radio-1" label="Radio 1" value="radio-7" description="Radio 1 description">
-                            <TextInput label="Name" required />
-                        </Radio>
-                        <Radio id="radio-2" label="Radio 2" value="radio-8" description="Radio 2 description">
-                            <TextInput label="Name" required />
-                        </Radio>
-                    </RadioGroup>
-                </Section>
+                <RadioGroup id="radio0" path="radio" label="Radio" required>
+                    <Radio id="radio-1" label="Radio 1" value="radio-1" />
+                    <Radio id="radio-2" label="Radio 2" value="radio-2" />
+                </RadioGroup>
+                <RadioGroup id="radio1" path="radio1" label="Radio with sub-inputs" required>
+                    <Radio id="radio-1" label="Radio 1" value="radio-3">
+                        <TextInput label="Name" required />
+                    </Radio>
+                    <Radio id="radio-2" label="Radio 2" value="radio-4">
+                        <TextInput label="Name" required />
+                    </Radio>
+                </RadioGroup>
+                <RadioGroup id="radio2" path="radio2" label="Radio with descriptions" required>
+                    <Radio id="radio-1" label="Radio 1" value="radio-5" description="Radio 1 description" />
+                    <Radio id="radio-2" label="Radio 2" value="radio-6" description="Radio 2 description" />
+                </RadioGroup>
+                <RadioGroup id="radio3" path="radio3" label="Radio with descriptions and sub-inputs" required>
+                    <Radio id="radio-1" label="Radio 1" value="radio-7" description="Radio 1 description">
+                        <TextInput label="Name" required />
+                    </Radio>
+                    <Radio id="radio-2" label="Radio 2" value="radio-8" description="Radio 2 description">
+                        <TextInput label="Name" required />
+                    </Radio>
+                </RadioGroup>
             </Step>
 
             <Step label="Checkbox">
-                <Section label="Checkbox">
-                    <Checkbox id="checkbox-1" label="Checkbox without description" />
-                    <Checkbox id="checkbox-2" label="Checkbox without description with sub-inputs">
-                        <TextInput label="Name" required />
-                    </Checkbox>
-                    <Checkbox id="checkbox-3" label="Checkbox with description" helperText="Checkbox description." />
-                    <Checkbox id="checkbox-4" label="Checkbox with description with sub-inputs" helperText="Checkbox description.">
-                        <TextInput label="Name" required />
-                    </Checkbox>
-                    <Checkbox id="checkbox-4" label="Checkbox hidden" hidden={() => true} />
-                </Section>
+                <Checkbox id="checkbox-1" label="Checkbox without description" />
+                <Checkbox id="checkbox-2" label="Checkbox without description with sub-inputs">
+                    <TextInput label="Name" required />
+                </Checkbox>
+                <Checkbox id="checkbox-3" label="Checkbox with description" helperText="Checkbox description." />
+                <Checkbox id="checkbox-4" label="Checkbox with description with sub-inputs" helperText="Checkbox description.">
+                    <TextInput label="Name" required />
+                </Checkbox>
+                <Checkbox id="checkbox-4" label="Checkbox hidden" hidden={() => true} />
             </Step>
 
             <Step label="Labels">
@@ -107,23 +93,32 @@ export function InputsWizard() {
                 </Section>
             </Step>
 
-            <Step label="Key-value pairs">
-                <Section label="Key value input example">
-                    <FormWizardKeyValue id="key-values" path="key-values" label="Key vaue pairs" />
-                </Section>
+            <Step label="Key Value">
+                <FormWizardKeyValue id="key-values" path="key-values" label="Key Value" />
             </Step>
 
             <Step label="Array">
-                <Section label="Array input example">
-                    <FormWizardArrayInput
-                        id="resources"
-                        label="Resources"
-                        path="resources"
-                        placeholder="Add resource"
-                        collapsedContent="metadata.name"
-                    >
-                        <TextInput id="metadata.name" label="Name" required />
-                    </FormWizardArrayInput>
+                <FormWizardArrayInput
+                    id="resources"
+                    label="Resources"
+                    path="resources"
+                    placeholder="Add resource"
+                    collapsedPlaceholder="Expand to edit"
+                    collapsedContent="metadata.name"
+                >
+                    <TextInput label="Name" path="metadata.name" required />
+                    <Select label="Namespace" path="metadata.name" options={['namespace-1', 'namespace-2']} />
+                </FormWizardArrayInput>
+            </Step>
+
+            <Step label="Section">
+                <Section label="Section 1">
+                    <TextInput label="Text 1" required />
+                    <TextInput label="Text 2" required />
+                </Section>
+                <Section label="Section 2">
+                    <TextInput label="Text 3" required />
+                    <TextInput label="Text 4" required />
                 </Section>
             </Step>
         </WizardPage>

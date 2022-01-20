@@ -36,7 +36,16 @@ export function Section(props: { label: string; children?: ReactNode; defaultExp
                             </SplitItem>
                             {showValidation && !expanded && hasValidationError && (
                                 <SplitItem>
-                                    <ExclamationCircleIcon color="#c00" />
+                                    <Split>
+                                        <SplitItem>
+                                            <ExclamationCircleIcon color="#c00" />
+                                        </SplitItem>
+                                        <SplitItem>
+                                            <span className="pf-c-form__helper-text pf-m-error">
+                                                &nbsp; Expand to fix validation errors
+                                            </span>
+                                        </SplitItem>
+                                    </Split>
                                 </SplitItem>
                             )}
                             {expanded ? (

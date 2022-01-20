@@ -1,5 +1,4 @@
 import {
-    Alert,
     Button,
     DescriptionListDescription,
     DescriptionListGroup,
@@ -9,10 +8,12 @@ import {
     DropdownItem,
     DropdownToggle,
     FormFieldGroupHeader,
+    Split,
+    SplitItem,
     Stack,
     Text,
 } from '@patternfly/react-core'
-import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
+import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Children, Fragment, ReactNode, useCallback, useContext, useState } from 'react'
 import set from 'set-value'
@@ -144,12 +145,16 @@ export function FormWizardArrayInput(props: {
                                                             titleText={{
                                                                 text:
                                                                     showValidation && hasErrors ? (
-                                                                        <Alert
-                                                                            variant="danger"
-                                                                            title="Expand to fix validation errors"
-                                                                            isInline
-                                                                            isPlain
-                                                                        />
+                                                                        <Split>
+                                                                            <SplitItem>
+                                                                                <ExclamationCircleIcon color="#c00" />
+                                                                            </SplitItem>
+                                                                            <SplitItem>
+                                                                                <span className="pf-c-form__helper-text pf-m-error">
+                                                                                    &nbsp; Expand to fix validation errors
+                                                                                </span>
+                                                                            </SplitItem>
+                                                                        </Split>
                                                                     ) : (
                                                                         <Fragment>
                                                                             {typeof props.collapsedContent === 'string' ? (
