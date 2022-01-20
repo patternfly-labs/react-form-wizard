@@ -109,7 +109,7 @@ export function InputsWizard() {
                     collapsedContent="metadata.name"
                 >
                     <TextInput label="Name" path="metadata.name" required />
-                    <Select label="Namespace" path="metadata.namespace" options={['namespace-1', 'namespace-2']} />
+                    <Select label="Namespace" path="metadata.namespace" required options={['namespace-1', 'namespace-2']} />
                     <KeyValue id="labels" path="metadata.labels" label="Labels" />
                     <KeyValue id="labels" path="metadata.annotations" label="Annotations" />
                 </FormWizardArrayInput>
