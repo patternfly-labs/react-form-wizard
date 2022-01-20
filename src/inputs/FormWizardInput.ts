@@ -3,6 +3,7 @@ import { Children, isValidElement, ReactElement, ReactNode, useCallback, useCont
 import set from 'set-value'
 import { FormWizardArrayInput, FormWizardSelector, wizardArrayItems, wizardSelectorItem } from '..'
 import { useData } from '../contexts/DataContext'
+import { useSetHasValue } from '../contexts/HasValueProvider'
 import { ItemContext } from '../contexts/ItemContext'
 import { useMode } from '../contexts/ModeContext'
 import { useShowValidation } from '../contexts/ShowValidationProvider'
@@ -267,6 +268,16 @@ export function useInput(props: InputCommonProps) {
 
     const path = usePath(props)
     const id = useID(props)
+
+    const setHasValue = useSetHasValue()
+    useEffect(() => {
+        if (value) setHasValue()
+    }, [setHasValue, value])
+
+    // const updateHasValue = useUpdateHasValue()
+    // useEffect(() => {
+    //     if (!value) updateHasValue()
+    // }, [updateHasValue, value])
 
     return {
         id,

@@ -257,6 +257,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
     if (hidden) return <Fragment />
 
     if (mode === Mode.Details) {
+        if (!value) return <Fragment />
         return <FormWizardTextDetail id={id} path={props.path} label={props.label} />
     }
 

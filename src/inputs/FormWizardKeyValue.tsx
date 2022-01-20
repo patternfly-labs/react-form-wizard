@@ -1,10 +1,19 @@
-import { Button, Divider, TextInput } from '@patternfly/react-core'
+import {
+    Button,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Divider,
+    Stack,
+    TextInput,
+} from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useContext, useState } from 'react'
 import set from 'set-value'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
+import { Mode, useMode } from '../contexts/ModeContext'
 import { useID, usePath } from './FormWizardInput'
 
 export function KeyValue(props: {
@@ -24,6 +33,7 @@ export function KeyValue(props: {
     const value = get(item, path) ?? {}
 
     const [pairs] = useState<{ key: string; value: string }[]>(() => Object.keys(value).map((key) => ({ key, value: value[key] })))
+    const mode = useMode()
 
     const onKeyChange = (index: number, newKey: string) => {
         pairs[index].key = newKey
@@ -75,6 +85,24 @@ export function KeyValue(props: {
             }, {} as Record<string, string>)
         )
         update()
+    }
+
+    if (mode === Mode.Details) {
+        if (!Object.keys(value).length) return <Fragment />
+        return (
+            <DescriptionListGroup id={props.id}>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription>
+                    <Stack hasGutter>
+                        {Object.keys(value).map((key) => (
+                            <div key={key}>
+                                {key} {value[key] !== undefined && <span> = {value[key]}</span>}
+                            </div>
+                        ))}
+                    </Stack>
+                </DescriptionListDescription>
+            </DescriptionListGroup>
+        )
     }
 
     return (

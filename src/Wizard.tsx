@@ -1,6 +1,7 @@
 import {
     Alert,
     Button,
+    DescriptionList,
     Drawer,
     DrawerContent,
     DrawerContentBody,
@@ -97,7 +98,9 @@ function WizardInternal(props: { children: ReactNode }) {
     const steps = Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
     steps.push(
         <Step label="Review">
-            <ModeContext.Provider value={Mode.Details}>{props.children}</ModeContext.Provider>
+            <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
+                <ModeContext.Provider value={Mode.Details}>{props.children}</ModeContext.Provider>
+            </DescriptionList>
         </Step>
     )
 

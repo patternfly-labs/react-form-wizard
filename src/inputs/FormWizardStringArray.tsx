@@ -1,12 +1,11 @@
 import {
     Button,
-    Chip,
-    ChipGroup,
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
     Divider,
     Split,
+    Stack,
     TextInput,
 } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
@@ -61,15 +60,17 @@ export function FormWizardStringArray(props: {
     }
 
     if (mode === Mode.Details) {
+        if (!values.length) return <Fragment />
         return (
             <DescriptionListGroup>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
                 <DescriptionListDescription id={props.id}>
-                    <ChipGroup numChips={999}>
-                        {values.map((pair, index) => {
-                            return <Fragment key={index}>{pair && <Chip isReadOnly>{pair}</Chip>}</Fragment>
+                    <Stack hasGutter>
+                        {values.map((value, index) => {
+                            if (!value) return <Fragment />
+                            return <div key={index}>{value}</div>
                         })}
-                    </ChipGroup>
+                    </Stack>
                 </DescriptionListDescription>
             </DescriptionListGroup>
         )

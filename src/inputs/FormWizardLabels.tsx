@@ -1,12 +1,11 @@
 import {
-    Chip,
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
-    LabelGroup,
     Select,
     SelectOption,
     SelectVariant,
+    Stack,
 } from '@patternfly/react-core'
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import get from 'get-value'
@@ -70,17 +69,16 @@ export function FormWizardLabels(props: {
     if (hidden) return <Fragment />
 
     if (mode === Mode.Details) {
+        if (!selections.length) return <Fragment />
         return (
-            <DescriptionListGroup>
+            <DescriptionListGroup id={props.id}>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
                 <DescriptionListDescription>
-                    <LabelGroup>
+                    <Stack hasGutter>
                         {selections.map((label) => (
-                            <Chip key={label} isReadOnly>
-                                {label}
-                            </Chip>
+                            <div key={label}>{label} </div>
                         ))}
-                    </LabelGroup>
+                    </Stack>
                 </DescriptionListDescription>
             </DescriptionListGroup>
         )
