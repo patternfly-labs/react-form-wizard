@@ -333,21 +333,25 @@ export function ApplicationWizard(props: {
                         options={props.argoServers}
                         required
                     />
-                    <Flex>
-                        <FlexItem spacer={{ default: 'spacerXl' }}>
-                            <Button
-                                id="addClusterSets"
-                                icon={<PlusIcon />}
-                                isSmall={true}
-                                variant="link"
-                                component="a"
-                                href={props.addClusterSets}
-                                target="_blank"
-                            >
-                                Add cluster sets
-                            </Button>
-                        </FlexItem>
-                    </Flex>
+                    {props.addClusterSets ? (
+                        <Flex>
+                            <FlexItem spacer={{ default: 'spacerXl' }}>
+                                <Button
+                                    id="addClusterSets"
+                                    icon={<PlusIcon />}
+                                    isSmall={true}
+                                    variant="link"
+                                    component="a"
+                                    href={props.addClusterSets}
+                                    target="_blank"
+                                >
+                                    Add cluster sets
+                                </Button>
+                            </FlexItem>
+                        </Flex>
+                    ) : (
+                        ''
+                    )}
                     <FormWizardSelect
                         id="requeueTime"
                         label="Requeue time"
