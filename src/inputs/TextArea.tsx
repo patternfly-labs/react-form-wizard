@@ -34,10 +34,10 @@ export function TextArea(props: TextAreaProps) {
         <InputLabel {...props} id={id}>
             <InputGroup>
                 {value && !showSecrets && props.secret ? (
-                    <TextInput id={props.id} value={value} validated={validated} isReadOnly={true} type={'password'} />
+                    <TextInput id={id} value={value} validated={validated} isReadOnly={true} type={'password'} />
                 ) : (
                     <PFTextArea
-                        id={props.id}
+                        id={id}
                         placeholder={placeholder}
                         validated={validated}
                         value={value}

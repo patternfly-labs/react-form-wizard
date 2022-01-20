@@ -112,6 +112,13 @@ function WizardInternal(props: { children: ReactNode }) {
     let activeStep = steps[activeIndex]
     if (!activeStep) activeStep = steps[0]
 
+    const setShowValidation = useSetShowValidation()
+    useEffect(() => {
+        if (activeStep.props.label === 'review') {
+            setShowValidation(true)
+        }
+    }, [activeStep, setShowValidation])
+
     return (
         <div className="pf-c-wizard">
             {/* <button aria-label="Wizard Header Toggle" className="pf-c-wizard__toggle" aria-expanded="false">

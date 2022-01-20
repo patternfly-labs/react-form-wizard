@@ -45,7 +45,7 @@ export function Section(props: {
                     }
                 </HasValueContext.Consumer>
             ) : (
-                <ValidationProvider>
+                <ValidationProvider key={id}>
                     <HasValidationErrorContext.Consumer>
                         {(hasValidationError) => (
                             <section id={id} className="pf-c-form__section" role="group">
