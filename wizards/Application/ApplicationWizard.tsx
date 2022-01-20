@@ -1,4 +1,4 @@
-import { Button, Flex, FlexItem, Split, SplitItem, Stack } from '@patternfly/react-core'
+import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
 import { Fragment, useMemo } from 'react'
