@@ -159,27 +159,31 @@ describe('ansible wizard', () => {
         cy.contains('Next').click()
     })
 
-    it('summary', () => {
-        cy.get('#name').contains('my-ansible-autmation-template')
-        cy.get('#namespace').contains('default')
+    it('review', () => {
+        cy.get('#review').within(() => {
+            cy.get('#details').within(() => {
+                cy.get('#name').contains('my-ansible-autmation-template')
+                cy.get('#namespace').contains('default')
+            })
 
-        cy.get('#install').within(() => {
-            cy.get('#install-secret').contains('my-install-ansible-creds')
-            cy.get('#install-prehooks').contains('pre-install-1-name')
-            cy.get('#install-prehooks').contains('pre-install-2-name')
-            cy.get('#install-posthooks').contains('post-install-1-name')
-            cy.get('#install-posthooks').contains('post-install-2-name')
+            cy.get('#install').within(() => {
+                cy.get('#install-secret').contains('my-install-ansible-creds')
+                cy.get('#install-prehooks').contains('pre-install-1-name')
+                cy.get('#install-prehooks').contains('pre-install-2-name')
+                cy.get('#install-posthooks').contains('post-install-1-name')
+                cy.get('#install-posthooks').contains('post-install-2-name')
+            })
+
+            cy.get('#upgrade').within(() => {
+                cy.get('#upgrade-secret').contains('my-upgrade-ansible-creds')
+                cy.get('#upgrade-prehooks').contains('pre-upgrade-1-name')
+                cy.get('#upgrade-prehooks').contains('pre-upgrade-2-name')
+                cy.get('#upgrade-posthooks').contains('post-upgrade-1-name')
+                cy.get('#upgrade-posthooks').contains('post-upgrade-2-name')
+            })
+
+            cy.contains('Submit')
         })
-
-        cy.get('#upgrade').within(() => {
-            cy.get('#upgrade-secret').contains('my-upgrade-ansible-creds')
-            cy.get('#upgrade-prehooks').contains('pre-upgrade-1-name')
-            cy.get('#upgrade-prehooks').contains('pre-upgrade-2-name')
-            cy.get('#upgrade-posthooks').contains('post-upgrade-1-name')
-            cy.get('#upgrade-posthooks').contains('post-upgrade-2-name')
-        })
-
-        cy.contains('Submit')
     })
 
     it('results', () => {

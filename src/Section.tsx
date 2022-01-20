@@ -1,13 +1,23 @@
-import { DescriptionList, Divider, Split, SplitItem, Title } from '@patternfly/react-core'
+import { DescriptionList, Divider, Split, SplitItem, Stack, Text, Title } from '@patternfly/react-core'
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useState } from 'react'
+import { LabelHelp } from './components/LabelHelp'
 import { Mode, useMode } from './contexts/ModeContext'
 import { useShowValidation } from './contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidationProvider'
 
-export function Section(props: { label: string; children?: ReactNode; defaultExpanded?: boolean }) {
+export function Section(props: {
+    id?: string
+    label: string
+    description?: string
+    prompt?: string
+    children?: ReactNode
+    defaultExpanded?: boolean
+    labelHelpTitle?: string
+    labelHelp?: string
+}) {
     const mode = useMode()
-    const id = props.label.split(' ').join('-')
+    const id = props.id ?? props.label.toLowerCase().split(' ').join('-')
     const showValidation = useShowValidation()
     const [expanded, setExpanded] = useState(props.defaultExpanded === undefined ? true : props.defaultExpanded)
 
@@ -29,10 +39,18 @@ export function Section(props: { label: string; children?: ReactNode; defaultExp
         <ValidationProvider>
             <HasValidationErrorContext.Consumer>
                 {(hasValidationError) => (
-                    <section className="pf-c-form__section" role="group">
+                    <section id={id} className="pf-c-form__section" role="group">
                         <Split hasGutter onClick={() => setExpanded(!expanded)}>
-                            <SplitItem isFilled className="pf-c-form__section-title">
-                                {props.label}
+                            <SplitItem isFilled>
+                                <Stack hasGutter>
+                                    <Split hasGutter>
+                                        <span className="pf-c-form__section-title">{props.label}</span>
+                                        {props.id && (
+                                            <LabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
+                                        )}
+                                    </Split>
+                                    {expanded && props.description && <Text component="small">{props.description}</Text>}
+                                </Stack>
                             </SplitItem>
                             {showValidation && !expanded && hasValidationError && (
                                 <SplitItem>

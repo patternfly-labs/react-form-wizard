@@ -181,19 +181,35 @@ export function WizardActiveStep(props: {
             </div>
             {hasValidationError && showValidation && <Alert title="Please fix validation errors" isInline variant="danger" />}
             <footer className="pf-c-wizard__footer">
-                <Button
-                    variant="primary"
-                    isDisabled={hasValidationError && showValidation}
-                    type="submit"
-                    onClick={() => {
-                        setShowValidation(true)
-                        if (!hasValidationError) {
-                            props.next()
-                        }
-                    }}
-                >
-                    Next
-                </Button>
+                {props.activeStep === props.steps[props.steps.length - 1] ? (
+                    <Button
+                        variant="primary"
+                        isDisabled={hasValidationError && showValidation}
+                        type="submit"
+                        onClick={() => {
+                            setShowValidation(true)
+                            if (!hasValidationError) {
+                                props.next()
+                            }
+                        }}
+                    >
+                        Submit
+                    </Button>
+                ) : (
+                    <Button
+                        variant="primary"
+                        isDisabled={hasValidationError && showValidation}
+                        type="submit"
+                        onClick={() => {
+                            setShowValidation(true)
+                            if (!hasValidationError) {
+                                props.next()
+                            }
+                        }}
+                    >
+                        Next
+                    </Button>
+                )}
                 <Button variant="secondary" onClick={props.back} isDisabled={props.activeStep === props.steps?.[0]}>
                     Back
                 </Button>
