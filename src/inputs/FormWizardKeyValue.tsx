@@ -1,4 +1,4 @@
-import { Button, TextInput } from '@patternfly/react-core'
+import { Button, Divider, TextInput } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useContext, useState } from 'react'
@@ -7,7 +7,7 @@ import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { useID, usePath } from './FormWizardInput'
 
-export function FormWizardKeyValue(props: { id?: string; label?: string; path?: string }) {
+export function KeyValue(props: { id?: string; label?: string; path?: string; placeholder?: string }) {
     const id = useID(props)
     const path = usePath(props)
 
@@ -71,15 +71,8 @@ export function FormWizardKeyValue(props: { id?: string; label?: string; path?: 
     }
 
     return (
-        <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 0 }}>
-            <div style={{ display: 'flex', alignItems: 'baseline' }}>
-                <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16, flexGrow: 1 }}>
-                    {props.label}
-                </div>
-                <Button id="add-button" variant="plain" isSmall aria-label="Action" onClick={onNewKey}>
-                    <PlusIcon />
-                </Button>
-            </div>
+        <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 4 }}>
+            <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
             <div
                 style={{
                     display: 'grid',
@@ -101,6 +94,12 @@ export function FormWizardKeyValue(props: { id?: string; label?: string; path?: 
                         </Fragment>
                     )
                 })}
+            </div>
+            {!Object.keys(pairs).length && <Divider />}
+            <div>
+                <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onNewKey}>
+                    <PlusIcon /> &nbsp; {props.placeholder ?? 'Add'}
+                </Button>
             </div>
         </div>
     )

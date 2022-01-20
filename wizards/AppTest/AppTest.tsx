@@ -1,6 +1,6 @@
 import {
     FormWizardArrayInput,
-    FormWizardKeyValue,
+    KeyValue,
     FormWizardPage as Wizard,
     FormWizardSection as Section,
     FormWizardSelect,
@@ -171,7 +171,7 @@ export function AppTest() {
                         }}
                     >
                         <TextInput id="text-input" path="metadata.name" label="Name" required />
-                        <FormWizardKeyValue id="" path="spec.clusterSelector.matchLabels" label="Cluster labels"></FormWizardKeyValue>
+                        <KeyValue id="" path="spec.clusterSelector.matchLabels" label="Cluster labels"></KeyValue>
                         {/* <FormWizardSelect>
 
                         </FormWizardSelect> */}

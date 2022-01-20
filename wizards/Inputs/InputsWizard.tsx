@@ -2,7 +2,7 @@ import { useHistory } from 'react-router-dom'
 import {
     FormWizardArrayInput,
     FormWizardCheckbox as Checkbox,
-    FormWizardKeyValue,
+    KeyValue,
     FormWizardLabels as Labels,
     FormWizardRadio as Radio,
     FormWizardRadioGroup as RadioGroup,
@@ -94,7 +94,7 @@ export function InputsWizard() {
             </Step>
 
             <Step label="Key Value">
-                <FormWizardKeyValue id="key-values" path="key-values" label="Key Value" />
+                <KeyValue id="key-values" path="key-values" label="Key Value" />
             </Step>
 
             <Step label="Array">

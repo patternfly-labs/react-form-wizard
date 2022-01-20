@@ -2,11 +2,11 @@ import { Fragment } from 'react'
 import {
     FormSubmit,
     FormWizardArrayInput as ArrayInput,
-    FormWizardKeyValue as KeyValue,
     FormWizardPage as Wizard,
     FormWizardSection as Section,
     FormWizardSelect as Select,
     FormWizardStep as Step,
+    KeyValue as KeyValue,
     TextInput as TextInput,
 } from '../../src'
 
@@ -139,7 +139,7 @@ function JobInputs() {
                 placeholder="Enter or select Ansible job template name"
                 required
             />
-            <KeyValue id="extra_vars" path="extra_vars" label="Extra variables" />
+            <KeyValue id="extra_vars" path="extra_vars" label="Extra variables" placeholder="Add variable" />
         </Fragment>
     )
 }
