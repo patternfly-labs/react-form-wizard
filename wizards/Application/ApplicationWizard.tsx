@@ -1,5 +1,5 @@
-import { Split, Stack } from '@patternfly/react-core'
-import { GitAltIcon } from '@patternfly/react-icons'
+import { Button, Flex, FlexItem, Split, SplitItem, Stack } from '@patternfly/react-core'
+import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
 import { Fragment, useMemo } from 'react'
 import {
@@ -36,6 +36,7 @@ import ObjectStore from './logos/ObjectStore.svg'
 import SubscriptionIcon from './logos/SubscriptionIcon.svg'
 
 export function ApplicationWizard(props: {
+    addClusterSets?: string
     ansibleCredentials: string[]
     argoServers: string[]
     namespaces: string[]
@@ -332,6 +333,21 @@ export function ApplicationWizard(props: {
                         options={props.argoServers}
                         required
                     />
+                    <Flex>
+                        <FlexItem spacer={{ default: 'spacerXl' }}>
+                            <Button
+                                id="addClusterSets"
+                                icon={<PlusIcon />}
+                                isSmall={true}
+                                variant="link"
+                                component="a"
+                                href={props.addClusterSets}
+                                target="_blank"
+                            >
+                                Add cluster sets
+                            </Button>
+                        </FlexItem>
+                    </Flex>
                     <FormWizardSelect
                         id="requeueTime"
                         label="Requeue time"

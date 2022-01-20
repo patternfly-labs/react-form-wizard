@@ -10,6 +10,7 @@ export function ApplicationExample() {
     const placements = useMemo(() => ['placement-1', 'placement-2'], [])
     return (
         <ApplicationWizard
+            addClusterSets="/"
             ansibleCredentials={ansibleCredentials}
             argoServers={servers}
             namespaces={namespaces}
