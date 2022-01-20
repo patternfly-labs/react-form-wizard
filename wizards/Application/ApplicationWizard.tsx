@@ -15,10 +15,10 @@ import {
     FormWizardSelect,
     FormWizardStep,
     FormWizardTextDetail,
-    TextInput,
     FormWizardTile,
     FormWizardTiles,
     FormWizardTimeRange,
+    TextInput,
 } from '../../src'
 import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'

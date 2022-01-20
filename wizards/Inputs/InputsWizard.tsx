@@ -2,13 +2,14 @@ import { useHistory } from 'react-router-dom'
 import {
     FormWizardArrayInput,
     FormWizardCheckbox as Checkbox,
-    KeyValue,
     FormWizardLabels as Labels,
     FormWizardRadio as Radio,
     FormWizardRadioGroup as RadioGroup,
     FormWizardSelect as Select,
+    FormWizardStringArray,
     FormWizardTile as Tile,
     FormWizardTiles as Tiles,
+    KeyValue,
     TextArea,
     TextInput as TextInput,
 } from '../../src'
@@ -88,13 +89,15 @@ export function InputsWizard() {
             </Step>
 
             <Step label="Labels">
-                <Section label="Label input example">
-                    <Labels id="labels" label="Labels" />
-                </Section>
+                <Labels id="labels" path="labels" label="Labels" />
             </Step>
 
             <Step label="Key Value">
                 <KeyValue id="key-values" path="key-values" label="Key Value" />
+            </Step>
+
+            <Step label="Strings">
+                <FormWizardStringArray id="string" path="strings" label="Strings" />
             </Step>
 
             <Step label="Array">
@@ -106,7 +109,9 @@ export function InputsWizard() {
                     collapsedContent="metadata.name"
                 >
                     <TextInput label="Name" path="metadata.name" required />
-                    <Select label="Namespace" path="metadata.name" options={['namespace-1', 'namespace-2']} />
+                    <Select label="Namespace" path="metadata.namespace" options={['namespace-1', 'namespace-2']} />
+                    <KeyValue id="labels" path="metadata.labels" label="Labels" />
+                    <KeyValue id="labels" path="metadata.annotations" label="Annotations" />
                 </FormWizardArrayInput>
             </Step>
 

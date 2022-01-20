@@ -7,7 +7,14 @@ import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { useID, usePath } from './FormWizardInput'
 
-export function KeyValue(props: { id?: string; label?: string; path?: string; placeholder?: string }) {
+export function KeyValue(props: {
+    id?: string
+    label?: string
+    path?: string
+    placeholder?: string
+    helperText?: string
+    required?: boolean
+}) {
     const id = useID(props)
     const path = usePath(props)
 
@@ -73,6 +80,7 @@ export function KeyValue(props: { id?: string; label?: string; path?: string; pl
     return (
         <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 4 }}>
             <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
+            {props.helperText && <div>{props.helperText}</div>}
             <div
                 style={{
                     display: 'grid',

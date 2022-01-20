@@ -3,16 +3,16 @@
 import {
     FormWizardArrayInput,
     FormWizardCheckbox,
-    FormWizardLabels,
     FormWizardMultiselect,
     FormWizardPage,
     FormWizardSection,
     FormWizardSelect,
     FormWizardStep,
     FormWizardTextDetail,
-    TextInput,
     FormWizardTile,
     FormWizardTiles,
+    KeyValue,
+    TextInput,
 } from '../../src'
 import YamlTemplate from './Cluster.hbs'
 
@@ -64,7 +64,7 @@ export function ClusterForm() {
                         options={['default']}
                         required
                     />
-                    <FormWizardLabels id="labels" label="Additional labels" />
+                    <KeyValue id="labels" label="Additional labels" />
                 </FormWizardSection>
             </FormWizardStep>
 

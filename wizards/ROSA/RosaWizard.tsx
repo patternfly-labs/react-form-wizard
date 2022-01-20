@@ -1,16 +1,16 @@
 import {
     FormWizardCheckbox,
-    FormWizardLabels,
     FormWizardPage,
     FormWizardRadio,
     FormWizardRadioGroup,
     FormWizardSection,
     FormWizardSelect,
     FormWizardStep,
-    TextInput,
     FormWizardTile,
     FormWizardTiles,
     FormWizardTimeRange,
+    KeyValue,
+    TextInput,
 } from '../../src'
 
 export function RosaWizard() {
@@ -117,7 +117,7 @@ export function RosaWizard() {
                             <TextInput id="maximim-nodes" path="maximumNodes" label="Maximum nodes per zone" required />
                         </FormWizardCheckbox>
 
-                        <FormWizardLabels id="node-labels" path="nodeLabels" label="Extra node labels" />
+                        <KeyValue id="node-labels" path="nodeLabels" label="Extra node labels" />
                     </FormWizardSection>
                 </FormWizardStep>
             </FormWizardStep>

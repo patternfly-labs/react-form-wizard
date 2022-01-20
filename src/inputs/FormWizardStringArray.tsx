@@ -5,6 +5,7 @@ import {
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
+    Divider,
     Split,
     TextInput,
 } from '@patternfly/react-core'
@@ -22,6 +23,7 @@ export function FormWizardStringArray(props: {
     path?: string
     map?: (value: any) => string[]
     unmap?: (values: string[]) => any
+    placeholder?: string
 }) {
     const id = props.id
     const path = props.path ?? id
@@ -74,15 +76,8 @@ export function FormWizardStringArray(props: {
     }
 
     return (
-        <div id={props.id} style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 4 : 0 }}>
-            <div style={{ display: 'flex', alignItems: 'baseline' }}>
-                <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16, flexGrow: 1 }}>
-                    {props.label}
-                </div>
-                <Button id="add-button" variant="plain" isSmall aria-label="Action" onClick={onNewKey}>
-                    <PlusIcon />
-                </Button>
-            </div>
+        <div id={props.id} style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 8 : 4 }}>
+            <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
             <div
                 style={{
                     display: 'flex',
@@ -100,6 +95,12 @@ export function FormWizardStringArray(props: {
                         </Split>
                     )
                 })}
+            </div>
+            {!values.length && <Divider />}
+            <div>
+                <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onNewKey}>
+                    <PlusIcon /> &nbsp; {props.placeholder ?? 'Add'}
+                </Button>
             </div>
         </div>
     )
