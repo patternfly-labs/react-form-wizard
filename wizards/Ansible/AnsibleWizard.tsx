@@ -37,7 +37,7 @@ export function AnsibleWizard(props: {
                 <Section
                     label="Details"
                     prompt="Configure the automation"
-                    description="Automation is accomplished by creating a ClusterCurator resource which can be selected during cluster creation to automate ansible jobs."
+                    description="Automation is accomplished by creating a ClusterCurator resource which can be selected during cluster creation to automate running ansible jobs."
                 >
                     <TextInput label="Name" path="metadata.name" required />
                     <Select
