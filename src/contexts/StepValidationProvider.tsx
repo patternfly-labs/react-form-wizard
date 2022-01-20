@@ -9,7 +9,6 @@ export const useStepHasValidationError = () => useContext(StepHasValidationError
 
 export function StepValidationProvider(props: { children: ReactNode }) {
     const item = useItem()
-
     const [hasStepValidationErrors, setHasStepValidationErrorsState] = useState<Record<string, true>>({})
     const [setHasValidationErrors, setHasValidationErrorsFunction] = useState<() => void>(() => () => null)
     const validateSteps = useCallback(() => {
@@ -28,7 +27,6 @@ export function StepValidationProvider(props: { children: ReactNode }) {
         })
     }, [])
     useEffect(() => validateSteps(), [item, validateSteps])
-
     return (
         <StepSetHasValidationErrorContext.Provider value={setHasValidationErrors}>
             <StepHasValidationErrorContext.Provider value={hasStepValidationErrors}>

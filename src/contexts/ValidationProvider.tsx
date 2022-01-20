@@ -10,25 +10,25 @@ const ValidateContext = createContext<() => void>(() => null)
 export const useValidate = () => useContext(ValidateContext)
 
 export function ValidationProvider(props: { children: ReactNode }) {
-    const [hasValidationErrors, setHasValidationErrorsState] = useState(false)
-    const [setHasValidationErrors, setHasValidationErrorsFunction] = useState<() => void>(() => () => setHasValidationErrorsState(true))
+    const [hasValidationError, setHasValidationErrorState] = useState(false)
+    const [setHasValidationError, setHasValidationErrorFunction] = useState<() => void>(() => () => setHasValidationErrorState(true))
     const validate = useCallback(() => {
-        setHasValidationErrorsState(false)
-        setHasValidationErrorsFunction(() => () => setHasValidationErrorsState(true))
+        setHasValidationErrorState(false)
+        setHasValidationErrorFunction(() => () => setHasValidationErrorState(true))
     }, [])
     useEffect(() => validate(), [validate])
 
     const parentValidate = useContext(ValidateContext)
     const parentSetHasValidationError = useContext(SetHasValidationErrorContext)
     useEffect(() => {
-        if (hasValidationErrors) parentSetHasValidationError?.()
+        if (hasValidationError) parentSetHasValidationError?.()
         else parentValidate?.()
-    }, [parentValidate, parentSetHasValidationError, hasValidationErrors])
+    }, [parentValidate, parentSetHasValidationError, hasValidationError])
 
     return (
         <ValidateContext.Provider value={validate}>
-            <SetHasValidationErrorContext.Provider value={setHasValidationErrors}>
-                <HasValidationErrorContext.Provider value={hasValidationErrors}>{props.children}</HasValidationErrorContext.Provider>
+            <SetHasValidationErrorContext.Provider value={setHasValidationError}>
+                <HasValidationErrorContext.Provider value={hasValidationError}>{props.children}</HasValidationErrorContext.Provider>
             </SetHasValidationErrorContext.Provider>
         </ValidateContext.Provider>
     )

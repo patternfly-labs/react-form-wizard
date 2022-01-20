@@ -8,7 +8,6 @@ import {
     Dropdown,
     DropdownItem,
     DropdownToggle,
-    FormAlert,
     FormFieldGroupHeader,
     Stack,
     Text,
@@ -22,6 +21,8 @@ import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
+import { ShowValidationContext } from '../contexts/ShowValidationProvider'
+import { HasValidationErrorContext, ValidationProvider } from '../contexts/ValidationProvider'
 import './FormWizardArrayInput.css'
 
 export function wizardArrayItems(props: any, item: any) {
@@ -123,96 +124,116 @@ export function FormWizardArrayInput(props: {
                 <Divider />
             ) : (
                 values.map((value, index) => {
-                    const hasErrors = false
                     return (
-                        <ItemContext.Provider key={index} value={value}>
-                            <FormWizardFieldGroup
-                                key={index}
-                                id={props.id + '-' + (index + 1).toString()}
-                                isExpanded={expanded[index.toString()] === true}
-                                setIsExpanded={(isExpanded) => {
-                                    setExpanded((expanded) => ({ ...expanded, ...{ [index.toString()]: isExpanded } }))
-                                }}
-                                toggleAriaLabel="Details"
-                                header={
-                                    <FormFieldGroupHeader
-                                        titleText={{
-                                            text: hasErrors ? (
-                                                <Alert variant="danger" title="Please fix validation errors." isInline isPlain />
-                                            ) : (
-                                                <Fragment>
-                                                    {typeof props.collapsedContent === 'string' ? (
-                                                        <FormWizardTextDetail
-                                                            id={props.collapsedContent}
-                                                            path={props.collapsedContent}
-                                                            placeholder={props.collapsedPlaceholder}
-                                                        />
-                                                    ) : (
-                                                        props.collapsedContent
-                                                    )}
-                                                </Fragment>
-                                            ),
-                                            id: `nested-field-group1-titleText-id-${index}`,
-                                        }}
-                                        // titleDescription={!hasErrors && props.collapsedDescription ? props.collapsedDescription : undefined}
-                                        actions={
-                                            <Fragment>
-                                                {props.sortable && (
-                                                    <Fragment>
-                                                        <Button
-                                                            variant="plain"
-                                                            aria-label="Move item up"
-                                                            isDisabled={index === 0}
-                                                            onClick={() => {
-                                                                const temp = values[index]
-                                                                values[index] = values[index - 1]
-                                                                values[index - 1] = temp
-                                                                update()
-                                                            }}
-                                                        >
-                                                            <ArrowUpIcon />
-                                                        </Button>
-                                                        <Button
-                                                            variant="plain"
-                                                            aria-label="Move item down"
-                                                            isDisabled={index === values.length - 1}
-                                                            onClick={() => {
-                                                                const temp = values[index]
-                                                                values[index] = values[index + 1]
-                                                                values[index + 1] = temp
-                                                                update()
-                                                            }}
-                                                        >
-                                                            <ArrowDownIcon />
-                                                        </Button>
-                                                    </Fragment>
-                                                )}
-                                                <Button
-                                                    variant="plain"
-                                                    aria-label="Remove item"
-                                                    onClick={() => {
-                                                        sourceArray.splice(sourceArray.indexOf(value), 1)
-                                                        update()
+                        <ValidationProvider key={index}>
+                            <ShowValidationContext.Consumer>
+                                {(showValidation) => (
+                                    <HasValidationErrorContext.Consumer>
+                                        {(hasErrors) => (
+                                            <ItemContext.Provider value={value}>
+                                                <FormWizardFieldGroup
+                                                    key={index}
+                                                    id={props.id + '-' + (index + 1).toString()}
+                                                    isExpanded={expanded[index.toString()] === true}
+                                                    setIsExpanded={(isExpanded) => {
+                                                        setExpanded((expanded) => ({ ...expanded, ...{ [index.toString()]: isExpanded } }))
                                                     }}
+                                                    toggleAriaLabel="Details"
+                                                    header={
+                                                        <FormFieldGroupHeader
+                                                            titleText={{
+                                                                text:
+                                                                    showValidation && hasErrors ? (
+                                                                        <Alert
+                                                                            variant="danger"
+                                                                            title="Please fix validation errors."
+                                                                            isInline
+                                                                            isPlain
+                                                                        />
+                                                                    ) : (
+                                                                        <Fragment>
+                                                                            {typeof props.collapsedContent === 'string' ? (
+                                                                                <FormWizardTextDetail
+                                                                                    id={props.collapsedContent}
+                                                                                    path={props.collapsedContent}
+                                                                                    placeholder={props.collapsedPlaceholder}
+                                                                                />
+                                                                            ) : (
+                                                                                props.collapsedContent
+                                                                            )}
+                                                                        </Fragment>
+                                                                    ),
+                                                                id: `nested-field-group1-titleText-id-${index}`,
+                                                            }}
+                                                            // titleDescription={!hasErrors && props.collapsedDescription ? props.collapsedDescription : undefined}
+                                                            actions={
+                                                                <Fragment>
+                                                                    {props.sortable && (
+                                                                        <Fragment>
+                                                                            <Button
+                                                                                variant="plain"
+                                                                                aria-label="Move item up"
+                                                                                isDisabled={index === 0}
+                                                                                onClick={() => {
+                                                                                    const temp = values[index]
+                                                                                    values[index] = values[index - 1]
+                                                                                    values[index - 1] = temp
+                                                                                    update()
+                                                                                }}
+                                                                            >
+                                                                                <ArrowUpIcon />
+                                                                            </Button>
+                                                                            <Button
+                                                                                variant="plain"
+                                                                                aria-label="Move item down"
+                                                                                isDisabled={index === values.length - 1}
+                                                                                onClick={() => {
+                                                                                    const temp = values[index]
+                                                                                    values[index] = values[index + 1]
+                                                                                    values[index + 1] = temp
+                                                                                    update()
+                                                                                }}
+                                                                            >
+                                                                                <ArrowDownIcon />
+                                                                            </Button>
+                                                                        </Fragment>
+                                                                    )}
+                                                                    <Button
+                                                                        variant="plain"
+                                                                        aria-label="Remove item"
+                                                                        onClick={() => {
+                                                                            sourceArray.splice(sourceArray.indexOf(value), 1)
+                                                                            update()
+                                                                        }}
+                                                                    >
+                                                                        <TrashIcon />
+                                                                    </Button>
+                                                                </Fragment>
+                                                            }
+                                                        />
+                                                    }
                                                 >
-                                                    <TrashIcon />
-                                                </Button>
-                                            </Fragment>
-                                        }
-                                    />
-                                }
-                            >
-                                <Fragment>
-                                    {hasErrors && (
-                                        <FormAlert>
-                                            <Alert variant="danger" title="Please fix validation errors." isInline isPlain />
-                                        </FormAlert>
-                                    )}
-                                    {props.children}
-                                    {/* <div className="pf-c-form__helper-text pf-m-error">Error</div> */}
-                                </Fragment>
-                            </FormWizardFieldGroup>
-                        </ItemContext.Provider>
+                                                    <Fragment>
+                                                        {/* {showValidation && hasErrors && (
+                                                            <FormAlert>
+                                                                <Alert
+                                                                    variant="danger"
+                                                                    title="Please fix validation errors."
+                                                                    isInline
+                                                                    isPlain
+                                                                />
+                                                            </FormAlert>
+                                                        )} */}
+                                                        {props.children}
+                                                        {/* <div className="pf-c-form__helper-text pf-m-error">Error</div> */}
+                                                    </Fragment>
+                                                </FormWizardFieldGroup>
+                                            </ItemContext.Provider>
+                                        )}
+                                    </HasValidationErrorContext.Consumer>
+                                )}
+                            </ShowValidationContext.Consumer>
+                        </ValidationProvider>
                     )
                 })
             )}

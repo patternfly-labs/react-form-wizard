@@ -39,7 +39,7 @@ export interface WizardProps {
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
     const [data, setData] = useState(props.defaultData ?? {})
-    const update = useCallback(() => setData((data) => JSON.parse(JSON.stringify(data))), [])
+    const update = useCallback((newData) => setData((data) => JSON.parse(JSON.stringify(newData ?? data))), [])
     const [drawerExpanded, setDrawerExpanded] = useState<boolean>(props.showYaml === undefined ? false : true)
     useEffect(() => {
         if (props.showYaml !== undefined) {

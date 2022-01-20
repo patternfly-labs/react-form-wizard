@@ -22,17 +22,24 @@ export function Tutorial() {
         <WizardPage title="Input examples" onSubmit={() => Promise.resolve()} onCancel={() => history.push('.')}>
             <Step label="Text Input">
                 <Section label="Text Input">
-                    <TextInput label="Text input" required />
-                    <TextInput label="Text input secret" required secret />
-                    <TextInput label="Text input hidden" required hidden={() => true} />
+                    <Section label="Text Input">
+                        <TextInput label="Text input" />
+                        <TextInput label="Text input required" required />
+                        <TextInput label="Text input secret" secret />
+                        <TextInput label="Text input hidden" hidden={() => true} />
+                    </Section>
+                    <Section label="Text Input">
+                        <TextInput label="Text2 input required" required />
+                    </Section>
                 </Section>
             </Step>
 
             <Step label="Text Area">
                 <Section label="Text Area">
-                    <TextArea label="Text area" required />
-                    <TextArea label="Text area secret" required secret />
-                    <TextArea label="Text area hidden" required hidden={() => true} />
+                    <TextArea label="Text area" />
+                    <TextArea label="Text area required" required />
+                    <TextArea label="Text area secret" secret />
+                    <TextArea label="Text area hidden" hidden={() => true} />
                 </Section>
             </Step>
 
@@ -146,11 +153,9 @@ export function Tutorial() {
                         label="Resources"
                         path="resources"
                         placeholder="Add resource"
-                        collapsedContent="TODO"
+                        collapsedContent="metadata.name"
                     >
                         <TextInput id="metadata.name" label="Name" required />
-                        <Select id="metadata.namespace" label="Namespace" required options={['namespace-1', 'namespace-2']} />
-                        <Labels id="metadata.labels" label="Labels" />
                     </FormWizardArrayInput>
                 </Section>
             </Step>
