@@ -2,15 +2,15 @@ import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
 import {
     FormCancel,
     FormSubmit,
-    FormWizardSection,
     FormWizardSelect,
     FormWizardTile,
     FormWizardTiles,
+    Section,
+    Step,
     TextArea,
     TextInput,
+    WizardPage,
 } from '../../src'
-import { Step } from '../../src/Step'
-import { WizardPage } from '../../src/WizardPage'
 import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
@@ -114,7 +114,7 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
             </Step>
 
             <Step label="Basic Information">
-                <FormWizardSection label="Details" prompt="Enter the details for the credentials">
+                <Section label="Details" prompt="Enter the details for the credentials">
                     <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
                     <FormWizardSelect
                         id="namespace"
@@ -130,20 +130,20 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                         label="Base DNS domain"
                         placeholder="Enter the Base DNS domain"
                     />
-                </FormWizardSection>
+                </Section>
             </Step>
 
             <Step
                 label="Amazon Web Services"
                 hidden={(item) => item.metadata?.labels?.['cluster.open-cluster-management.io/type'] !== CredentialsType.aws}
             >
-                <FormWizardSection label="Amazon Web Services" prompt="Enter the Amazon Web Services credentials">
+                <Section label="Amazon Web Services" prompt="Enter the Amazon Web Services credentials">
                     <TextInput id="aws-key-id" path="stringData.aws_access_key_id" label="Access key ID" required />
                     <TextInput id="aws-access-key" path="stringData.aws_secret_access_key" label="Secret access key" required secret />
-                </FormWizardSection>
+                </Section>
             </Step>
             <Step label="Proxy">
-                <FormWizardSection label="Proxy" prompt="">
+                <Section label="Proxy" prompt="">
                     <TextInput id="http-proxy" path="stringData.httpProxy" label="HTTP Proxy" placeholder="Enter the HTTP Proxy url" />
                     <TextInput id="https-proxy" path="stringData.httpsProxy" label="HTTPS Proxy" placeholder="Enter the HTTPS Proxy url" />
                     <TextInput
@@ -158,10 +158,10 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                         label="Additional Trust Bundle"
                         placeholder="Enter your additional trust bundle"
                     />
-                </FormWizardSection>
+                </Section>
             </Step>
             <Step label="Pull secret and SSH">
-                <FormWizardSection label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
+                <Section label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
                     <TextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
                     <TextArea
                         id="ssh-private-key"
@@ -179,7 +179,7 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                         required
                         secret
                     />
-                </FormWizardSection>
+                </Section>
             </Step>
         </WizardPage>
     )

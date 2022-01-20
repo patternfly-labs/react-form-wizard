@@ -16,49 +16,36 @@ import { Section } from '../../src/Section'
 import { Step } from '../../src/Step'
 import { WizardPage } from '../../src/WizardPage'
 
-export function Tutorial() {
+export function InputsWizard() {
     const history = useHistory()
     return (
-        <WizardPage title="Input examples" onSubmit={() => Promise.resolve()} onCancel={() => history.push('.')}>
+        <WizardPage title="Inputs" onSubmit={() => Promise.resolve()} onCancel={() => history.push('.')}>
             <Step label="Text Input">
-                <Section label="Text Input">
-                    <Section label="Text Input">
-                        <TextInput label="Text input" />
-                        <TextInput label="Text input required" required />
-                        <TextInput label="Text input secret" secret />
-                        <TextInput label="Text input hidden" hidden={() => true} />
-                    </Section>
-                    <Section label="Text Input">
-                        <TextInput label="Text2 input required" required />
-                    </Section>
-                </Section>
+                <TextInput label="Text input" />
+                <TextInput label="Text input required" required />
+                <TextInput label="Text input secret" secret />
+                <TextInput label="Text input hidden" hidden={() => true} />
             </Step>
 
             <Step label="Text Area">
-                <Section label="Text Area">
-                    <TextArea label="Text area" />
-                    <TextArea label="Text area required" required />
-                    <TextArea label="Text area secret" secret />
-                    <TextArea label="Text area hidden" hidden={() => true} />
-                </Section>
+                <TextArea label="Text area" />
+                <TextArea label="Text area required" required />
+                <TextArea label="Text area secret" secret />
+                <TextArea label="Text area hidden" hidden={() => true} />
             </Step>
 
             <Step label="Select">
-                <Section label="Select">
-                    <Select label="Select" options={['Option 1', 'Option 2']} />
-                    <Select label="Select required" options={['Option 1', 'Option 2']} required />
-                    <Select label="Select hidden" options={['Option 1', 'Option 2']} required hidden={() => true} />
-                </Section>
+                <Select label="Select" options={['Option 1', 'Option 2']} />
+                <Select label="Select required" options={['Option 1', 'Option 2']} required />
+                <Select label="Select hidden" options={['Option 1', 'Option 2']} required hidden={() => true} />
             </Step>
 
             <Step label="Tiles">
-                <Section label="Tile input examples">
-                    <Tiles id="tiles" path="tile" label="Tiles" required>
-                        <Tile id="tile1" value="tile1" label="Tile 1" />
-                        <Tile id="tile2" value="tile2" label="Tile 2" />
-                        <Tile id="tile3" value="tile3" label="Tile 3" />
-                    </Tiles>
-                </Section>
+                <Tiles id="tiles" path="tile" label="Tiles" required>
+                    <Tile id="tile1" value="tile1" label="Tile 1" />
+                    <Tile id="tile2" value="tile2" label="Tile 2" />
+                    <Tile id="tile3" value="tile3" label="Tile 3" />
+                </Tiles>
             </Step>
 
             <Step label="Radio">
@@ -91,20 +78,10 @@ export function Tutorial() {
                     </RadioGroup>
                     <RadioGroup id="radio3" path="radio3" label="Radio with descriptions and sub-inputs" required>
                         <Radio id="radio-1" label="Radio 1" value="radio-7" description="Radio 1 description">
-                            <TextInput
-                                id="text-input"
-                                path="text" // test
-                                label="Name"
-                                required
-                            />
+                            <TextInput label="Name" required />
                         </Radio>
                         <Radio id="radio-2" label="Radio 2" value="radio-8" description="Radio 2 description">
-                            <TextInput
-                                id="text-input"
-                                path="text" // test
-                                label="Name"
-                                required
-                            />
+                            <TextInput label="Name" required />
                         </Radio>
                     </RadioGroup>
                 </Section>
@@ -114,21 +91,11 @@ export function Tutorial() {
                 <Section label="Checkbox">
                     <Checkbox id="checkbox-1" label="Checkbox without description" />
                     <Checkbox id="checkbox-2" label="Checkbox without description with sub-inputs">
-                        <TextInput
-                            id="text-input"
-                            path="text" // test
-                            label="Name"
-                            required
-                        />
+                        <TextInput label="Name" required />
                     </Checkbox>
                     <Checkbox id="checkbox-3" label="Checkbox with description" helperText="Checkbox description." />
                     <Checkbox id="checkbox-4" label="Checkbox with description with sub-inputs" helperText="Checkbox description.">
-                        <TextInput
-                            id="text-input"
-                            path="text" // test
-                            label="Name"
-                            required
-                        />
+                        <TextInput label="Name" required />
                     </Checkbox>
                     <Checkbox id="checkbox-4" label="Checkbox hidden" hidden={() => true} />
                 </Section>

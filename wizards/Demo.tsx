@@ -30,10 +30,10 @@ import { AppTest } from './AppTest/AppTest'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
+import { InputsWizard } from './Inputs/InputsWizard'
 import { PolicyExample } from './Policy/PolicyExample'
 import { RosaWizard } from './ROSA/RosaWizard'
 import { RouteE } from './Routes'
-import { Tutorial } from './Tutorial/Tutorial'
 
 interface IWizard {
     shortName: string
@@ -115,8 +115,8 @@ export function DemoRouter(): JSX.Element {
             return <PolicyExample />
         case RouteE.ROSA:
             return <RosaWizard />
-        case RouteE.Tutorial:
-            return <Tutorial />
+        case RouteE.Inputs:
+            return <InputsWizard />
         case RouteE.Results:
             return <ResultYaml />
         default:
@@ -222,9 +222,9 @@ function DemoSidebar() {
                         <NavItem isActive={location.search === ''}>
                             <Link to={RouteE.Home}>Home</Link>
                         </NavItem>
-                        {/* <NavItem isActive={location.search === RouteE.Tutorial}>
-                            <Link to={RouteE.Tutorial}>Tutorial</Link>
-                        </NavItem> */}
+                        <NavItem isActive={location.search === RouteE.Inputs}>
+                            <Link to={RouteE.Inputs}>Inputs</Link>
+                        </NavItem>
                         <NavExpandable title="Wizards" isExpanded={true}>
                             {wizards.map((wizard, index) => (
                                 <NavItem key={index} isActive={location.search === wizard.route}>
