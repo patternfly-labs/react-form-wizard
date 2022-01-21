@@ -1,38 +1,29 @@
-import { FormGroup, Gallery, Tile } from '@patternfly/react-core'
-import get from 'get-value'
-import { Fragment, ReactNode, useContext } from 'react'
-import set from 'set-value'
+import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Gallery, Tile } from '@patternfly/react-core'
+import { Children, Fragment, isValidElement, ReactNode, useContext } from 'react'
 import { IRadioGroupContextState, RadioGroupContext } from '..'
-import { LabelHelp } from '../components/LabelHelp'
-import { useData } from '../contexts/DataContext'
-import { ItemContext } from '../contexts/ItemContext'
-import { Mode, useMode } from '../contexts/ModeContext'
+import { Mode } from '../contexts/ModeContext'
+import { InputCommonProps, useInput } from './FormWizardInput'
+import { InputLabel } from './FormWizardInputLabel'
 
-export function FormWizardTiles(props: {
-    id: string
-    label?: string
-    path?: string
-    readonly?: boolean
-    disabled?: boolean
-    required?: boolean
-    hidden?: boolean
-    labelHelp?: string
-    labelHelpTitle?: string
-    helperText?: string
-    children?: ReactNode
-}) {
-    const path = props.path ?? props.id
+type FormWizardTilesProps = InputCommonProps & { children?: ReactNode }
 
-    const mode = useMode()
-    const { update } = useData()
-    const item = useContext(ItemContext)
+// id: string
+// label?: string
+// path?: string
+// readonly?: boolean
+// disabled?: boolean
+// required?: boolean
+// hidden?: boolean
+// labelHelp?: string
+// labelHelpTitle?: string
+// helperText?: string
+// children?: ReactNode
+export function FormWizardTiles(props: FormWizardTilesProps) {
+    const { mode, value, setValue, validated, hidden, id } = useInput(props)
 
     const state: IRadioGroupContextState = {
-        value: get(item, path),
-        setValue: (value) => {
-            set(item, path, value, { preservePaths: false })
-            update()
-        },
+        value: value,
+        setValue: setValue,
         readonly: props.readonly,
         disabled: props.disabled,
     }
@@ -40,22 +31,29 @@ export function FormWizardTiles(props: {
     if (props.hidden) return <Fragment />
 
     if (mode === Mode.Details) {
+        let label: string | undefined
+        Children.forEach(props.children, (child) => {
+            if (!isValidElement(child)) return
+            if (child.type !== FormWizardTile) return
+            if (child.props.value === value) {
+                label = child.props.label
+            }
+        })
+        if (label)
+            return (
+                <DescriptionListGroup>
+                    <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                    <DescriptionListDescription id={id}>{label}</DescriptionListDescription>
+                </DescriptionListGroup>
+            )
         return <Fragment />
     }
 
     return (
         <RadioGroupContext.Provider value={state}>
-            <FormGroup
-                id={`${props.id}-form-group`}
-                fieldId={props.id}
-                label={props.label}
-                labelIcon={<LabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
-                helperText={props.helperText}
-                isRequired={props.required}
-                // tODO validation.... required...
-            >
+            <InputLabel {...props} id={id}>
                 <Gallery hasGutter>{props.children}</Gallery>
-            </FormGroup>
+            </InputLabel>
         </RadioGroupContext.Provider>
     )
 }

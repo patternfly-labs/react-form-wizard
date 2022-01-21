@@ -53,64 +53,86 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
             onCancel={props.onCancel}
         >
             <Step label="Credential type">
-                <FormWizardTiles
-                    id="cloudCredentials"
-                    path="metadata.labels.cluster\.open-cluster-management\.io/type"
-                    label="Cloud provider credentials"
-                >
-                    <FormWizardTile id={CredentialsType.aws} icon={<AWSIcon />} value={CredentialsType.aws} label="Amazon Web Services" />
-                    <FormWizardTile id={CredentialsType.azure} icon={<AzureIcon />} value={CredentialsType.azure} label="Microsoft Azure" />
-                    <FormWizardTile id={CredentialsType.gcp} icon={<GCPIcon />} value={CredentialsType.gcp} label="Google Cloud Platform" />
-                </FormWizardTiles>
-                <FormWizardTiles
-                    id="datacenterCredentials"
-                    path="metadata.labels.cluster\.open-cluster-management\.io/type"
-                    label="Datacenter credentials"
-                >
-                    <FormWizardTile
-                        id={CredentialsType.openstack}
-                        icon={<RedHatIcon />}
-                        value={CredentialsType.openstack}
-                        label="Red Hat OpenStack Platform"
-                    />
-                    <FormWizardTile
-                        id={CredentialsType.vmware}
-                        icon={<VMWareIcon />}
-                        value={CredentialsType.vmware}
-                        label="VMWare vSphere"
-                    />
-                    <FormWizardTile
-                        id={CredentialsType.baremetal}
-                        icon={<ServerIcon color="slategray" />}
-                        value={CredentialsType.baremetal}
-                        label="Bare metal"
-                    />
-                </FormWizardTiles>
-                <FormWizardTiles
-                    id="automationCredentials"
-                    path="metadata.labels.cluster\.open-cluster-management\.io/type"
-                    label="Automation & other credentials"
-                >
-                    <FormWizardTile
-                        id={CredentialsType.ansible}
-                        icon={<AnsibleTowerIcon color="#EE0000" />}
-                        value={CredentialsType.ansible}
-                        label="Red Hat Ansible Automation Platform"
-                    />
-                    <FormWizardTile
-                        id={CredentialsType.redhatcloud}
-                        icon={<RedHatIcon />}
-                        value={CredentialsType.redhatcloud}
-                        label="Red Hat OpenShift Cluster Manager"
-                    />
-                </FormWizardTiles>
-                <FormWizardTiles
-                    id={'centrallyManagedCredentials'}
-                    path="metadata.labels.cluster\.open-cluster-management\.io/type"
-                    label="Centrally managed"
-                >
-                    <FormWizardTile id={CredentialsType.hybrid} icon={<HybridIcon />} value={CredentialsType.hybrid} label="On premise" />
-                </FormWizardTiles>
+                <Section label="Credentials type">
+                    <FormWizardTiles
+                        id="cloudCredentials"
+                        path="metadata.labels.cluster\.open-cluster-management\.io/type"
+                        label="Cloud provider credentials"
+                    >
+                        <FormWizardTile
+                            id={CredentialsType.aws}
+                            icon={<AWSIcon />}
+                            value={CredentialsType.aws}
+                            label="Amazon Web Services"
+                        />
+                        <FormWizardTile
+                            id={CredentialsType.azure}
+                            icon={<AzureIcon />}
+                            value={CredentialsType.azure}
+                            label="Microsoft Azure"
+                        />
+                        <FormWizardTile
+                            id={CredentialsType.gcp}
+                            icon={<GCPIcon />}
+                            value={CredentialsType.gcp}
+                            label="Google Cloud Platform"
+                        />
+                    </FormWizardTiles>
+                    <FormWizardTiles
+                        id="datacenterCredentials"
+                        path="metadata.labels.cluster\.open-cluster-management\.io/type"
+                        label="Datacenter credentials"
+                    >
+                        <FormWizardTile
+                            id={CredentialsType.openstack}
+                            icon={<RedHatIcon />}
+                            value={CredentialsType.openstack}
+                            label="Red Hat OpenStack Platform"
+                        />
+                        <FormWizardTile
+                            id={CredentialsType.vmware}
+                            icon={<VMWareIcon />}
+                            value={CredentialsType.vmware}
+                            label="VMWare vSphere"
+                        />
+                        <FormWizardTile
+                            id={CredentialsType.baremetal}
+                            icon={<ServerIcon color="slategray" />}
+                            value={CredentialsType.baremetal}
+                            label="Bare metal"
+                        />
+                    </FormWizardTiles>
+                    <FormWizardTiles
+                        id="automationCredentials"
+                        path="metadata.labels.cluster\.open-cluster-management\.io/type"
+                        label="Automation & other credentials"
+                    >
+                        <FormWizardTile
+                            id={CredentialsType.ansible}
+                            icon={<AnsibleTowerIcon color="#EE0000" />}
+                            value={CredentialsType.ansible}
+                            label="Red Hat Ansible Automation Platform"
+                        />
+                        <FormWizardTile
+                            id={CredentialsType.redhatcloud}
+                            icon={<RedHatIcon />}
+                            value={CredentialsType.redhatcloud}
+                            label="Red Hat OpenShift Cluster Manager"
+                        />
+                    </FormWizardTiles>
+                    <FormWizardTiles
+                        id={'centrallyManagedCredentials'}
+                        path="metadata.labels.cluster\.open-cluster-management\.io/type"
+                        label="Centrally managed"
+                    >
+                        <FormWizardTile
+                            id={CredentialsType.hybrid}
+                            icon={<HybridIcon />}
+                            value={CredentialsType.hybrid}
+                            label="On premise"
+                        />
+                    </FormWizardTiles>
+                </Section>
             </Step>
 
             <Step label="Basic Information">
