@@ -64,16 +64,18 @@ describe('policy wizard', () => {
     })
 
     it('summary', () => {
-        cy.get('#name').contains('my-policy')
-        cy.get('#namespace').contains('default')
+        cy.get('#review').within(() => {
+            cy.get('#name').contains('my-policy')
+            cy.get('#namespace').contains('default')
 
-        cy.get('#categories').contains('category-1')
-        cy.get('#categories').contains('category-2')
+            cy.get('#categories').contains('category-1')
+            cy.get('#categories').contains('category-2')
 
-        cy.get('#standards').contains('standard-1')
-        cy.get('#standards').contains('standard-2')
+            cy.get('#standards').contains('standard-1')
+            cy.get('#standards').contains('standard-2')
 
-        cy.get('#controls').contains('control-1')
-        cy.get('#controls').contains('control-2')
+            cy.get('#controls').contains('control-1')
+            cy.get('#controls').contains('control-2')
+        })
     })
 })

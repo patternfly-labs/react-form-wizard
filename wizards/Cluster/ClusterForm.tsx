@@ -1,18 +1,18 @@
 /* Copyright Contributors to the Open Cluster Management project */
 // eslint-disable-next-line no-use-before-define
 import {
-    FormWizardArrayInput,
-    FormWizardCheckbox,
-    FormWizardLabels,
-    FormWizardMultiselect,
+    ArrayInput,
+    Checkbox,
+    Multiselect,
     FormWizardPage,
     FormWizardSection,
-    FormWizardSelect,
+    Select,
     FormWizardStep,
-    FormWizardTextDetail,
-    FormWizardTextInput,
-    FormWizardTile,
-    FormWizardTiles,
+    TextDetail,
+    Tile,
+    Tiles,
+    KeyValue,
+    TextInput,
 } from '../../src'
 import YamlTemplate from './Cluster.hbs'
 
@@ -21,20 +21,20 @@ export function ClusterForm() {
         <FormWizardPage title="Create cluster" template={YamlTemplate} breadcrumb={[{ label: 'Managed clusters', to: '.' }]}>
             <FormWizardStep label="Infrastructure provider">
                 <FormWizardSection label="Infrastructure provider" prompt="Select the infrastructure for the cluster">
-                    <FormWizardTiles id="provider" path="provider" label="Cloud infrastructure providers">
-                        <FormWizardTile id="aws" value="aws" label="Amazon Web Services" />
-                        <FormWizardTile id="azr" value="azr" label="Microsoft Azure" />
-                        <FormWizardTile id="gcp" value="gcp" label="Google Cloud Platform" />
-                        <FormWizardTile id="ost" value="ost" label="Red Hat OpenStack Platform" />
-                        <FormWizardTile id="vsp" value="vsp" label="VMWare vSphere" />
-                        <FormWizardTile id="bare" value="bare" label="Bare metal" />
-                    </FormWizardTiles>
-                    <FormWizardTiles id="centrallyManagedCredentials" path="provider" label="Centrally managed">
-                        <FormWizardTile id="onp" value="onp" label="On premise" />
-                    </FormWizardTiles>
+                    <Tiles id="provider" path="provider" label="Cloud infrastructure providers">
+                        <Tile id="aws" value="aws" label="Amazon Web Services" />
+                        <Tile id="azr" value="azr" label="Microsoft Azure" />
+                        <Tile id="gcp" value="gcp" label="Google Cloud Platform" />
+                        <Tile id="ost" value="ost" label="Red Hat OpenStack Platform" />
+                        <Tile id="vsp" value="vsp" label="VMWare vSphere" />
+                        <Tile id="bare" value="bare" label="Bare metal" />
+                    </Tiles>
+                    <Tiles id="centrallyManagedCredentials" path="provider" label="Centrally managed">
+                        <Tile id="onp" value="onp" label="On premise" />
+                    </Tiles>
                 </FormWizardSection>
                 <FormWizardSection label="Credentials" prompt="Select the infrastructure for the cluster" hidden={(item) => !item.provider}>
-                    <FormWizardSelect
+                    <Select
                         id="credential"
                         label="Infrastructure credentials"
                         placeholder="Select the credentials for the infrastructure"
@@ -46,9 +46,9 @@ export function ClusterForm() {
 
             <FormWizardStep label="Cluster details">
                 <FormWizardSection label="Cluster details" prompt="Enter the cluster details">
-                    <FormWizardTextInput id="name" label="Cluster name" placeholder="Enter the cluster name" required />
-                    <FormWizardSelect id="region" label="Region" options={Object.keys(awsRegions)} />
-                    <FormWizardSelect
+                    <TextInput id="name" label="Cluster name" placeholder="Enter the cluster name" required />
+                    <Select id="region" label="Region" options={Object.keys(awsRegions)} />
+                    <Select
                         id="clusterSet"
                         label="Cluster set"
                         placeholder="Select a cluster set"
@@ -56,15 +56,9 @@ export function ClusterForm() {
                         options={['default']}
                         required
                     />
-                    <FormWizardTextInput id="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
-                    <FormWizardSelect
-                        id="releaseImage"
-                        label="Release image"
-                        placeholder="Select a release image"
-                        options={['default']}
-                        required
-                    />
-                    <FormWizardLabels id="labels" label="Additional labels" />
+                    <TextInput id="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
+                    <Select id="releaseImage" label="Release image" placeholder="Select a release image" options={['default']} required />
+                    <KeyValue id="labels" label="Additional labels" />
                 </FormWizardSection>
             </FormWizardStep>
 
@@ -82,19 +76,19 @@ export function ClusterForm() {
                     prompt="Enter networking options"
                     description="Configure network access for your cluster. One network is created by default."
                 >
-                    <FormWizardSelect id="networkType" label="Network type" options={['default']} required />
+                    <Select id="networkType" label="Network type" options={['default']} required />
 
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id="networks"
                         label="Networks"
                         placeholder="Add network"
-                        collapsedContent={<FormWizardTextDetail id="clusterCidr" placeholder="Expand to edit the network" />}
+                        collapsedContent={<TextDetail id="clusterCidr" placeholder="Expand to edit the network" />}
                     >
-                        <FormWizardTextInput id="clusterCidr" label="Cluster network CIDR" />
-                        <FormWizardTextInput id="hostPrefix" label="Network host prefix" />
-                        <FormWizardTextInput id="serviceCidr" label="Service network Cidr" />
-                        <FormWizardTextInput id="machienCidr" label="Machine CIDR" />
-                    </FormWizardArrayInput>
+                        <TextInput id="clusterCidr" label="Cluster network CIDR" />
+                        <TextInput id="hostPrefix" label="Network host prefix" />
+                        <TextInput id="serviceCidr" label="Service network Cidr" />
+                        <TextInput id="machienCidr" label="Machine CIDR" />
+                    </ArrayInput>
                 </FormWizardSection>
             </FormWizardStep>
 
@@ -104,28 +98,28 @@ export function ClusterForm() {
                     prompt="Configure a proxy"
                     description="Production environments can deny direct access to the Internet and instead have an HTTP or HTTPS proxy available. You can configure a new OpenShift Container Platform cluster to use a proxy by configuring the proxy settings."
                 >
-                    <FormWizardCheckbox id="useProxy" label="Use proxy" />
-                    <FormWizardTextInput
+                    <Checkbox id="useProxy" label="Use proxy" />
+                    <TextInput
                         id="httpProxy"
                         label="Http Proxy "
                         helperText="Requires this format: http://<username>:<pswd>@<ip>:<port>"
                         required
                         hidden={(item) => !item.useProxy}
                     />
-                    <FormWizardTextInput
+                    <TextInput
                         id="httpsProxy"
                         label="Https Proxy"
                         helperText="Requires this format: https://<username>:<pswd>@<ip>:<port>"
                         required
                         hidden={(item) => !item.useProxy}
                     />
-                    <FormWizardTextInput
+                    <TextInput
                         id="noProxy"
                         label="No Proxy"
                         helperText="By default, all cluster egress traffic is proxied, including calls to hosting cloud provider APIs. Add sites to No Proxy to bypass the proxy if necessary."
                         hidden={(item) => !item.useProxy}
                     />
-                    <FormWizardTextInput id="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
+                    <TextInput id="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
                 </FormWizardSection>
             </FormWizardStep>
 
@@ -135,7 +129,7 @@ export function ClusterForm() {
                     prompt="Configure a Ansible automation"
                     description="Choose an automation job template to automatically run Ansible jobs at different stages of a cluster's life cycle. To use this feature, the Ansible Automation Platform Resource Operator must be installed."
                 >
-                    <FormWizardSelect id="ansibleTemplate" label="Ansible Automation Template" options={['default']} />
+                    <Select id="ansibleTemplate" label="Ansible Automation Template" options={['default']} />
                 </FormWizardSection>
             </FormWizardStep>
         </FormWizardPage>
@@ -149,15 +143,15 @@ export function ControlPlaneStep() {
             prompt="Enter the control plane details"
             description="Three control plane nodes will be created to control this cluster unless single node is enabled, in which case there will only be one control plane node."
         >
-            <FormWizardMultiselect id="zones" label="Zones" options={awsRegions['us-east-1']} />
-            <FormWizardSelect
+            <Multiselect id="zones" label="Zones" options={awsRegions['us-east-1']} />
+            <Select
                 id="instanceType"
                 label="Instance type"
                 placeholder="Select the instance type"
                 options={AWSmasterInstanceTypes.map((instanceType) => ({ value: instanceType.value, label: instanceType.description }))}
                 required
             />
-            <FormWizardSelect id="rootStorage" label="Root storage (GiB)" options={['default']} />
+            <Select id="rootStorage" label="Root storage (GiB)" options={['default']} />
         </FormWizardSection>
     )
 }
@@ -169,18 +163,18 @@ export function WorkerPoolsStep() {
             prompt="Enter the worker pools"
             description="One or more worker nodes will be created to run the container workloads in this cluster."
         >
-            <FormWizardArrayInput
+            <ArrayInput
                 id="workerPools"
                 label="Worker pools"
                 placeholder="Add worker pool"
-                collapsedContent={<FormWizardTextDetail id="name" placeholder="Expand to edit the worker pool details" />}
+                collapsedContent={<TextDetail id="name" placeholder="Expand to edit the worker pool details" />}
             >
-                <FormWizardTextInput id="name" label="Pool name" />
-                <FormWizardSelect id="zones" label="Zones" options={['default']} />
-                <FormWizardSelect id="instanceType" label="Instance type" options={['default']} />
+                <TextInput id="name" label="Pool name" />
+                <Select id="zones" label="Zones" options={['default']} />
+                <Select id="instanceType" label="Instance type" options={['default']} />
                 {/* <FormWizardnumber */}
-                <FormWizardSelect id="rootStorage" label="Root storage (GiB)" options={['default']} />
-            </FormWizardArrayInput>
+                <Select id="rootStorage" label="Root storage (GiB)" options={['default']} />
+            </ArrayInput>
         </FormWizardSection>
     )
 }

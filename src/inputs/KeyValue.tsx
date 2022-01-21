@@ -1,84 +1,92 @@
-import { Button, TextInput } from '@patternfly/react-core'
+import {
+    Button,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Divider,
+    Stack,
+    TextInput,
+} from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
-import get from 'get-value'
-import { Fragment, useContext, useState } from 'react'
-import set from 'set-value'
-import { FormWizardContext } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { Fragment, useState } from 'react'
+import { Mode } from '../contexts/ModeContext'
+import { InputCommonProps, useInput } from './Input'
 
-export function FormWizardKeyValue(props: { id: string; label: string; path: string }) {
-    const id = props.id
-    const path = props.path ?? id
+type KeyValueProps = InputCommonProps & { placeholder?: string }
 
-    const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
-
-    const value = get(item, path) ?? {}
-
+export function KeyValue(
+    props: KeyValueProps
+    // id?: string
+    // label?: string
+    // path?: string
+    // placeholder?: string
+    // helperText?: string
+    // required?: boolean
+) {
+    const { mode, value, setValue, id } = useInput(props)
     const [pairs] = useState<{ key: string; value: string }[]>(() => Object.keys(value).map((key) => ({ key, value: value[key] })))
-
     const onKeyChange = (index: number, newKey: string) => {
         pairs[index].key = newKey
-        set(
-            item,
-            path,
+        setValue(
             pairs.reduce((result, pair) => {
                 result[pair.key] = pair.value
                 return result
             }, {} as Record<string, string>)
         )
-        formWizardContext.updateContext()
     }
 
     const onValueChange = (index: number, newValue: string) => {
         pairs[index].value = newValue
-        set(
-            item,
-            path,
+        setValue(
             pairs.reduce((result, pair) => {
                 result[pair.key] = pair.value
                 return result
             }, {} as Record<string, string>)
         )
-        formWizardContext.updateContext()
     }
 
     const onNewKey = () => {
         pairs.push({ key: '', value: '' })
-        set(
-            item,
-            path,
+        setValue(
             pairs.reduce((result, pair) => {
                 result[pair.key] = pair.value
                 return result
             }, {} as Record<string, string>)
         )
-        formWizardContext.updateContext()
     }
 
     const onDeleteKey = (index: number) => {
         pairs.splice(index, 1)
-        set(
-            item,
-            path,
+        setValue(
             pairs.reduce((result, pair) => {
                 result[pair.key] = pair.value
                 return result
             }, {} as Record<string, string>)
         )
-        formWizardContext.updateContext()
+    }
+
+    if (mode === Mode.Details) {
+        if (!pairs.length) return <Fragment />
+        return (
+            <DescriptionListGroup id={id}>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription>
+                    <Stack hasGutter>
+                        {pairs.map((pair) => (
+                            <div key={pair.key}>
+                                {pair.key} {pair.value !== undefined && <span> = {pair.value}</span>}
+                            </div>
+                        ))}
+                    </Stack>
+                </DescriptionListDescription>
+            </DescriptionListGroup>
+        )
     }
 
     return (
-        <div id={props.id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 0 }}>
-            <div style={{ display: 'flex', alignItems: 'baseline' }}>
-                <div className="pf-c-form__label pf-c-form__label-text" style={{ marginBottom: -16, flexGrow: 1 }}>
-                    {props.label}
-                </div>
-                <Button id="add-button" variant="plain" isSmall aria-label="Action" onClick={onNewKey}>
-                    <PlusIcon />
-                </Button>
-            </div>
+        <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 4 }}>
+            <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
+            {props.helperText && <div>{props.helperText}</div>}
             <div
                 style={{
                     display: 'grid',
@@ -100,6 +108,12 @@ export function FormWizardKeyValue(props: { id: string; label: string; path: str
                         </Fragment>
                     )
                 })}
+            </div>
+            {!Object.keys(pairs).length && <Divider />}
+            <div>
+                <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onNewKey}>
+                    <PlusIcon /> &nbsp; {props.placeholder ?? 'Add'}
+                </Button>
             </div>
         </div>
     )

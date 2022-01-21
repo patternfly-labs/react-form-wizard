@@ -1,12 +1,9 @@
 import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Radio as PfRadio } from '@patternfly/react-core'
-import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
-import get from 'get-value'
 import { Children, createContext, Fragment, isValidElement, ReactElement, ReactNode, useContext } from 'react'
-import set from 'set-value'
-import { FormWizardIndented } from '../components/FormWizardIndented'
-import { FormWizardLabelHelp } from '../components/FormWizardLabelHelp'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { Indented } from '../components/Indented'
+import { Mode } from '../contexts/ModeContext'
+import { InputCommonProps, useInput } from './Input'
+import { InputLabel } from './InputLabel'
 
 export interface IRadioGroupContextState {
     value?: any
@@ -17,35 +14,21 @@ export interface IRadioGroupContextState {
 
 export const RadioGroupContext = createContext<IRadioGroupContextState>({})
 
-export function FormWizardRadioGroup(props: {
-    id: string
-    label?: string
-    path: string
-    readonly?: boolean
-    disabled?: boolean
-    required?: boolean
-    hidden?: boolean
-    labelHelp?: string
-    labelHelpTitle?: string
-    helperText?: string
-    children?: ReactNode
-}) {
-    const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+type RadioGroupProps = InputCommonProps & { children?: ReactNode }
+
+export function RadioGroup(props: RadioGroupProps) {
+    const { mode, value, setValue, hidden, id } = useInput(props)
 
     const state: IRadioGroupContextState = {
-        value: get(item, props.path),
-        setValue: (value) => {
-            set(item, props.path, value)
-            formWizardContext.updateContext()
-        },
+        value,
+        setValue,
         readonly: props.readonly,
         disabled: props.disabled,
     }
 
-    if (props.hidden) return <Fragment />
+    if (hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         if (!state.value) return <Fragment />
 
         let selectedChild: ReactElement | undefined
@@ -60,7 +43,7 @@ export function FormWizardRadioGroup(props: {
 
         if (!selectedChild) return <Fragment />
         return (
-            <DescriptionListGroup id={props.id}>
+            <DescriptionListGroup id={id}>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
                 <DescriptionListDescription>{selectedChild}</DescriptionListDescription>
             </DescriptionListGroup>
@@ -69,28 +52,14 @@ export function FormWizardRadioGroup(props: {
 
     return (
         <RadioGroupContext.Provider value={state}>
-            <FormGroup
-                id={`${props.id}-form-group`}
-                fieldId={props.id}
-                label={props.label}
-                labelIcon={<FormWizardLabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
-                helperText={props.helperText}
-                isRequired={props.required}
-                // tODO validation.... required...
-            >
+            <InputLabel {...props} id={id}>
                 <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>{props.children}</div>
-            </FormGroup>
+            </InputLabel>
         </RadioGroupContext.Provider>
     )
 }
 
-export function FormWizardRadio(props: {
-    id: string
-    label: string
-    value: string | number | boolean
-    description?: string
-    children?: ReactNode
-}) {
+export function Radio(props: { id: string; label: string; value: string | number | boolean; description?: string; children?: ReactNode }) {
     const radioGroupContext = useContext(RadioGroupContext)
     return (
         <Fragment>
@@ -104,7 +73,7 @@ export function FormWizardRadio(props: {
                 isDisabled={radioGroupContext.disabled}
                 readOnly={radioGroupContext.readonly}
             />
-            {radioGroupContext.value === props.value && <FormWizardIndented>{props.children}</FormWizardIndented>}
+            {radioGroupContext.value === props.value && <Indented>{props.children}</Indented>}
         </Fragment>
     )
 }

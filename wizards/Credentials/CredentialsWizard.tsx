@@ -1,16 +1,5 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
-import {
-    FormCancel,
-    FormSubmit,
-    FormWizardPage,
-    FormWizardSection,
-    FormWizardSelect,
-    FormWizardStep,
-    FormWizardTextArea,
-    FormWizardTextInput,
-    FormWizardTile,
-    FormWizardTiles,
-} from '../../src'
+import { FormCancel, FormSubmit, Select, Tile, Tiles, Section, Step, TextArea, TextInput, WizardPage } from '../../src'
 import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
@@ -35,9 +24,9 @@ export enum CredentialsType {
     other = 'other',
 }
 
-export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: FormCancel }) {
+export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }) {
     return (
-        <FormWizardPage
+        <WizardPage
             title="Add credentials"
             defaultData={{
                 apiVersion: 'v1',
@@ -52,71 +41,68 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
         >
-            <FormWizardStep label="Credential type">
-                <FormWizardTiles
-                    id="cloudCredentials"
-                    path="metadata.labels.cluster\.open-cluster-management\.io/type"
-                    label="Cloud provider credentials"
-                >
-                    <FormWizardTile id={CredentialsType.aws} icon={<AWSIcon />} value={CredentialsType.aws} label="Amazon Web Services" />
-                    <FormWizardTile id={CredentialsType.azure} icon={<AzureIcon />} value={CredentialsType.azure} label="Microsoft Azure" />
-                    <FormWizardTile id={CredentialsType.gcp} icon={<GCPIcon />} value={CredentialsType.gcp} label="Google Cloud Platform" />
-                </FormWizardTiles>
-                <FormWizardTiles
-                    id="datacenterCredentials"
-                    path="metadata.labels.cluster\.open-cluster-management\.io/type"
-                    label="Datacenter credentials"
-                >
-                    <FormWizardTile
-                        id={CredentialsType.openstack}
-                        icon={<RedHatIcon />}
-                        value={CredentialsType.openstack}
-                        label="Red Hat OpenStack Platform"
-                    />
-                    <FormWizardTile
-                        id={CredentialsType.vmware}
-                        icon={<VMWareIcon />}
-                        value={CredentialsType.vmware}
-                        label="VMWare vSphere"
-                    />
-                    <FormWizardTile
-                        id={CredentialsType.baremetal}
-                        icon={<ServerIcon color="slategray" />}
-                        value={CredentialsType.baremetal}
-                        label="Bare metal"
-                    />
-                </FormWizardTiles>
-                <FormWizardTiles
-                    id="automationCredentials"
-                    path="metadata.labels.cluster\.open-cluster-management\.io/type"
-                    label="Automation & other credentials"
-                >
-                    <FormWizardTile
-                        id={CredentialsType.ansible}
-                        icon={<AnsibleTowerIcon color="#EE0000" />}
-                        value={CredentialsType.ansible}
-                        label="Red Hat Ansible Automation Platform"
-                    />
-                    <FormWizardTile
-                        id={CredentialsType.redhatcloud}
-                        icon={<RedHatIcon />}
-                        value={CredentialsType.redhatcloud}
-                        label="Red Hat OpenShift Cluster Manager"
-                    />
-                </FormWizardTiles>
-                <FormWizardTiles
-                    id={'centrallyManagedCredentials'}
-                    path="metadata.labels.cluster\.open-cluster-management\.io/type"
-                    label="Centrally managed"
-                >
-                    <FormWizardTile id={CredentialsType.hybrid} icon={<HybridIcon />} value={CredentialsType.hybrid} label="On premise" />
-                </FormWizardTiles>
-            </FormWizardStep>
+            <Step label="Credential type">
+                <Section label="Credentials type">
+                    <Tiles
+                        id="cloudCredentials"
+                        path="metadata.labels.cluster\.open-cluster-management\.io/type"
+                        label="Cloud provider credentials"
+                    >
+                        <Tile id={CredentialsType.aws} icon={<AWSIcon />} value={CredentialsType.aws} label="Amazon Web Services" />
+                        <Tile id={CredentialsType.azure} icon={<AzureIcon />} value={CredentialsType.azure} label="Microsoft Azure" />
+                        <Tile id={CredentialsType.gcp} icon={<GCPIcon />} value={CredentialsType.gcp} label="Google Cloud Platform" />
+                    </Tiles>
+                    <Tiles
+                        id="datacenterCredentials"
+                        path="metadata.labels.cluster\.open-cluster-management\.io/type"
+                        label="Datacenter credentials"
+                    >
+                        <Tile
+                            id={CredentialsType.openstack}
+                            icon={<RedHatIcon />}
+                            value={CredentialsType.openstack}
+                            label="Red Hat OpenStack Platform"
+                        />
+                        <Tile id={CredentialsType.vmware} icon={<VMWareIcon />} value={CredentialsType.vmware} label="VMWare vSphere" />
+                        <Tile
+                            id={CredentialsType.baremetal}
+                            icon={<ServerIcon color="slategray" />}
+                            value={CredentialsType.baremetal}
+                            label="Bare metal"
+                        />
+                    </Tiles>
+                    <Tiles
+                        id="automationCredentials"
+                        path="metadata.labels.cluster\.open-cluster-management\.io/type"
+                        label="Automation & other credentials"
+                    >
+                        <Tile
+                            id={CredentialsType.ansible}
+                            icon={<AnsibleTowerIcon color="#EE0000" />}
+                            value={CredentialsType.ansible}
+                            label="Red Hat Ansible Automation Platform"
+                        />
+                        <Tile
+                            id={CredentialsType.redhatcloud}
+                            icon={<RedHatIcon />}
+                            value={CredentialsType.redhatcloud}
+                            label="Red Hat OpenShift Cluster Manager"
+                        />
+                    </Tiles>
+                    <Tiles
+                        id={'centrallyManagedCredentials'}
+                        path="metadata.labels.cluster\.open-cluster-management\.io/type"
+                        label="Centrally managed"
+                    >
+                        <Tile id={CredentialsType.hybrid} icon={<HybridIcon />} value={CredentialsType.hybrid} label="On premise" />
+                    </Tiles>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Basic Information">
-                <FormWizardSection label="Details" prompt="Enter the details for the credentials">
-                    <FormWizardTextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
-                    <FormWizardSelect
+            <Step label="Basic Information">
+                <Section label="Details" prompt="Enter the details for the credentials">
+                    <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
+                    <Select
                         id="namespace"
                         path="metadata.namespace"
                         label="Namespace"
@@ -124,62 +110,46 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                         options={['default']}
                         required
                     />
-                    <FormWizardTextInput
+                    <TextInput
                         id="base-domain"
                         path="stringData.baseDomain"
                         label="Base DNS domain"
                         placeholder="Enter the Base DNS domain"
                     />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep
+            <Step
                 label="Amazon Web Services"
                 hidden={(item) => item.metadata?.labels?.['cluster.open-cluster-management.io/type'] !== CredentialsType.aws}
             >
-                <FormWizardSection label="Amazon Web Services" prompt="Enter the Amazon Web Services credentials">
-                    <FormWizardTextInput id="aws-key-id" path="stringData.aws_access_key_id" label="Access key ID" required />
-                    <FormWizardTextInput
-                        id="aws-access-key"
-                        path="stringData.aws_secret_access_key"
-                        label="Secret access key"
-                        required
-                        secret
-                    />
-                </FormWizardSection>
-            </FormWizardStep>
-            <FormWizardStep label="Proxy">
-                <FormWizardSection label="Proxy" prompt="">
-                    <FormWizardTextInput
-                        id="http-proxy"
-                        path="stringData.httpProxy"
-                        label="HTTP Proxy"
-                        placeholder="Enter the HTTP Proxy url"
-                    />
-                    <FormWizardTextInput
-                        id="https-proxy"
-                        path="stringData.httpsProxy"
-                        label="HTTPS Proxy"
-                        placeholder="Enter the HTTPS Proxy url"
-                    />
-                    <FormWizardTextInput
+                <Section label="Amazon Web Services" prompt="Enter the Amazon Web Services credentials">
+                    <TextInput id="aws-key-id" path="stringData.aws_access_key_id" label="Access key ID" required />
+                    <TextInput id="aws-access-key" path="stringData.aws_secret_access_key" label="Secret access key" required secret />
+                </Section>
+            </Step>
+            <Step label="Proxy">
+                <Section label="Proxy" prompt="">
+                    <TextInput id="http-proxy" path="stringData.httpProxy" label="HTTP Proxy" placeholder="Enter the HTTP Proxy url" />
+                    <TextInput id="https-proxy" path="stringData.httpsProxy" label="HTTPS Proxy" placeholder="Enter the HTTPS Proxy url" />
+                    <TextInput
                         id="no-proxy"
                         path="stringData.noProxy"
                         label="No Proxy"
                         placeholder="Enter the comma deliminated list of urls that do not require a proxy"
                     />
-                    <FormWizardTextArea
+                    <TextArea
                         id="trust-bundle"
                         path="stringData.additionalTrustBundle"
                         label="Additional Trust Bundle"
                         placeholder="Enter your additional trust bundle"
                     />
-                </FormWizardSection>
-            </FormWizardStep>
-            <FormWizardStep label="Pull secret and SSH">
-                <FormWizardSection label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
-                    <FormWizardTextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
-                    <FormWizardTextArea
+                </Section>
+            </Step>
+            <Step label="Pull secret and SSH">
+                <Section label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
+                    <TextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
+                    <TextArea
                         id="ssh-private-key"
                         path="stringData.ssh-privatekey"
                         label="SSH private key"
@@ -187,7 +157,7 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                         required
                         secret
                     />
-                    <FormWizardTextArea
+                    <TextArea
                         id="ssh-public-key"
                         path="stringData.ssh-publickey"
                         label="SSH public key"
@@ -195,8 +165,8 @@ export function CredentialsWizard(props: { onSubmit?: FormSubmit; onCancel?: For
                         required
                         secret
                     />
-                </FormWizardSection>
-            </FormWizardStep>
-        </FormWizardPage>
+                </Section>
+            </Step>
+        </WizardPage>
     )
 }

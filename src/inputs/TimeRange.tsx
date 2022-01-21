@@ -4,10 +4,11 @@ import { CheckIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
-import { FormWizardItemContext } from '../contexts/FormWizardItemContext'
+import { useData } from '../contexts/DataContext'
+import { ItemContext } from '../contexts/ItemContext'
+import { Mode, useMode } from '../contexts/ModeContext'
 
-export function FormWizardTimeRange(props: {
+export function TimeRange(props: {
     id: string
     label: string
     description?: string
@@ -26,8 +27,9 @@ export function FormWizardTimeRange(props: {
     const id = props.id
     const path = props.path ?? id
 
-    const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+    const { update } = useData()
+    const mode = useMode()
+    const item = useContext(ItemContext)
 
     const value = get(item, path)
 
@@ -43,7 +45,7 @@ export function FormWizardTimeRange(props: {
 
     if (props.hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         if (!value) return <Fragment />
         return (
             <Split hasGutter>
@@ -70,7 +72,7 @@ export function FormWizardTimeRange(props: {
                     key={id}
                     onChange={(value) => {
                         set(item, path, value)
-                        formWizardContext.updateContext()
+                        update()
                     }}
                     label={props.label}
                     value={value}

@@ -1,275 +1,259 @@
 import {
-    FormWizardCheckbox,
-    FormWizardLabels,
-    FormWizardPage,
-    FormWizardRadio,
-    FormWizardRadioGroup,
-    FormWizardSection,
-    FormWizardSelect,
-    FormWizardStep,
-    FormWizardTextInput,
-    FormWizardTile,
-    FormWizardTiles,
-    FormWizardTimeRange,
+    FormCancel,
+    FormSubmit,
+    Checkbox,
+    Radio,
+    RadioGroup,
+    Select,
+    Tile,
+    Tiles,
+    TimeRange,
+    KeyValue,
+    Section,
+    Step,
+    TextInput,
+    WizardPage,
 } from '../../src'
 
-export function RosaWizard() {
+export function RosaWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }) {
     return (
-        <FormWizardPage title="Create ROSA cluster" defaultData={{}}>
-            <FormWizardStep label="Account and roles">
-                <FormWizardSection
+        <WizardPage title="Create ROSA cluster" defaultData={{}} onSubmit={props.onSubmit} onCancel={props.onCancel}>
+            <Step label="Account and roles">
+                <Section
                     label="Account and roles"
                     prompt="Welcome to the Red Hat OpenShift service on AWS (ROSA)"
                     description="Red Hat OpenShift Service on AWS provides a model that allows Red Hat to deploy clusters into a customer's existing Amazon Web Service (AWS) account."
                 >
-                    <FormWizardSelect id="account" path="account" label="Associated AWS account" options={['TODO']} />
-                    <FormWizardSelect id="role" path="role" label="OpenShift Cluster Manager role (ocm-role)" options={['TODO']} />
-                </FormWizardSection>
-                <FormWizardSection
+                    <Select id="account" path="account" label="Associated AWS account" options={['TODO']} />
+                    <Select id="role" path="role" label="OpenShift Cluster Manager role (ocm-role)" options={['TODO']} />
+                </Section>
+                <Section
                     label="Account roles ARNs"
                     description="The following roles were detected according to the associated account. The ARNs can be edited according to your preferences."
                 >
-                    <FormWizardTextInput id="installer-role" path="installerRole" label="Installer role" required />
-                    <FormWizardTextInput id="support-role" path="supportRole" label="Support role" required />
-                    <FormWizardTextInput id="worker-role" path="workerRole" label="Worker role" required />
-                    <FormWizardTextInput id="control-plane-role" path="controlPlaneRole" label="Control plane role" required />
-                </FormWizardSection>
-            </FormWizardStep>
+                    <TextInput id="installer-role" path="installerRole" label="Installer role" required />
+                    <TextInput id="support-role" path="supportRole" label="Support role" required />
+                    <TextInput id="worker-role" path="workerRole" label="Worker role" required />
+                    <TextInput id="control-plane-role" path="controlPlaneRole" label="Control plane role" required />
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Cluster settings">
-                <FormWizardStep label="Details">
-                    <FormWizardSection label="Cluster details" prompt="Enter the cluster details">
-                        <FormWizardTextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
-                        <FormWizardCheckbox id="use-roles-prefix" path="useRolesPrefix" label="Use operator roles prefix">
-                            <FormWizardTextInput
+            <Step label="Cluster settings">
+                <Step label="Details">
+                    <Section label="Cluster details" prompt="Enter the cluster details">
+                        <TextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
+                        <Checkbox id="use-roles-prefix" path="useRolesPrefix" label="Use operator roles prefix">
+                            <TextInput
                                 id="roles-prefix"
                                 path="rolesPrefix"
                                 label="Operator roles prefix"
                                 required
                                 helperText="Maximum 32 characters."
                             />
-                        </FormWizardCheckbox>
-                        <FormWizardSelect id="version" path="version" label="Version" options={['TODO']} required />
-                        <FormWizardSelect id="region" path="region" label="Region" options={['TODO']} required />
-                        <FormWizardRadioGroup id="availability" path="availability" label="Availability">
-                            <FormWizardRadio id="single-zone" value="single-zone" label="Single zone" />
-                            <FormWizardRadio id="multi-zone" value="multi-zone" label="Multi zone" />
-                        </FormWizardRadioGroup>
-                        {/* </FormWizardSection> */}
+                        </Checkbox>
+                        <Select id="version" path="version" label="Version" options={['TODO']} required />
+                        <Select id="region" path="region" label="Region" options={['TODO']} required />
+                        <RadioGroup id="availability" path="availability" label="Availability">
+                            <Radio id="single-zone" value="single-zone" label="Single zone" />
+                            <Radio id="multi-zone" value="multi-zone" label="Multi zone" />
+                        </RadioGroup>
+                        {/* </Section> */}
 
-                        {/* <FormWizardSection label="Monitoring"> */}
-                        <FormWizardCheckbox
+                        {/* <Section label="Monitoring"> */}
+                        <Checkbox
                             id="monitoring"
                             path="monitoring"
                             title="Monitoring"
                             label="Enable use workload monitoring"
                             helperText="Monitor you own projects in isolation from Red Hat Site reliability (SRE) platform metrics."
                         />
-                    </FormWizardSection>
+                    </Section>
 
-                    <FormWizardSection
+                    <Section
                         label="Encryption"
                         description="Add additional encryption to your cluster. Note that cloud storage already encrypts storage as rest."
                     >
-                        <FormWizardCheckbox
+                        <Checkbox
                             id="etcd-encryption"
                             path="etcdEncryption"
                             label="Enable etcd encryption"
                             helperText="Add another layer of data security to your cluster."
                         />
-                        <FormWizardCheckbox
+                        <Checkbox
                             id="ebs-encryption"
                             path="ebsEncryption"
                             label="Encrypt EBS with customer keys"
                             helperText="Use your own AWS KMS keys to enable encryption of AWS EBS volumes for the cluster."
                         />
-                    </FormWizardSection>
-                </FormWizardStep>
+                    </Section>
+                </Step>
 
-                <FormWizardStep label="Machine pool">
-                    <FormWizardSection
+                <Step label="Machine pool">
+                    <Section
                         label="Default machine pool"
                         description="Select a compute node instance type and count your default machine pool."
                     >
-                        <FormWizardSelect
-                            id="instance-type"
-                            path="instanceType"
-                            label="Compute node instance type"
-                            options={['TODO']}
-                            required
-                        />
-                        <FormWizardSelect
-                            id="availability-zones"
-                            path="availabilityZones"
-                            label="Availability zones"
-                            options={['TODO']}
-                            required
-                        />
+                        <Select id="instance-type" path="instanceType" label="Compute node instance type" options={['TODO']} required />
+                        <Select id="availability-zones" path="availabilityZones" label="Availability zones" options={['TODO']} required />
 
-                        <FormWizardCheckbox
+                        <Checkbox
                             id="autoscaling"
                             path="autoscaling"
                             title="Autoscaling"
                             label="Enable autoscaling"
                             helperText="Autoscaling automatically adds and removes worker (compute) nodes from the cluster based on resource requirments."
                         >
-                            <FormWizardTextInput id="minimum-nodes" path="minimumNodes" label="Minimum nodes per zone" required />
-                            <FormWizardTextInput id="maximim-nodes" path="maximumNodes" label="Maximum nodes per zone" required />
-                        </FormWizardCheckbox>
+                            <TextInput id="minimum-nodes" path="minimumNodes" label="Minimum nodes per zone" required />
+                            <TextInput id="maximim-nodes" path="maximumNodes" label="Maximum nodes per zone" required />
+                        </Checkbox>
 
-                        <FormWizardLabels id="node-labels" path="nodeLabels" label="Extra node labels" />
-                    </FormWizardSection>
-                </FormWizardStep>
-            </FormWizardStep>
+                        <KeyValue id="node-labels" path="nodeLabels" label="Extra node labels" />
+                    </Section>
+                </Step>
+            </Step>
 
-            <FormWizardStep label="Networking">
-                <FormWizardStep label="Configuration">
-                    <FormWizardSection label="Networking configuration" description="Configure network access for your cluster.">
-                        <FormWizardCheckbox
+            <Step label="Networking">
+                <Step label="Configuration">
+                    <Section label="Networking configuration" description="Configure network access for your cluster.">
+                        <Checkbox
                             id="vpc"
                             path="vpc"
                             title="Virtual Private Cloud (VPC) subnets"
                             label="Install into an existing Virtual Private Cloud (VPC)."
                         >
-                            <FormWizardTextInput id="existing-vpc-id" path="existingVpcId" label="Existing VPC ID" required />
-                            <FormWizardCheckbox
+                            <TextInput id="existing-vpc-id" path="existingVpcId" label="Existing VPC ID" required />
+                            <Checkbox
                                 id="private-link"
                                 path="privateLink"
                                 label="Use a PrivateLink"
                                 helperText="To provide support, Red Hat Site Reliability Engineer (SRE) would connect to the cluster using only AWS PrivateLink endpoints instead of public endpoints. This option cannot be changed after a cluster is created."
-                            ></FormWizardCheckbox>
-                        </FormWizardCheckbox>
-                        <FormWizardRadioGroup
+                            ></Checkbox>
+                        </Checkbox>
+                        <RadioGroup
                             id="cluster-privacy"
                             path="clusterPrivacy"
                             label="Cluster privacy"
                             // description="Install your cluster with all public or all private API endpoint and aplication routes. You can customize therre options after installation."
                         >
-                            <FormWizardRadio
+                            <Radio
                                 id="public"
                                 value="public"
                                 label="Public"
                                 description="Access master API endpoint and application routes from the internet."
                             />
-                            <FormWizardRadio
+                            <Radio
                                 id="private"
                                 value="private"
                                 label="Private"
                                 description="Access master API endpoint and application routes from durect private connections only."
                             />
-                        </FormWizardRadioGroup>
-                    </FormWizardSection>
-                </FormWizardStep>
+                        </RadioGroup>
+                    </Section>
+                </Step>
 
-                <FormWizardStep label="VPC settings">
-                    <FormWizardSection
+                <Step label="VPC settings">
+                    <Section
                         label="Virtual Private Cloud (VPC) subnets"
                         description="the subnet list is based on the provided VPC ID. You must select at least 1 subnet from each availability zone."
                     >
-                        <FormWizardSelect id="subnets" path="subnets" label="Subnets" options={['TODO']} required />
-                    </FormWizardSection>
-                </FormWizardStep>
+                        <Select id="subnets" path="subnets" label="Subnets" options={['TODO']} required />
+                    </Section>
+                </Step>
 
-                <FormWizardStep label="CIDR ranges">
-                    <FormWizardSection label="CIDR ranges">
-                        <FormWizardTextInput
+                <Step label="CIDR ranges">
+                    <Section label="CIDR ranges">
+                        <TextInput
                             id="machine-cidr"
                             path="machineCIDR"
                             label="Machine CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask is /23."
                         />
-                        <FormWizardTextInput
+                        <TextInput
                             id="service-cidr"
                             path="serviceCIDR"
                             label="Service CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask is /24."
                         />
-                        <FormWizardTextInput
+                        <TextInput
                             id="pod-cidr"
                             path="podCIDR"
                             label="Pod CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask ust allow at lease 32 nodes."
                         />
-                        <FormWizardTextInput
+                        <TextInput
                             id="host-prefix"
                             path="hostPrefix"
                             label="Host prefix"
                             required
                             helperText="Must be between /23 and /26."
                         />
-                    </FormWizardSection>
-                </FormWizardStep>
-            </FormWizardStep>
+                    </Section>
+                </Step>
+            </Step>
 
-            <FormWizardStep label="Updates">
-                <FormWizardSection
+            <Step label="Updates">
+                <Section
                     label="Cluster updates"
                     description="High and critical security concerns (CVEs) will be patched automatically within 48 hours regardless of your chosen update strategy."
                 >
-                    <FormWizardRadioGroup id="cluster-update" path="clusterUpdate">
-                        <FormWizardRadio
+                    <RadioGroup id="cluster-update" path="clusterUpdate">
+                        <Radio
                             id="manual"
                             value="manual"
                             label="Manual"
                             description="Manually schedule the update. If it falls too far behind, it will update automatically beased on version support."
                         />
-                        <FormWizardRadio
+                        <Radio
                             id="automatic"
                             value="automatic"
                             label="Automatic"
                             description="Clusters will be automatically updared beased on your defined day and start time when new versions are available."
                         >
-                            <FormWizardSelect
+                            <Select
                                 id="day"
                                 path="day"
                                 label="Day"
                                 options={['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Firday', 'Saturday']}
                                 required
                             />
-                            <FormWizardTimeRange id="time" path="time" label="Start time" />
-                        </FormWizardRadio>
-                    </FormWizardRadioGroup>
-                </FormWizardSection>
+                            <TimeRange id="time" path="time" label="Start time" />
+                        </Radio>
+                    </RadioGroup>
+                </Section>
 
-                <FormWizardSection
+                <Section
                     label="Node draining"
                     description="You may set a grace period for how long Pod Disruption Budget-protected workloads will be respected during upgrades. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted."
                 >
-                    <FormWizardSelect
-                        id="grace-period"
-                        path="gracePeriod"
-                        label="Grace period"
-                        options={['Every hour', 'Every day']}
-                        required
-                    />
-                </FormWizardSection>
-            </FormWizardStep>
+                    <Select id="grace-period" path="gracePeriod" label="Grace period" options={['Every hour', 'Every day']} required />
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Provisioning mode">
-                <FormWizardSection
+            <Step label="Provisioning mode">
+                <Section
                     label="Provisioning mode"
                     prompt="Select role creation mode"
                     description="Choose the prefered mode for creating operator roles and OIDC provider."
                 >
-                    <FormWizardTiles id="creation-mode" path="creationMode">
-                        <FormWizardTile
+                    <Tiles id="creation-mode" path="creationMode">
+                        <Tile
                             id="manual"
                             value="manual"
                             label="Manual"
                             description="Manually schedule the update. If it falls too far behind, it will update automatically beased on version support."
                         />
-                        <FormWizardTile
+                        <Tile
                             id="automatic"
                             value="automatic"
                             label="Automatic"
                             description="Clusters will be automatically updared beased on your defined day and start time when new versions are available."
                         />
-                    </FormWizardTiles>
-                </FormWizardSection>
-            </FormWizardStep>
-        </FormWizardPage>
+                    </Tiles>
+                </Section>
+            </Step>
+        </WizardPage>
     )
 }

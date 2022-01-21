@@ -1,27 +1,30 @@
 import { Fragment } from 'react'
 import {
+    FormCancel,
     FormSubmit,
-    FormWizardArrayInput as ArrayInput,
-    FormWizardKeyValue as KeyValue,
-    FormWizardPage as Wizard,
-    FormWizardSection as Section,
-    FormWizardSelect as Select,
-    FormWizardStep as Step,
-    FormWizardTextInput as TextInput,
+    ArrayInput as ArrayInput,
+    Select as Select,
+    KeyValue,
+    Section,
+    Step,
+    TextInput,
+    WizardPage,
 } from '../../src'
 
 export function AnsibleWizard(props: {
-    onSubmit?: FormSubmit
+    onSubmit: FormSubmit
+    onCancel: FormCancel
     credentials: string[]
     namespaces: string[]
     data?: any
     breadcrumb?: { label: string; to?: string }[]
 }) {
     return (
-        <Wizard
+        <WizardPage
             title="Create Ansible automation"
             breadcrumb={props.breadcrumb}
             onSubmit={props.onSubmit}
+            onCancel={props.onCancel}
             defaultData={
                 props.data ?? {
                     apiVersion: 'cluster.open-cluster-management.io/v1beta1',
@@ -32,17 +35,14 @@ export function AnsibleWizard(props: {
         >
             <Step label="Details">
                 <Section
-                    id="details"
                     label="Details"
                     prompt="Configure the automation"
-                    description="Automation is accomplished by creating a ClusterCurator resource which can be selected during cluster creation to automate ansible jobs."
+                    description="Automation is accomplished by creating a ClusterCurator resource which can be selected during cluster creation to automate running ansible jobs."
                 >
-                    <TextInput id="name" path="metadata.name" label="Name" required />
+                    <TextInput label="Name" path="metadata.name" required />
                     <Select
-                        id="namespace"
-                        path="metadata.namespace"
                         label="Namespace"
-                        placeholder="Select the namespace"
+                        path="metadata.namespace"
                         helperText="The namespace on the hub cluster where the resources will be created."
                         options={props.namespaces}
                         required
@@ -125,7 +125,7 @@ export function AnsibleWizard(props: {
                     </ArrayInput>
                 </Section>
             </Step>
-        </Wizard>
+        </WizardPage>
     )
 }
 
@@ -139,7 +139,7 @@ function JobInputs() {
                 placeholder="Enter or select Ansible job template name"
                 required
             />
-            <KeyValue id="extra_vars" path="extra_vars" label="Extra variables" />
+            <KeyValue id="extra_vars" path="extra_vars" label="Extra variables" placeholder="Add variable" />
         </Fragment>
     )
 }
