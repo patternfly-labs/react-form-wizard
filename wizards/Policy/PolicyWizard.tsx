@@ -7,15 +7,15 @@ import {
     FormWizardArrayInput,
     FormWizardCheckbox,
     FormWizardHidden,
-    FormWizardPage,
     FormWizardRadio,
     FormWizardRadioGroup,
-    FormWizardSection,
     FormWizardSelect,
     FormWizardSelector,
-    FormWizardStep,
     FormWizardStringArray,
+    Section,
+    Step,
     TextInput,
+    WizardPage,
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
 import { Specifications } from './templates'
@@ -71,7 +71,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
     // )
 
     return (
-        <FormWizardPage
+        <WizardPage
             title="Create policy"
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
             defaultData={[
@@ -91,9 +91,9 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
             // }}
             onSubmit={props.onSubmit}
         >
-            <FormWizardStep label="Details">
+            <Step label="Details">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
-                    <FormWizardSection label="Details" prompt="Enter the details for the policy">
+                    <Section label="Details" prompt="Enter the details for the policy">
                         <TextInput id="name" path="metadata.name" label="Name" placeholder="Enter name" required />
                         <FormWizardSelect
                             id="namespace"
@@ -128,23 +128,23 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                             label="Disable policy"
                             helperText="Select to disable the policy from being propagated to managed clusters."
                         />
-                    </FormWizardSection>
+                    </Section>
                 </FormWizardSelector>
-            </FormWizardStep>
+            </Step>
 
-            <FormWizardStep label="Templates">
+            <Step label="Templates">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
                     <PolicyWizardTemplates />
                 </FormWizardSelector>
-            </FormWizardStep>
+            </Step>
 
-            <FormWizardStep label="Placement">
+            <Step label="Placement">
                 <PolicyWizardPlacement />
-            </FormWizardStep>
+            </Step>
 
-            <FormWizardStep label="Security groups">
+            <Step label="Security groups">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
-                    <FormWizardSection label="Security groups">
+                    <Section label="Security groups">
                         <FormWizardStringArray
                             id="categories"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
@@ -172,17 +172,17 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                             }}
                             unmap={(values: string[]) => values.join(', ')}
                         />
-                    </FormWizardSection>
+                    </Section>
                 </FormWizardSelector>
-            </FormWizardStep>
-        </FormWizardPage>
+            </Step>
+        </WizardPage>
     )
 }
 
 export function PolicyWizardTemplates() {
     const policy = useContext(ItemContext)
     return (
-        <FormWizardSection label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
+        <Section label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
             <FormWizardArrayInput
                 id="templates"
                 path="spec.policy-templates"
@@ -358,14 +358,14 @@ export function PolicyWizardTemplates() {
                     required
                 />
             </FormWizardArrayInput>
-        </FormWizardSection>
+        </Section>
     )
 }
 
 export function PolicyWizardPlacement() {
     return (
         <Fragment>
-            <FormWizardSection label="Placement">
+            <Section label="Placement">
                 <FormWizardArrayInput
                     id="placement-rules"
                     label="Placement rules"
@@ -454,7 +454,7 @@ export function PolicyWizardPlacement() {
                         <TextInput id="name" path="name" label="Subject name" required />
                     </FormWizardArrayInput>
                 </FormWizardArrayInput>
-            </FormWizardSection>
+            </Section>
         </Fragment>
     )
 }
