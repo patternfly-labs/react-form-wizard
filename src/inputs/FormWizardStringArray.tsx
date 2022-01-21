@@ -9,29 +9,20 @@ import {
     TextInput,
 } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
-import get from 'get-value'
-import { Fragment, useContext } from 'react'
-import set from 'set-value'
-import { useData } from '../contexts/DataContext'
-import { ItemContext } from '../contexts/ItemContext'
-import { Mode, useMode } from '../contexts/ModeContext'
+import { Fragment } from 'react'
+import { Mode } from '../contexts/ModeContext'
+import { InputCommonProps, useInput } from './FormWizardInput'
 
-export function FormWizardStringArray(props: {
-    id: string
-    label: string
-    path?: string
+type StringsInputProps = InputCommonProps & {
     map?: (value: any) => string[]
     unmap?: (values: string[]) => any
     placeholder?: string
-}) {
-    const id = props.id
-    const path = props.path ?? id
+}
 
-    const { update } = useData()
-    const mode = useMode()
-    const item = useContext(ItemContext)
+export function FormWizardStringArray(props: StringsInputProps) {
+    const { mode, value, setValue, validated, hidden, id } = useInput(props)
 
-    let values: string[] = get(item, path)
+    let values: string[] = value
     if (props.map) values = props.map(values)
     else if (!values) values = []
 
@@ -39,24 +30,21 @@ export function FormWizardStringArray(props: {
         values[index] = newKey
         let newValue = values
         if (props.unmap) newValue = props.unmap(values)
-        set(item, path, newValue, { preservePaths: false })
-        update()
+        setValue(newValue)
     }
 
     const onNewKey = () => {
         values.push('')
         let newValue = values
         if (props.unmap) newValue = props.unmap(values)
-        set(item, path, newValue, { preservePaths: false })
-        update()
+        setValue(newValue)
     }
 
     const onDeleteKey = (index: number) => {
         values.splice(index, 1)
         let newValue = values
         if (props.unmap) newValue = props.unmap(values)
-        set(item, path, newValue, { preservePaths: false })
-        update()
+        setValue(newValue)
     }
 
     if (mode === Mode.Details) {
@@ -64,7 +52,7 @@ export function FormWizardStringArray(props: {
         return (
             <DescriptionListGroup>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                <DescriptionListDescription id={props.id}>
+                <DescriptionListDescription id={id}>
                     <Stack hasGutter>
                         {values.map((value, index) => {
                             if (!value) return <Fragment />
@@ -77,7 +65,7 @@ export function FormWizardStringArray(props: {
     }
 
     return (
-        <div id={props.id} style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 8 : 4 }}>
+        <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 8 : 4 }}>
             <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
             <div
                 style={{
@@ -89,7 +77,7 @@ export function FormWizardStringArray(props: {
                 {values.map((pair, index) => {
                     return (
                         <Split key={index}>
-                            <TextInput id={`${props.id}-${index + 1}`} value={pair} onChange={(e) => onKeyChange(index, e)} />
+                            <TextInput id={`${id}-${index + 1}`} value={pair} onChange={(e) => onKeyChange(index, e)} />
                             <Button variant="plain" aria-label="Remove item" onClick={() => onDeleteKey(index)}>
                                 <TrashIcon />
                             </Button>

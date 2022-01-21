@@ -4,7 +4,7 @@ import { AnsibleWizard } from './AnsibleWizard'
 
 export function AnsibleExample() {
     const history = useHistory()
-    const credentials = useMemo(() => ['my-install-ansible-creds', 'my-upgrade-ansible-creds'], [])
+    const credentials = useMemo(() => ['my-inst-creds', 'my-up-creds'], [])
     const namespaces = useMemo(() => ['default'], [])
     return (
         <AnsibleWizard
