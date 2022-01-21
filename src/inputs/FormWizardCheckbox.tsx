@@ -6,7 +6,7 @@ import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, useInput } from './FormWizardInput'
 import { InputLabel } from './FormWizardInputLabel'
 
-type CheckboxProps = InputCommonProps & { children?: ReactNode }
+type CheckboxProps = InputCommonProps & { children?: ReactNode; title?: string }
 
 export function FormWizardCheckbox(
     props: CheckboxProps
@@ -43,7 +43,7 @@ export function FormWizardCheckbox(
     return (
         <Fragment>
             <Stack>
-                <InputLabel {...props} id={id} label={undefined}>
+                <InputLabel {...props} id={id} label={props.title}>
                     <Split>
                         <Checkbox id={id ?? props.label} isChecked={value} onChange={setValue} label={props.label} value={value} />
                         <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />

@@ -32,7 +32,7 @@ import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { InputsWizard } from './Inputs/InputsWizard'
 import { PolicyExample } from './Policy/PolicyExample'
-import { RosaWizard } from './ROSA/RosaWizard'
+import { RosaExample } from './ROSA/RosaExample'
 import { RouteE } from './Routes'
 
 interface IWizard {
@@ -114,7 +114,7 @@ export function DemoRouter(): JSX.Element {
         case RouteE.Policy:
             return <PolicyExample />
         case RouteE.ROSA:
-            return <RosaWizard />
+            return <RosaExample />
         case RouteE.Inputs:
             return <InputsWizard />
         case RouteE.Results:

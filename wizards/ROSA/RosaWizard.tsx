@@ -1,31 +1,33 @@
 import {
+    FormCancel,
+    FormSubmit,
     FormWizardCheckbox,
-    FormWizardPage,
     FormWizardRadio,
     FormWizardRadioGroup,
-    FormWizardSection,
     FormWizardSelect,
-    FormWizardStep,
     FormWizardTile,
     FormWizardTiles,
     FormWizardTimeRange,
     KeyValue,
+    Section,
+    Step,
     TextInput,
+    WizardPage,
 } from '../../src'
 
-export function RosaWizard() {
+export function RosaWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }) {
     return (
-        <FormWizardPage title="Create ROSA cluster" defaultData={{}}>
-            <FormWizardStep label="Account and roles">
-                <FormWizardSection
+        <WizardPage title="Create ROSA cluster" defaultData={{}} onSubmit={props.onSubmit} onCancel={props.onCancel}>
+            <Step label="Account and roles">
+                <Section
                     label="Account and roles"
                     prompt="Welcome to the Red Hat OpenShift service on AWS (ROSA)"
                     description="Red Hat OpenShift Service on AWS provides a model that allows Red Hat to deploy clusters into a customer's existing Amazon Web Service (AWS) account."
                 >
                     <FormWizardSelect id="account" path="account" label="Associated AWS account" options={['TODO']} />
                     <FormWizardSelect id="role" path="role" label="OpenShift Cluster Manager role (ocm-role)" options={['TODO']} />
-                </FormWizardSection>
-                <FormWizardSection
+                </Section>
+                <Section
                     label="Account roles ARNs"
                     description="The following roles were detected according to the associated account. The ARNs can be edited according to your preferences."
                 >
@@ -33,12 +35,12 @@ export function RosaWizard() {
                     <TextInput id="support-role" path="supportRole" label="Support role" required />
                     <TextInput id="worker-role" path="workerRole" label="Worker role" required />
                     <TextInput id="control-plane-role" path="controlPlaneRole" label="Control plane role" required />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Cluster settings">
-                <FormWizardStep label="Details">
-                    <FormWizardSection label="Cluster details" prompt="Enter the cluster details">
+            <Step label="Cluster settings">
+                <Step label="Details">
+                    <Section label="Cluster details" prompt="Enter the cluster details">
                         <TextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
                         <FormWizardCheckbox id="use-roles-prefix" path="useRolesPrefix" label="Use operator roles prefix">
                             <TextInput
@@ -55,9 +57,9 @@ export function RosaWizard() {
                             <FormWizardRadio id="single-zone" value="single-zone" label="Single zone" />
                             <FormWizardRadio id="multi-zone" value="multi-zone" label="Multi zone" />
                         </FormWizardRadioGroup>
-                        {/* </FormWizardSection> */}
+                        {/* </Section> */}
 
-                        {/* <FormWizardSection label="Monitoring"> */}
+                        {/* <Section label="Monitoring"> */}
                         <FormWizardCheckbox
                             id="monitoring"
                             path="monitoring"
@@ -65,9 +67,9 @@ export function RosaWizard() {
                             label="Enable use workload monitoring"
                             helperText="Monitor you own projects in isolation from Red Hat Site reliability (SRE) platform metrics."
                         />
-                    </FormWizardSection>
+                    </Section>
 
-                    <FormWizardSection
+                    <Section
                         label="Encryption"
                         description="Add additional encryption to your cluster. Note that cloud storage already encrypts storage as rest."
                     >
@@ -83,11 +85,11 @@ export function RosaWizard() {
                             label="Encrypt EBS with customer keys"
                             helperText="Use your own AWS KMS keys to enable encryption of AWS EBS volumes for the cluster."
                         />
-                    </FormWizardSection>
-                </FormWizardStep>
+                    </Section>
+                </Step>
 
-                <FormWizardStep label="Machine pool">
-                    <FormWizardSection
+                <Step label="Machine pool">
+                    <Section
                         label="Default machine pool"
                         description="Select a compute node instance type and count your default machine pool."
                     >
@@ -118,13 +120,13 @@ export function RosaWizard() {
                         </FormWizardCheckbox>
 
                         <KeyValue id="node-labels" path="nodeLabels" label="Extra node labels" />
-                    </FormWizardSection>
-                </FormWizardStep>
-            </FormWizardStep>
+                    </Section>
+                </Step>
+            </Step>
 
-            <FormWizardStep label="Networking">
-                <FormWizardStep label="Configuration">
-                    <FormWizardSection label="Networking configuration" description="Configure network access for your cluster.">
+            <Step label="Networking">
+                <Step label="Configuration">
+                    <Section label="Networking configuration" description="Configure network access for your cluster.">
                         <FormWizardCheckbox
                             id="vpc"
                             path="vpc"
@@ -158,20 +160,20 @@ export function RosaWizard() {
                                 description="Access master API endpoint and application routes from durect private connections only."
                             />
                         </FormWizardRadioGroup>
-                    </FormWizardSection>
-                </FormWizardStep>
+                    </Section>
+                </Step>
 
-                <FormWizardStep label="VPC settings">
-                    <FormWizardSection
+                <Step label="VPC settings">
+                    <Section
                         label="Virtual Private Cloud (VPC) subnets"
                         description="the subnet list is based on the provided VPC ID. You must select at least 1 subnet from each availability zone."
                     >
                         <FormWizardSelect id="subnets" path="subnets" label="Subnets" options={['TODO']} required />
-                    </FormWizardSection>
-                </FormWizardStep>
+                    </Section>
+                </Step>
 
-                <FormWizardStep label="CIDR ranges">
-                    <FormWizardSection label="CIDR ranges">
+                <Step label="CIDR ranges">
+                    <Section label="CIDR ranges">
                         <TextInput
                             id="machine-cidr"
                             path="machineCIDR"
@@ -200,12 +202,12 @@ export function RosaWizard() {
                             required
                             helperText="Must be between /23 and /26."
                         />
-                    </FormWizardSection>
-                </FormWizardStep>
-            </FormWizardStep>
+                    </Section>
+                </Step>
+            </Step>
 
-            <FormWizardStep label="Updates">
-                <FormWizardSection
+            <Step label="Updates">
+                <Section
                     label="Cluster updates"
                     description="High and critical security concerns (CVEs) will be patched automatically within 48 hours regardless of your chosen update strategy."
                 >
@@ -232,9 +234,9 @@ export function RosaWizard() {
                             <FormWizardTimeRange id="time" path="time" label="Start time" />
                         </FormWizardRadio>
                     </FormWizardRadioGroup>
-                </FormWizardSection>
+                </Section>
 
-                <FormWizardSection
+                <Section
                     label="Node draining"
                     description="You may set a grace period for how long Pod Disruption Budget-protected workloads will be respected during upgrades. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted."
                 >
@@ -245,11 +247,11 @@ export function RosaWizard() {
                         options={['Every hour', 'Every day']}
                         required
                     />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Provisioning mode">
-                <FormWizardSection
+            <Step label="Provisioning mode">
+                <Section
                     label="Provisioning mode"
                     prompt="Select role creation mode"
                     description="Choose the prefered mode for creating operator roles and OIDC provider."
@@ -268,8 +270,8 @@ export function RosaWizard() {
                             description="Clusters will be automatically updared beased on your defined day and start time when new versions are available."
                         />
                     </FormWizardTiles>
-                </FormWizardSection>
-            </FormWizardStep>
-        </FormWizardPage>
+                </Section>
+            </Step>
+        </WizardPage>
     )
 }
