@@ -10,7 +10,7 @@ export function ApplicationExample() {
     const placements = useMemo(() => ['placement-1', 'placement-2'], [])
     return (
         <ApplicationWizard
-            addClusterSets="https://google.com"
+            addClusterSets="https://github.com/patternfly-labs/react-form-wizard"
             ansibleCredentials={ansibleCredentials}
             argoServers={servers}
             namespaces={namespaces}
