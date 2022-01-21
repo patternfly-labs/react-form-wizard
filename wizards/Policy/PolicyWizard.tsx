@@ -11,7 +11,7 @@ import {
     FormWizardRadioGroup,
     FormWizardSelect,
     FormWizardSelector,
-    FormWizardStringArray,
+    StringsInput,
     Section,
     Step,
     TextInput,
@@ -145,7 +145,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
             <Step label="Security groups">
                 <FormWizardSelector selectKey="kind" selectValue="Policy">
                     <Section label="Security groups">
-                        <FormWizardStringArray
+                        <StringsInput
                             id="categories"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
                             label="Categories"
@@ -154,7 +154,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                             }}
                             unmap={(values: string[]) => values.join(', ')}
                         />
-                        <FormWizardStringArray
+                        <StringsInput
                             id="standards"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/standards`}
                             label="Standards"
@@ -163,7 +163,7 @@ export function PolicyWizard(props: { onSubmit?: FormSubmit; namespaces: string[
                             }}
                             unmap={(values: string[]) => values.join(', ')}
                         />
-                        <FormWizardStringArray
+                        <StringsInput
                             id="controls"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/controls`}
                             label="Controls"
@@ -338,12 +338,12 @@ export function PolicyWizardTemplates() {
                 </FormWizardHidden>
 
                 <FormWizardHidden hidden={(template: any) => template.objectDefinition.spec.namespaceSelector === undefined}>
-                    <FormWizardStringArray
+                    <StringsInput
                         id="include-namespaces"
                         path="objectDefinition.spec.namespaceSelector.include"
                         label="Include namespaces"
                     />
-                    <FormWizardStringArray
+                    <StringsInput
                         id="exclude-namespaces"
                         path="objectDefinition.spec.namespaceSelector.exclude"
                         label="Exclude namespaces"
@@ -409,7 +409,7 @@ export function PolicyWizardPlacement() {
                         }}
                     >
                         <TextInput id="key" path="key" label="Label" />
-                        <FormWizardStringArray id="values" path="values" label="Equals one of" />
+                        <StringsInput id="values" path="values" label="Equals one of" />
                     </FormWizardArrayInput>
                 </FormWizardArrayInput>
 

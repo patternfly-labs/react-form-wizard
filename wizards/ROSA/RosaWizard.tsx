@@ -6,7 +6,7 @@ import {
     FormWizardRadioGroup,
     FormWizardSelect,
     FormWizardTile,
-    FormWizardTiles,
+    Tiles,
     FormWizardTimeRange,
     KeyValue,
     Section,
@@ -256,7 +256,7 @@ export function RosaWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }
                     prompt="Select role creation mode"
                     description="Choose the prefered mode for creating operator roles and OIDC provider."
                 >
-                    <FormWizardTiles id="creation-mode" path="creationMode">
+                    <Tiles id="creation-mode" path="creationMode">
                         <FormWizardTile
                             id="manual"
                             value="manual"
@@ -269,7 +269,7 @@ export function RosaWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }
                             label="Automatic"
                             description="Clusters will be automatically updared beased on your defined day and start time when new versions are available."
                         />
-                    </FormWizardTiles>
+                    </Tiles>
                 </Section>
             </Step>
         </WizardPage>

@@ -4,7 +4,7 @@ import { FormWizardIndented } from '../components/FormWizardIndented'
 import { LabelHelp } from '../components/LabelHelp'
 import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, useInput } from './FormWizardInput'
-import { InputLabel } from './FormWizardInputLabel'
+import { InputLabel } from './InputLabel'
 
 type CheckboxProps = InputCommonProps & { children?: ReactNode; title?: string }
 

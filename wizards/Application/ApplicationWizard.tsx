@@ -16,7 +16,7 @@ import {
     FormWizardStep,
     FormWizardTextDetail,
     FormWizardTile,
-    FormWizardTiles,
+    Tiles,
     FormWizardTimeRange,
     TextInput,
 } from '../../src'
@@ -66,10 +66,7 @@ export function ApplicationWizard(props: {
         >
             <FormWizardStep label="Type">
                 <FormWizardSection label="Type" prompt="Type">
-                    <FormWizardTiles
-                        id="deployType"
-                        label="Select the application management type to deploy this application into clusters."
-                    >
+                    <Tiles id="deployType" label="Select the application management type to deploy this application into clusters.">
                         <FormWizardTile
                             id="subscription"
                             value="Subscription"
@@ -84,7 +81,7 @@ export function ApplicationWizard(props: {
                             icon={<ArgoIcon />}
                             description="Supports deployments to large numbers of clusters, deployments of large monorepos, and enabling secure Application self-service."
                         />
-                    </FormWizardTiles>
+                    </Tiles>
                 </FormWizardSection>
             </FormWizardStep>
 
@@ -109,7 +106,7 @@ export function ApplicationWizard(props: {
                         placeholder="Add repository"
                         collapsedContent={<FormWizardTextDetail id="url" placeholder="Expand to enter the repository details" />}
                     >
-                        <FormWizardTiles id="repositoryType" label="Repository type">
+                        <Tiles id="repositoryType" label="Repository type">
                             <FormWizardTile
                                 id="git"
                                 value="SubscriptionGit"
@@ -131,7 +128,7 @@ export function ApplicationWizard(props: {
                                 label="Object Storage"
                                 description="Use a bucket from an object storage repository"
                             />
-                        </FormWizardTiles>
+                        </Tiles>
 
                         <FormWizardHidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
                             <FormWizardSelect
@@ -338,10 +335,10 @@ export function ApplicationWizard(props: {
             </FormWizardStep>
             <FormWizardStep label="Template" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <FormWizardSection label="Source">
-                    <FormWizardTiles id="repositoryType" label="Repository type">
+                    <Tiles id="repositoryType" label="Repository type">
                         <FormWizardTile id="git" value="Git" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
                         <FormWizardTile id="helm" value="Helm" label="Helm" icon={<HelmIcon />} description="Use a Helm repository" />
-                    </FormWizardTiles>
+                    </Tiles>
                     {/* Git repo */}
                     <FormWizardHidden hidden={(data) => data.repositoryType !== 'Git'}>
                         <FormWizardSelect

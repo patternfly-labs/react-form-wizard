@@ -3,7 +3,7 @@ import { Children, createContext, Fragment, isValidElement, ReactElement, ReactN
 import { FormWizardIndented } from '../components/FormWizardIndented'
 import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, useInput } from './FormWizardInput'
-import { InputLabel } from './FormWizardInputLabel'
+import { InputLabel } from './InputLabel'
 
 export interface IRadioGroupContextState {
     value?: any

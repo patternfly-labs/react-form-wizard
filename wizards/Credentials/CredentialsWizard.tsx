@@ -1,16 +1,5 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
-import {
-    FormCancel,
-    FormSubmit,
-    FormWizardSelect,
-    FormWizardTile,
-    FormWizardTiles,
-    Section,
-    Step,
-    TextArea,
-    TextInput,
-    WizardPage,
-} from '../../src'
+import { FormCancel, FormSubmit, FormWizardSelect, FormWizardTile, Tiles, Section, Step, TextArea, TextInput, WizardPage } from '../../src'
 import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
@@ -54,7 +43,7 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
         >
             <Step label="Credential type">
                 <Section label="Credentials type">
-                    <FormWizardTiles
+                    <Tiles
                         id="cloudCredentials"
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Cloud provider credentials"
@@ -77,8 +66,8 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                             value={CredentialsType.gcp}
                             label="Google Cloud Platform"
                         />
-                    </FormWizardTiles>
-                    <FormWizardTiles
+                    </Tiles>
+                    <Tiles
                         id="datacenterCredentials"
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Datacenter credentials"
@@ -101,8 +90,8 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                             value={CredentialsType.baremetal}
                             label="Bare metal"
                         />
-                    </FormWizardTiles>
-                    <FormWizardTiles
+                    </Tiles>
+                    <Tiles
                         id="automationCredentials"
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Automation & other credentials"
@@ -119,8 +108,8 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                             value={CredentialsType.redhatcloud}
                             label="Red Hat OpenShift Cluster Manager"
                         />
-                    </FormWizardTiles>
-                    <FormWizardTiles
+                    </Tiles>
+                    <Tiles
                         id={'centrallyManagedCredentials'}
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Centrally managed"
@@ -131,7 +120,7 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                             value={CredentialsType.hybrid}
                             label="On premise"
                         />
-                    </FormWizardTiles>
+                    </Tiles>
                 </Section>
             </Step>
 

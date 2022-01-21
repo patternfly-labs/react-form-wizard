@@ -3,9 +3,9 @@ import { ReactNode } from 'react'
 import { LabelHelp } from '../components/LabelHelp'
 import { InputCommonProps, useID, useInputValidation } from './FormWizardInput'
 
-export type FormWizardInputLabelProps = InputCommonProps & { children: ReactNode }
+type InputLabelProps = InputCommonProps & { children: ReactNode }
 
-export function FormWizardInputLabel(props: FormWizardInputLabelProps) {
+export function InputLabel(props: InputLabelProps) {
     const { validated, error } = useInputValidation(props)
     const id = useID(props)
     return (
@@ -24,5 +24,3 @@ export function FormWizardInputLabel(props: FormWizardInputLabelProps) {
         </FormGroup>
     )
 }
-
-export const InputLabel = FormWizardInputLabel

@@ -8,7 +8,7 @@ import { PasteInputButton } from '../components/PasteInputButton'
 import { ShowSecretsButton } from '../components/ShowSecretsButton'
 import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './FormWizardInput'
-import { InputLabel } from './FormWizardInputLabel'
+import { InputLabel } from './InputLabel'
 
 export type TextAreaProps = InputCommonProps<string> & {
     label: string

@@ -3,7 +3,7 @@ import { Children, Fragment, isValidElement, ReactNode, useContext } from 'react
 import { IRadioGroupContextState, RadioGroupContext } from '..'
 import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, useInput } from './FormWizardInput'
-import { InputLabel } from './FormWizardInputLabel'
+import { InputLabel } from './InputLabel'
 
 type FormWizardTilesProps = InputCommonProps & { children?: ReactNode }
 
@@ -18,7 +18,7 @@ type FormWizardTilesProps = InputCommonProps & { children?: ReactNode }
 // labelHelpTitle?: string
 // helperText?: string
 // children?: ReactNode
-export function FormWizardTiles(props: FormWizardTilesProps) {
+export function Tiles(props: FormWizardTilesProps) {
     const { mode, value, setValue, validated, hidden, id } = useInput(props)
 
     const state: IRadioGroupContextState = {

@@ -6,9 +6,9 @@ import {
     FormWizardRadio as Radio,
     FormWizardRadioGroup as RadioGroup,
     FormWizardSelect as Select,
-    FormWizardStringArray,
+    StringsInput,
     FormWizardTile as Tile,
-    FormWizardTiles as Tiles,
+    Tiles as Tiles,
     KeyValue,
     TextArea,
     TextInput as TextInput,
@@ -114,7 +114,7 @@ export function InputsWizard() {
 
             <Step label="Strings Input">
                 <Section label="Strings Input">
-                    <FormWizardStringArray id="string" path="strings" label="Strings" />
+                    <StringsInput id="string" path="strings" label="Strings" />
                 </Section>
             </Step>
 

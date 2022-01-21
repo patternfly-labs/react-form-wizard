@@ -24,7 +24,7 @@ import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
 import { ShowValidationContext } from '../contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from '../contexts/ValidationProvider'
-import './FormWizardArrayInput.css'
+import './ArrayInput.css'
 
 export function wizardArrayItems(props: any, item: any) {
     const id = props.id

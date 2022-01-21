@@ -7,8 +7,8 @@ import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './FormWizardInput'
-import { FormWizardInputLabel } from './FormWizardInputLabel'
 import './FormWizardSelect.css'
+import { InputLabel } from './InputLabel'
 
 export interface FormWizardOption<T> {
     id?: string
@@ -263,7 +263,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
 
     return (
         <div id={id}>
-            <FormWizardInputLabel {...props}>
+            <InputLabel {...props}>
                 <Select
                     variant={variant}
                     isOpen={open}
@@ -308,7 +308,7 @@ function FormWizardSelectBase<T = any>(props: FormWizardSelectProps<T>) {
                         </SelectOption>
                     ))}
                 </Select>
-            </FormWizardInputLabel>
+            </InputLabel>
         </div>
     )
 }

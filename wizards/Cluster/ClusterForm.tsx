@@ -10,7 +10,7 @@ import {
     FormWizardStep,
     FormWizardTextDetail,
     FormWizardTile,
-    FormWizardTiles,
+    Tiles,
     KeyValue,
     TextInput,
 } from '../../src'
@@ -21,17 +21,17 @@ export function ClusterForm() {
         <FormWizardPage title="Create cluster" template={YamlTemplate} breadcrumb={[{ label: 'Managed clusters', to: '.' }]}>
             <FormWizardStep label="Infrastructure provider">
                 <FormWizardSection label="Infrastructure provider" prompt="Select the infrastructure for the cluster">
-                    <FormWizardTiles id="provider" path="provider" label="Cloud infrastructure providers">
+                    <Tiles id="provider" path="provider" label="Cloud infrastructure providers">
                         <FormWizardTile id="aws" value="aws" label="Amazon Web Services" />
                         <FormWizardTile id="azr" value="azr" label="Microsoft Azure" />
                         <FormWizardTile id="gcp" value="gcp" label="Google Cloud Platform" />
                         <FormWizardTile id="ost" value="ost" label="Red Hat OpenStack Platform" />
                         <FormWizardTile id="vsp" value="vsp" label="VMWare vSphere" />
                         <FormWizardTile id="bare" value="bare" label="Bare metal" />
-                    </FormWizardTiles>
-                    <FormWizardTiles id="centrallyManagedCredentials" path="provider" label="Centrally managed">
+                    </Tiles>
+                    <Tiles id="centrallyManagedCredentials" path="provider" label="Centrally managed">
                         <FormWizardTile id="onp" value="onp" label="On premise" />
-                    </FormWizardTiles>
+                    </Tiles>
                 </FormWizardSection>
                 <FormWizardSection label="Credentials" prompt="Select the infrastructure for the cluster" hidden={(item) => !item.provider}>
                     <FormWizardSelect

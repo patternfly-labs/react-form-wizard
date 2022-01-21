@@ -19,7 +19,7 @@ type StringsInputProps = InputCommonProps & {
     placeholder?: string
 }
 
-export function FormWizardStringArray(props: StringsInputProps) {
+export function StringsInput(props: StringsInputProps) {
     const { mode, value, setValue, validated, hidden, id } = useInput(props)
 
     let values: string[] = value
