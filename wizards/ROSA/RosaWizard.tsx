@@ -1,6 +1,6 @@
 import {
-    FormCancel,
-    FormSubmit,
+    WizardCancel,
+    WizardSubmit,
     Checkbox,
     Radio,
     RadioGroup,
@@ -15,7 +15,7 @@ import {
     WizardPage,
 } from '../../src'
 
-export function RosaWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }) {
+export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     return (
         <WizardPage title="Create ROSA cluster" defaultData={{}} onSubmit={props.onSubmit} onCancel={props.onCancel}>
             <Step label="Account and roles">

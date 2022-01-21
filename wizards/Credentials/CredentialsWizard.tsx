@@ -1,5 +1,5 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
-import { FormCancel, FormSubmit, Select, Tile, Tiles, Section, Step, TextArea, TextInput, WizardPage } from '../../src'
+import { WizardCancel, WizardSubmit, Select, Tile, Tiles, Section, Step, TextArea, TextInput, WizardPage } from '../../src'
 import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
@@ -24,7 +24,7 @@ export enum CredentialsType {
     other = 'other',
 }
 
-export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }) {
+export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     return (
         <WizardPage
             title="Add credentials"

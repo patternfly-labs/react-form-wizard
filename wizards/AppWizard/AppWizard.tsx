@@ -1,7 +1,7 @@
 import {
     ArrayInput,
-    FormCancel,
-    FormSubmit,
+    WizardCancel,
+    WizardSubmit,
     ItemSelector,
     KeyValue,
     Section,
@@ -11,7 +11,7 @@ import {
     WizardPage,
 } from '../../src'
 
-export function AppWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }) {
+export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     return (
         <WizardPage
             title="Create application"

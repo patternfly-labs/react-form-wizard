@@ -51,8 +51,8 @@ Handlebars.registerHelper('if_ne', function (this: unknown, arg1: string, arg2: 
     return arg1 !== arg2 ? options.fn(this) : options.inverse(this)
 })
 
-export type FormSubmit = (data: object) => Promise<void>
-export type FormCancel = () => void
+export type WizardSubmit = (data: object) => Promise<void>
+export type WizardCancel = () => void
 
 type FormWizardStep = WizardStep & { id: string; hasValidationErrors: boolean }
 
@@ -64,8 +64,8 @@ export function FormWizardPage(props: {
     template?: string
     yamlToDataTemplate?: string
     breadcrumb?: { label: string; to?: string }[]
-    onSubmit?: FormSubmit // TODO make required
-    onCancel?: FormCancel // TODO make required
+    onSubmit?: WizardSubmit // TODO make required
+    onCancel?: WizardCancel // TODO make required
     yaml?: boolean
 }) {
     const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
@@ -285,8 +285,8 @@ export function FormWizardWizardMode(props: {
     data: object
     children: ReactNode
     template?: HandlebarsTemplateDelegate
-    onSubmit?: FormSubmit
-    onCancel?: FormCancel
+    onSubmit?: WizardSubmit
+    onCancel?: WizardCancel
 }) {
     const steps: FormWizardStep[] = []
     const item = useContext(ItemContext)

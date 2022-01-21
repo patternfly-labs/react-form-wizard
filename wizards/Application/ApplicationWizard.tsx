@@ -3,7 +3,7 @@ import { GitAltIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
 import { Fragment, useMemo } from 'react'
 import {
-    FormCancel,
+    WizardCancel,
     ArrayInput,
     Checkbox,
     Hidden,
@@ -39,7 +39,7 @@ export function ApplicationWizard(props: {
     ansibleCredentials: string[]
     argoServers: string[]
     namespaces: string[]
-    onCancel?: FormCancel
+    onCancel?: WizardCancel
     placements: string[]
 }) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))

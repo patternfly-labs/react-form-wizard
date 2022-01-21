@@ -16,10 +16,10 @@ import {
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react'
-import { FormCancel, FormSubmit } from '.'
+import { WizardCancel, WizardSubmit } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { DataContext, useData } from './contexts/DataContext'
-import { ItemContext } from './contexts/ItemContext'
+import { ItemContext, useItem } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
 import { StepValidationProvider, useStepHasValidationError } from './contexts/StepValidationProvider'
@@ -34,8 +34,8 @@ export interface WizardProps {
     defaultData?: object
     template?: string
     yamlToDataTemplate?: string
-    onSubmit: FormSubmit
-    onCancel: FormCancel
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
 }
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
@@ -76,7 +76,9 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                             isWidthLimited
                                         >
                                             <ItemContext.Provider value={data}>
-                                                <WizardInternal>{props.children}</WizardInternal>
+                                                <WizardInternal onSubmit={props.onSubmit} onCancel={props.onCancel}>
+                                                    {props.children}
+                                                </WizardInternal>
                                             </ItemContext.Provider>
                                         </PageSection>
                                     </DrawerContentBody>
@@ -90,7 +92,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     )
 }
 
-function WizardInternal(props: { children: ReactNode }) {
+function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     const steps = Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
     steps.push(
         <Step label="Review">
@@ -142,7 +144,15 @@ function WizardInternal(props: { children: ReactNode }) {
                 return (
                     <ShowValidationProvider key={step.props.label}>
                         <ValidationProvider>
-                            <WizardActiveStep activeStep={activeStep} setActiveStep={setActiveStep} steps={steps} next={next} back={back} />
+                            <WizardActiveStep
+                                activeStep={activeStep}
+                                setActiveStep={setActiveStep}
+                                steps={steps}
+                                next={next}
+                                back={back}
+                                onSubmit={props.onSubmit}
+                                onCancel={props.onCancel}
+                            />
                         </ValidationProvider>
                     </ShowValidationProvider>
                 )
@@ -157,11 +167,14 @@ export function WizardActiveStep(props: {
     setActiveStep: (activeStep: ReactElement) => void
     next: () => void
     back: () => void
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
 }) {
     const hasValidationError = useHasValidationError()
     const showValidation = useShowValidation()
     const setShowValidation = useSetShowValidation()
     const id = useID(props.activeStep.props)
+    const item = useItem()
     return (
         <div className="pf-c-wizard__outer-wrap" id={id}>
             <div className="pf-c-wizard__inner-wrap">
@@ -194,9 +207,7 @@ export function WizardActiveStep(props: {
                         type="submit"
                         onClick={() => {
                             setShowValidation(true)
-                            if (!hasValidationError) {
-                                props.next()
-                            }
+                            void props.onSubmit(item)
                         }}
                     >
                         Submit
@@ -220,7 +231,9 @@ export function WizardActiveStep(props: {
                     Back
                 </Button>
                 <div className="pf-c-wizard__footer-cancel">
-                    <Button variant="link">Cancel</Button>
+                    <Button variant="link" onClick={props.onCancel}>
+                        Cancel
+                    </Button>
                 </div>
             </footer>
         </div>

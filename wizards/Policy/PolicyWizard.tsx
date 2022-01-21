@@ -5,8 +5,8 @@ import set from 'set-value'
 import {
     ArrayInput,
     Checkbox,
-    FormCancel,
-    FormSubmit,
+    WizardCancel,
+    WizardSubmit,
     Hidden,
     ItemSelector,
     Radio,
@@ -21,7 +21,7 @@ import {
 import { ItemContext } from '../../src/contexts/ItemContext'
 import { Specifications } from './templates'
 
-export function PolicyWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel; namespaces: string[] }) {
+export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel; namespaces: string[] }) {
     // const clusterSelectors = useMemo(
     //     () =>
     //         ['cloud: "Amazon"', 'namespace-1', 'namespace-2'].map((selector) => ({

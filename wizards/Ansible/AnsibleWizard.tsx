@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import {
-    FormCancel,
-    FormSubmit,
+    WizardCancel,
+    WizardSubmit,
     ArrayInput as ArrayInput,
     Select as Select,
     KeyValue,
@@ -12,8 +12,8 @@ import {
 } from '../../src'
 
 export function AnsibleWizard(props: {
-    onSubmit: FormSubmit
-    onCancel: FormCancel
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
     credentials: string[]
     namespaces: string[]
     data?: any
