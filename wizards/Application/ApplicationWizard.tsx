@@ -1,6 +1,7 @@
-import { Split, Stack } from '@patternfly/react-core'
-import { GitAltIcon } from '@patternfly/react-icons'
+import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
+import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
+import { ReactNode } from 'react'
 import { Fragment, useMemo } from 'react'
 import {
     FormCancel,
@@ -36,6 +37,7 @@ import ObjectStore from './logos/ObjectStore.svg'
 import SubscriptionIcon from './logos/SubscriptionIcon.svg'
 
 export function ApplicationWizard(props: {
+    addClusterSets?: string
     ansibleCredentials: string[]
     argoServers: string[]
     namespaces: string[]
@@ -312,6 +314,7 @@ export function ApplicationWizard(props: {
                         options={props.argoServers}
                         required
                     />
+                    <ExternalLinkButton id="addClusterSets" icon={<PlusIcon />} href={props.addClusterSets} />
                     <Select
                         id="requeueTime"
                         label="Requeue time"
@@ -520,6 +523,18 @@ export function TimeWindow() {
                 </Split>
             </ArrayInput>
         </Stack>
+    )
+}
+
+export function ExternalLinkButton(props: { id: string; href?: string; icon?: ReactNode }) {
+    return (
+        <Flex>
+            <FlexItem spacer={{ default: 'spacerXl' }}>
+                <Button id={props.id} icon={props.icon} isSmall={true} variant="link" component="a" href={props.href} target="_blank">
+                    Add cluster sets
+                </Button>
+            </FlexItem>
+        </Flex>
     )
 }
 
