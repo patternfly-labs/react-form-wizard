@@ -10,25 +10,25 @@ describe('ansible wizard', () => {
     })
 
     it('details', () => {
-        cy.get('#name').type('my-ansible-autmation-template')
+        cy.get('#name').type('my-template')
         cy.get('#namespace').click().get('#default').click()
         cy.contains('Next').click()
     })
 
     it('install', () => {
-        cy.get('#install-secret').click().get('#my-install-ansible-creds').click()
+        cy.get('#install-secret').click().get('#my-inst-creds').click()
 
         cy.get('#install-prehooks').within(() => {
             cy.contains('Add job template').click()
             cy.get('#install-prehooks-1').within(() => {
-                cy.get('#name').type('pre-install-1-name')
+                cy.get('#name').type('pre-inst-1')
                 cy.get('#extra_vars').within(() => {
                     cy.get('#add-button').click()
-                    cy.get('#key-1').type('pre-install-1-variable-1')
-                    cy.get('#value-1').type('pre-install-1-value-1')
+                    cy.get('#key-1').type('pre-inst-1-var-1')
+                    cy.get('#value-1').type('pre-inst-1-val-1')
                     cy.get('#add-button').click()
-                    cy.get('#key-2').type('pre-install-1-variable-2')
-                    cy.get('#value-2').type('pre-install-1-value-2')
+                    cy.get('#key-2').type('pre-inst-1-var-2')
+                    cy.get('#value-2').type('pre-inst-1-val-2')
                 })
                 cy.get('.pf-c-form__field-group-toggle').within(() => {
                     cy.get('.pf-c-button').click()
@@ -36,14 +36,14 @@ describe('ansible wizard', () => {
             })
             cy.contains('Add job template').click()
             cy.get('#install-prehooks-2').within(() => {
-                cy.get('#name').type('pre-install-2-name')
+                cy.get('#name').type('pre-inst-2')
                 cy.get('#extra_vars').within(() => {
                     cy.get('#add-button').click()
-                    cy.get('#key-1').type('pre-install-2-variable-1')
-                    cy.get('#value-1').type('pre-install-2-value-1')
+                    cy.get('#key-1').type('pre-inst-2-var-1')
+                    cy.get('#value-1').type('pre-inst-2-val-1')
                     cy.get('#add-button').click()
-                    cy.get('#key-2').type('pre-install-2-variable-2')
-                    cy.get('#value-2').type('pre-install-2-value-2')
+                    cy.get('#key-2').type('pre-inst-2-var-2')
+                    cy.get('#value-2').type('pre-inst-2-val-2')
                 })
                 cy.get('.pf-c-form__field-group-toggle').within(() => {
                     cy.get('.pf-c-button').click()
@@ -54,14 +54,14 @@ describe('ansible wizard', () => {
         cy.get('#install-posthooks').within(() => {
             cy.contains('Add job template').click()
             cy.get('#install-posthooks-1').within(() => {
-                cy.get('#name').type('post-install-1-name')
+                cy.get('#name').type('post-inst-1')
                 cy.get('#extra_vars').within(() => {
                     cy.get('#add-button').click()
-                    cy.get('#key-1').type('post-install-1-variable-1')
-                    cy.get('#value-1').type('post-install-1-value-1')
+                    cy.get('#key-1').type('post-inst-1-var-1')
+                    cy.get('#value-1').type('post-inst-1-val-1')
                     cy.get('#add-button').click()
-                    cy.get('#key-2').type('post-install-1-variable-2')
-                    cy.get('#value-2').type('post-install-1-value-2')
+                    cy.get('#key-2').type('post-inst-1-var-2')
+                    cy.get('#value-2').type('post-inst-1-val-2')
                 })
                 cy.get('.pf-c-form__field-group-toggle').within(() => {
                     cy.get('.pf-c-button').click()
@@ -69,14 +69,14 @@ describe('ansible wizard', () => {
             })
             cy.contains('Add job template').click()
             cy.get('#install-posthooks-2').within(() => {
-                cy.get('#name').type('post-install-2-name')
+                cy.get('#name').type('post-inst-2')
                 cy.get('#extra_vars').within(() => {
                     cy.get('#add-button').click()
-                    cy.get('#key-1').type('post-install-2-variable-1')
-                    cy.get('#value-1').type('post-install-2-value-1')
+                    cy.get('#key-1').type('post-inst-2-var-1')
+                    cy.get('#value-1').type('post-inst-2-val-1')
                     cy.get('#add-button').click()
-                    cy.get('#key-2').type('post-install-2-variable-2')
-                    cy.get('#value-2').type('post-install-2-value-2')
+                    cy.get('#key-2').type('post-inst-2-var-2')
+                    cy.get('#value-2').type('post-inst-2-val-2')
                 })
                 cy.get('.pf-c-form__field-group-toggle').within(() => {
                     cy.get('.pf-c-button').click()
@@ -88,19 +88,19 @@ describe('ansible wizard', () => {
     })
 
     it('upgrade', () => {
-        cy.get('#upgrade-secret').click().get('#my-upgrade-ansible-creds').click()
+        cy.get('#upgrade-secret').click().get('#my-up-creds').click()
 
         cy.get('#upgrade-prehooks').within(() => {
             cy.contains('Add job template').click()
             cy.get('#upgrade-prehooks-1').within(() => {
-                cy.get('#name').type('pre-upgrade-1-name')
+                cy.get('#name').type('pre-up-1')
                 cy.get('#extra_vars').within(() => {
                     cy.get('#add-button').click()
-                    cy.get('#key-1').type('pre-upgrade-1-variable-1')
-                    cy.get('#value-1').type('pre-upgrade-1-value-1')
+                    cy.get('#key-1').type('pre-up-1-var-1')
+                    cy.get('#value-1').type('pre-up-1-val-1')
                     cy.get('#add-button').click()
-                    cy.get('#key-2').type('pre-upgrade-1-variable-2')
-                    cy.get('#value-2').type('pre-upgrade-1-value-2')
+                    cy.get('#key-2').type('pre-up-1-var-2')
+                    cy.get('#value-2').type('pre-up-1-val-2')
                 })
                 cy.get('.pf-c-form__field-group-toggle').within(() => {
                     cy.get('.pf-c-button').click()
@@ -108,14 +108,14 @@ describe('ansible wizard', () => {
             })
             cy.contains('Add job template').click()
             cy.get('#upgrade-prehooks-2').within(() => {
-                cy.get('#name').type('pre-upgrade-2-name')
+                cy.get('#name').type('pre-up-2')
                 cy.get('#extra_vars').within(() => {
                     cy.get('#add-button').click()
-                    cy.get('#key-1').type('pre-upgrade-2-variable-1')
-                    cy.get('#value-1').type('pre-upgrade-2-value-1')
+                    cy.get('#key-1').type('pre-up-2-var-1')
+                    cy.get('#value-1').type('pre-up-2-val-1')
                     cy.get('#add-button').click()
-                    cy.get('#key-2').type('pre-upgrade-2-variable-2')
-                    cy.get('#value-2').type('pre-upgrade-2-value-2')
+                    cy.get('#key-2').type('pre-up-2-var-2')
+                    cy.get('#value-2').type('pre-up-2-val-2')
                 })
                 cy.get('.pf-c-form__field-group-toggle').within(() => {
                     cy.get('.pf-c-button').click()
@@ -126,14 +126,14 @@ describe('ansible wizard', () => {
         cy.get('#upgrade-posthooks').within(() => {
             cy.contains('Add job template').click()
             cy.get('#upgrade-posthooks-1').within(() => {
-                cy.get('#name').type('post-upgrade-1-name')
+                cy.get('#name').type('post-up-1')
                 cy.get('#extra_vars').within(() => {
                     cy.get('#add-button').click()
-                    cy.get('#key-1').type('post-upgrade-1-variable-1')
-                    cy.get('#value-1').type('post-upgrade-1-value-1')
+                    cy.get('#key-1').type('post-up-1-var-1')
+                    cy.get('#value-1').type('post-up-1-val-1')
                     cy.get('#add-button').click()
-                    cy.get('#key-2').type('post-upgrade-1-variable-2')
-                    cy.get('#value-2').type('post-upgrade-1-value-2')
+                    cy.get('#key-2').type('post-up-1-var-2')
+                    cy.get('#value-2').type('post-up-1-val-2')
                 })
                 cy.get('.pf-c-form__field-group-toggle').within(() => {
                     cy.get('.pf-c-button').click()
@@ -141,14 +141,14 @@ describe('ansible wizard', () => {
             })
             cy.contains('Add job template').click()
             cy.get('#upgrade-posthooks-2').within(() => {
-                cy.get('#name').type('post-upgrade-2-name')
+                cy.get('#name').type('post-up-2')
                 cy.get('#extra_vars').within(() => {
                     cy.get('#add-button').click()
-                    cy.get('#key-1').type('post-upgrade-2-variable-1')
-                    cy.get('#value-1').type('post-upgrade-2-value-1')
+                    cy.get('#key-1').type('post-up-2-var-1')
+                    cy.get('#value-1').type('post-up-2-val-1')
                     cy.get('#add-button').click()
-                    cy.get('#key-2').type('post-upgrade-2-variable-2')
-                    cy.get('#value-2').type('post-upgrade-2-value-2')
+                    cy.get('#key-2').type('post-up-2-var-2')
+                    cy.get('#value-2').type('post-up-2-val-2')
                 })
                 cy.get('.pf-c-form__field-group-toggle').within(() => {
                     cy.get('.pf-c-button').click()
@@ -159,27 +159,31 @@ describe('ansible wizard', () => {
         cy.contains('Next').click()
     })
 
-    it('summary', () => {
-        cy.get('#name').contains('my-ansible-autmation-template')
-        cy.get('#namespace').contains('default')
+    it('review', () => {
+        cy.get('#review').within(() => {
+            cy.get('#details').within(() => {
+                cy.get('#name').contains('my-template')
+                cy.get('#namespace').contains('default')
+            })
 
-        cy.get('#install').within(() => {
-            cy.get('#install-secret').contains('my-install-ansible-creds')
-            cy.get('#install-prehooks').contains('pre-install-1-name')
-            cy.get('#install-prehooks').contains('pre-install-2-name')
-            cy.get('#install-posthooks').contains('post-install-1-name')
-            cy.get('#install-posthooks').contains('post-install-2-name')
+            cy.get('#install').within(() => {
+                cy.get('#install-secret').contains('my-inst-creds')
+                cy.get('#install-prehooks').contains('pre-inst-1')
+                cy.get('#install-prehooks').contains('pre-inst-2')
+                cy.get('#install-posthooks').contains('post-inst-1')
+                cy.get('#install-posthooks').contains('post-inst-2')
+            })
+
+            cy.get('#upgrade').within(() => {
+                cy.get('#upgrade-secret').contains('my-up-creds')
+                cy.get('#upgrade-prehooks').contains('pre-up-1')
+                cy.get('#upgrade-prehooks').contains('pre-up-2')
+                cy.get('#upgrade-posthooks').contains('post-up-1')
+                cy.get('#upgrade-posthooks').contains('post-up-2')
+            })
+
+            cy.contains('Submit')
         })
-
-        cy.get('#upgrade').within(() => {
-            cy.get('#upgrade-secret').contains('my-upgrade-ansible-creds')
-            cy.get('#upgrade-prehooks').contains('pre-upgrade-1-name')
-            cy.get('#upgrade-prehooks').contains('pre-upgrade-2-name')
-            cy.get('#upgrade-posthooks').contains('post-upgrade-1-name')
-            cy.get('#upgrade-posthooks').contains('post-upgrade-2-name')
-        })
-
-        cy.contains('Submit')
     })
 
     it('results', () => {
@@ -187,76 +191,76 @@ describe('ansible wizard', () => {
             apiVersion: 'cluster.open-cluster-management.io/v1beta1',
             kind: 'ClusterCurator',
             metadata: {
-                name: 'my-ansible-autmation-template',
+                name: 'my-template',
                 namespace: 'default',
             },
             spec: {
                 install: {
-                    towerAuthSecret: 'my-install-ansible-creds',
+                    towerAuthSecret: 'my-inst-creds',
                     prehook: [
                         {
-                            name: 'pre-install-1-name',
+                            name: 'pre-inst-1',
                             extra_vars: {
-                                'pre-install-1-variable-1': 'pre-install-1-value-1',
-                                'pre-install-1-variable-2': 'pre-install-1-value-2',
+                                'pre-inst-1-var-1': 'pre-inst-1-val-1',
+                                'pre-inst-1-var-2': 'pre-inst-1-val-2',
                             },
                         },
                         {
-                            name: 'pre-install-2-name',
+                            name: 'pre-inst-2',
                             extra_vars: {
-                                'pre-install-2-variable-1': 'pre-install-2-value-1',
-                                'pre-install-2-variable-2': 'pre-install-2-value-2',
+                                'pre-inst-2-var-1': 'pre-inst-2-val-1',
+                                'pre-inst-2-var-2': 'pre-inst-2-val-2',
                             },
                         },
                     ],
                     posthook: [
                         {
-                            name: 'post-install-1-name',
+                            name: 'post-inst-1',
                             extra_vars: {
-                                'post-install-1-variable-1': 'post-install-1-value-1',
-                                'post-install-1-variable-2': 'post-install-1-value-2',
+                                'post-inst-1-var-1': 'post-inst-1-val-1',
+                                'post-inst-1-var-2': 'post-inst-1-val-2',
                             },
                         },
                         {
-                            name: 'post-install-2-name',
+                            name: 'post-inst-2',
                             extra_vars: {
-                                'post-install-2-variable-1': 'post-install-2-value-1',
-                                'post-install-2-variable-2': 'post-install-2-value-2',
+                                'post-inst-2-var-1': 'post-inst-2-val-1',
+                                'post-inst-2-var-2': 'post-inst-2-val-2',
                             },
                         },
                     ],
                 },
                 upgrade: {
-                    towerAuthSecret: 'my-upgrade-ansible-creds',
+                    towerAuthSecret: 'my-up-creds',
                     prehook: [
                         {
-                            name: 'pre-upgrade-1-name',
+                            name: 'pre-up-1',
                             extra_vars: {
-                                'pre-upgrade-1-variable-1': 'pre-upgrade-1-value-1',
-                                'pre-upgrade-1-variable-2': 'pre-upgrade-1-value-2',
+                                'pre-up-1-var-1': 'pre-up-1-val-1',
+                                'pre-up-1-var-2': 'pre-up-1-val-2',
                             },
                         },
                         {
-                            name: 'pre-upgrade-2-name',
+                            name: 'pre-up-2',
                             extra_vars: {
-                                'pre-upgrade-2-variable-1': 'pre-upgrade-2-value-1',
-                                'pre-upgrade-2-variable-2': 'pre-upgrade-2-value-2',
+                                'pre-up-2-var-1': 'pre-up-2-val-1',
+                                'pre-up-2-var-2': 'pre-up-2-val-2',
                             },
                         },
                     ],
                     posthook: [
                         {
-                            name: 'post-upgrade-1-name',
+                            name: 'post-up-1',
                             extra_vars: {
-                                'post-upgrade-1-variable-1': 'post-upgrade-1-value-1',
-                                'post-upgrade-1-variable-2': 'post-upgrade-1-value-2',
+                                'post-up-1-var-1': 'post-up-1-val-1',
+                                'post-up-1-var-2': 'post-up-1-val-2',
                             },
                         },
                         {
-                            name: 'post-upgrade-2-name',
+                            name: 'post-up-2',
                             extra_vars: {
-                                'post-upgrade-2-variable-1': 'post-upgrade-2-value-1',
-                                'post-upgrade-2-variable-2': 'post-upgrade-2-value-2',
+                                'post-up-2-var-1': 'post-up-2-val-1',
+                                'post-up-2-var-2': 'post-up-2-val-2',
                             },
                         },
                     ],

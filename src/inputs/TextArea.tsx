@@ -1,44 +1,43 @@
 import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup'
-import { TextArea } from '@patternfly/react-core/dist/js/components/TextArea'
+import { TextArea as PFTextArea } from '@patternfly/react-core/dist/js/components/TextArea'
 import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput'
-import { Fragment, useContext, useState } from 'react'
-import { FormWizardTextDetail } from '..'
+import { Fragment, useState } from 'react'
+import { TextDetail } from '..'
 import { ClearInputButton } from '../components/ClearInputButton'
 import { PasteInputButton } from '../components/PasteInputButton'
 import { ShowSecretsButton } from '../components/ShowSecretsButton'
-import { FormWizardContext, InputMode } from '../contexts/FormWizardContext'
-import { InputCommonProps, lowercaseFirst, useInputHidden, useInputValidation, useInputValue } from './FormWizardInput'
-import { FormWizardInputLabel } from './FormWizardInputLabel'
+import { Mode } from '../contexts/ModeContext'
+import { InputCommonProps, lowercaseFirst, useInput } from './Input'
+import { InputLabel } from './InputLabel'
 
-export type FormWizardTextAreaProps = InputCommonProps<string> & {
+export type TextAreaProps = InputCommonProps<string> & {
+    label: string
     placeholder?: string
     secret?: boolean
 }
 
-export function FormWizardTextArea(props: FormWizardTextAreaProps) {
-    const formWizardContext = useContext(FormWizardContext)
+export function TextArea(props: TextAreaProps) {
+    const { mode, value, setValue, validated, hidden, id } = useInput(props)
 
-    const [value, setValue] = useInputValue(props, '')
-    const { validated } = useInputValidation(props)
-
-    const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`
     const [showSecrets, setShowSecrets] = useState(true)
 
-    const hidden = useInputHidden(props)
     if (hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
-        return <FormWizardTextDetail id={props.id} path={props.path} label={props.label} />
+    if (mode === Mode.Details) {
+        if (!value) return <Fragment />
+        return <TextDetail id={id} path={props.path} label={props.label} />
     }
 
+    const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`
+
     return (
-        <FormWizardInputLabel {...props}>
-            <InputGroup id={`${props.id}-input-group`} key={`${props.id}-input-group`}>
+        <InputLabel {...props} id={id}>
+            <InputGroup>
                 {value && !showSecrets && props.secret ? (
-                    <TextInput id={props.id} value={value} validated={validated} isReadOnly={true} type={'password'} />
+                    <TextInput id={id} value={value} validated={validated} isReadOnly={true} type={'password'} />
                 ) : (
-                    <TextArea
-                        id={props.id}
+                    <PFTextArea
+                        id={id}
                         placeholder={placeholder}
                         validated={validated}
                         value={value}
@@ -61,6 +60,6 @@ export function FormWizardTextArea(props: FormWizardTextAreaProps) {
                     />
                 )}
             </InputGroup>
-        </FormWizardInputLabel>
+        </InputLabel>
     )
 }

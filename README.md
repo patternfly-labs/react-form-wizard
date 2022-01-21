@@ -15,14 +15,14 @@ Patternfly defines how wizards should look and how input validation errors shoul
 A wizard contains steps which contain sections which contain input controls.
 
 ```
-<FormWizardPage title="Example form">
-   <FormWizardStep label="Details">
-      <FormWizardSection label="Details" prompt="Enter the details">
-          <FormWizardTextInput path="name" label="Name" required />
-          <FormWizardSelect path="namespace" label="Namespace" options={['default']} />
-      </FormWizardSection>
-   </FormWizardStep>
-</FormWizardPage>
+<Wizard title="Example form">
+   <Step label="Details">
+      <Section label="Details" prompt="Enter the details">
+          <TextInput path="name" label="Name" required />
+          <Select path="namespace" label="Namespace" options={['default']} />
+      </Section>
+   </Step>
+</Wizard>
 ```
 
 ### Data paths
@@ -32,21 +32,21 @@ There is one data state for the wizard. It can either be a single object or an a
 Input controls know about the data state and update it using json path dot notation.
 
 ```
-<FormWizardTextInput path="metadata.name" label="Name" required />
+<TextInput path="metadata.name" label="Name" required />
 ```
 
 In many cases an array of items need to be edited.
 There is a special control for editing arrays of items.
 
 ```
-<FormWizardArrayInput path="resources" placeholder="Add new resource">
-   <FormWizardTextInput path="metadata.name" label="Name" required />
-   <FormWizardSelect path="metadata.namespace" label="Namespace" options={['default']} />
-</FormWizardArrayInput>
+<ArrayInput path="resources" placeholder="Add new resource">
+   <TextInput path="metadata.name" label="Name" required />
+   <Select path="metadata.namespace" label="Namespace" options={['default']} />
+</ArrayInput>
 ```
 
 This allow items to be added and removed from the array.
-The controls inside the `FormWizardArrayInput` understand the item context they are working with and paths are relative for that item.
+The controls inside the `ArrayInput` understand the item context they are working with and paths are relative for that item.
 
 ### Input validation
 

@@ -1,9 +1,9 @@
 import { DescriptionList, FormSection, Split, Stack, Text, Title } from '@patternfly/react-core'
 import { Fragment, ReactNode, useContext } from 'react'
-import { FormWizardLabelHelp } from './components/FormWizardLabelHelp'
-import { FormWizardContext, InputMode } from './contexts/FormWizardContext'
-import { FormWizardItemContext } from './contexts/FormWizardItemContext'
-import { inputHasValue, useInputHidden } from './inputs/FormWizardInput'
+import { LabelHelp } from './components/LabelHelp'
+import { ItemContext } from './contexts/ItemContext'
+import { Mode, useMode } from './contexts/ModeContext'
+import { inputHasValue, useInputHidden } from './inputs/Input'
 
 interface FormWizardSectionProps {
     label: string
@@ -17,11 +17,11 @@ interface FormWizardSectionProps {
 }
 
 export function FormWizardSection(props: FormWizardSectionProps) {
-    const formWizardContext = useContext(FormWizardContext)
-    const item = useContext(FormWizardItemContext)
+    const mode = useMode()
+    const item = useContext(ItemContext)
 
     let label = props.label
-    if (formWizardContext.mode == InputMode.Wizard) {
+    if (mode == Mode.Wizard) {
         if (props.prompt) {
             label = props.prompt
         }
@@ -30,7 +30,7 @@ export function FormWizardSection(props: FormWizardSectionProps) {
     const hidden = useInputHidden(props)
     if (hidden) return <Fragment />
 
-    if (formWizardContext.mode === InputMode.Details) {
+    if (mode === Mode.Details) {
         if (!inputHasValue(props, item)) {
             return <Fragment />
         }
@@ -49,7 +49,7 @@ export function FormWizardSection(props: FormWizardSectionProps) {
             <Stack>
                 <Split>
                     <Title headingLevel="h2">{label}</Title>
-                    {props.id && <FormWizardLabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                    {props.id && <LabelHelp id={props.id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                 </Split>
                 {props.description && <Text component="small">{props.description}</Text>}
             </Stack>

@@ -1,29 +1,33 @@
 import {
-    FormWizardArrayInput,
-    FormWizardKeyValue,
-    FormWizardPage as Wizard,
-    FormWizardSection as Section,
-    FormWizardSelect,
-    FormWizardSelector,
-    FormWizardStep as Step,
-    FormWizardTextInput as TextInput,
+    ArrayInput,
+    FormCancel,
+    FormSubmit,
+    ItemSelector,
+    KeyValue,
+    Section,
+    Select,
+    Step,
+    TextInput as TextInput,
+    WizardPage,
 } from '../../src'
 
-export function AppTest() {
+export function AppWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel }) {
     return (
-        <Wizard
+        <WizardPage
             title="Create application"
             defaultData={[
                 { apiVersion: 'v1', kind: 'Namespace', metadata: { name: '' } },
                 { apiVersion: 'app.k8s.io/v1beta1', kind: 'Application', metadata: { name: '', namespace: '' } },
             ]}
+            onSubmit={props.onSubmit}
+            onCancel={props.onCancel}
         >
             <Step label="Details">
                 <Section label="Details" prompt="Enter the application details">
-                    <FormWizardSelector selectKey="kind" selectValue="Application">
+                    <ItemSelector selectKey="kind" selectValue="Application">
                         <TextInput id="text-input" path="metadata.name" label="Name" required />
                         <TextInput id="text-input" path="metadata.namespace" label="Namespace" required />
-                    </FormWizardSelector>
+                    </ItemSelector>
                 </Section>
             </Step>
             <Step label="Subscriptions">
@@ -32,7 +36,7 @@ export function AppTest() {
                     prompt="Add repository subscriptions"
                     description={'An application can be made up of multiple subscriptions. '}
                 >
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id=""
                         placeholder="Add subscription"
                         collapsedContent="metadata.name"
@@ -60,7 +64,7 @@ export function AppTest() {
                     >
                         <TextInput id="text-input" path="metadata.name" label="Name" required />
                         <TextInput id="text-input" path="metadata.namespace" label="Namespace" required />
-                        <FormWizardSelect
+                        <Select
                             id="select"
                             path="spec.channel"
                             label="Channel"
@@ -86,14 +90,14 @@ export function AppTest() {
                             label="Commit hash"
                         />
                         <TextInput id="text-input" path={`metadata.annotations.apps\\.open-cluster-management\\.io/git-tag`} label="Tag" />
-                        <FormWizardSelect
+                        <Select
                             id="select"
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/reconcile-option`}
                             label="Reconcile option"
                             options={['merge', 'replace']}
                             required
                         />
-                    </FormWizardArrayInput>
+                    </ArrayInput>
                 </Section>
             </Step>
             <Step label="Channels">
@@ -102,7 +106,7 @@ export function AppTest() {
                     prompt="Add channels"
                     description="A channel targets a source repository containing application resources."
                 >
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id=""
                         placeholder="Add channel"
                         collapsedContent="metadata.name"
@@ -126,7 +130,7 @@ export function AppTest() {
                         }}
                     >
                         <TextInput id="text-input" path="metadata.name" label="Channel name" required />
-                        <FormWizardSelect
+                        <Select
                             id="type"
                             path={`spec.type`}
                             label="Repository type"
@@ -134,20 +138,20 @@ export function AppTest() {
                             required
                         />
                         <TextInput id="pathname" path="spec.pathname" label="Repository URL" placeholder="Enter the URL" required />
-                        <FormWizardSelect
+                        <Select
                             id="type"
                             path="spec.secretRef.name"
                             label="Repository secret"
                             options={['TODO']}
                             helperText="The secret containing the credentials to access the repository."
                         />
-                        <FormWizardSelect
+                        <Select
                             id="select"
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/reconcile-rate`}
                             label="Repository reconcile rate"
                             options={['low', 'medium', 'high', 'off']}
                         />
-                    </FormWizardArrayInput>
+                    </ArrayInput>
                 </Section>
             </Step>
             <Step label="Placements">
@@ -156,7 +160,7 @@ export function AppTest() {
                     prompt="Add placements"
                     description="Placements are used to place applications on clusters. Only new placements are shown here. Both new and existing placements can be selected when creating a subscription."
                 >
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id=""
                         placeholder="Add"
                         collapsedContent="metadata.name"
@@ -171,11 +175,11 @@ export function AppTest() {
                         }}
                     >
                         <TextInput id="text-input" path="metadata.name" label="Name" required />
-                        <FormWizardKeyValue id="" path="spec.clusterSelector.matchLabels" label="Cluster labels"></FormWizardKeyValue>
+                        <KeyValue id="" path="spec.clusterSelector.matchLabels" label="Cluster labels"></KeyValue>
                         {/* <FormWizardSelect>
 
                         </FormWizardSelect> */}
-                    </FormWizardArrayInput>
+                    </ArrayInput>
                 </Section>
             </Step>
             <Step label="Secrets">
@@ -184,7 +188,7 @@ export function AppTest() {
                     prompt="Add secrets"
                     description="Some repositories need credentials stored as secrets to access the repository. Add any needed credential secrets here."
                 >
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id=""
                         placeholder="Add"
                         collapsedContent="metadata.name"
@@ -215,9 +219,9 @@ export function AppTest() {
                             secret
                             helperText="The secret key for accessing the object store."
                         />
-                    </FormWizardArrayInput>
+                    </ArrayInput>
                 </Section>
             </Step>
-        </Wizard>
+        </WizardPage>
     )
 }
