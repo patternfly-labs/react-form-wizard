@@ -49,7 +49,7 @@ export function InputsWizard() {
 
             <Step label="Tiles">
                 <Section label="Tiles">
-                    <Tiles id="tiles" path="tile" label="Tiles" required>
+                    <Tiles id="tiles" path="tile" label="Tiles">
                         <Tile id="tile1" value="tile1" label="Tile 1" />
                         <Tile id="tile2" value="tile2" label="Tile 2" />
                         <Tile id="tile3" value="tile3" label="Tile 3" />
@@ -59,11 +59,11 @@ export function InputsWizard() {
 
             <Step label="Radio">
                 <Section label="Radio">
-                    <RadioGroup id="radio0" path="radio" label="Radio" required>
+                    <RadioGroup id="radio0" path="radio" label="Radio">
                         <Radio id="radio-1" label="Radio 1" value="radio-1" />
                         <Radio id="radio-2" label="Radio 2" value="radio-2" />
                     </RadioGroup>
-                    <RadioGroup id="radio1" path="radio1" label="Radio with sub-inputs" required>
+                    <RadioGroup id="radio1" path="radio1" label="Radio with sub-inputs">
                         <Radio id="radio-1" label="Radio 1" value="radio-3">
                             <TextInput label="Name" required />
                         </Radio>
@@ -71,11 +71,11 @@ export function InputsWizard() {
                             <TextInput label="Name" required />
                         </Radio>
                     </RadioGroup>
-                    <RadioGroup id="radio2" path="radio2" label="Radio with descriptions" required>
+                    <RadioGroup id="radio2" path="radio2" label="Radio with descriptions">
                         <Radio id="radio-1" label="Radio 1" value="radio-5" description="Radio 1 description" />
                         <Radio id="radio-2" label="Radio 2" value="radio-6" description="Radio 2 description" />
                     </RadioGroup>
-                    <RadioGroup id="radio3" path="radio3" label="Radio with descriptions and sub-inputs" required>
+                    <RadioGroup id="radio3" path="radio3" label="Radio with descriptions and sub-inputs">
                         <Radio id="radio-1" label="Radio 1" value="radio-7" description="Radio 1 description">
                             <TextInput label="Name" required />
                         </Radio>

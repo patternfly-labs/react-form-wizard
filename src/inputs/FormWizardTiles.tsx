@@ -28,7 +28,7 @@ export function FormWizardTiles(props: FormWizardTilesProps) {
         disabled: props.disabled,
     }
 
-    if (props.hidden) return <Fragment />
+    if (hidden) return <Fragment />
 
     if (mode === Mode.Details) {
         let label: string | undefined
