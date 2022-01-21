@@ -1,26 +1,34 @@
 /* Copyright Contributors to the Open Cluster Management project */
 // eslint-disable-next-line no-use-before-define
+import { useHistory } from 'react-router-dom'
 import {
     ArrayInput,
     Checkbox,
+    KeyValue,
     Multiselect,
-    FormWizardPage,
-    FormWizardSection,
+    Section,
     Select,
-    FormWizardStep,
+    Step,
     TextDetail,
+    TextInput,
     Tile,
     Tiles,
-    KeyValue,
-    TextInput,
+    WizardPage,
 } from '../../src'
 import YamlTemplate from './Cluster.hbs'
 
 export function ClusterForm() {
+    const history = useHistory()
     return (
-        <FormWizardPage title="Create cluster" template={YamlTemplate} breadcrumb={[{ label: 'Managed clusters', to: '.' }]}>
-            <FormWizardStep label="Infrastructure provider">
-                <FormWizardSection label="Infrastructure provider" prompt="Select the infrastructure for the cluster">
+        <WizardPage
+            title="Create cluster"
+            template={YamlTemplate}
+            breadcrumb={[{ label: 'Managed clusters', to: '.' }]}
+            onSubmit={() => Promise.resolve()}
+            onCancel={() => history.push('.')}
+        >
+            <Step label="Infrastructure provider">
+                <Section label="Infrastructure provider" prompt="Select the infrastructure for the cluster">
                     <Tiles id="provider" path="provider" label="Cloud infrastructure providers">
                         <Tile id="aws" value="aws" label="Amazon Web Services" />
                         <Tile id="azr" value="azr" label="Microsoft Azure" />
@@ -32,8 +40,8 @@ export function ClusterForm() {
                     <Tiles id="centrallyManagedCredentials" path="provider" label="Centrally managed">
                         <Tile id="onp" value="onp" label="On premise" />
                     </Tiles>
-                </FormWizardSection>
-                <FormWizardSection label="Credentials" prompt="Select the infrastructure for the cluster" hidden={(item) => !item.provider}>
+                </Section>
+                <Section label="Credentials" prompt="Select the infrastructure for the cluster" hidden={(item) => !item.provider}>
                     <Select
                         id="credential"
                         label="Infrastructure credentials"
@@ -41,11 +49,11 @@ export function ClusterForm() {
                         options={['default']}
                         required
                     />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Cluster details">
-                <FormWizardSection label="Cluster details" prompt="Enter the cluster details">
+            <Step label="Cluster details">
+                <Section label="Cluster details" prompt="Enter the cluster details">
                     <TextInput id="name" label="Cluster name" placeholder="Enter the cluster name" required />
                     <Select id="region" label="Region" options={Object.keys(awsRegions)} />
                     <Select
@@ -59,19 +67,19 @@ export function ClusterForm() {
                     <TextInput id="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
                     <Select id="releaseImage" label="Release image" placeholder="Select a release image" options={['default']} required />
                     <KeyValue id="labels" label="Additional labels" />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Control plane">
+            <Step label="Control plane">
                 <ControlPlaneStep />
-            </FormWizardStep>
+            </Step>
 
-            <FormWizardStep label="Worker pools">
+            <Step label="Worker pools">
                 <WorkerPoolsStep />
-            </FormWizardStep>
+            </Step>
 
-            <FormWizardStep label="Networking">
-                <FormWizardSection
+            <Step label="Networking">
+                <Section
                     label="Networking"
                     prompt="Enter networking options"
                     description="Configure network access for your cluster. One network is created by default."
@@ -89,11 +97,11 @@ export function ClusterForm() {
                         <TextInput id="serviceCidr" label="Service network Cidr" />
                         <TextInput id="machienCidr" label="Machine CIDR" />
                     </ArrayInput>
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Proxy">
-                <FormWizardSection
+            <Step label="Proxy">
+                <Section
                     label="Proxy"
                     prompt="Configure a proxy"
                     description="Production environments can deny direct access to the Internet and instead have an HTTP or HTTPS proxy available. You can configure a new OpenShift Container Platform cluster to use a proxy by configuring the proxy settings."
@@ -120,25 +128,25 @@ export function ClusterForm() {
                         hidden={(item) => !item.useProxy}
                     />
                     <TextInput id="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Automation">
-                <FormWizardSection
+            <Step label="Automation">
+                <Section
                     label="Automation"
                     prompt="Configure a Ansible automation"
                     description="Choose an automation job template to automatically run Ansible jobs at different stages of a cluster's life cycle. To use this feature, the Ansible Automation Platform Resource Operator must be installed."
                 >
                     <Select id="ansibleTemplate" label="Ansible Automation Template" options={['default']} />
-                </FormWizardSection>
-            </FormWizardStep>
-        </FormWizardPage>
+                </Section>
+            </Step>
+        </WizardPage>
     )
 }
 
 export function ControlPlaneStep() {
     return (
-        <FormWizardSection
+        <Section
             label="Control plane"
             prompt="Enter the control plane details"
             description="Three control plane nodes will be created to control this cluster unless single node is enabled, in which case there will only be one control plane node."
@@ -152,13 +160,13 @@ export function ControlPlaneStep() {
                 required
             />
             <Select id="rootStorage" label="Root storage (GiB)" options={['default']} />
-        </FormWizardSection>
+        </Section>
     )
 }
 
 export function WorkerPoolsStep() {
     return (
-        <FormWizardSection
+        <Section
             label="Worker pools"
             prompt="Enter the worker pools"
             description="One or more worker nodes will be created to run the container workloads in this cluster."
@@ -172,10 +180,10 @@ export function WorkerPoolsStep() {
                 <TextInput id="name" label="Pool name" />
                 <Select id="zones" label="Zones" options={['default']} />
                 <Select id="instanceType" label="Instance type" options={['default']} />
-                {/* <FormWizardnumber */}
+                {/* <NumberInput */}
                 <Select id="rootStorage" label="Root storage (GiB)" options={['default']} />
             </ArrayInput>
-        </FormWizardSection>
+        </Section>
     )
 }
 

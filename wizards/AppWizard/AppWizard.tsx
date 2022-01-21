@@ -176,9 +176,6 @@ export function AppWizard(props: { onSubmit: FormSubmit; onCancel: FormCancel })
                     >
                         <TextInput id="text-input" path="metadata.name" label="Name" required />
                         <KeyValue id="" path="spec.clusterSelector.matchLabels" label="Cluster labels"></KeyValue>
-                        {/* <FormWizardSelect>
-
-                        </FormWizardSelect> */}
                     </ArrayInput>
                 </Section>
             </Step>

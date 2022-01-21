@@ -3,16 +3,16 @@ import get from 'get-value'
 import { Fragment, useContext } from 'react'
 import set from 'set-value'
 import {
-    FormCancel,
-    FormSubmit,
     ArrayInput,
     Checkbox,
+    FormCancel,
+    FormSubmit,
     Hidden,
+    ItemSelector,
     Radio,
     RadioGroup,
-    Select,
-    ItemSelector,
     Section,
+    Select,
     Step,
     StringsInput,
     TextInput,
@@ -260,7 +260,7 @@ export function PolicyWizardTemplates() {
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
-                    {/* TODO FormWizardNumberInput */}
+                    {/* TODO NumberInput */}
                     <TextInput id="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
                 </Hidden>
 

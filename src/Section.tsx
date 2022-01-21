@@ -6,6 +6,7 @@ import { HasValueContext, HasValueProvider } from './contexts/HasValueProvider'
 import { Mode, useMode } from './contexts/ModeContext'
 import { useShowValidation } from './contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidationProvider'
+import { HiddenFn } from './inputs/Input'
 
 export function Section(props: {
     id?: string
@@ -16,6 +17,7 @@ export function Section(props: {
     defaultExpanded?: boolean
     labelHelpTitle?: string
     labelHelp?: string
+    hidden?: HiddenFn
 }) {
     const mode = useMode()
     const id = props.id ?? props.label.toLowerCase().split(' ').join('-')
