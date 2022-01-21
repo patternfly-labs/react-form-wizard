@@ -1,6 +1,7 @@
 import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
+import { ReactNode } from 'react'
 import { Fragment, useMemo } from 'react'
 import {
     FormCancel,
@@ -333,25 +334,7 @@ export function ApplicationWizard(props: {
                         options={props.argoServers}
                         required
                     />
-                    {props.addClusterSets ? (
-                        <Flex>
-                            <FlexItem spacer={{ default: 'spacerXl' }}>
-                                <Button
-                                    id="addClusterSets"
-                                    icon={<PlusIcon />}
-                                    isSmall={true}
-                                    variant="link"
-                                    component="a"
-                                    href={props.addClusterSets}
-                                    target="_blank"
-                                >
-                                    Add cluster sets
-                                </Button>
-                            </FlexItem>
-                        </Flex>
-                    ) : (
-                        ''
-                    )}
+                    <ExternalLinkButton id="addClusterSets" icon={<PlusIcon />} href={props.addClusterSets} />
                     <FormWizardSelect
                         id="requeueTime"
                         label="Requeue time"
@@ -565,6 +548,18 @@ export function TimeWindow() {
                 </Split>
             </FormWizardArrayInput>
         </Stack>
+    )
+}
+
+export function ExternalLinkButton(props: { id: string; href?: string; icon?: ReactNode }) {
+    return (
+        <Flex>
+            <FlexItem spacer={{ default: 'spacerXl' }}>
+                <Button id={props.id} icon={props.icon} isSmall={true} variant="link" component="a" href={props.href} target="_blank">
+                    Add cluster sets
+                </Button>
+            </FlexItem>
+        </Flex>
     )
 }
 
