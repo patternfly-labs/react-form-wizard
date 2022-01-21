@@ -1,7 +1,7 @@
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import { ReactNode } from 'react'
 import { LabelHelp } from '../components/LabelHelp'
-import { InputCommonProps, useID, useInputValidation } from './FormWizardInput'
+import { InputCommonProps, useID, useInputValidation } from './Input'
 
 type InputLabelProps = InputCommonProps & { children: ReactNode }
 

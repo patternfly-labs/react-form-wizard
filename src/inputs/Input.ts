@@ -1,7 +1,7 @@
 import get from 'get-value'
 import { Children, isValidElement, ReactElement, ReactNode, useCallback, useContext, useEffect } from 'react'
 import set from 'set-value'
-import { FormWizardArrayInput, FormWizardSelector, wizardArrayItems, wizardSelectorItem } from '..'
+import { ArrayInput, ItemSelector, wizardArrayItems, wizardSelectorItem } from '..'
 import { useData } from '../contexts/DataContext'
 import { useSetHasValue } from '../contexts/HasValueProvider'
 import { ItemContext } from '../contexts/ItemContext'
@@ -93,7 +93,7 @@ export function isHidden(reactElement: ReactElement, item: any) {
 
     let allChildrenHidden = true
     switch (reactElement.type) {
-        case FormWizardArrayInput: {
+        case ArrayInput: {
             const items = wizardArrayItems(reactElement.props, item)
             for (const item of items) {
                 Children.forEach(reactElement.props.children, (child) => {
@@ -109,7 +109,7 @@ export function isHidden(reactElement: ReactElement, item: any) {
             }
             break
         }
-        case FormWizardSelector: {
+        case ItemSelector: {
             const selectorItem = wizardSelectorItem(reactElement.props, item)
             if (selectorItem) {
                 Children.forEach(reactElement.props.children, (child) => {
@@ -155,7 +155,7 @@ export function wizardInputHasValidationErrors(reactElement: ReactElement, item:
     const { props } = reactElement
 
     switch (reactElement.type) {
-        case FormWizardArrayInput:
+        case ArrayInput:
             {
                 const arrayItems = wizardArrayItems(reactElement.props, item)
                 for (const arrayItem of arrayItems) {
@@ -166,7 +166,7 @@ export function wizardInputHasValidationErrors(reactElement: ReactElement, item:
                 }
             }
             break
-        case FormWizardSelector: {
+        case ItemSelector: {
             const selectorItem = wizardSelectorItem(reactElement.props, item)
             if (selectorItem) {
                 for (const child of Children.toArray(reactElement.props.children)) {

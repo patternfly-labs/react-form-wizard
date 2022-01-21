@@ -26,7 +26,7 @@ import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
-import { AppTest } from './AppTest/AppTest'
+import { AppWizard } from './AppWizard/AppWizard'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
@@ -106,7 +106,7 @@ export function DemoRouter(): JSX.Element {
         case RouteE.Application:
             return <ApplicationExample />
         case RouteE.App:
-            return <AppTest />
+            return <AppWizard />
         case RouteE.Cluster:
             return <ClusterForm />
         case RouteE.Credentials:

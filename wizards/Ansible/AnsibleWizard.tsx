@@ -2,8 +2,8 @@ import { Fragment } from 'react'
 import {
     FormCancel,
     FormSubmit,
-    FormWizardArrayInput as ArrayInput,
-    FormWizardSelect as Select,
+    ArrayInput as ArrayInput,
+    Select as Select,
     KeyValue,
     Section,
     Step,

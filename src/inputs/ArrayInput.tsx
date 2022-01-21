@@ -17,8 +17,8 @@ import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusI
 import get from 'get-value'
 import { Children, Fragment, ReactNode, useCallback, useContext, useState } from 'react'
 import set from 'set-value'
-import { FormWizardTextDetail } from '..'
-import { FormWizardFieldGroup } from '../components/FormWizardFieldGroup'
+import { TextDetail } from '..'
+import { FieldGroup } from '../components/FieldGroup'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
@@ -36,7 +36,7 @@ export function wizardArrayItems(props: any, item: any) {
     return values
 }
 
-export function FormWizardArrayInput(props: {
+export function ArrayInput(props: {
     id: string
     label?: string
     description?: string
@@ -97,7 +97,7 @@ export function FormWizardArrayInput(props: {
                             <div key={index}>
                                 <ItemContext.Provider value={value}>
                                     {typeof props.collapsedContent === 'string' ? (
-                                        <FormWizardTextDetail
+                                        <TextDetail
                                             id={props.collapsedContent}
                                             path={props.collapsedContent}
                                             placeholder={props.collapsedPlaceholder}
@@ -132,7 +132,7 @@ export function FormWizardArrayInput(props: {
                                     <HasValidationErrorContext.Consumer>
                                         {(hasErrors) => (
                                             <ItemContext.Provider value={value}>
-                                                <FormWizardFieldGroup
+                                                <FieldGroup
                                                     key={index}
                                                     id={props.id + '-' + (index + 1).toString()}
                                                     isExpanded={expanded[index.toString()] === true}
@@ -158,7 +158,7 @@ export function FormWizardArrayInput(props: {
                                                                     ) : (
                                                                         <Fragment>
                                                                             {typeof props.collapsedContent === 'string' ? (
-                                                                                <FormWizardTextDetail
+                                                                                <TextDetail
                                                                                     id={props.collapsedContent}
                                                                                     path={props.collapsedContent}
                                                                                     placeholder={
@@ -234,7 +234,7 @@ export function FormWizardArrayInput(props: {
                                                         {props.children}
                                                         {/* <div className="pf-c-form__helper-text pf-m-error">Error</div> */}
                                                     </Fragment>
-                                                </FormWizardFieldGroup>
+                                                </FieldGroup>
                                             </ItemContext.Provider>
                                         )}
                                     </HasValidationErrorContext.Consumer>

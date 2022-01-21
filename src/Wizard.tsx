@@ -24,7 +24,7 @@ import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
 import { StepValidationProvider, useStepHasValidationError } from './contexts/StepValidationProvider'
 import { useHasValidationError, ValidationProvider } from './contexts/ValidationProvider'
-import { useID } from './inputs/FormWizardInput'
+import { useID } from './inputs/Input'
 import { Step } from './Step'
 
 export interface WizardProps {
@@ -60,7 +60,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                             <Drawer isExpanded={drawerExpanded} isInline>
                                 <DrawerContent
                                     panelContent={
-                                        <FormWizardPageDrawer
+                                        <WizardPageDrawer
                                             data={data}
                                             template={template}
                                             template2={template2}
@@ -76,11 +76,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                             isWidthLimited
                                         >
                                             <ItemContext.Provider value={data}>
-                                                {/* {mode === Mode.Wizard ? ( */}
                                                 <WizardInternal>{props.children}</WizardInternal>
-                                                {/* ) : (
-                                                <FormWizardFormMode>{props.children}</FormWizardFormMode>
-                                            )} */}
                                             </ItemContext.Provider>
                                         </PageSection>
                                     </DrawerContentBody>
@@ -258,7 +254,7 @@ function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setA
     )
 }
 
-function FormWizardPageDrawer(props: {
+function WizardPageDrawer(props: {
     data: unknown
     template?: HandlebarsTemplateDelegate
     template2?: HandlebarsTemplateDelegate

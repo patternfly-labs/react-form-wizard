@@ -1,5 +1,5 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
-import { FormCancel, FormSubmit, FormWizardSelect, FormWizardTile, Tiles, Section, Step, TextArea, TextInput, WizardPage } from '../../src'
+import { FormCancel, FormSubmit, Select, Tile, Tiles, Section, Step, TextArea, TextInput, WizardPage } from '../../src'
 import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
@@ -48,43 +48,23 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Cloud provider credentials"
                     >
-                        <FormWizardTile
-                            id={CredentialsType.aws}
-                            icon={<AWSIcon />}
-                            value={CredentialsType.aws}
-                            label="Amazon Web Services"
-                        />
-                        <FormWizardTile
-                            id={CredentialsType.azure}
-                            icon={<AzureIcon />}
-                            value={CredentialsType.azure}
-                            label="Microsoft Azure"
-                        />
-                        <FormWizardTile
-                            id={CredentialsType.gcp}
-                            icon={<GCPIcon />}
-                            value={CredentialsType.gcp}
-                            label="Google Cloud Platform"
-                        />
+                        <Tile id={CredentialsType.aws} icon={<AWSIcon />} value={CredentialsType.aws} label="Amazon Web Services" />
+                        <Tile id={CredentialsType.azure} icon={<AzureIcon />} value={CredentialsType.azure} label="Microsoft Azure" />
+                        <Tile id={CredentialsType.gcp} icon={<GCPIcon />} value={CredentialsType.gcp} label="Google Cloud Platform" />
                     </Tiles>
                     <Tiles
                         id="datacenterCredentials"
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Datacenter credentials"
                     >
-                        <FormWizardTile
+                        <Tile
                             id={CredentialsType.openstack}
                             icon={<RedHatIcon />}
                             value={CredentialsType.openstack}
                             label="Red Hat OpenStack Platform"
                         />
-                        <FormWizardTile
-                            id={CredentialsType.vmware}
-                            icon={<VMWareIcon />}
-                            value={CredentialsType.vmware}
-                            label="VMWare vSphere"
-                        />
-                        <FormWizardTile
+                        <Tile id={CredentialsType.vmware} icon={<VMWareIcon />} value={CredentialsType.vmware} label="VMWare vSphere" />
+                        <Tile
                             id={CredentialsType.baremetal}
                             icon={<ServerIcon color="slategray" />}
                             value={CredentialsType.baremetal}
@@ -96,13 +76,13 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Automation & other credentials"
                     >
-                        <FormWizardTile
+                        <Tile
                             id={CredentialsType.ansible}
                             icon={<AnsibleTowerIcon color="#EE0000" />}
                             value={CredentialsType.ansible}
                             label="Red Hat Ansible Automation Platform"
                         />
-                        <FormWizardTile
+                        <Tile
                             id={CredentialsType.redhatcloud}
                             icon={<RedHatIcon />}
                             value={CredentialsType.redhatcloud}
@@ -114,12 +94,7 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Centrally managed"
                     >
-                        <FormWizardTile
-                            id={CredentialsType.hybrid}
-                            icon={<HybridIcon />}
-                            value={CredentialsType.hybrid}
-                            label="On premise"
-                        />
+                        <Tile id={CredentialsType.hybrid} icon={<HybridIcon />} value={CredentialsType.hybrid} label="On premise" />
                     </Tiles>
                 </Section>
             </Step>
@@ -127,7 +102,7 @@ export function CredentialsWizard(props: { onSubmit: FormSubmit; onCancel: FormC
             <Step label="Basic Information">
                 <Section label="Details" prompt="Enter the details for the credentials">
                     <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
-                    <FormWizardSelect
+                    <Select
                         id="namespace"
                         path="metadata.namespace"
                         label="Namespace"

@@ -2,12 +2,12 @@ import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup
 import { TextArea as PFTextArea } from '@patternfly/react-core/dist/js/components/TextArea'
 import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput'
 import { Fragment, useState } from 'react'
-import { FormWizardTextDetail } from '..'
+import { TextDetail } from '..'
 import { ClearInputButton } from '../components/ClearInputButton'
 import { PasteInputButton } from '../components/PasteInputButton'
 import { ShowSecretsButton } from '../components/ShowSecretsButton'
 import { Mode } from '../contexts/ModeContext'
-import { InputCommonProps, lowercaseFirst, useInput } from './FormWizardInput'
+import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
 export type TextAreaProps = InputCommonProps<string> & {
@@ -25,7 +25,7 @@ export function TextArea(props: TextAreaProps) {
 
     if (mode === Mode.Details) {
         if (!value) return <Fragment />
-        return <FormWizardTextDetail id={id} path={props.path} label={props.label} />
+        return <TextDetail id={id} path={props.path} label={props.label} />
     }
 
     const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`

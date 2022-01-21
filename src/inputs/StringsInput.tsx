@@ -11,7 +11,7 @@ import {
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
 import { Mode } from '../contexts/ModeContext'
-import { InputCommonProps, useInput } from './FormWizardInput'
+import { InputCommonProps, useInput } from './Input'
 
 type StringsInputProps = InputCommonProps & {
     map?: (value: any) => string[]
@@ -20,7 +20,7 @@ type StringsInputProps = InputCommonProps & {
 }
 
 export function StringsInput(props: StringsInputProps) {
-    const { mode, value, setValue, validated, hidden, id } = useInput(props)
+    const { mode, value, setValue, id } = useInput(props)
 
     let values: string[] = value
     if (props.map) values = props.map(values)

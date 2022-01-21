@@ -1,11 +1,11 @@
-import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Gallery, Tile } from '@patternfly/react-core'
+import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Gallery, Tile as PFTile } from '@patternfly/react-core'
 import { Children, Fragment, isValidElement, ReactNode, useContext } from 'react'
 import { IRadioGroupContextState, RadioGroupContext } from '..'
 import { Mode } from '../contexts/ModeContext'
-import { InputCommonProps, useInput } from './FormWizardInput'
+import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
-type FormWizardTilesProps = InputCommonProps & { children?: ReactNode }
+type TilesProps = InputCommonProps & { children?: ReactNode }
 
 // id: string
 // label?: string
@@ -18,8 +18,8 @@ type FormWizardTilesProps = InputCommonProps & { children?: ReactNode }
 // labelHelpTitle?: string
 // helperText?: string
 // children?: ReactNode
-export function Tiles(props: FormWizardTilesProps) {
-    const { mode, value, setValue, validated, hidden, id } = useInput(props)
+export function Tiles(props: TilesProps) {
+    const { mode, value, setValue, hidden, id } = useInput(props)
 
     const state: IRadioGroupContextState = {
         value: value,
@@ -34,7 +34,7 @@ export function Tiles(props: FormWizardTilesProps) {
         let label: string | undefined
         Children.forEach(props.children, (child) => {
             if (!isValidElement(child)) return
-            if (child.type !== FormWizardTile) return
+            if (child.type !== Tile) return
             if (child.props.value === value) {
                 label = child.props.label
             }
@@ -58,7 +58,7 @@ export function Tiles(props: FormWizardTilesProps) {
     )
 }
 
-export function FormWizardTile(props: {
+export function Tile(props: {
     id: string
     label: string
     value: string | number | boolean
@@ -68,7 +68,7 @@ export function FormWizardTile(props: {
 }) {
     const context = useContext(RadioGroupContext)
     return (
-        <Tile
+        <PFTile
             id={props.id}
             name={props.label}
             title={props.label}
@@ -81,6 +81,6 @@ export function FormWizardTile(props: {
             isStacked
         >
             {props.description}
-        </Tile>
+        </PFTile>
     )
 }

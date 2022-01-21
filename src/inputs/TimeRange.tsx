@@ -8,7 +8,7 @@ import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
 
-export function FormWizardTimeRange(props: {
+export function TimeRange(props: {
     id: string
     label: string
     description?: string

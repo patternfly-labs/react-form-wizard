@@ -1,14 +1,22 @@
-import { Checkbox, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Split, Stack, Text } from '@patternfly/react-core'
+import {
+    Checkbox as PFCheckbox,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Split,
+    Stack,
+    Text,
+} from '@patternfly/react-core'
 import { Fragment, ReactNode } from 'react'
-import { FormWizardIndented } from '../components/FormWizardIndented'
+import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { Mode } from '../contexts/ModeContext'
-import { InputCommonProps, useInput } from './FormWizardInput'
+import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
 type CheckboxProps = InputCommonProps & { children?: ReactNode; title?: string }
 
-export function FormWizardCheckbox(
+export function Checkbox(
     props: CheckboxProps
 
     // id: string
@@ -26,7 +34,7 @@ export function FormWizardCheckbox(
     // children?: ReactNode
     // title?: string
 ) {
-    const { mode, value, setValue, validated, hidden, id } = useInput(props)
+    const { mode, value, setValue, hidden, id } = useInput(props)
 
     if (hidden) return <Fragment />
 
@@ -45,7 +53,7 @@ export function FormWizardCheckbox(
             <Stack>
                 <InputLabel {...props} id={id} label={props.title}>
                     <Split>
-                        <Checkbox id={id ?? props.label} isChecked={value} onChange={setValue} label={props.label} value={value} />
+                        <PFCheckbox id={id ?? props.label} isChecked={value} onChange={setValue} label={props.label} value={value} />
                         <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
                     </Split>
                 </InputLabel>
@@ -56,7 +64,7 @@ export function FormWizardCheckbox(
                     </Text>
                 )}
             </Stack>
-            {value && <FormWizardIndented>{props.children}</FormWizardIndented>}
+            {value && <Indented>{props.children}</Indented>}
         </Fragment>
     )
 }

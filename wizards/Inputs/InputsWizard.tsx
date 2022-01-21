@@ -1,17 +1,17 @@
 import { useHistory } from 'react-router-dom'
 import {
-    FormWizardArrayInput,
-    FormWizardCheckbox as Checkbox,
-    FormWizardLabels as Labels,
-    FormWizardRadio as Radio,
-    FormWizardRadioGroup as RadioGroup,
-    FormWizardSelect as Select,
-    StringsInput,
-    FormWizardTile as Tile,
-    Tiles as Tiles,
+    ArrayInput,
+    Checkbox as Checkbox,
+    Radio as Radio,
+    RadioGroup as RadioGroup,
+    Select as Select,
+    Tile as Tile,
     KeyValue,
+    LabelsInput as Labels,
+    StringsInput,
     TextArea,
     TextInput as TextInput,
+    Tiles as Tiles,
 } from '../../src'
 import { Section } from '../../src/Section'
 import { Step } from '../../src/Step'
@@ -120,7 +120,7 @@ export function InputsWizard() {
 
             <Step label="Array Input">
                 <Section label="Array Input">
-                    <FormWizardArrayInput
+                    <ArrayInput
                         id="resources"
                         label="Resources"
                         path="resources"
@@ -131,7 +131,7 @@ export function InputsWizard() {
                         <Select label="Namespace" path="metadata.namespace" required options={['namespace-1', 'namespace-2']} />
                         <KeyValue id="labels" path="metadata.labels" label="Labels" />
                         <KeyValue id="labels" path="metadata.annotations" label="Annotations" />
-                    </FormWizardArrayInput>
+                    </ArrayInput>
                 </Section>
             </Step>
 

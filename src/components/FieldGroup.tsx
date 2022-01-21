@@ -3,10 +3,10 @@ import { FormFieldGroupToggle } from '@patternfly/react-core/dist/js/components/
 import { css } from '@patternfly/react-styles'
 import styles from '@patternfly/react-styles/css/components/Form/form'
 import * as React from 'react'
-import './FormWizardFieldGroup.css'
+import './FieldGroup.css'
 
-export type FormWizardFieldGroupProps = FormFieldGroupExpandableProps & { setIsExpanded: (expanded: boolean) => void }
-export function FormWizardFieldGroup(props: FormWizardFieldGroupProps) {
+export type FieldGroupProps = FormFieldGroupExpandableProps & { setIsExpanded: (expanded: boolean) => void }
+export function FieldGroup(props: FieldGroupProps) {
     const { children, header, isExpanded, setIsExpanded, toggleAriaLabel, ...extraProps } = props
     return (
         <InternalFormFieldGroup

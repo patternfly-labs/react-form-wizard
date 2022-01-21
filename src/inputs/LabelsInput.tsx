@@ -16,7 +16,7 @@ import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
 
-export function FormWizardLabels(props: {
+export function LabelsInput(props: {
     id: string
     label: string
     path?: string

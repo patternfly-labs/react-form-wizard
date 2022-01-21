@@ -3,7 +3,7 @@ import { Fragment, ReactNode, useContext } from 'react'
 import { LabelHelp } from './components/LabelHelp'
 import { ItemContext } from './contexts/ItemContext'
 import { Mode, useMode } from './contexts/ModeContext'
-import { inputHasValue, useInputHidden } from './inputs/FormWizardInput'
+import { inputHasValue, useInputHidden } from './inputs/Input'
 
 interface FormWizardSectionProps {
     label: string

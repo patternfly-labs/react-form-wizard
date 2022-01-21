@@ -41,7 +41,7 @@ import { ItemContext } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider } from './contexts/ShowValidationProvider'
 import './FormWizard.css'
-import { isHidden, wizardInputHasValidationErrors } from './inputs/FormWizardInput'
+import { isHidden, wizardInputHasValidationErrors } from './inputs/Input'
 
 Handlebars.registerHelper('if_eq', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
     return arg1 == arg2 ? options.fn(this) : options.inverse(this)
