@@ -1,24 +1,24 @@
 import {
-    WizardCancel,
-    WizardSubmit,
     Checkbox,
+    KeyValue,
     Radio,
     RadioGroup,
+    Section,
     Select,
+    Step,
+    TextInput,
     Tile,
     Tiles,
     TimeRange,
-    KeyValue,
-    Section,
-    Step,
-    TextInput,
+    WizardCancel,
     WizardPage,
+    WizardSubmit,
 } from '../../src'
 
 export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     return (
         <WizardPage title="Create ROSA cluster" defaultData={{}} onSubmit={props.onSubmit} onCancel={props.onCancel}>
-            <Step label="Account and roles">
+            <Step label="Account and roles" id="account">
                 <Section
                     label="Account and roles"
                     prompt="Welcome to the Red Hat OpenShift service on AWS (ROSA)"
@@ -38,8 +38,8 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                 </Section>
             </Step>
 
-            <Step label="Cluster settings">
-                <Step label="Details">
+            <Step label="Cluster settings" id="cluster-settings">
+                <Step label="Details" id="details">
                     <Section label="Cluster details" prompt="Enter the cluster details">
                         <TextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
                         <Checkbox id="use-roles-prefix" path="useRolesPrefix" label="Use operator roles prefix">
@@ -88,7 +88,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                     </Section>
                 </Step>
 
-                <Step label="Machine pool">
+                <Step label="Machine pool" id="machine-pool">
                     <Section
                         label="Default machine pool"
                         description="Select a compute node instance type and count your default machine pool."
@@ -112,8 +112,8 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                 </Step>
             </Step>
 
-            <Step label="Networking">
-                <Step label="Configuration">
+            <Step label="Networking" id="networking">
+                <Step label="Configuration" id="configuration">
                     <Section label="Networking configuration" description="Configure network access for your cluster.">
                         <Checkbox
                             id="vpc"
@@ -151,7 +151,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                     </Section>
                 </Step>
 
-                <Step label="VPC settings">
+                <Step label="VPC settings" id="vpc-settings">
                     <Section
                         label="Virtual Private Cloud (VPC) subnets"
                         description="the subnet list is based on the provided VPC ID. You must select at least 1 subnet from each availability zone."
@@ -160,7 +160,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                     </Section>
                 </Step>
 
-                <Step label="CIDR ranges">
+                <Step label="CIDR ranges" id="cidr-ranges">
                     <Section label="CIDR ranges">
                         <TextInput
                             id="machine-cidr"
@@ -194,7 +194,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                 </Step>
             </Step>
 
-            <Step label="Updates">
+            <Step label="Updates" id="updates">
                 <Section
                     label="Cluster updates"
                     description="High and critical security concerns (CVEs) will be patched automatically within 48 hours regardless of your chosen update strategy."
@@ -232,7 +232,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                 </Section>
             </Step>
 
-            <Step label="Provisioning mode">
+            <Step label="Provisioning mode" id="provisioning-mode">
                 <Section
                     label="Provisioning mode"
                     prompt="Select role creation mode"

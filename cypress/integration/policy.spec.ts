@@ -37,7 +37,6 @@ describe('policy wizard', () => {
 
     it('security groups', () => {
         cy.get('#categories').within(() => {
-            cy.get('#add-button').click()
             cy.get('#categories-1').type('category-1')
 
             cy.get('#add-button').click()
@@ -45,7 +44,6 @@ describe('policy wizard', () => {
         })
 
         cy.get('#standards').within(() => {
-            cy.get('#add-button').click()
             cy.get('#standards-1').type('standard-1')
 
             cy.get('#add-button').click()
@@ -53,7 +51,6 @@ describe('policy wizard', () => {
         })
 
         cy.get('#controls').within(() => {
-            cy.get('#add-button').click()
             cy.get('#controls-1').type('control-1')
 
             cy.get('#add-button').click()

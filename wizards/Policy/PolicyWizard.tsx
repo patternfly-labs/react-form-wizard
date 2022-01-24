@@ -5,8 +5,6 @@ import set from 'set-value'
 import {
     ArrayInput,
     Checkbox,
-    WizardCancel,
-    WizardSubmit,
     Hidden,
     ItemSelector,
     Radio,
@@ -16,7 +14,9 @@ import {
     Step,
     StringsInput,
     TextInput,
+    WizardCancel,
     WizardPage,
+    WizardSubmit,
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
 import { Specifications } from './templates'
@@ -93,7 +93,7 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
         >
-            <Step label="Details">
+            <Step label="Details" id="details">
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <Section label="Details" prompt="Enter the details for the policy">
                         <TextInput id="name" path="metadata.name" label="Name" placeholder="Enter name" required />
@@ -111,7 +111,7 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
                                 </Button>
                             }
                         />
-                        <RadioGroup id="spec.remediationAction" path="spec.remediationAction" label="Remediation" required>
+                        <RadioGroup path="spec.remediationAction" label="Remediation" required>
                             <Radio
                                 id="inform"
                                 label="Inform"
@@ -126,7 +126,7 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
                             />
                         </RadioGroup>
                         <Checkbox
-                            id="spec.disabled"
+                            path="spec.disabled"
                             label="Disable policy"
                             helperText="Select to disable the policy from being propagated to managed clusters."
                         />
@@ -134,17 +134,17 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
                 </ItemSelector>
             </Step>
 
-            <Step label="Templates">
+            <Step label="Templates" id="templates">
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <PolicyWizardTemplates />
                 </ItemSelector>
             </Step>
 
-            <Step label="Placement">
+            <Step label="Placement" id="placement">
                 <PolicyWizardPlacement />
             </Step>
 
-            <Step label="Security groups">
+            <Step label="Security groups" id="security-groups">
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <Section label="Security groups">
                         <StringsInput
@@ -239,12 +239,12 @@ export function PolicyWizardTemplates() {
                     </div>
 
                     <TextInput
-                        id="objectDefinition.metadata.name"
+                        path="objectDefinition.metadata.name"
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
-                    <TextInput id="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
+                    <TextInput path="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
                 </Hidden>
 
                 {/* IamPolicy */}
@@ -255,13 +255,13 @@ export function PolicyWizardTemplates() {
                     </div>
 
                     <TextInput
-                        id="objectDefinition.metadata.name"
+                        path="objectDefinition.metadata.name"
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
                     {/* TODO NumberInput */}
-                    <TextInput id="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
+                    <TextInput path="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
                 </Hidden>
 
                 {/* ConfigurationPolicy */}
@@ -272,7 +272,7 @@ export function PolicyWizardTemplates() {
                     </div>
 
                     <TextInput
-                        id="objectDefinition.metadata.name"
+                        path="objectDefinition.metadata.name"
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
@@ -286,13 +286,13 @@ export function PolicyWizardTemplates() {
                     >
                         {/* Namespace */}
                         <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'Namespace'}>
-                            <TextInput id="objectDefinition.metadata.name" label="Namespace" required />
+                            <TextInput path="objectDefinition.metadata.name" label="Namespace" required />
                         </Hidden>
 
                         {/* LimitRange */}
                         <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'LimitRange'}>
                             <TextInput
-                                id="objectDefinition.metadata.name"
+                                path="objectDefinition.metadata.name"
                                 label="Name"
                                 required
                                 helperText="Name needs to be unique to the namespace on each of the managed clusters."
@@ -304,14 +304,14 @@ export function PolicyWizardTemplates() {
                                 collapsedContent={'default.memory'}
                             >
                                 <TextInput
-                                    id="default.memory"
+                                    path="default.memory"
                                     label="Memory limit"
                                     placeholder="Enter memory limit"
                                     required
                                     helperText="Examples: 512Mi, 2Gi"
                                 />
                                 <TextInput
-                                    id="defaultRequest.memory"
+                                    path="defaultRequest.memory"
                                     label="Memory request"
                                     placeholder="Enter memory request"
                                     required
@@ -323,18 +323,18 @@ export function PolicyWizardTemplates() {
                         {/* SecurityContextConstraints */}
                         <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'SecurityContextConstraints'}>
                             <TextInput
-                                id="objectDefinition.metadata.name"
+                                path="objectDefinition.metadata.name"
                                 label="Name"
                                 required
                                 helperText="Name needs to be unique to the namespace on each of the managed clusters."
                             />
-                            <Checkbox id="objectDefinition.allowHostDirVolumePlugin" label="Allow host dir volume plugin" />
-                            <Checkbox id="objectDefinition.allowHostIPC" label="Allow host IPC" />
-                            <Checkbox id="objectDefinition.allowHostNetwork" label="Allow host network" />
-                            <Checkbox id="objectDefinition.allowHostPID" label="Allow host PID" />
-                            <Checkbox id="objectDefinition.allowHostPorts" label="Allow host ports" />
-                            <Checkbox id="objectDefinition.allowPrivilegeEscalation" label="Allow privilege escalation" />
-                            <Checkbox id="objectDefinition.allowPrivilegedContainer" label="Allow privileged container" />
+                            <Checkbox path="objectDefinition.allowHostDirVolumePlugin" label="Allow host dir volume plugin" />
+                            <Checkbox path="objectDefinition.allowHostIPC" label="Allow host IPC" />
+                            <Checkbox path="objectDefinition.allowHostNetwork" label="Allow host network" />
+                            <Checkbox path="objectDefinition.allowHostPID" label="Allow host PID" />
+                            <Checkbox path="objectDefinition.allowHostPorts" label="Allow host ports" />
+                            <Checkbox path="objectDefinition.allowPrivilegeEscalation" label="Allow privilege escalation" />
+                            <Checkbox path="objectDefinition.allowPrivilegedContainer" label="Allow privileged container" />
                         </Hidden>
                     </ArrayInput>
                 </Hidden>
@@ -353,7 +353,7 @@ export function PolicyWizardTemplates() {
                 </Hidden>
 
                 <Select
-                    id="objectDefinition.spec.severity"
+                    path="objectDefinition.spec.severity"
                     label="Severity"
                     placeholder="Select severity"
                     options={['low', 'medium', 'high']}
@@ -433,16 +433,15 @@ export function PolicyWizardPlacement() {
                     }}
                     // hidden={(bindings) => !bindings.length}
                 >
-                    <TextInput id="metadata.name" label="Binding name" required />
+                    <TextInput path="metadata.name" label="Binding name" required />
                     <TextInput
-                        id="placementRef.name"
+                        path="placementRef.name"
                         label="Rule name"
                         helperText="The placement rule name that his placement binding is binding to the subjects."
                         required
                     />
                     <ArrayInput
-                        id="sss"
-                        path="subjects"
+                        id="subjects"
                         label="Subjects"
                         description="Placement bindings can have multiple subjects which the placement is applied to."
                         placeholder="Add placement subject"
@@ -453,7 +452,7 @@ export function PolicyWizardPlacement() {
                             kind: 'Policy',
                         }}
                     >
-                        <TextInput id="name" path="name" label="Subject name" required />
+                        <TextInput path="name" label="Subject name" required />
                     </ArrayInput>
                 </ArrayInput>
             </Section>

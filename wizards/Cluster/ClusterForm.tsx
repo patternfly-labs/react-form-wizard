@@ -27,9 +27,9 @@ export function ClusterForm() {
             onSubmit={() => Promise.resolve()}
             onCancel={() => history.push('.')}
         >
-            <Step label="Infrastructure provider">
+            <Step label="Infrastructure provider" id="infrastructure-provider">
                 <Section label="Infrastructure provider" prompt="Select the infrastructure for the cluster">
-                    <Tiles id="provider" path="provider" label="Cloud infrastructure providers">
+                    <Tiles path="provider" label="Cloud infrastructure providers">
                         <Tile id="aws" value="aws" label="Amazon Web Services" />
                         <Tile id="azr" value="azr" label="Microsoft Azure" />
                         <Tile id="gcp" value="gcp" label="Google Cloud Platform" />
@@ -43,7 +43,7 @@ export function ClusterForm() {
                 </Section>
                 <Section label="Credentials" prompt="Select the infrastructure for the cluster" hidden={(item) => !item.provider}>
                     <Select
-                        id="credential"
+                        path="credential"
                         label="Infrastructure credentials"
                         placeholder="Select the credentials for the infrastructure"
                         options={['default']}
@@ -52,92 +52,92 @@ export function ClusterForm() {
                 </Section>
             </Step>
 
-            <Step label="Cluster details">
+            <Step label="Cluster details" id="cluster-details">
                 <Section label="Cluster details" prompt="Enter the cluster details">
-                    <TextInput id="name" label="Cluster name" placeholder="Enter the cluster name" required />
-                    <Select id="region" label="Region" options={Object.keys(awsRegions)} />
+                    <TextInput path="name" label="Cluster name" placeholder="Enter the cluster name" required />
+                    <Select path="region" label="Region" options={Object.keys(awsRegions)} />
                     <Select
-                        id="clusterSet"
+                        path="clusterSet"
                         label="Cluster set"
                         placeholder="Select a cluster set"
                         helperText="A cluster sets is a group of clusters that can be targeted as a group."
                         options={['default']}
                         required
                     />
-                    <TextInput id="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
-                    <Select id="releaseImage" label="Release image" placeholder="Select a release image" options={['default']} required />
-                    <KeyValue id="labels" label="Additional labels" />
+                    <TextInput path="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
+                    <Select path="releaseImage" label="Release image" placeholder="Select a release image" options={['default']} required />
+                    <KeyValue path="labels" label="Additional labels" />
                 </Section>
             </Step>
 
-            <Step label="Control plane">
+            <Step label="Control plane" id="control-plane">
                 <ControlPlaneStep />
             </Step>
 
-            <Step label="Worker pools">
+            <Step label="Worker pools" id="worker-pools">
                 <WorkerPoolsStep />
             </Step>
 
-            <Step label="Networking">
+            <Step label="Networking" id="networking">
                 <Section
                     label="Networking"
                     prompt="Enter networking options"
                     description="Configure network access for your cluster. One network is created by default."
                 >
-                    <Select id="networkType" label="Network type" options={['default']} required />
+                    <Select path="networkType" label="Network type" options={['default']} required />
 
                     <ArrayInput
                         id="networks"
                         label="Networks"
                         placeholder="Add network"
-                        collapsedContent={<TextDetail id="clusterCidr" placeholder="Expand to edit the network" />}
+                        collapsedContent={<TextDetail path="clusterCidr" placeholder="Expand to edit the network" />}
                     >
-                        <TextInput id="clusterCidr" label="Cluster network CIDR" />
-                        <TextInput id="hostPrefix" label="Network host prefix" />
-                        <TextInput id="serviceCidr" label="Service network Cidr" />
-                        <TextInput id="machienCidr" label="Machine CIDR" />
+                        <TextInput path="clusterCidr" label="Cluster network CIDR" />
+                        <TextInput path="hostPrefix" label="Network host prefix" />
+                        <TextInput path="serviceCidr" label="Service network Cidr" />
+                        <TextInput path="machienCidr" label="Machine CIDR" />
                     </ArrayInput>
                 </Section>
             </Step>
 
-            <Step label="Proxy">
+            <Step label="Proxy" id="proxy">
                 <Section
                     label="Proxy"
                     prompt="Configure a proxy"
                     description="Production environments can deny direct access to the Internet and instead have an HTTP or HTTPS proxy available. You can configure a new OpenShift Container Platform cluster to use a proxy by configuring the proxy settings."
                 >
-                    <Checkbox id="useProxy" label="Use proxy" />
+                    <Checkbox path="useProxy" label="Use proxy" />
                     <TextInput
-                        id="httpProxy"
+                        path="httpProxy"
                         label="Http Proxy "
                         helperText="Requires this format: http://<username>:<pswd>@<ip>:<port>"
                         required
                         hidden={(item) => !item.useProxy}
                     />
                     <TextInput
-                        id="httpsProxy"
+                        path="httpsProxy"
                         label="Https Proxy"
                         helperText="Requires this format: https://<username>:<pswd>@<ip>:<port>"
                         required
                         hidden={(item) => !item.useProxy}
                     />
                     <TextInput
-                        id="noProxy"
+                        path="noProxy"
                         label="No Proxy"
                         helperText="By default, all cluster egress traffic is proxied, including calls to hosting cloud provider APIs. Add sites to No Proxy to bypass the proxy if necessary."
                         hidden={(item) => !item.useProxy}
                     />
-                    <TextInput id="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
+                    <TextInput path="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
                 </Section>
             </Step>
 
-            <Step label="Automation">
+            <Step label="Automation" id="automation">
                 <Section
                     label="Automation"
                     prompt="Configure a Ansible automation"
                     description="Choose an automation job template to automatically run Ansible jobs at different stages of a cluster's life cycle. To use this feature, the Ansible Automation Platform Resource Operator must be installed."
                 >
-                    <Select id="ansibleTemplate" label="Ansible Automation Template" options={['default']} />
+                    <Select path="ansibleTemplate" label="Ansible Automation Template" options={['default']} />
                 </Section>
             </Step>
         </WizardPage>
@@ -151,15 +151,15 @@ export function ControlPlaneStep() {
             prompt="Enter the control plane details"
             description="Three control plane nodes will be created to control this cluster unless single node is enabled, in which case there will only be one control plane node."
         >
-            <Multiselect id="zones" label="Zones" options={awsRegions['us-east-1']} />
+            <Multiselect path="zones" label="Zones" options={awsRegions['us-east-1']} />
             <Select
-                id="instanceType"
+                path="instanceType"
                 label="Instance type"
                 placeholder="Select the instance type"
                 options={AWSmasterInstanceTypes.map((instanceType) => ({ value: instanceType.value, label: instanceType.description }))}
                 required
             />
-            <Select id="rootStorage" label="Root storage (GiB)" options={['default']} />
+            <Select path="rootStorage" label="Root storage (GiB)" options={['default']} />
         </Section>
     )
 }
@@ -175,13 +175,13 @@ export function WorkerPoolsStep() {
                 id="workerPools"
                 label="Worker pools"
                 placeholder="Add worker pool"
-                collapsedContent={<TextDetail id="name" placeholder="Expand to edit the worker pool details" />}
+                collapsedContent={<TextDetail path="name" placeholder="Expand to edit the worker pool details" />}
             >
-                <TextInput id="name" label="Pool name" />
-                <Select id="zones" label="Zones" options={['default']} />
-                <Select id="instanceType" label="Instance type" options={['default']} />
+                <TextInput path="name" label="Pool name" />
+                <Select path="zones" label="Zones" options={['default']} />
+                <Select path="instanceType" label="Instance type" options={['default']} />
                 {/* <NumberInput */}
-                <Select id="rootStorage" label="Root storage (GiB)" options={['default']} />
+                <Select path="rootStorage" label="Root storage (GiB)" options={['default']} />
             </ArrayInput>
         </Section>
     )

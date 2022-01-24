@@ -4,9 +4,9 @@ import { Indented } from '../components/Indented'
 import { useInputHidden, useValue } from './Input'
 
 export function TextDetail(props: {
-    id: string
+    id?: string
     label?: string
-    path?: string
+    path: string
     placeholder?: ReactNode
     secret?: boolean
     hidden?: (item: any) => boolean

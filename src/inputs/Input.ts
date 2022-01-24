@@ -13,7 +13,9 @@ export type HiddenFn = (item: any) => boolean
 
 export type InputCommonProps<ValueT = any> = {
     id?: string
-    path?: string
+
+    /* JSON dot notation path to the input value in the active item context */
+    path: string
     hidden?: (item: any) => boolean
     validation?: (value: ValueT) => string | undefined
     required?: boolean
@@ -25,18 +27,13 @@ export type InputCommonProps<ValueT = any> = {
     helperText?: string
 }
 
-export function useID(props: { id?: string; path?: string; label?: string }) {
+export function useID(props: { id?: string; path: string }) {
     if (props.id) return props.id
-    if (props.label) return props.label.toLowerCase().split(' ').join('-')
-    if (props.path) return props.path.split('.').join('-')
-    return 'unknown'
+    return props.path.toLowerCase().split('.').join('-')
 }
 
-export function usePath(props: { id?: string; path?: string; label?: string }) {
-    if (props.path) return props.path
-    if (props.id) return props.id
-    if (props.label) return props.label.toLowerCase().split(' ').join('-')
-    return 'unknown'
+export function usePath(props: { path: string }) {
+    return props.path
 }
 
 export function useValue(

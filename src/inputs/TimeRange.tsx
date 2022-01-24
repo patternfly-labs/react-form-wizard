@@ -7,12 +7,13 @@ import set from 'set-value'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
+import { useID } from './Input'
 
 export function TimeRange(props: {
-    id: string
+    id?: string
     label: string
     description?: string
-    path?: string
+    path: string
     placeholder?: string
     secret?: boolean
     readonly?: boolean
@@ -24,7 +25,7 @@ export function TimeRange(props: {
     validation?: (value: string) => string | undefined
     children?: ReactNode
 }) {
-    const id = props.id
+    const id = useID(props)
     const path = props.path ?? id
 
     const { update } = useData()
@@ -58,7 +59,7 @@ export function TimeRange(props: {
     return (
         <Fragment>
             <FormGroup
-                id={`${props.id}-form-group`}
+                id={`${id}-form-group`}
                 fieldId={id}
                 isInline
                 label={props.label}
@@ -68,7 +69,7 @@ export function TimeRange(props: {
                 isRequired
             >
                 <TimePicker
-                    id={`${props.id}-time-picker`}
+                    id={`${id}-time-picker`}
                     key={id}
                     onChange={(value) => {
                         set(item, path, value)

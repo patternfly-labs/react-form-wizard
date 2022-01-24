@@ -1,14 +1,14 @@
 import {
     ArrayInput,
-    WizardCancel,
-    WizardSubmit,
     ItemSelector,
     KeyValue,
     Section,
     Select,
     Step,
     TextInput as TextInput,
+    WizardCancel,
     WizardPage,
+    WizardSubmit,
 } from '../../src'
 
 export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel }) {
@@ -22,7 +22,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
         >
-            <Step label="Details">
+            <Step label="Details" id="details">
                 <Section label="Details" prompt="Enter the application details">
                     <ItemSelector selectKey="kind" selectValue="Application">
                         <TextInput id="text-input" path="metadata.name" label="Name" required />
@@ -30,7 +30,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     </ItemSelector>
                 </Section>
             </Step>
-            <Step label="Subscriptions">
+            <Step label="Subscriptions" id="specifications">
                 <Section
                     label="Subscriptions"
                     prompt="Add repository subscriptions"
@@ -100,7 +100,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     </ArrayInput>
                 </Section>
             </Step>
-            <Step label="Channels">
+            <Step label="Channels" id="channels">
                 <Section
                     label="Channels"
                     prompt="Add channels"
@@ -154,7 +154,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     </ArrayInput>
                 </Section>
             </Step>
-            <Step label="Placements">
+            <Step label="Placements" id="placements">
                 <Section
                     label="Placements"
                     prompt="Add placements"
@@ -179,7 +179,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     </ArrayInput>
                 </Section>
             </Step>
-            <Step label="Secrets">
+            <Step label="Secrets" id="secret">
                 <Section
                     label="Secrets"
                     prompt="Add secrets"

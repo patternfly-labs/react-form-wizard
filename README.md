@@ -18,8 +18,8 @@ A wizard contains steps which contain sections which contain input controls.
 <Wizard title="Example form">
    <Step label="Details">
       <Section label="Details" prompt="Enter the details">
-          <TextInput path="name" label="Name" required />
-          <Select path="namespace" label="Namespace" options={['default']} />
+          <TextInput label="Name" path="name" required />
+          <Select label="Namespace" path="namespace" options={['default']} />
       </Section>
    </Step>
 </Wizard>
@@ -32,7 +32,7 @@ There is one data state for the wizard. It can either be a single object or an a
 Input controls know about the data state and update it using json path dot notation.
 
 ```
-<TextInput path="metadata.name" label="Name" required />
+<TextInput label="Name" path="metadata.name" required />
 ```
 
 In many cases an array of items need to be edited.
@@ -40,8 +40,8 @@ There is a special control for editing arrays of items.
 
 ```
 <ArrayInput path="resources" placeholder="Add new resource">
-   <TextInput path="metadata.name" label="Name" required />
-   <Select path="metadata.namespace" label="Namespace" options={['default']} />
+   <TextInput label="Name" path="metadata.name" required />
+   <Select label="Namespace" path="metadata.namespace" options={['default']} />
 </ArrayInput>
 ```
 

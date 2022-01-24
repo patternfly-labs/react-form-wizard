@@ -95,7 +95,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
 function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     const steps = Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
     steps.push(
-        <Step label="Review">
+        <Step label="Review" id="review">
             <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
                 <ModeContext.Provider value={Mode.Details}>{props.children}</ModeContext.Provider>
             </DescriptionList>

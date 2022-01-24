@@ -5,7 +5,7 @@ import { useSetStepHasValidationError } from './contexts/StepValidationProvider'
 import { useHasValidationError } from './contexts/ValidationProvider'
 import { HiddenFn } from './inputs/Input'
 
-export function Step(props: { label: string; children?: ReactNode; id?: string; hidden?: HiddenFn }) {
+export function Step(props: { label: string; children?: ReactNode; id: string; hidden?: HiddenFn }) {
     const hasValidationError = useHasValidationError()
     const setStepHasValidationError = useSetStepHasValidationError()
     const showValidation = useShowValidation()

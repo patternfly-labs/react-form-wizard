@@ -15,11 +15,12 @@ import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { Mode, useMode } from '../contexts/ModeContext'
+import { useID } from './Input'
 
 export function LabelsInput(props: {
-    id: string
+    id?: string
     label: string
-    path?: string
+    path: string
     placeholder?: string
     secret?: boolean
     readonly?: boolean
@@ -36,7 +37,7 @@ export function LabelsInput(props: {
     }[]
     hidden?: (item: any) => boolean
 }) {
-    const id = props.id
+    const id = useID(props)
     const path = props.path ?? id
 
     const { update } = useData()

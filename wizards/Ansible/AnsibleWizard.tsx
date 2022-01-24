@@ -1,14 +1,14 @@
 import { Fragment } from 'react'
 import {
-    WizardCancel,
-    WizardSubmit,
     ArrayInput as ArrayInput,
-    Select as Select,
     KeyValue,
     Section,
+    Select as Select,
     Step,
     TextInput,
+    WizardCancel,
     WizardPage,
+    WizardSubmit,
 } from '../../src'
 
 export function AnsibleWizard(props: {
@@ -33,15 +33,16 @@ export function AnsibleWizard(props: {
                 }
             }
         >
-            <Step label="Details">
+            <Step label="Details" id="details">
                 <Section
                     label="Details"
                     prompt="Configure the automation"
                     description="Automation is accomplished by creating a ClusterCurator resource which can be selected during cluster creation to automate running ansible jobs."
                 >
-                    <TextInput label="Name" path="metadata.name" required />
+                    <TextInput label="Name" id="name" path="metadata.name" required />
                     <Select
                         label="Namespace"
+                        id="namespace"
                         path="metadata.namespace"
                         helperText="The namespace on the hub cluster where the resources will be created."
                         options={props.namespaces}
@@ -50,7 +51,7 @@ export function AnsibleWizard(props: {
                 </Section>
             </Step>
 
-            <Step label="Install">
+            <Step label="Install" id="install">
                 <Section id="install" label="Install" prompt="Install Ansible job templates">
                     <Select
                         id="install-secret"
@@ -89,7 +90,7 @@ export function AnsibleWizard(props: {
                 </Section>
             </Step>
 
-            <Step label="Upgrade">
+            <Step label="Upgrade" id="upgrade">
                 <Section id="upgrade" label="Upgrade" prompt="Upgrade Ansible job templates">
                     <Select
                         id="upgrade-secret"

@@ -1,25 +1,24 @@
 import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
-import { ReactNode } from 'react'
-import { Fragment, useMemo } from 'react'
+import { Fragment, ReactNode, useMemo } from 'react'
 import {
-    WizardCancel,
     ArrayInput,
     Checkbox,
-    Hidden,
     FormWizardPage,
+    FormWizardSection,
+    FormWizardStep,
+    Hidden,
+    LabelsInput,
     Radio,
     RadioGroup,
-    FormWizardSection,
     Select,
-    FormWizardStep,
     TextDetail,
-    Tile,
-    TimeRange,
-    LabelsInput,
     TextInput,
+    Tile,
     Tiles,
+    TimeRange,
+    WizardCancel,
 } from '../../src'
 import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
@@ -68,7 +67,7 @@ export function ApplicationWizard(props: {
         >
             <FormWizardStep label="Type">
                 <FormWizardSection label="Type" prompt="Type">
-                    <Tiles id="deployType" label="Select the application management type to deploy this application into clusters.">
+                    <Tiles path="deployType" label="Select the application management type to deploy this application into clusters.">
                         <Tile
                             id="subscription"
                             value="Subscription"
@@ -89,9 +88,9 @@ export function ApplicationWizard(props: {
 
             <FormWizardStep label="Details" hidden={(item) => item.deployType !== 'Subscription'}>
                 <FormWizardSection label="Details" prompt="Enter the details of the application">
-                    <TextInput id="name" label="Application name" required />
+                    <TextInput path="name" label="Application name" required />
                     <Select
-                        id="namespace"
+                        path="namespace"
                         label="Namespace"
                         placeholder="Select the namespace"
                         helperText="The namespace on the hub cluster where the application resources will be created."
@@ -106,9 +105,9 @@ export function ApplicationWizard(props: {
                     <ArrayInput
                         id="repositories"
                         placeholder="Add repository"
-                        collapsedContent={<TextDetail id="url" placeholder="Expand to enter the repository details" />}
+                        collapsedContent={<TextDetail path="url" placeholder="Expand to enter the repository details" />}
                     >
-                        <Tiles id="repositoryType" label="Repository type">
+                        <Tiles path="repositoryType" label="Repository type">
                             <Tile id="git" value="SubscriptionGit" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
                             <Tile id="helm" value="SubscriptionHelm" label="Helm" icon={<HelmIcon />} description="Use a Helm repository" />
                             <Tile
@@ -122,7 +121,7 @@ export function ApplicationWizard(props: {
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
                             <Select
-                                id="subscription.git.url"
+                                path="subscription.git.url"
                                 label="URL"
                                 placeholder="Enter or select a Git URL"
                                 labelHelp="The URL path for the Git repository."
@@ -130,19 +129,19 @@ export function ApplicationWizard(props: {
                                 required
                             />
                             <TextInput
-                                id="subscription.git.username"
+                                path="subscription.git.username"
                                 label="Username"
                                 placeholder="Enter the Git user name"
                                 labelHelp="The username if this is a private Git repository and requires connection."
                             />
                             <TextInput
-                                id="subscription.git.accessToken"
+                                path="subscription.git.accessToken"
                                 label="Access token"
                                 placeholder="Enter the Git access token"
                                 labelHelp="The access token if this is a private Git repository and requires connection."
                             />
                             <Select
-                                id="subscription.git.branch"
+                                path="subscription.git.branch"
                                 label="Branch"
                                 placeholder="Enter or select a branch"
                                 labelHelp="The branch of the Git repository."
@@ -150,7 +149,7 @@ export function ApplicationWizard(props: {
                                 required
                             />
                             <Select
-                                id="subscription.git.path"
+                                path="subscription.git.path"
                                 label="Path"
                                 placeholder="Enter or select a repository path"
                                 labelHelp="The location of the resources on the Git repository."
@@ -159,42 +158,42 @@ export function ApplicationWizard(props: {
                             />
 
                             <TextInput
-                                id="subscription.git.commitHash"
+                                path="subscription.git.commitHash"
                                 label="Commit hash"
                                 placeholder="Enter a specific commit hash"
                                 labelHelp="If you want to subscribe to a specific commit, you need to specify the desired commit hash. You might need to specify git-clone-depth annotation if your desired commit is older than the last 20 commits."
                             />
 
                             <TextInput
-                                id="subscription.git.tag"
+                                path="subscription.git.tag"
                                 label="Tag"
                                 placeholder="Enter a specific tag"
                                 labelHelp="If you want to subscribe to a specific tag, you need to specify the tag. If both Git desired commit and tag annotations are specified, the tag is ignored. You might need to specify git-clone-depth annotation if your desired commit of the tag is older than the last 20 commits."
                             />
                             <Select
-                                id="subscription.git.reconcileOption"
+                                path="subscription.git.reconcileOption"
                                 label="Reconcile option"
                                 labelHelp="With the Merge option, new fields are added and existing fields are updated in the resource. Choose to merge if resources are updated after the initial deployment. If you choose to replace, the existing resource is replaced with the Git source."
                                 options={reconcileOptions}
                             />
                             <Select
-                                id="subscription.git.reconcileRate"
+                                path="subscription.git.reconcileRate"
                                 label="Repository reconcile rate"
                                 labelHelp="The frequency of resource reconciliation that is used as a global repository setting. The medium default setting checks for changes to apply every three minutes and re-applies all resources every 15 minutes, even without a change. Select low to reconcile every hour. Select high to reconcile every two minutes. If you select off, the deployed resources are not automatically reconciled."
                                 options={reconcileRates}
                             />
                             <Checkbox
-                                id="subscription.git.subReconcileRate"
+                                path="subscription.git.subReconcileRate"
                                 label="Disable auto-reconciliation"
                                 labelHelp="Turn the auto-reconciliation off for this specific application regardless of the reconcile rate setting in the repository."
                             />
                             <Checkbox
-                                id="subscription.git.insecureSkipVerify"
+                                path="subscription.git.insecureSkipVerify"
                                 label="Disable server certificate verification"
                                 labelHelp="Disable server TLS certificate verification for Git server connection."
                             />
                             <Select
-                                id="subscription.git.ansibleSecretName"
+                                path="subscription.git.ansibleSecretName"
                                 label="Ansible Automation Platform credential"
                                 labelHelp="If using Configure automation for prehook and posthook tasks, select the Ansible Automation Platform credential. Click the Add credentials tab to create a new secret."
                                 options={props.ansibleCredentials}
@@ -203,7 +202,7 @@ export function ApplicationWizard(props: {
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionHelm'}>
                             <Select
-                                id="subscription.helm.url"
+                                path="subscription.helm.url"
                                 label="URL"
                                 placeholder="Enter or select a Helm repository URL"
                                 labelHelp="The URL path for the Helm repository."
@@ -211,51 +210,51 @@ export function ApplicationWizard(props: {
                                 required
                             />
                             <TextInput
-                                id="subscription.helm.username"
+                                path="subscription.helm.username"
                                 label="Username"
                                 placeholder="Enter the Helm repository username"
                                 labelHelp="The username if this is a private Helm repository and requires connection."
                             />
                             <TextInput
-                                id="subscription.helm.password"
+                                path="subscription.helm.password"
                                 label="Password"
                                 placeholder="Enter the Helm repository password"
                                 labelHelp="The password if this is a private Helm repository and requires connection."
                             />
                             <TextInput
-                                id="subscription.helm.chart"
+                                path="subscription.helm.chart"
                                 label="Chart name"
                                 placeholder="Enter the name of the target Helm chart"
                                 labelHelp="The specific name for the target Helm chart."
                                 required
                             />
                             <TextInput
-                                id="subscription.helm.packageAlias"
+                                path="subscription.helm.packageAlias"
                                 label="Package alias"
                                 placeholder="Enter the alias name of the target Helm chart"
                                 labelHelp="The alias name for the target Helm chart."
                                 required
                             />
                             <TextInput
-                                id="subscription.helm.packageVersion"
+                                path="subscription.helm.packageVersion"
                                 label="Package version"
                                 placeholder="Enter the version or versions"
                                 labelHelp="The version or versions for the deployable. You can use a range of versions in the form >1.0, or <3.0."
                             />
                             <Select
-                                id="subscription.helm.reconcileRate"
+                                path="subscription.helm.reconcileRate"
                                 label="Repository reconcile rate"
                                 labelHelp="The frequency of resource reconciliation that is used as a global repository setting. The medium default setting checks for changes to apply every three minutes and re-applies all resources every 15 minutes, even without a change. Select low to reconcile every hour. Select high to reconcile every two minutes. If you select off, the deployed resources are not automatically reconciled."
                                 options={reconcileRates}
                                 required
                             />
                             <Checkbox
-                                id="subscription.helm.subReconcileRate"
+                                path="subscription.helm.subReconcileRate"
                                 label="Disable auto-reconciliation"
                                 labelHelp="Turn the auto-reconciliation off for this specific application regardless of the reconcile rate setting in the repository."
                             />
                             <Checkbox
-                                id="subscription.helm.insecureSkipVerify"
+                                path="subscription.helm.insecureSkipVerify"
                                 label="Disable server certificate verification"
                                 labelHelp="Disable server TLS certificate verification for Git server connection."
                             />
@@ -263,7 +262,7 @@ export function ApplicationWizard(props: {
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionObjectstorage'}>
                             <Select
-                                id="subscription.obj.url"
+                                path="subscription.obj.url"
                                 label="URL"
                                 placeholder="Enter or select an ObjectStore bucket URL"
                                 labelHelp="The URL path for the object store."
@@ -271,25 +270,25 @@ export function ApplicationWizard(props: {
                                 required
                             />
                             <TextInput
-                                id="subscription.obj.accessKey"
+                                path="subscription.obj.accessKey"
                                 label="Access key"
                                 placeholder="Enter the object store access key"
                                 labelHelp="The access key for accessing the object store."
                             />
                             <TextInput
-                                id="subscription.obj.secretKey"
+                                path="subscription.obj.secretKey"
                                 label="Secret key"
                                 placeholder="Enter the object store secret key"
                                 labelHelp="The secret key for accessing the object store."
                             />
                             <TextInput
-                                id="subscription.obj.region"
+                                path="subscription.obj.region"
                                 label="Region"
                                 placeholder="Enter the AWS region of the S3 bucket"
                                 labelHelp="The AWS Region of the S3 bucket. This field is required for Amazon S3 buckets only."
                             />
                             <TextInput
-                                id="subscription.obj.subfolder"
+                                path="subscription.obj.subfolder"
                                 label="Subfolder"
                                 placeholder="Enter the Amazon S3 or MinIO subfolder bucket path"
                                 labelHelp="The Amazon S3 or MinIO subfolder bucket path. This field is optional for Amazon S3 and MinIO only."
@@ -305,9 +304,9 @@ export function ApplicationWizard(props: {
 
             <FormWizardStep label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <FormWizardSection label="General">
-                    <TextInput id="appSetName" label="ApplicationSet name" placeholder="Enter the application set name" required />
+                    <TextInput path="appSetName" label="ApplicationSet name" placeholder="Enter the application set name" required />
                     <Select
-                        id="argoServer"
+                        path="argoServer"
                         label="Argo server"
                         placeholder="Select the Argo server"
                         labelHelp="Argo server to deploy Argo app set. Click the Add cluster sets tab to create a new cluster set."
@@ -316,7 +315,7 @@ export function ApplicationWizard(props: {
                     />
                     <ExternalLinkButton id="addClusterSets" icon={<PlusIcon />} href={props.addClusterSets} />
                     <Select
-                        id="requeueTime"
+                        path="requeueTime"
                         label="Requeue time"
                         options={requeueTimes}
                         labelHelp="Cluster decision resource requeue time in seconds"
@@ -326,14 +325,14 @@ export function ApplicationWizard(props: {
             </FormWizardStep>
             <FormWizardStep label="Template" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <FormWizardSection label="Source">
-                    <Tiles id="repositoryType" label="Repository type">
+                    <Tiles path="repositoryType" label="Repository type">
                         <Tile id="git" value="Git" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
                         <Tile id="helm" value="Helm" label="Helm" icon={<HelmIcon />} description="Use a Helm repository" />
                     </Tiles>
                     {/* Git repo */}
                     <Hidden hidden={(data) => data.repositoryType !== 'Git'}>
                         <Select
-                            id="git.url"
+                            path="git.url"
                             label="URL"
                             labelHelp="The URL path for the Git repository."
                             placeholder="Enter or select a Git URL"
@@ -341,14 +340,14 @@ export function ApplicationWizard(props: {
                             required
                         />
                         <Select
-                            id="git.revision"
+                            path="git.revision"
                             label="Revision"
                             labelHelp="Refer to a single commit"
                             placeholder="Enter or select a tracking revision"
                             options={urlOptions}
                         />
                         <Select
-                            id="git.path"
+                            path="git.path"
                             label="Path"
                             labelHelp="The location of the resources on the Git repository."
                             placeholder="Enter or select a repository path"
@@ -358,7 +357,7 @@ export function ApplicationWizard(props: {
                     {/* Helm repo */}
                     <Hidden hidden={(data) => data.repositoryType !== 'Helm'}>
                         <Select
-                            id="helm.url"
+                            path="helm.url"
                             label="URL"
                             labelHelp="The URL path for the Helm repository."
                             placeholder="Enter or select a Helm URL"
@@ -366,14 +365,14 @@ export function ApplicationWizard(props: {
                             required
                         />
                         <TextInput
-                            id="helm.chart"
+                            path="helm.chart"
                             label="Chart name"
                             placeholder="Enter the name of the Helm chart"
                             labelHelp="The specific name for the target Helm chart."
                             required
                         />
                         <TextInput
-                            id="helm.packageVersion"
+                            path="helm.packageVersion"
                             label="Package version"
                             placeholder="Enter the version or versions"
                             labelHelp="The version or versions for the deployable. You can use a range of versions in the form >1.0, or <3.0."
@@ -382,7 +381,7 @@ export function ApplicationWizard(props: {
                     </Hidden>
                 </FormWizardSection>
                 <FormWizardSection label="Destination">
-                    <TextInput id="remoteNamespace" label="Remote namespace" placeholder="Enter the destination namespace" required />
+                    <TextInput path="remoteNamespace" label="Remote namespace" placeholder="Enter the destination namespace" required />
                 </FormWizardSection>
             </FormWizardStep>
 
@@ -393,21 +392,21 @@ export function ApplicationWizard(props: {
                 >
                     {/* Git only sync policies */}
                     <Hidden hidden={(data) => data.repositoryType !== 'Git'}>
-                        <Checkbox id="syncPolicy.prune" label="Delete resources that are no longer defined in Git" />
+                        <Checkbox path="syncPolicy.prune" label="Delete resources that are no longer defined in Git" />
                         <Checkbox
-                            id="syncPolicy.pruneLast"
+                            path="syncPolicy.pruneLast"
                             label="Delete resources that are no longer defined in Git at the end of a sync operation"
                         />
-                        <Checkbox id="syncPolicy.replace" label="Replace resources instead of applying changes from Git" />
+                        <Checkbox path="syncPolicy.replace" label="Replace resources instead of applying changes from Git" />
                     </Hidden>
-                    <Checkbox id="syncPolicy.allowEmpty" label="Allow applications to have empty resources" />
-                    <Checkbox id="syncPolicy.applyOutOfSyncOnly" label="Only synchronize out-of-sync resources" />
-                    <Checkbox id="syncPolicy.selfHeal" label="Automatically sync when cluster state changes" />
-                    <Checkbox id="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
-                    <Checkbox id="syncPolicy.validate" label="Disable kubectl validation" />
-                    <Checkbox id="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
+                    <Checkbox path="syncPolicy.allowEmpty" label="Allow applications to have empty resources" />
+                    <Checkbox path="syncPolicy.applyOutOfSyncOnly" label="Only synchronize out-of-sync resources" />
+                    <Checkbox path="syncPolicy.selfHeal" label="Automatically sync when cluster state changes" />
+                    <Checkbox path="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
+                    <Checkbox path="syncPolicy.validate" label="Disable kubectl validation" />
+                    <Checkbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
                         <Select
-                            id="syncPolicy.propagationPolicy"
+                            path="syncPolicy.propagationPolicy"
                             label="Propogation policy"
                             options={['foreground', 'background', 'orphan']}
                             required
@@ -429,12 +428,12 @@ export function Placement(props: { placement: string[] }) {
         <Fragment>
             <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
                 <Checkbox
-                    id="placement.useLabels"
+                    path="placement.useLabels"
                     label="New placement"
                     labelHelp="Deploy application resources only on clusters matching specified labels"
                 >
                     <LabelsInput
-                        id="placement.labels"
+                        path="placement.labels"
                         label="Cluster labels"
                         placeholder="Enter cluster labels"
                         helperText="Placement will only select clusters matching all the specified labels"
@@ -443,12 +442,12 @@ export function Placement(props: { placement: string[] }) {
                     />
                 </Checkbox>
                 <Checkbox
-                    id="placement.useExisting"
+                    path="placement.useExisting"
                     label="Use an existing placement"
                     labelHelp="If available in the application namespace, you can select a predefined placement configuration"
                 >
                     <Select
-                        id="placement.select"
+                        path="placement.select"
                         label="Placement"
                         placeholder="Select an existing placement"
                         options={props.placement}
@@ -495,31 +494,31 @@ export function TimeWindow() {
         <Stack hasGutter style={{ paddingBottom: 16 }}>
             {/* TODO InputCheckBoxGroup */}
             {/* <FormWizardSection title="Deployment window"> */}
-            <Checkbox id="timeWindow.sunday" label="Sunday" />
-            <Checkbox id="timeWindow.monday" label="Monday" />
-            <Checkbox id="timeWindow.tuesday" label="Tuesday" />
-            <Checkbox id="timeWindow.wednesday" label="Wednesday" />
-            <Checkbox id="timeWindow.thursday" label="Thursday" />
-            <Checkbox id="timeWindow.friday" label="Friday" />
-            <Checkbox id="timeWindow.saturday" label="Saturday" />
+            <Checkbox path="timeWindow.sunday" label="Sunday" />
+            <Checkbox path="timeWindow.monday" label="Monday" />
+            <Checkbox path="timeWindow.tuesday" label="Tuesday" />
+            <Checkbox path="timeWindow.wednesday" label="Wednesday" />
+            <Checkbox path="timeWindow.thursday" label="Thursday" />
+            <Checkbox path="timeWindow.friday" label="Friday" />
+            <Checkbox path="timeWindow.saturday" label="Saturday" />
             {/* </FormWizardSection> */}
-            <Select id="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={['EST']} required />
+            <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={['EST']} required />
             <ArrayInput
                 id="timeWindows"
                 placeholder="Add time range"
                 collapsedContent={
                     <Fragment>
-                        <TextDetail id="start" placeholder="Expand to enter the variable" />
+                        <TextDetail path="start" placeholder="Expand to enter the variable" />
                         <Hidden hidden={(item: ITimeRangeVariableData) => item.end === undefined}>
                             &nbsp;-&nbsp;
-                            <TextDetail id="end" />
+                            <TextDetail path="end" />
                         </Hidden>
                     </Fragment>
                 }
             >
                 <Split hasGutter>
-                    <TimeRange id="start" label="Start Time"></TimeRange>
-                    <TimeRange id="end" label="End Time"></TimeRange>
+                    <TimeRange path="start" label="Start Time"></TimeRange>
+                    <TimeRange path="end" label="End Time"></TimeRange>
                 </Split>
             </ArrayInput>
         </Stack>

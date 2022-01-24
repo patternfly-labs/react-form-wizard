@@ -1,5 +1,5 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
-import { WizardCancel, WizardSubmit, Select, Tile, Tiles, Section, Step, TextArea, TextInput, WizardPage } from '../../src'
+import { Section, Select, Step, TextArea, TextInput, Tile, Tiles, WizardCancel, WizardPage, WizardSubmit } from '../../src'
 import { isValidKubernetesName } from '../components/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
@@ -41,7 +41,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
         >
-            <Step label="Credential type">
+            <Step label="Credential type" id="credential-type">
                 <Section label="Credentials type">
                     <Tiles
                         id="cloudCredentials"
@@ -99,7 +99,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                 </Section>
             </Step>
 
-            <Step label="Basic Information">
+            <Step label="Basic Information" id="basic-information">
                 <Section label="Details" prompt="Enter the details for the credentials">
                     <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
                     <Select
@@ -121,6 +121,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
 
             <Step
                 label="Amazon Web Services"
+                id="amazon-web-services"
                 hidden={(item) => item.metadata?.labels?.['cluster.open-cluster-management.io/type'] !== CredentialsType.aws}
             >
                 <Section label="Amazon Web Services" prompt="Enter the Amazon Web Services credentials">
@@ -128,7 +129,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                     <TextInput id="aws-access-key" path="stringData.aws_secret_access_key" label="Secret access key" required secret />
                 </Section>
             </Step>
-            <Step label="Proxy">
+            <Step label="Proxy" id="proxy">
                 <Section label="Proxy" prompt="">
                     <TextInput id="http-proxy" path="stringData.httpProxy" label="HTTP Proxy" placeholder="Enter the HTTP Proxy url" />
                     <TextInput id="https-proxy" path="stringData.httpsProxy" label="HTTPS Proxy" placeholder="Enter the HTTPS Proxy url" />
@@ -146,7 +147,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                     />
                 </Section>
             </Step>
-            <Step label="Pull secret and SSH">
+            <Step label="Pull secret and SSH" id="pull-secret-and-ssh">
                 <Section label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
                     <TextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
                     <TextArea

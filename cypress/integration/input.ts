@@ -14,9 +14,9 @@ describe('inputs wizard', () => {
             cy.contains('Please fix validation errors')
             cy.contains('Text input required is required')
             cy.get('#text-input').within(() => {
-                cy.get('#text-input').type('text-input')
-                cy.get('#text-input-required').type('text-input-required')
-                cy.get('#text-input-secret').type('text-input-secret')
+                cy.get('#textinput-text').type('text-input')
+                cy.get('#textinput-required').type('text-input-required')
+                cy.get('#textinput-secret').type('text-input-secret')
             })
             cy.contains('Next').click()
         })
@@ -28,9 +28,9 @@ describe('inputs wizard', () => {
             cy.contains('Please fix validation errors')
             cy.contains('Text area required is required')
             cy.get('#text-area').within(() => {
-                cy.get('#text-area').type('text-area')
-                cy.get('#text-area-required').type('text-area-required')
-                cy.get('#text-area-secret').type('text-area-secret')
+                cy.get('#textarea-text').type('text-area')
+                cy.get('#textarea-required').type('text-area-required')
+                cy.get('#textarea-secret').type('text-area-secret')
             })
             cy.contains('Next').click()
         })
@@ -42,7 +42,7 @@ describe('inputs wizard', () => {
             cy.contains('Please fix validation errors')
             cy.contains('Select required is required')
             cy.get('#select').within(() => {
-                cy.get('#select').click().get(`#Option\\ 1`).click()
+                cy.get('#select-value').click().get(`#Option\\ 1`).click()
                 cy.get('#select-required').click().get(`#Option\\ 2`).click()
             })
             cy.contains('Next').click()
@@ -106,17 +106,17 @@ describe('inputs wizard', () => {
     it('review', () => {
         cy.get('#review').within(() => {
             cy.get('#text-input').within(() => {
-                cy.get('#text-input').contains('text-input')
-                cy.get('#text-input-required').contains('text-input-required')
-                cy.get('#text-input-secret').contains('text-input-secret')
+                cy.get('#textinput-text').contains('text-input')
+                cy.get('#textinput-required').contains('text-input-required')
+                cy.get('#textinput-secret').contains('text-input-secret')
             })
             cy.get('#text-area').within(() => {
-                cy.get('#text-area').contains('text-area')
-                cy.get('#text-area-required').contains('text-area-required')
-                cy.get('#text-area-secret').contains('text-area-secret')
+                cy.get('#textarea-text').contains('text-area')
+                cy.get('#textarea-required').contains('text-area-required')
+                cy.get('#textarea-secret').contains('text-area-secret')
             })
             cy.get('#select').within(() => {
-                cy.get('#select').contains('Option 1')
+                cy.get('#select-value').contains('Option 1')
                 cy.get('#select-required').contains('Option 2')
             })
             cy.contains('Submit')
