@@ -103,6 +103,12 @@ describe('inputs wizard', () => {
         })
     })
 
+    it('hidden', () => {
+        cy.get('#hidden').within(() => {
+            cy.contains('Next').click()
+        })
+    })
+
     it('review', () => {
         cy.get('#review').within(() => {
             cy.get('#text-input').within(() => {

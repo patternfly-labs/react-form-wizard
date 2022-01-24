@@ -149,10 +149,25 @@ export function InputsWizard() {
                     <TextInput label="Text 1" path="section1.text1" id="text-1" required />
                     <TextInput label="Text 2" path="section1.text2" id="text-2" />
                 </Section>
-                <Section label="Section 2">
+                <Section label="Section 2 (Collapsable)" collapsable>
                     <TextInput label="Text 3" path="section2.text3" id="text-3" required />
                     <TextInput label="Text 4" path="section2.text4" id="text-4" />
                 </Section>
+                <Section label="Section 3 (Hideable)" description="This section auto hides if all inputs are hidden.">
+                    <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
+                </Section>
+                <Section
+                    label="Section 4 (Hidden)"
+                    hidden={(item) => !item.showHidden}
+                    description="This section has a hidden function to hide itself and its inputs."
+                >
+                    <TextInput label="Text input" path="textInput.text" />
+                </Section>
+                <Checkbox label="Show hidden" path="showHidden" />
+            </Step>
+
+            <Step label="Hidden" id="hidden">
+                <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
             </Step>
         </WizardPage>
     )

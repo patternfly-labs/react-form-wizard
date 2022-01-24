@@ -147,7 +147,7 @@ export function ArrayInput(props: {
                                                                     showValidation && hasErrors ? (
                                                                         <Split>
                                                                             <SplitItem>
-                                                                                <ExclamationCircleIcon color="#c00" />
+                                                                                <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
                                                                             </SplitItem>
                                                                             <SplitItem>
                                                                                 <span className="pf-c-form__helper-text pf-m-error">

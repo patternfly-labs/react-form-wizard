@@ -14,14 +14,16 @@ import {
     Tabs,
     TabTitleText,
 } from '@patternfly/react-core'
-import { ExclamationCircleIcon } from '@patternfly/react-icons'
+import { CircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react'
 import { WizardCancel, WizardSubmit } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { DataContext, useData } from './contexts/DataContext'
+import { HasInputsProvider } from './contexts/HasInputsProvider'
 import { ItemContext, useItem } from './contexts/ItemContext'
 import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
+import { StepHasInputsProvider, useStepHasInputs } from './contexts/StepHasInputsProvider'
 import { StepValidationProvider, useStepHasValidationError } from './contexts/StepValidationProvider'
 import { useHasValidationError, ValidationProvider } from './contexts/ValidationProvider'
 import { useID } from './inputs/Input'
@@ -52,43 +54,45 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     const [template2] = useState(() => (props.yamlToDataTemplate ? Handlebars.compile(props.yamlToDataTemplate) : undefined))
 
     return (
-        <StepValidationProvider>
-            <ModeContext.Provider value={mode}>
-                <DataContext.Provider value={{ update }}>
-                    <ItemContext.Provider value={data}>
-                        <ValidationProvider>
-                            <Drawer isExpanded={drawerExpanded} isInline>
-                                <DrawerContent
-                                    panelContent={
-                                        <WizardPageDrawer
-                                            data={data}
-                                            template={template}
-                                            template2={template2}
-                                            templateString={props.template}
-                                        />
-                                    }
-                                >
-                                    <DrawerContentBody>
-                                        <PageSection
-                                            variant="light"
-                                            style={{ height: '100%' }}
-                                            type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
-                                            isWidthLimited
-                                        >
-                                            <ItemContext.Provider value={data}>
-                                                <WizardInternal onSubmit={props.onSubmit} onCancel={props.onCancel}>
-                                                    {props.children}
-                                                </WizardInternal>
-                                            </ItemContext.Provider>
-                                        </PageSection>
-                                    </DrawerContentBody>
-                                </DrawerContent>
-                            </Drawer>
-                        </ValidationProvider>
-                    </ItemContext.Provider>
-                </DataContext.Provider>
-            </ModeContext.Provider>
-        </StepValidationProvider>
+        <StepHasInputsProvider>
+            <StepValidationProvider>
+                <ModeContext.Provider value={mode}>
+                    <DataContext.Provider value={{ update }}>
+                        <ItemContext.Provider value={data}>
+                            <ValidationProvider>
+                                <Drawer isExpanded={drawerExpanded} isInline>
+                                    <DrawerContent
+                                        panelContent={
+                                            <WizardPageDrawer
+                                                data={data}
+                                                template={template}
+                                                template2={template2}
+                                                templateString={props.template}
+                                            />
+                                        }
+                                    >
+                                        <DrawerContentBody>
+                                            <PageSection
+                                                variant="light"
+                                                style={{ height: '100%' }}
+                                                type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
+                                                isWidthLimited
+                                            >
+                                                <ItemContext.Provider value={data}>
+                                                    <WizardInternal onSubmit={props.onSubmit} onCancel={props.onCancel}>
+                                                        {props.children}
+                                                    </WizardInternal>
+                                                </ItemContext.Provider>
+                                            </PageSection>
+                                        </DrawerContentBody>
+                                    </DrawerContent>
+                                </Drawer>
+                            </ValidationProvider>
+                        </ItemContext.Provider>
+                    </DataContext.Provider>
+                </ModeContext.Provider>
+            </StepValidationProvider>
+        </StepHasInputsProvider>
     )
 }
 
@@ -135,26 +139,30 @@ function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; on
             {steps?.map((step) => {
                 if (step !== activeStep)
                     return (
-                        <ShowValidationProvider key={step.props.label}>
-                            <ValidationProvider>
-                                <div style={{ display: 'none' }}>{step}</div>
-                            </ValidationProvider>
-                        </ShowValidationProvider>
+                        <HasInputsProvider key={step.props.id}>
+                            <ShowValidationProvider>
+                                <ValidationProvider>
+                                    <div style={{ display: 'none' }}>{step}</div>
+                                </ValidationProvider>
+                            </ShowValidationProvider>
+                        </HasInputsProvider>
                     )
                 return (
-                    <ShowValidationProvider key={step.props.label}>
-                        <ValidationProvider>
-                            <WizardActiveStep
-                                activeStep={activeStep}
-                                setActiveStep={setActiveStep}
-                                steps={steps}
-                                next={next}
-                                back={back}
-                                onSubmit={props.onSubmit}
-                                onCancel={props.onCancel}
-                            />
-                        </ValidationProvider>
-                    </ShowValidationProvider>
+                    <HasInputsProvider key={step.props.id}>
+                        <ShowValidationProvider>
+                            <ValidationProvider>
+                                <WizardActiveStep
+                                    activeStep={activeStep}
+                                    setActiveStep={setActiveStep}
+                                    steps={steps}
+                                    next={next}
+                                    back={back}
+                                    onSubmit={props.onSubmit}
+                                    onCancel={props.onCancel}
+                                />
+                            </ValidationProvider>
+                        </ShowValidationProvider>
+                    </HasInputsProvider>
                 )
             })}
         </div>
@@ -245,9 +253,16 @@ function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setA
     if (props.activeStep === props.step) {
         classname += ' pf-m-current'
     }
+
     const stepHasValidationError = useStepHasValidationError()
+
+    const stepHasInputs = useStepHasInputs()
+    // if (!stepHasInputs[props.step.props.id]) {
+    //     return <Fragment />
+    // }
+
     return (
-        <li key={props.step.props.label} className="pf-c-wizard__nav-item">
+        <li key={props.step.props.id} className="pf-c-wizard__nav-item">
             <button
                 className={classname}
                 onClick={() => {
@@ -256,7 +271,16 @@ function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setA
             >
                 <Split>
                     <SplitItem isFilled>{props.step.props.label}</SplitItem>
-                    {stepHasValidationError[props.step.props.label] && (
+                    {stepHasInputs[props.step.props.id] === true ? (
+                        <SplitItem>
+                            <CircleIcon color="var(--pf-global--success-color--100)" />
+                        </SplitItem>
+                    ) : (
+                        <SplitItem>
+                            <CircleIcon color="var(--pf-global--danger-color--100)" />
+                        </SplitItem>
+                    )}
+                    {stepHasValidationError[props.step.props.id] && (
                         <SplitItem>
                             <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
                         </SplitItem>

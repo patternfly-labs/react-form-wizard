@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useItem } from './ItemContext'
 
-const StepSetHasValidationErrorContext = createContext<(label: string, hasError: boolean) => void>(() => null)
+const StepSetHasValidationErrorContext = createContext<(id: string, hasError: boolean) => void>(() => null)
 export const useSetStepHasValidationError = () => useContext(StepSetHasValidationErrorContext)
 
 export const StepHasValidationErrorContext = createContext<Record<string, boolean>>({})
@@ -13,14 +13,14 @@ export function StepValidationProvider(props: { children: ReactNode }) {
     const [setHasValidationErrors, setHasValidationErrorsFunction] = useState<() => void>(() => () => null)
     const validateSteps = useCallback(() => {
         setHasStepValidationErrorsState({})
-        setHasValidationErrorsFunction(() => (label: string, hasError: boolean) => {
+        setHasValidationErrorsFunction(() => (id: string, hasError: boolean) => {
             setHasStepValidationErrorsState((state) => {
-                if (hasError && state[label] !== true) {
+                if (hasError && state[id] !== true) {
                     state = { ...state }
-                    state[label] = true
-                } else if (!hasError && state[label] !== undefined) {
+                    state[id] = true
+                } else if (!hasError && state[id] !== undefined) {
                     state = { ...state }
-                    delete state[label]
+                    delete state[id]
                 }
                 return state
             })
