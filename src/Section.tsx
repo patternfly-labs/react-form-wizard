@@ -1,4 +1,4 @@
-import { DescriptionList, Divider, Split, SplitItem, Stack, Text, Title } from '@patternfly/react-core'
+import { DescriptionList, Divider, Split, SplitItem, Stack, Title } from '@patternfly/react-core'
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useState } from 'react'
 import { LabelHelp } from './components/LabelHelp'
@@ -77,7 +77,7 @@ function SectionInternal(props: SectionProps) {
                                         }}
                                     >
                                         <SplitItem isFilled>
-                                            <Stack hasGutter>
+                                            <Stack>
                                                 <Split hasGutter>
                                                     <span className="pf-c-form__section-title">{props.label}</span>
                                                     {props.id && (
@@ -88,7 +88,7 @@ function SectionInternal(props: SectionProps) {
                                                         />
                                                     )}
                                                 </Split>
-                                                {expanded && props.description && <Text component="small">{props.description}</Text>}
+                                                {expanded && props.description && <p style={{ paddingTop: 8 }}>{props.description}</p>}
                                             </Stack>
                                         </SplitItem>
                                         {showValidation && !expanded && hasValidationError && (

@@ -1,12 +1,5 @@
-import {
-    Checkbox as PFCheckbox,
-    DescriptionListDescription,
-    DescriptionListGroup,
-    DescriptionListTerm,
-    Split,
-    Stack,
-    Text,
-} from '@patternfly/react-core'
+import { Checkbox as PFCheckbox, Split, Stack, Text } from '@patternfly/react-core'
+import { CheckIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode } from 'react'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
@@ -14,57 +7,44 @@ import { Mode } from '../contexts/ModeContext'
 import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
-type CheckboxProps = InputCommonProps & { children?: ReactNode; title?: string }
+export type CheckboxProps = InputCommonProps & { children?: ReactNode; title?: string }
 
-export function Checkbox(
-    props: CheckboxProps
-
-    // id: string
-    // label: string
-    // path?: string
-    // placeholder?: string
-    // secret?: boolean
-    // readonly?: boolean
-    // disabled?: boolean
-    // hidden?: () => boolean
-    // labelHelp?: string
-    // labelHelpTitle?: string
-    // helperText?: string
-    // validation?: (value: string) => string | undefined
-    // children?: ReactNode
-    // title?: string
-) {
+export function Checkbox(props: CheckboxProps) {
     const { mode, value, setValue, hidden, id } = useInput(props)
 
     if (hidden) return <Fragment />
 
     if (mode === Mode.Details) {
-        if (value === undefined) return <Fragment />
+        if (!value) return <Fragment />
         return (
-            <DescriptionListGroup id={props.id}>
-                <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                <DescriptionListDescription>{value ? 'True' : 'False'}</DescriptionListDescription>
-            </DescriptionListGroup>
+            <Fragment>
+                <Split id={id}>
+                    <CheckIcon style={{ paddingRight: 5 }} />
+                    <div className="pf-c-description-list__term" style={{ paddingLeft: 2 }}>
+                        {props.label}
+                    </div>
+                </Split>
+                {props.children}
+            </Fragment>
         )
     }
 
     return (
-        <Fragment>
+        <Stack hasGutter>
             <Stack>
-                <InputLabel {...props} id={id} label={props.title}>
+                <InputLabel {...props} id={id} label={props.title} helperText={undefined}>
                     <Split>
-                        <PFCheckbox id={id ?? props.label} isChecked={value} onChange={setValue} label={props.label} value={value} />
+                        <PFCheckbox id={id} isChecked={value} onChange={setValue} label={props.label} value={value} />
                         <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
                     </Split>
                 </InputLabel>
-
                 {props.helperText && (
-                    <Text style={{ paddingLeft: 24, paddingTop: 8 }} component="small">
+                    <Text className="pf-c-form__helper-text" style={{ paddingLeft: 22 }}>
                         {props.helperText}
                     </Text>
                 )}
             </Stack>
-            {value && <Indented>{props.children}</Indented>}
-        </Fragment>
+            {value && <Indented paddingBottom={8}>{props.children}</Indented>}
+        </Stack>
     )
 }

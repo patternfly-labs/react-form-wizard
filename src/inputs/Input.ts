@@ -267,7 +267,7 @@ export function useInput(props: InputCommonProps) {
     }, [hidden, error, setHasValidationError])
 
     const validate = useValidate()
-    useLayoutEffect(() => validate(), [error, validate])
+    useLayoutEffect(() => validate(), [value, error, validate])
 
     const path = usePath(props)
     const id = useID(props)

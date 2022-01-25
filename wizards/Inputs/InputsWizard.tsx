@@ -55,7 +55,7 @@ export function InputsWizard() {
 
             <Step label="Radio" id="radio">
                 <Section label="Radio">
-                    <RadioGroup id="radio0" path="radio" label="Radio">
+                    <RadioGroup id="radio0" path="radio0" label="Radio">
                         <Radio id="radio-1" label="Radio 1" value="radio-1" />
                         <Radio id="radio-2" label="Radio 2" value="radio-2" />
                     </RadioGroup>
@@ -82,17 +82,27 @@ export function InputsWizard() {
                 </Section>
             </Step>
 
-            <Step label="Checkbox" id="checkbox">
+            <Step label="Checkbox" id="checkbox-step">
                 <Section label="Checkbox">
-                    <Checkbox label="Checkbox without description" path="checkbox1" />
-                    <Checkbox label="Checkbox without description with sub-inputs" path="checkbox2">
-                        <TextInput label="Name" path="checkbox2.name" required />
+                    <Checkbox label="Checkbox" path="checkboxes.checkbox1.value" id="checkbox-1" />
+                    <Checkbox label="Checkbox with inputs" path="checkboxes.checkbox2.value" id="checkbox-2">
+                        <TextInput label="Text input" path="checkboxes.checkbox2.textInput" required id="checkbox-2-text" />
                     </Checkbox>
-                    <Checkbox label="Checkbox with description" helperText="Checkbox description." path="checkbox3" />
-                    <Checkbox label="Checkbox with description with sub-inputs" path="checkbox4" helperText="Checkbox description.">
-                        <TextInput label="Name" path="checkbox4.name" required />
+                    <Checkbox
+                        label="Checkbox with description"
+                        helperText="Description goes here."
+                        path="checkboxes.checkbox3.value"
+                        id="checkbox-3"
+                    />
+                    <Checkbox
+                        label="Checkbox with both"
+                        path="checkboxes.checkbox4.value"
+                        helperText="Description goes here."
+                        id="checkbox-4"
+                    >
+                        <TextInput label="Text input" path="checkboxes.checkbox4.textInput" required />
                     </Checkbox>
-                    <Checkbox label="Checkbox hidden" path="checkbox5" hidden={(item) => !item.showHidden} />
+                    <Checkbox label="Checkbox conditionally hidden" path="checkboxes.checkbox5.value" hidden={(item) => !item.showHidden} />
                 </Section>
             </Step>
 
