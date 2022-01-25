@@ -36,7 +36,8 @@ export function wizardArrayItems(props: any, item: any) {
     return values
 }
 
-export type ArrayInputProps = InputCommonProps & {
+export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
+    path: string | null
     description?: string
     children: ReactNode
     filter?: (item: any) => boolean
@@ -49,7 +50,7 @@ export type ArrayInputProps = InputCommonProps & {
 }
 
 export function ArrayInput(props: ArrayInputProps) {
-    const { mode, value, setValue, hidden, id } = useInput(props)
+    const { mode, value, setValue, hidden, id } = useInput(props as InputCommonProps)
 
     const path = props.path
 

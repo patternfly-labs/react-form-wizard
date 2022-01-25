@@ -103,7 +103,7 @@ export function ApplicationWizard(props: {
             <FormWizardStep label="Repositories" hidden={(item) => item.deployType !== 'Subscription'}>
                 <FormWizardSection label="Repositories" prompt="Enter the application repositories">
                     <ArrayInput
-                        id="repositories"
+                        path="repositories"
                         placeholder="Add repository"
                         collapsedContent={<TextDetail path="url" placeholder="Expand to enter the repository details" />}
                     >
@@ -502,7 +502,7 @@ export function TimeWindow() {
             {/* </FormWizardSection> */}
             <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={['EST']} required />
             <ArrayInput
-                id="timeWindows"
+                path="timeWindows"
                 placeholder="Add time range"
                 collapsedContent={
                     <Fragment>

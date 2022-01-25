@@ -279,7 +279,7 @@ export function PolicyWizardTemplates() {
                     />
 
                     <ArrayInput
-                        id="objectDefinition.spec.object-templates"
+                        path="objectDefinition.spec.object-templates"
                         label="Configuration objects"
                         placeholder="Add configuration object"
                         collapsedContent="objectDefinition.metadata.name"
@@ -298,7 +298,7 @@ export function PolicyWizardTemplates() {
                                 helperText="Name needs to be unique to the namespace on each of the managed clusters."
                             />
                             <ArrayInput
-                                id="objectDefinition.spec.limits"
+                                path="objectDefinition.spec.limits"
                                 label="Limits"
                                 placeholder="Add limit"
                                 collapsedContent={'default.memory'}
@@ -441,7 +441,7 @@ export function PolicyWizardPlacement() {
                         required
                     />
                     <ArrayInput
-                        id="subjects"
+                        path="subjects"
                         label="Subjects"
                         description="Placement bindings can have multiple subjects which the placement is applied to."
                         placeholder="Add placement subject"
