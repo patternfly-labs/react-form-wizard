@@ -9,7 +9,7 @@ import {
     FormWizardSection,
     FormWizardStep,
     Hidden,
-    LabelsInput,
+    KeyValue,
     Radio,
     RadioGroup,
     Select,
@@ -103,7 +103,7 @@ export function ApplicationWizard(props: {
             <FormWizardStep label="Repositories" hidden={(item) => item.deployType !== 'Subscription'}>
                 <FormWizardSection label="Repositories" prompt="Enter the application repositories">
                     <ArrayInput
-                        id="repositories"
+                        path="repositories"
                         placeholder="Add repository"
                         collapsedContent={<TextDetail path="url" placeholder="Expand to enter the repository details" />}
                     >
@@ -423,7 +423,6 @@ export function ApplicationWizard(props: {
 }
 
 export function Placement(props: { placement: string[] }) {
-    const labelOptions = useMemo(() => [{ id: 'amazon', label: 'cloud', value: 'Amazon' }], [])
     return (
         <Fragment>
             <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
@@ -432,13 +431,12 @@ export function Placement(props: { placement: string[] }) {
                     label="New placement"
                     labelHelp="Deploy application resources only on clusters matching specified labels"
                 >
-                    <LabelsInput
+                    <KeyValue
                         path="placement.labels"
                         label="Cluster labels"
                         placeholder="Enter cluster labels"
                         helperText="Placement will only select clusters matching all the specified labels"
                         required
-                        options={labelOptions}
                     />
                 </Checkbox>
                 <Checkbox
@@ -504,7 +502,7 @@ export function TimeWindow() {
             {/* </FormWizardSection> */}
             <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={['EST']} required />
             <ArrayInput
-                id="timeWindows"
+                path="timeWindows"
                 placeholder="Add time range"
                 collapsedContent={
                     <Fragment>

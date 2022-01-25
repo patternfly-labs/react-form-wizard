@@ -1,18 +1,5 @@
 import { useHistory } from 'react-router-dom'
-import {
-    ArrayInput,
-    Checkbox as Checkbox,
-    KeyValue,
-    LabelsInput as Labels,
-    Radio as Radio,
-    RadioGroup as RadioGroup,
-    Select as Select,
-    StringsInput,
-    TextArea,
-    TextInput as TextInput,
-    Tile as Tile,
-    Tiles as Tiles,
-} from '../../src'
+import { ArrayInput, Checkbox, KeyValue, Radio, RadioGroup, Select, StringsInput, TextArea, TextInput, Tile, Tiles } from '../../src'
 import { Section } from '../../src/Section'
 import { Step } from '../../src/Step'
 import { WizardPage } from '../../src/WizardPage'
@@ -109,12 +96,6 @@ export function InputsWizard() {
                 </Section>
             </Step>
 
-            <Step label="Labels" id="labels">
-                <Section label="Labels">
-                    <Labels id="labels" path="labels" label="Labels" />
-                </Section>
-            </Step>
-
             <Step label="Key Value" id="key-value">
                 <Section label="Key Value">
                     <KeyValue id="key-values" path="key-values" label="Key Value" />
@@ -135,6 +116,7 @@ export function InputsWizard() {
                         path="resources"
                         placeholder="Add resource"
                         collapsedContent="metadata.name"
+                        sortable
                     >
                         <TextInput label="Name" path="metadata.name" required />
                         <Select label="Namespace" path="metadata.namespace" required options={['namespace-1', 'namespace-2']} />
@@ -149,10 +131,25 @@ export function InputsWizard() {
                     <TextInput label="Text 1" path="section1.text1" id="text-1" required />
                     <TextInput label="Text 2" path="section1.text2" id="text-2" />
                 </Section>
-                <Section label="Section 2">
+                <Section label="Section 2 (Collapsable)" collapsable>
                     <TextInput label="Text 3" path="section2.text3" id="text-3" required />
                     <TextInput label="Text 4" path="section2.text4" id="text-4" />
                 </Section>
+                <Section label="Section 3 (Hideable)" description="This section auto hides if all inputs are hidden.">
+                    <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
+                </Section>
+                <Section
+                    label="Section 4 (Hidden)"
+                    hidden={(item) => !item.showHidden}
+                    description="This section has a hidden function to hide itself and its inputs."
+                >
+                    <TextInput label="Text input" path="textInput.text" />
+                </Section>
+                <Checkbox label="Show hidden" path="showHidden" />
+            </Step>
+
+            <Step label="Hidden" id="hidden">
+                <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
             </Step>
         </WizardPage>
     )

@@ -5,6 +5,7 @@ on:
         - cron: '0 9 * * 1'
 jobs:
     npm-check-updates:
+        if: (github.event_name == 'schedule' && github.repository == 'patternfly-labs/react-form-wizard') || (github.event_name != 'schedule')
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2

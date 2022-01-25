@@ -3,6 +3,7 @@ import { Children, isValidElement, ReactElement, ReactNode, useCallback, useCont
 import set from 'set-value'
 import { ArrayInput, ItemSelector, wizardArrayItems, wizardSelectorItem } from '..'
 import { useData } from '../contexts/DataContext'
+import { useSetHasInputs, useUpdateHasInputs } from '../contexts/HasInputsProvider'
 import { useSetHasValue } from '../contexts/HasValueProvider'
 import { ItemContext } from '../contexts/ItemContext'
 import { useMode } from '../contexts/ModeContext'
@@ -251,15 +252,20 @@ export function useInput(props: InputCommonProps) {
     const [value, setValue] = useValue(props, '')
     const hidden = useInputHidden(props)
 
-    const { validated, error } = useInputValidation(props)
+    const setHasInputs = useSetHasInputs()
+    useEffect(() => {
+        if (!hidden) setHasInputs()
+    }, [hidden, setHasInputs])
 
-    // If setValid changes, it is an indication that validation is needed
+    const updateHasInputs = useUpdateHasInputs()
+    useEffect(() => updateHasInputs(), [hidden, updateHasInputs])
+
+    const { validated, error } = useInputValidation(props)
     const setHasValidationError = useSetHasValidationError()
     useEffect(() => {
         if (!hidden && error) setHasValidationError()
     }, [hidden, error, setHasValidationError])
 
-    // If error changes, trigger validation
     const validate = useValidate()
     useEffect(() => validate(), [error, validate])
 

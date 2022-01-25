@@ -3,7 +3,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useState 
 const SetHasValueContext = createContext<() => void>(() => null)
 export const useSetHasValue = () => useContext(SetHasValueContext)
 
-export const HasValueContext = createContext(true)
+export const HasValueContext = createContext(false)
 export const useHasValue = () => useContext(HasValueContext)
 
 const UpdateHasValueContext = createContext<() => void>(() => null)

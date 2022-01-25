@@ -87,7 +87,7 @@ export function ClusterForm() {
                     <Select path="networkType" label="Network type" options={['default']} required />
 
                     <ArrayInput
-                        id="networks"
+                        path="networks"
                         label="Networks"
                         placeholder="Add network"
                         collapsedContent={<TextDetail path="clusterCidr" placeholder="Expand to edit the network" />}
@@ -172,7 +172,7 @@ export function WorkerPoolsStep() {
             description="One or more worker nodes will be created to run the container workloads in this cluster."
         >
             <ArrayInput
-                id="workerPools"
+                path="workerPools"
                 label="Worker pools"
                 placeholder="Add worker pool"
                 collapsedContent={<TextDetail path="name" placeholder="Expand to edit the worker pool details" />}
