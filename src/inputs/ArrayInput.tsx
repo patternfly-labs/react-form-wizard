@@ -16,16 +16,15 @@ import {
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Children, Fragment, ReactNode, useCallback, useContext, useState } from 'react'
-import set from 'set-value'
 import { TextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
-import { Mode, useMode } from '../contexts/ModeContext'
+import { Mode } from '../contexts/ModeContext'
 import { ShowValidationContext } from '../contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from '../contexts/ValidationProvider'
 import './ArrayInput.css'
-import { InputCommonProps, useID } from './Input'
+import { InputCommonProps, useInput } from './Input'
 
 export function wizardArrayItems(props: any, item: any) {
     const id = props.id
@@ -50,14 +49,12 @@ export type ArrayInputProps = InputCommonProps & {
 }
 
 export function ArrayInput(props: ArrayInputProps) {
-    const id = useID(props)
+    const { mode, value, setValue, hidden, id } = useInput(props)
+
     const path = props.path
 
     const { update } = useData()
-    const mode = useMode()
     const item = useContext(ItemContext)
-    const sourceArray = get(item, path) as object[]
-
     const values = wizardArrayItems(props, item)
 
     const addItem = useCallback(
@@ -71,40 +68,42 @@ export function ArrayInput(props: ArrayInputProps) {
                 } else {
                     newArray.push(newItem as never)
                 }
-                set(item, path, newArray, { preservePaths: false })
+                setValue(newArray)
             }
             update()
         },
-        [path, update, item, values]
+        [item, path, setValue, update, values]
     )
 
     const removeItem = useCallback(
         (index: number) => {
-            sourceArray.splice(index, 1)
-            update()
+            ;(value as Array<object>).splice(index, 1)
+            setValue(value)
         },
-        [sourceArray, update]
+        [setValue, value]
     )
 
     const moveUp = useCallback(
         (index: number) => {
-            const temp = values[index]
-            values[index] = values[index - 1]
-            values[index - 1] = temp
-            update()
+            const temp = value[index]
+            value[index] = value[index - 1]
+            value[index - 1] = temp
+            setValue(value)
         },
-        [update, values]
+        [setValue, value]
     )
 
     const moveDown = useCallback(
         (index: number) => {
-            const temp = values[index]
-            values[index] = values[index + 1]
-            values[index + 1] = temp
-            update()
+            const temp = value[index]
+            value[index] = value[index + 1]
+            value[index + 1] = temp
+            setValue(value)
         },
-        [update, values]
+        [setValue, value]
     )
+
+    if (hidden) return <Fragment />
 
     if (mode === Mode.Details) {
         if (values.length === 0) {

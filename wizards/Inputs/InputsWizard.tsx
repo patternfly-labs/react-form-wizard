@@ -116,6 +116,7 @@ export function InputsWizard() {
                         path="resources"
                         placeholder="Add resource"
                         collapsedContent="metadata.name"
+                        sortable
                     >
                         <TextInput label="Name" path="metadata.name" required />
                         <Select label="Namespace" path="metadata.namespace" required options={['namespace-1', 'namespace-2']} />
