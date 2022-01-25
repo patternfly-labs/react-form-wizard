@@ -67,12 +67,6 @@ describe('inputs wizard', () => {
         })
     })
 
-    it('labels', () => {
-        cy.get('#labels').within(() => {
-            cy.contains('Next').click()
-        })
-    })
-
     it('key-value', () => {
         cy.get('#key-value').within(() => {
             cy.contains('Next').click()
@@ -99,6 +93,12 @@ describe('inputs wizard', () => {
             cy.contains('Text 3 is required')
             cy.get('#text-1').type('text-1')
             cy.get('#text-3').type('text-3')
+            cy.contains('Next').click()
+        })
+    })
+
+    it('hidden', () => {
+        cy.get('#hidden').within(() => {
             cy.contains('Next').click()
         })
     })
