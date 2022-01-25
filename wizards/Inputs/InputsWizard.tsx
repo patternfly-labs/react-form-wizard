@@ -1,18 +1,5 @@
 import { useHistory } from 'react-router-dom'
-import {
-    ArrayInput,
-    Checkbox as Checkbox,
-    KeyValue,
-    LabelsInput as Labels,
-    Radio as Radio,
-    RadioGroup as RadioGroup,
-    Select as Select,
-    StringsInput,
-    TextArea,
-    TextInput as TextInput,
-    Tile as Tile,
-    Tiles as Tiles,
-} from '../../src'
+import { ArrayInput, Checkbox, KeyValue, Radio, RadioGroup, Select, StringsInput, TextArea, TextInput, Tile, Tiles } from '../../src'
 import { Section } from '../../src/Section'
 import { Step } from '../../src/Step'
 import { WizardPage } from '../../src/WizardPage'
@@ -106,12 +93,6 @@ export function InputsWizard() {
                         <TextInput label="Name" path="checkbox4.name" required />
                     </Checkbox>
                     <Checkbox label="Checkbox hidden" path="checkbox5" hidden={(item) => !item.showHidden} />
-                </Section>
-            </Step>
-
-            <Step label="Labels" id="labels">
-                <Section label="Labels">
-                    <Labels id="labels" path="labels" label="Labels" />
                 </Section>
             </Step>
 

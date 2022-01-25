@@ -9,7 +9,7 @@ import {
     FormWizardSection,
     FormWizardStep,
     Hidden,
-    LabelsInput,
+    KeyValue,
     Radio,
     RadioGroup,
     Select,
@@ -423,7 +423,6 @@ export function ApplicationWizard(props: {
 }
 
 export function Placement(props: { placement: string[] }) {
-    const labelOptions = useMemo(() => [{ id: 'amazon', label: 'cloud', value: 'Amazon' }], [])
     return (
         <Fragment>
             <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
@@ -432,13 +431,12 @@ export function Placement(props: { placement: string[] }) {
                     label="New placement"
                     labelHelp="Deploy application resources only on clusters matching specified labels"
                 >
-                    <LabelsInput
+                    <KeyValue
                         path="placement.labels"
                         label="Cluster labels"
                         placeholder="Enter cluster labels"
                         helperText="Placement will only select clusters matching all the specified labels"
                         required
-                        options={labelOptions}
                     />
                 </Checkbox>
                 <Checkbox

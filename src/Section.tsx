@@ -1,5 +1,5 @@
 import { DescriptionList, Divider, Split, SplitItem, Stack, Text, Title } from '@patternfly/react-core'
-import { AngleDownIcon, AngleLeftIcon, CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
+import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useState } from 'react'
 import { LabelHelp } from './components/LabelHelp'
 import { HasInputsContext, HasInputsProvider, useHasInputs } from './contexts/HasInputsProvider'
@@ -81,11 +81,6 @@ function SectionInternal(props: SectionProps) {
                                             <Stack hasGutter>
                                                 <Split hasGutter>
                                                     <span className="pf-c-form__section-title">{props.label}</span>
-                                                    {hasInputs ? (
-                                                        <CheckCircleIcon color="var(--pf-global--success-color--100)" />
-                                                    ) : (
-                                                        <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
-                                                    )}
                                                     {props.id && (
                                                         <LabelHelp
                                                             id={props.id}

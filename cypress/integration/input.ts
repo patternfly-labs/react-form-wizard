@@ -67,12 +67,6 @@ describe('inputs wizard', () => {
         })
     })
 
-    it('labels', () => {
-        cy.get('#labels').within(() => {
-            cy.contains('Next').click()
-        })
-    })
-
     it('key-value', () => {
         cy.get('#key-value').within(() => {
             cy.contains('Next').click()
