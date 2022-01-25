@@ -2,7 +2,7 @@ import { DescriptionList, Divider, Split, SplitItem, Stack, Text, Title } from '
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useState } from 'react'
 import { LabelHelp } from './components/LabelHelp'
-import { HasInputsContext, HasInputsProvider, useHasInputs } from './contexts/HasInputsProvider'
+import { HasInputsContext, HasInputsProvider } from './contexts/HasInputsProvider'
 import { HasValueContext, HasValueProvider } from './contexts/HasValueProvider'
 import { Mode, useMode } from './contexts/ModeContext'
 import { useShowValidation } from './contexts/ShowValidationProvider'
@@ -31,7 +31,6 @@ function SectionInternal(props: SectionProps) {
     const id = props.id ?? props.label.toLowerCase().split(' ').join('-')
     const showValidation = useShowValidation()
     const [expanded, setExpanded] = useState(props.defaultExpanded === undefined ? true : props.defaultExpanded)
-    const hasInputs = useHasInputs()
 
     if (mode === Mode.Details)
         return (

@@ -14,7 +14,7 @@ import {
     Tabs,
     TabTitleText,
 } from '@patternfly/react-core'
-import { CircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
+import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react'
 import { WizardCancel, WizardSubmit } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
@@ -257,9 +257,9 @@ function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setA
     const stepHasValidationError = useStepHasValidationError()
 
     const stepHasInputs = useStepHasInputs()
-    // if (!stepHasInputs[props.step.props.id]) {
-    //     return <Fragment />
-    // }
+    if (!stepHasInputs[props.step.props.id]) {
+        return <Fragment />
+    }
 
     return (
         <li key={props.step.props.id} className="pf-c-wizard__nav-item">
@@ -271,7 +271,7 @@ function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setA
             >
                 <Split>
                     <SplitItem isFilled>{props.step.props.label}</SplitItem>
-                    {stepHasInputs[props.step.props.id] === true ? (
+                    {/* {stepHasInputs[props.step.props.id] === true ? (
                         <SplitItem>
                             <CircleIcon color="var(--pf-global--success-color--100)" />
                         </SplitItem>
@@ -279,7 +279,7 @@ function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setA
                         <SplitItem>
                             <CircleIcon color="var(--pf-global--danger-color--100)" />
                         </SplitItem>
-                    )}
+                    )} */}
                     {stepHasValidationError[props.step.props.id] && (
                         <SplitItem>
                             <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
