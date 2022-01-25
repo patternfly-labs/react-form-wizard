@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react'
 
 const SetHasInputsContext = createContext<() => void>(() => null)
 export const useSetHasInputs = () => useContext(SetHasInputsContext)
@@ -16,15 +16,15 @@ export function HasInputsProvider(props: { children: ReactNode }) {
         setHasInputsState(false)
         setHasInputsFunction(() => () => setHasInputsState(true))
     }, [])
-    useEffect(() => validate(), [validate])
+    useLayoutEffect(() => validate(), [validate])
 
     const parentUpdateHasInputs = useContext(UpdateHasInputsContext)
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!hasInputs) parentUpdateHasInputs?.()
     }, [parentUpdateHasInputs, hasInputs])
 
     // When this control goes away - parentUpdateHasInputs
-    useEffect(
+    useLayoutEffect(
         () => () => {
             if (parentUpdateHasInputs) parentUpdateHasInputs()
         },
@@ -32,7 +32,7 @@ export function HasInputsProvider(props: { children: ReactNode }) {
     )
 
     const parentSetHasInputs = useContext(SetHasInputsContext)
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (hasInputs) parentSetHasInputs?.()
     }, [parentSetHasInputs, hasInputs])
 

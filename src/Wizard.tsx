@@ -15,8 +15,8 @@ import {
     TabTitleText,
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
-import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react'
-import { WizardCancel, WizardSubmit } from '.'
+import Handlebars, { HelperOptions } from 'handlebars'
+import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { DataContext, useData } from './contexts/DataContext'
 import { HasInputsProvider } from './contexts/HasInputsProvider'
@@ -29,6 +29,14 @@ import { useHasValidationError, ValidationProvider } from './contexts/Validation
 import { useID } from './inputs/Input'
 import { Step } from './Step'
 
+Handlebars.registerHelper('if_eq', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
+    return arg1 == arg2 ? options.fn(this) : options.inverse(this)
+})
+
+Handlebars.registerHelper('if_ne', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
+    return arg1 !== arg2 ? options.fn(this) : options.inverse(this)
+})
+
 export interface WizardProps {
     title: string
     description?: string
@@ -39,6 +47,9 @@ export interface WizardProps {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
 }
+
+export type WizardSubmit = (data: object) => Promise<void>
+export type WizardCancel = () => void
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
     const [data, setData] = useState(props.defaultData ?? {})
@@ -115,7 +126,7 @@ function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; on
     if (!activeStep) activeStep = steps[0]
 
     const setShowValidation = useSetShowValidation()
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (activeStep.props.label === 'review') {
             setShowValidation(true)
         }

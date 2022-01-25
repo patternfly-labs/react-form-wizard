@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react'
 
 const SetHasValidationErrorContext = createContext<() => void>(() => null)
 export const useSetHasValidationError = () => useContext(SetHasValidationErrorContext)
@@ -16,15 +16,15 @@ export function ValidationProvider(props: { children: ReactNode }) {
         setHasValidationErrorState(false)
         setHasValidationErrorFunction(() => () => setHasValidationErrorState(true))
     }, [])
-    useEffect(() => validate(), [validate])
+    useLayoutEffect(() => validate(), [validate])
 
     const parentValidate = useContext(ValidateContext)
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!hasValidationError) parentValidate?.()
     }, [parentValidate, hasValidationError])
 
     // When this control goes away - parentValidate
-    useEffect(
+    useLayoutEffect(
         () => () => {
             if (parentValidate) parentValidate()
         },
@@ -32,7 +32,7 @@ export function ValidationProvider(props: { children: ReactNode }) {
     )
 
     const parentSetHasValidationError = useContext(SetHasValidationErrorContext)
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (hasValidationError) parentSetHasValidationError?.()
     }, [parentSetHasValidationError, hasValidationError])
 

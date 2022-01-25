@@ -55,7 +55,7 @@ export function StringsInput(props: StringsInputProps) {
                 <DescriptionListDescription id={id}>
                     <Stack hasGutter>
                         {values.map((value, index) => {
-                            if (!value) return <Fragment />
+                            if (!value) return <Fragment key={index} />
                             return <div key={index}>{value}</div>
                         })}
                     </Stack>

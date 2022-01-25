@@ -34,7 +34,7 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import Handlebars, { HelperOptions } from 'handlebars'
 import { Children, Fragment, isValidElement, ReactNode, useCallback, useContext, useState } from 'react'
 import YAML from 'yaml'
-import { FormWizardStep } from '.'
+import { FormWizardStep, WizardCancel, WizardSubmit } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { DataContext, useData } from './contexts/DataContext'
 import { ItemContext } from './contexts/ItemContext'
@@ -50,9 +50,6 @@ Handlebars.registerHelper('if_eq', function (this: unknown, arg1: string, arg2: 
 Handlebars.registerHelper('if_ne', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
     return arg1 !== arg2 ? options.fn(this) : options.inverse(this)
 })
-
-export type WizardSubmit = (data: object) => Promise<void>
-export type WizardCancel = () => void
 
 type FormWizardStep = WizardStep & { id: string; hasValidationErrors: boolean }
 

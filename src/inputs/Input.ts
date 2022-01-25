@@ -1,5 +1,5 @@
 import get from 'get-value'
-import { Children, isValidElement, ReactElement, ReactNode, useCallback, useContext, useEffect } from 'react'
+import { Children, isValidElement, ReactElement, ReactNode, useCallback, useContext, useLayoutEffect } from 'react'
 import set from 'set-value'
 import { ArrayInput, ItemSelector, wizardArrayItems, wizardSelectorItem } from '..'
 import { useData } from '../contexts/DataContext'
@@ -253,27 +253,27 @@ export function useInput(props: InputCommonProps) {
     const hidden = useInputHidden(props)
 
     const setHasInputs = useSetHasInputs()
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!hidden) setHasInputs()
     }, [hidden, setHasInputs])
 
     const updateHasInputs = useUpdateHasInputs()
-    useEffect(() => updateHasInputs(), [hidden, updateHasInputs])
+    useLayoutEffect(() => updateHasInputs(), [hidden, updateHasInputs])
 
     const { validated, error } = useInputValidation(props)
     const setHasValidationError = useSetHasValidationError()
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!hidden && error) setHasValidationError()
     }, [hidden, error, setHasValidationError])
 
     const validate = useValidate()
-    useEffect(() => validate(), [error, validate])
+    useLayoutEffect(() => validate(), [error, validate])
 
     const path = usePath(props)
     const id = useID(props)
 
     const setHasValue = useSetHasValue()
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (value) setHasValue()
     }, [setHasValue, value])
 

@@ -14,6 +14,7 @@ export function ApplicationExample() {
             ansibleCredentials={ansibleCredentials}
             argoServers={servers}
             namespaces={namespaces}
+            onSubmit={() => Promise.resolve()}
             onCancel={() => history.push('.')}
             placements={placements}
         />

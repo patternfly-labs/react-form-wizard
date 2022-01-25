@@ -5,20 +5,21 @@ import { Fragment, ReactNode, useMemo } from 'react'
 import {
     ArrayInput,
     Checkbox,
-    FormWizardPage,
-    FormWizardSection,
-    FormWizardStep,
     Hidden,
     KeyValue,
     Radio,
     RadioGroup,
+    Section,
     Select,
+    Step,
     TextDetail,
     TextInput,
     Tile,
     Tiles,
     TimeRange,
     WizardCancel,
+    WizardPage,
+    WizardSubmit,
 } from '../../src'
 import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
@@ -40,7 +41,8 @@ export function ApplicationWizard(props: {
     ansibleCredentials: string[]
     argoServers: string[]
     namespaces: string[]
-    onCancel?: WizardCancel
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
     placements: string[]
 }) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
@@ -59,14 +61,15 @@ export function ApplicationWizard(props: {
     const urls = useMemo(() => ['url1', 'url2'], [])
     const urlOptions = useMemo(() => ['url1', 'url2'], [])
     return (
-        <FormWizardPage
+        <WizardPage
             title="Create application"
             template={ApplicationHandlebars}
             defaultData={{ curlyServer: '{{server}}', curlyName: '{{name}}' }}
             onCancel={props.onCancel}
+            onSubmit={props.onSubmit}
         >
-            <FormWizardStep label="Type">
-                <FormWizardSection label="Type" prompt="Type">
+            <Step id="type" label="Type">
+                <Section label="Type" prompt="Type">
                     <Tiles path="deployType" label="Select the application management type to deploy this application into clusters.">
                         <Tile
                             id="subscription"
@@ -83,11 +86,11 @@ export function ApplicationWizard(props: {
                             description="Supports deployments to large numbers of clusters, deployments of large monorepos, and enabling secure Application self-service."
                         />
                     </Tiles>
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Details" hidden={(item) => item.deployType !== 'Subscription'}>
-                <FormWizardSection label="Details" prompt="Enter the details of the application">
+            <Step id="details" label="Details" hidden={(item) => item.deployType !== 'Subscription'}>
+                <Section label="Details" prompt="Enter the details of the application">
                     <TextInput path="name" label="Application name" required />
                     <Select
                         path="namespace"
@@ -97,11 +100,11 @@ export function ApplicationWizard(props: {
                         options={props.namespaces}
                         required
                     />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Repositories" hidden={(item) => item.deployType !== 'Subscription'}>
-                <FormWizardSection label="Repositories" prompt="Enter the application repositories">
+            <Step id="repositories" label="Repositories" hidden={(item) => item.deployType !== 'Subscription'}>
+                <Section label="Repositories" prompt="Enter the application repositories">
                     <ArrayInput
                         path="repositories"
                         placeholder="Add repository"
@@ -299,11 +302,11 @@ export function ApplicationWizard(props: {
                             <Placement placement={props.placements} />
                         </Hidden>
                     </ArrayInput>
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <FormWizardSection label="General">
+            <Step id="general" label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
+                <Section label="General">
                     <TextInput path="appSetName" label="ApplicationSet name" placeholder="Enter the application set name" required />
                     <Select
                         path="argoServer"
@@ -321,10 +324,10 @@ export function ApplicationWizard(props: {
                         labelHelp="Cluster decision resource requeue time in seconds"
                         required
                     />
-                </FormWizardSection>
-            </FormWizardStep>
-            <FormWizardStep label="Template" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <FormWizardSection label="Source">
+                </Section>
+            </Step>
+            <Step id="template" label="Template" hidden={(item) => item.deployType !== 'ArgoCD'}>
+                <Section label="Source">
                     <Tiles path="repositoryType" label="Repository type">
                         <Tile id="git" value="Git" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
                         <Tile id="helm" value="Helm" label="Helm" icon={<HelmIcon />} description="Use a Helm repository" />
@@ -379,14 +382,14 @@ export function ApplicationWizard(props: {
                             required
                         />
                     </Hidden>
-                </FormWizardSection>
-                <FormWizardSection label="Destination">
+                </Section>
+                <Section label="Destination">
                     <TextInput path="remoteNamespace" label="Remote namespace" placeholder="Enter the destination namespace" required />
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Sync policy" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <FormWizardSection
+            <Step id="sync-policy" label="Sync policy" hidden={(item) => item.deployType !== 'ArgoCD'}>
+                <Section
                     label="Sync policy"
                     description="Settings used to configure application syncing when there are differences between the desired state and the live cluster state."
                 >
@@ -412,20 +415,20 @@ export function ApplicationWizard(props: {
                             required
                         />
                     </Checkbox>
-                </FormWizardSection>
-            </FormWizardStep>
+                </Section>
+            </Step>
 
-            <FormWizardStep label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
+            <Step id="placement" label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <Placement placement={props.placements} />
-            </FormWizardStep>
-        </FormWizardPage>
+            </Step>
+        </WizardPage>
     )
 }
 
 export function Placement(props: { placement: string[] }) {
     return (
         <Fragment>
-            <FormWizardSection label="Cluster placement" description="Applications are deployed to clusters based on placements">
+            <Section label="Cluster placement" description="Applications are deployed to clusters based on placements">
                 <Checkbox
                     path="placement.useLabels"
                     label="New placement"
@@ -452,7 +455,7 @@ export function Placement(props: { placement: string[] }) {
                         required
                     />
                 </Checkbox>
-            </FormWizardSection>
+            </Section>
             <DeploymentWindow />
         </Fragment>
     )
@@ -460,7 +463,7 @@ export function Placement(props: { placement: string[] }) {
 
 export function DeploymentWindow() {
     return (
-        <FormWizardSection
+        <Section
             hidden={(data) => {
                 return data.deployType === 'ArgoCD'
             }}
@@ -483,7 +486,7 @@ export function DeploymentWindow() {
                     <TimeWindow />
                 </Radio>
             </RadioGroup>
-        </FormWizardSection>
+        </Section>
     )
 }
 

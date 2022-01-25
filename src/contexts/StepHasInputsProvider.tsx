@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react'
 import { useItem } from './ItemContext'
 
 const StepSetHasInputsContext = createContext<(id: string, has: boolean) => void>(() => null)
@@ -26,7 +26,7 @@ export function StepHasInputsProvider(props: { children: ReactNode }) {
             })
         })
     }, [])
-    useEffect(() => validateSteps(), [item, validateSteps])
+    useLayoutEffect(() => validateSteps(), [item, validateSteps])
     return (
         <StepSetHasInputsContext.Provider value={setHasInputs}>
             <StepHasInputsContext.Provider value={hasStepInputss}>{props.children}</StepHasInputsContext.Provider>

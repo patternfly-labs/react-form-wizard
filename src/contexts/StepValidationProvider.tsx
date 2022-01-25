@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react'
 import { useItem } from './ItemContext'
 
 const StepSetHasValidationErrorContext = createContext<(id: string, hasError: boolean) => void>(() => null)
@@ -26,7 +26,7 @@ export function StepValidationProvider(props: { children: ReactNode }) {
             })
         })
     }, [])
-    useEffect(() => validateSteps(), [item, validateSteps])
+    useLayoutEffect(() => validateSteps(), [item, validateSteps])
     return (
         <StepSetHasValidationErrorContext.Provider value={setHasValidationErrors}>
             <StepHasValidationErrorContext.Provider value={hasStepValidationErrors}>

@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useEffect } from 'react'
+import { Fragment, ReactNode, useLayoutEffect } from 'react'
 import { useHasInputs } from './contexts/HasInputsProvider'
 import { Mode, useMode } from './contexts/ModeContext'
 import { useShowValidation } from './contexts/ShowValidationProvider'
@@ -14,11 +14,11 @@ export function Step(props: { label: string; children?: ReactNode; id: string; h
     const setStepHasInputs = useSetStepHasInputs()
     const showValidation = useShowValidation()
     const mode = useMode()
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (mode !== Mode.Details) setStepHasValidationError(props.id, hasValidationError && showValidation)
     }, [hasValidationError, mode, props.id, setStepHasValidationError, showValidation])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (mode !== Mode.Details) setStepHasInputs(props.id, hasInputs)
     }, [hasInputs, mode, props.id, setStepHasInputs])
 

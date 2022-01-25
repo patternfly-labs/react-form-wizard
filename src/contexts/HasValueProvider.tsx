@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react'
 
 const SetHasValueContext = createContext<() => void>(() => null)
 export const useSetHasValue = () => useContext(SetHasValueContext)
@@ -16,15 +16,15 @@ export function HasValueProvider(props: { children: ReactNode }) {
         setHasValueState(false)
         setHasValueFunction(() => () => setHasValueState(true))
     }, [])
-    useEffect(() => validate(), [validate])
+    useLayoutEffect(() => validate(), [validate])
 
     const parentUpdateHasValue = useContext(UpdateHasValueContext)
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!hasValue) parentUpdateHasValue?.()
     }, [parentUpdateHasValue, hasValue])
 
     // When this control goes away - parentUpdateHasValue
-    useEffect(
+    useLayoutEffect(
         () => () => {
             if (parentUpdateHasValue) parentUpdateHasValue()
         },
@@ -32,7 +32,7 @@ export function HasValueProvider(props: { children: ReactNode }) {
     )
 
     const parentSetHasValue = useContext(SetHasValueContext)
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (hasValue) parentSetHasValue?.()
     }, [parentSetHasValue, hasValue])
 
