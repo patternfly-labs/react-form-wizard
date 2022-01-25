@@ -70,35 +70,37 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                 <ModeContext.Provider value={mode}>
                     <DataContext.Provider value={{ update }}>
                         <ItemContext.Provider value={data}>
-                            <ValidationProvider>
-                                <Drawer isExpanded={drawerExpanded} isInline>
-                                    <DrawerContent
-                                        panelContent={
-                                            <WizardPageDrawer
-                                                data={data}
-                                                template={template}
-                                                template2={template2}
-                                                templateString={props.template}
-                                            />
-                                        }
-                                    >
-                                        <DrawerContentBody>
-                                            <PageSection
-                                                variant="light"
-                                                style={{ height: '100%' }}
-                                                type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
-                                                isWidthLimited
-                                            >
-                                                <ItemContext.Provider value={data}>
-                                                    <WizardInternal onSubmit={props.onSubmit} onCancel={props.onCancel}>
-                                                        {props.children}
-                                                    </WizardInternal>
-                                                </ItemContext.Provider>
-                                            </PageSection>
-                                        </DrawerContentBody>
-                                    </DrawerContent>
-                                </Drawer>
-                            </ValidationProvider>
+                            <ShowValidationProvider>
+                                <ValidationProvider>
+                                    <Drawer isExpanded={drawerExpanded} isInline>
+                                        <DrawerContent
+                                            panelContent={
+                                                <WizardPageDrawer
+                                                    data={data}
+                                                    template={template}
+                                                    template2={template2}
+                                                    templateString={props.template}
+                                                />
+                                            }
+                                        >
+                                            <DrawerContentBody>
+                                                <PageSection
+                                                    variant="light"
+                                                    style={{ height: '100%' }}
+                                                    type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
+                                                    isWidthLimited
+                                                >
+                                                    <ItemContext.Provider value={data}>
+                                                        <WizardInternal onSubmit={props.onSubmit} onCancel={props.onCancel}>
+                                                            {props.children}
+                                                        </WizardInternal>
+                                                    </ItemContext.Provider>
+                                                </PageSection>
+                                            </DrawerContentBody>
+                                        </DrawerContent>
+                                    </Drawer>
+                                </ValidationProvider>
+                            </ShowValidationProvider>
                         </ItemContext.Provider>
                     </DataContext.Provider>
                 </ModeContext.Provider>
@@ -127,7 +129,7 @@ function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; on
 
     const setShowValidation = useSetShowValidation()
     useLayoutEffect(() => {
-        if (activeStep.props.label === 'review') {
+        if (activeStep.props.id === 'review-step') {
             setShowValidation(true)
         }
     }, [activeStep, setShowValidation])
@@ -158,6 +160,21 @@ function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; on
                             </ShowValidationProvider>
                         </HasInputsProvider>
                     )
+                if (step.props.id === 'review-step') {
+                    return (
+                        <HasInputsProvider key={step.props.id}>
+                            <WizardActiveStep
+                                activeStep={activeStep}
+                                setActiveStep={setActiveStep}
+                                steps={steps}
+                                next={next}
+                                back={back}
+                                onSubmit={props.onSubmit}
+                                onCancel={props.onCancel}
+                            />
+                        </HasInputsProvider>
+                    )
+                }
                 return (
                     <HasInputsProvider key={step.props.id}>
                         <ShowValidationProvider>
@@ -292,7 +309,7 @@ function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setA
                             <CircleIcon color="var(--pf-global--danger-color--100)" />
                         </SplitItem>
                     )} */}
-                    {stepHasValidationError[props.step.props.id] && (
+                    {props.step.props.id !== 'review-step' && stepHasValidationError[props.step.props.id] && (
                         <SplitItem>
                             <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
                         </SplitItem>
