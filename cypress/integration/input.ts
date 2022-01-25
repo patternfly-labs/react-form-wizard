@@ -112,7 +112,7 @@ describe('inputs wizard', () => {
     })
 
     it('review', () => {
-        cy.get('#review').within(() => {
+        cy.get('#review-step').within(() => {
             cy.get('#text-input').within(() => {
                 cy.get('#textinput-text').contains('text-input')
                 cy.get('#textinput-required').contains('text-input-required')

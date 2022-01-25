@@ -160,7 +160,7 @@ describe('ansible wizard', () => {
     })
 
     it('review', () => {
-        cy.get('#review').within(() => {
+        cy.get('#review-step').within(() => {
             cy.get('#details').within(() => {
                 cy.get('#name').contains('my-template')
                 cy.get('#namespace').contains('default')

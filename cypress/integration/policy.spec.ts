@@ -61,7 +61,7 @@ describe('policy wizard', () => {
     })
 
     it('summary', () => {
-        cy.get('#review').within(() => {
+        cy.get('#review-step').within(() => {
             cy.get('#name').contains('my-policy')
             cy.get('#namespace').contains('default')
 
