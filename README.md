@@ -38,7 +38,7 @@ A wizard contains steps which contain sections which contain inputs.
 ```tsx
 import { WizardPage, Step, Section, TextInput, Select } from '@patternfly-labs/react-form-wizard'
 
-function MyWizardPage() {
+function Example() {
    return (
       <WizardPage title="My Wizard">
          <Step label="Details">
@@ -57,17 +57,25 @@ function MyWizardPage() {
 The wizard works by setting an item context which inputs use as a data source.
 Inputs then get value or set value in the item context using [path](https://github.com/jonschlinkert/set-value#object-paths) notation.
 
-```xml
-<TextInput label="Name" path="name" />
+```tsx
+function Example() {
+   return (
+      <TextInput label="Name" path="metadata.name" required />
+   )
+}
 ```
 
 Some inputs can change the item context, such as the `ArrayInput`.
 
-```xml
-<ArrayInput path="resources" placeholder="Add new resource">
-   <TextInput label="Name" path="metadata.name" required />
-   <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
-</ArrayInput>
+```tsx
+function Example() {
+   return (
+      <ArrayInput path="resources" placeholder="Add new resource">
+         <TextInput label="Name" path="metadata.name" required />
+         <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
+      </ArrayInput>
+   )
+}
 ```
 
 ### Working with an array of items
@@ -75,20 +83,28 @@ Some inputs can change the item context, such as the `ArrayInput`.
 The root data can either be an object or an array of objects.
 When working with an array of objects an`ItemSelector` can be used to set the item context specific item.
 
-```xml
-<ItemSelector selectKey="kind" selectValue="Application">
-   <TextInput label="Name" path="metadata.name" required />
-   <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
-</ItemSelector>
+```tsx
+function Example() {
+   return (
+      <ItemSelector selectKey="kind" selectValue="Application">
+         <TextInput label="Name" path="metadata.name" required />
+         <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
+      </ItemSelector>
+   )
+}
 ```
 
 `ArrayInput` can also be used to work with a subset of items in this case.
 
-```xml
-<ArrayInput path={null} filter={(item) => item.kind === 'Subscription'}>
-   <TextInput label="Name" path="metadata.name" required />
-   <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
-</ArrayInput>
+```tsx
+function Example() {
+   return (
+      <ArrayInput path={null} filter={(item) => item.kind === 'Subscription'}>
+         <TextInput label="Name" path="metadata.name" required />
+         <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
+      </ArrayInput>
+   )
+}
 ```
 
 ### Input validation
