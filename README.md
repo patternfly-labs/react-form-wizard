@@ -107,13 +107,23 @@ function Example() {
 }
 ```
 
-### Input validation
+### Input common properties
 
-Input controls take a validation function that validates the controls input. It returns the validation error string if the validation fails.
+- **path** - The [path](https://github.com/jonschlinkert/set-value#object-paths) the input is getting and setting value to, in the current item context.
+- **id** - Optional id of the input control. Used for testing. If not set, defaults to a sanitized version of the path.
+- **label** - The label for the input.
+- **validation** - An optional validation function that takes in the current item context and input value and returns an error string if there is an error.
+- **hidden** - A optional hidden function that take in the current item context and returns true if the input should be hidden.
 
-### Conditional inputs
+### Validation
 
-Input controls take a hidden function that can conditionally hide the control.
+Inputs take an optional validation function. The validation function takes in the current item context and input value, and returns a validation error string if the validation fails.
+
+### Conditional hiding
+
+Inputs take an optional hidden function. The hidden function takes in the current item context, and returns true if the input should be hidden.
+
+`Steps` and `Sections` automatically hide if all its inputs are hidden. This makes it easy to make a wizard with conditional flow.
 
 ### Examples
 
