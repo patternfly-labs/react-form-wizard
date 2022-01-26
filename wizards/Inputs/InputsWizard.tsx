@@ -142,14 +142,14 @@ export function InputsWizard() {
                     <TextInput label="Text 4" path="section2.text4" id="text-4" />
                 </Section>
                 <Section label="Hide Settings">
-                    <Checkbox label="Hide section" path="hideSection" />
+                    <Checkbox label="Hide section" path="hideSection" id="hide-section" />
                 </Section>
                 <Section
                     label="Section 3 (Hideable)"
                     description="This section is hidden using a function to determine if it should be hidden."
                     hidden={(item) => item.hideSection}
                 >
-                    <TextInput label="Text input" path="hideableSection.text" />
+                    <TextInput label="Text input" path="hideableSection.text" required />
                 </Section>
             </Step>
 

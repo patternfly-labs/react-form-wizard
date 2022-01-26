@@ -7,7 +7,7 @@ import { HasValueContext, HasValueProvider } from './contexts/HasValueProvider'
 import { Mode, useMode } from './contexts/ModeContext'
 import { useShowValidation } from './contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidationProvider'
-import { HiddenFn } from './inputs/Input'
+import { HiddenFn, useInputHidden } from './inputs/Input'
 
 type SectionProps = {
     id?: string
@@ -31,6 +31,9 @@ function SectionInternal(props: SectionProps) {
     const id = props.id ?? props.label.toLowerCase().split(' ').join('-')
     const showValidation = useShowValidation()
     const [expanded, setExpanded] = useState(props.defaultExpanded === undefined ? true : props.defaultExpanded)
+    const hidden = useInputHidden(props)
+
+    if (hidden) return <Fragment />
 
     if (mode === Mode.Details)
         return (
