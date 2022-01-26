@@ -1,12 +1,37 @@
 # PatternFly Labs React Form Wizard
 
-A PatternFly React wizard framework.
-
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/patternfly-labs/react-form-wizard)](https://www.npmjs.com/package/@patternfly-labs/react-form-wizard)
+
+An opinionated framework for wizards powered by PatternFly.
 
 [Demo](https://patternfly-labs.github.io/react-form-wizard/)
 
-Patternfly defines how wizards should look and how input validation errors should look. This opinionated framework adds functionality for tying that together focusing on making a easy but powerful developer experience.
+## Installation
+
+React Form Wizard is available as an [npm package](https://www.npmjs.com/package/@patternfly-labs/react-form-wizard).
+
+### Install dependencies
+
+#### Using npm
+
+```sh
+npm install @patternfly-labs/react-form-wizard @patternfly/react-core @patternfly/react-styles
+```
+
+#### Using yarn
+
+```
+yarn add @patternfly-labs/react-form-wizard @patternfly/react-core @patternfly/react-styles
+```
+
+### Setup Patternfly CSS
+
+Import css from patternfly before importing react-form-wizard.
+
+```typescript
+import '@patternfly/react-core/dist/styles/base.css'
+import '@patternfly/react-styles/css/components/Wizard/wizard.css'
+```
 
 ## Concepts
 
@@ -14,15 +39,21 @@ Patternfly defines how wizards should look and how input validation errors shoul
 
 A wizard contains steps which contain sections which contain input controls.
 
-```
-<Wizard title="Example form">
-   <Step label="Details">
-      <Section label="Details" prompt="Enter the details">
-          <TextInput label="Name" path="name" required />
-          <Select label="Namespace" path="namespace" options={['default']} />
-      </Section>
-   </Step>
-</Wizard>
+```tsx
+import '@patternfly/react-core/dist/styles/base.css'
+
+function MyWizardPage(){
+   return (
+      <WizardPage title="My Wizard">
+         <Step label="Details">
+            <Section label="Details" prompt="Enter the details">
+               <TextInput label="Name" path="name" required />
+               <Select label="Namespace" path="namespace" options={['default']} />
+            </Section>
+         </Step>
+      </WizardPage>
+   )
+}
 ```
 
 ### Data paths
