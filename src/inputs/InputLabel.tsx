@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { LabelHelp } from '../components/LabelHelp'
 import { InputCommonProps, useID, useInputValidation } from './Input'
 
-type InputLabelProps = InputCommonProps & { children: ReactNode }
+type InputLabelProps = InputCommonProps & { children: ReactNode; isHelperTextBeforeField?: boolean }
 
 export function InputLabel(props: InputLabelProps) {
     const { validated, error } = useInputValidation(props)
@@ -19,6 +19,7 @@ export function InputLabel(props: InputLabelProps) {
             validated={validated}
             helperText={props.helperText}
             labelIcon={<LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+            isHelperTextBeforeField={props.isHelperTextBeforeField}
         >
             {props.children}
         </FormGroup>

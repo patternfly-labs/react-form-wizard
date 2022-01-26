@@ -56,7 +56,12 @@ describe('inputs wizard', () => {
     })
 
     it('radio', () => {
-        cy.get('#radio').within(() => {
+        cy.get('#radio-step').within(() => {
+            cy.contains('Next').click()
+            cy.contains('Please fix validation errors')
+            cy.get('#group-5').within(() => {
+                cy.get('#radio-1').click()
+            })
             cy.contains('Next').click()
         })
     })
@@ -127,12 +132,18 @@ describe('inputs wizard', () => {
                 cy.get('#select-value').contains('Option 1')
                 cy.get('#select-required').contains('Option 2')
             })
+            cy.get('#radio').within(() => {
+                cy.get('#group-5').within(() => {
+                    cy.get('#radio-1').contains('Radio 1')
+                })
+            })
             cy.get('#checkbox').within(() => {
                 cy.get('#checkbox-1')
                 cy.get('#checkbox-2')
                 cy.get('#checkbox-2-text').contains('hello')
                 cy.get('#checkbox-3')
             })
+
             cy.contains('Submit')
         })
     })

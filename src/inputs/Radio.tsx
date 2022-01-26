@@ -1,4 +1,4 @@
-import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Radio as PfRadio } from '@patternfly/react-core'
+import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Radio as PfRadio, Text } from '@patternfly/react-core'
 import { Children, createContext, Fragment, isValidElement, ReactElement, ReactNode, useContext } from 'react'
 import { Indented } from '../components/Indented'
 import { Mode } from '../contexts/ModeContext'
@@ -6,6 +6,7 @@ import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
 export interface IRadioGroupContextState {
+    groupID?: string
     value?: any
     setValue?: (value: any) => void
     readonly?: boolean
@@ -20,6 +21,7 @@ export function RadioGroup(props: RadioGroupProps) {
     const { mode, value, setValue, hidden, id } = useInput(props)
 
     const state: IRadioGroupContextState = {
+        groupID: id,
         value,
         setValue,
         readonly: props.readonly,
@@ -36,25 +38,35 @@ export function RadioGroup(props: RadioGroupProps) {
             if (isValidElement(child)) {
                 const value = child.props.value
                 if (value === state.value) {
-                    selectedChild = child.props.label
+                    selectedChild = child
                 }
             }
         })
 
         if (!selectedChild) return <Fragment />
         return (
-            <DescriptionListGroup id={id}>
-                <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                <DescriptionListDescription>{selectedChild}</DescriptionListDescription>
-            </DescriptionListGroup>
+            <Fragment>
+                <DescriptionListGroup id={id}>
+                    <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                    <DescriptionListDescription id={selectedChild.props.id}>{selectedChild.props.label}</DescriptionListDescription>
+                </DescriptionListGroup>
+                {selectedChild.props?.children && selectedChild.props.children}
+            </Fragment>
         )
     }
 
     return (
         <RadioGroupContext.Provider value={state}>
-            <InputLabel {...props} id={id}>
-                <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>{props.children}</div>
-            </InputLabel>
+            <div id={id}>
+                <InputLabel {...props} id={id} helperText={undefined}>
+                    {props.helperText && (
+                        <Text className="pf-c-form__helper-text" style={{ marginTop: -4, paddingBottom: 8 }}>
+                            {props.helperText}
+                        </Text>
+                    )}
+                    <div style={{ display: 'flex', flexDirection: 'column', rowGap: 12, paddingBottom: 4 }}>{props.children}</div>
+                </InputLabel>
+            </div>
         </RadioGroupContext.Provider>
     )
 }
@@ -65,15 +77,15 @@ export function Radio(props: { id: string; label: string; value: string | number
         <Fragment>
             <PfRadio
                 id={props.id}
-                name={props.label}
                 label={props.label}
                 description={props.description}
                 isChecked={radioGroupContext.value === props.value}
                 onChange={() => radioGroupContext.setValue?.(props.value)}
                 isDisabled={radioGroupContext.disabled}
                 readOnly={radioGroupContext.readonly}
+                name={radioGroupContext.groupID ?? ''}
             />
-            {radioGroupContext.value === props.value && <Indented>{props.children}</Indented>}
+            {radioGroupContext.value === props.value && <Indented paddingBottom={16}>{props.children}</Indented>}
         </Fragment>
     )
 }

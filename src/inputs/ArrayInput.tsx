@@ -138,7 +138,7 @@ export function ArrayInput(props: ArrayInputProps) {
     return (
         <div id={id} className="form-wizard-array-input">
             {props.label && (
-                <div style={{ paddingBottom: 10, paddingTop: 4 }}>
+                <div style={{ paddingBottom: 8, paddingTop: 0 }}>
                     <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
                     {props.description && <Text component="small">{props.description}</Text>}
                 </div>
@@ -166,7 +166,7 @@ export function ArrayInput(props: ArrayInputProps) {
                     )
                 })
             )}
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingTop: values.length ? 8 : 4 }}>
                 {/* <div style={{ flexGrow: 1 }} /> */}
                 {!props.dropdownItems ? (
                     <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={() => addItem(props.newValue ?? {})}>

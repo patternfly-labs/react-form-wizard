@@ -71,7 +71,7 @@ export function StringsInput(props: StringsInputProps) {
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    rowGap: 0,
+                    rowGap: 8,
                 }}
             >
                 {values.map((pair, index) => {

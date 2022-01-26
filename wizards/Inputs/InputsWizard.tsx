@@ -14,7 +14,6 @@ export function InputsWizard() {
                     <TextInput label="Text input required" path="textInput.required" required />
                     <TextInput label="Text input secret" path="textInput.secret" secret />
                     <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
-                    <Checkbox label="Show hidden" path="showHidden" />
                 </Section>
             </Step>
 
@@ -24,7 +23,6 @@ export function InputsWizard() {
                     <TextArea label="Text area required" path="textArea.required" required />
                     <TextArea label="Text area secret" path="textArea.secret" secret />
                     <TextArea label="Text area hidden" path="textArea.hidden" hidden={(item) => !item.showHidden} />
-                    <Checkbox label="Show hidden" path="showHidden" />
                 </Section>
             </Step>
 
@@ -39,7 +37,6 @@ export function InputsWizard() {
                         required
                         hidden={(item) => !item.showHidden}
                     />
-                    <Checkbox label="Show hidden" path="showHidden" />
                 </Section>
             </Step>
 
@@ -53,31 +50,40 @@ export function InputsWizard() {
                 </Section>
             </Step>
 
-            <Step label="Radio" id="radio">
+            <Step label="Radio" id="radio-step">
                 <Section label="Radio">
-                    <RadioGroup id="radio0" path="radio0" label="Radio">
+                    <RadioGroup id="group-1" path="radios.group1.value" label="Radio">
                         <Radio id="radio-1" label="Radio 1" value="radio-1" />
                         <Radio id="radio-2" label="Radio 2" value="radio-2" />
                     </RadioGroup>
-                    <RadioGroup id="radio1" path="radio1" label="Radio with sub-inputs">
-                        <Radio id="radio-1" label="Radio 1" value="radio-3">
-                            <TextInput label="Name" path="radio1.name" required />
+                    <RadioGroup id="group-2" path="radios.group2.value" label="Radio with sub-inputs">
+                        <Radio id="radio-1" label="Radio 1" value="radio-1">
+                            <TextInput label="Name" path="radios.group2.name" required />
                         </Radio>
-                        <Radio id="radio-2" label="Radio 2" value="radio-4">
-                            <TextInput label="Name" path="radio2.name" required />
+                        <Radio id="radio-2" label="Radio 2" value="radio-2">
+                            <TextInput label="Name" path="radios.group2.name" required />
                         </Radio>
                     </RadioGroup>
-                    <RadioGroup id="radio2" path="radio2" label="Radio with descriptions">
-                        <Radio id="radio-1" label="Radio 1" value="radio-5" description="Radio 1 description" />
-                        <Radio id="radio-2" label="Radio 2" value="radio-6" description="Radio 2 description" />
+                    <RadioGroup id="group-3" path="radios.group3.value" label="Radio with descriptions" helperText="Description goes here.">
+                        <Radio id="radio-1" label="Radio 1" value="radio-1" description="Radio 1 description" />
+                        <Radio id="radio-2" label="Radio 2" value="radio-2" description="Radio 2 description" />
                     </RadioGroup>
-                    <RadioGroup id="radio3" path="radio3" label="Radio with descriptions and sub-inputs">
-                        <Radio id="radio-1" label="Radio 1" value="radio-7" description="Radio 1 description">
-                            <TextInput label="Name" path="radio1.name" required />
+                    <RadioGroup
+                        id="group-4"
+                        path="radios.group4.value"
+                        label="Radio with descriptions and sub-inputs"
+                        helperText="Description goes here."
+                    >
+                        <Radio id="radio-1" label="Radio 1" value="radio-1" description="Radio 1 description">
+                            <TextInput label="Name" path="radios.group4.name" required />
                         </Radio>
-                        <Radio id="radio-2" label="Radio 2" value="radio-8" description="Radio 2 description">
-                            <TextInput label="Name" path="radio1.name" required />
+                        <Radio id="radio-2" label="Radio 2" value="radio-2" description="Radio 2 description">
+                            <TextInput label="Name" path="radios.group4.name" required />
                         </Radio>
+                    </RadioGroup>
+                    <RadioGroup id="group-5" path="radios.group5.value" label="Radio (Required)" required>
+                        <Radio id="radio-1" label="Radio 1" value="radio-1" />
+                        <Radio id="radio-2" label="Radio 2" value="radio-2" />
                     </RadioGroup>
                 </Section>
             </Step>
@@ -155,10 +161,10 @@ export function InputsWizard() {
                 >
                     <TextInput label="Text input" path="textInput.text" />
                 </Section>
-                <Checkbox label="Show hidden" path="showHidden" />
             </Step>
 
             <Step label="Hidden" id="hidden">
+                <Checkbox label="Show hidden" path="showHidden" />
                 <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
             </Step>
         </WizardPage>
