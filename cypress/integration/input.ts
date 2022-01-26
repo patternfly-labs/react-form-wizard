@@ -99,7 +99,7 @@ describe('inputs wizard', () => {
     })
 
     it('section', () => {
-        cy.get('#section').within(() => {
+        cy.get('#section-step').within(() => {
             cy.contains('Next').click()
             cy.contains('Please fix validation errors')
             cy.contains('Text 1 is required')
@@ -111,7 +111,11 @@ describe('inputs wizard', () => {
     })
 
     it('hidden', () => {
-        cy.get('#hidden').within(() => {
+        cy.get('#hidden-step').within(() => {
+            cy.get('#show-hidden').click()
+            cy.contains('Next').click()
+            cy.contains('Please fix validation errors')
+            cy.get('#show-hidden').click()
             cy.contains('Next').click()
         })
     })
@@ -143,7 +147,6 @@ describe('inputs wizard', () => {
                 cy.get('#checkbox-2-text').contains('hello')
                 cy.get('#checkbox-3')
             })
-
             cy.contains('Submit')
         })
     })

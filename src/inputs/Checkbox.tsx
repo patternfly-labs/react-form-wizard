@@ -24,7 +24,7 @@ export function Checkbox(props: CheckboxProps) {
                         {props.label}
                     </div>
                 </Split>
-                {props.children}
+                {value && props.children}
             </Fragment>
         )
     }

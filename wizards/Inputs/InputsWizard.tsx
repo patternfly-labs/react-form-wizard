@@ -13,7 +13,6 @@ export function InputsWizard() {
                     <TextInput label="Text input" path="textInput.text" />
                     <TextInput label="Text input required" path="textInput.required" required />
                     <TextInput label="Text input secret" path="textInput.secret" secret />
-                    <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
                 </Section>
             </Step>
 
@@ -22,7 +21,6 @@ export function InputsWizard() {
                     <TextArea label="Text area" path="textArea.text" />
                     <TextArea label="Text area required" path="textArea.required" required />
                     <TextArea label="Text area secret" path="textArea.secret" secret />
-                    <TextArea label="Text area hidden" path="textArea.hidden" hidden={(item) => !item.showHidden} />
                 </Section>
             </Step>
 
@@ -30,13 +28,6 @@ export function InputsWizard() {
                 <Section label="Select">
                     <Select label="Select" path="select.value" options={['Option 1', 'Option 2']} />
                     <Select label="Select required" path="select.required" options={['Option 1', 'Option 2']} required />
-                    <Select
-                        label="Select hidden"
-                        path="select.hidden"
-                        options={['Option 1', 'Option 2']}
-                        required
-                        hidden={(item) => !item.showHidden}
-                    />
                 </Section>
             </Step>
 
@@ -108,7 +99,6 @@ export function InputsWizard() {
                     >
                         <TextInput label="Text input" path="checkboxes.checkbox4.textInput" required />
                     </Checkbox>
-                    <Checkbox label="Checkbox conditionally hidden" path="checkboxes.checkbox5.value" hidden={(item) => !item.showHidden} />
                 </Section>
             </Step>
 
@@ -142,8 +132,8 @@ export function InputsWizard() {
                 </Section>
             </Step>
 
-            <Step label="Section" id="section">
-                <Section label="Section 1">
+            <Step label="Section" id="section-step">
+                <Section label="Section 1 with description" description="Description goes here">
                     <TextInput label="Text 1" path="section1.text1" id="text-1" required />
                     <TextInput label="Text 2" path="section1.text2" id="text-2" />
                 </Section>
@@ -151,21 +141,39 @@ export function InputsWizard() {
                     <TextInput label="Text 3" path="section2.text3" id="text-3" required />
                     <TextInput label="Text 4" path="section2.text4" id="text-4" />
                 </Section>
-                <Section label="Section 3 (Hideable)" description="This section auto hides if all inputs are hidden.">
-                    <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
+                <Section label="Hide Settings">
+                    <Checkbox label="Hide section" path="hideSection" />
                 </Section>
                 <Section
-                    label="Section 4 (Hidden)"
-                    hidden={(item) => !item.showHidden}
-                    description="This section has a hidden function to hide itself and its inputs."
+                    label="Section 3 (Hideable)"
+                    description="This section is hidden using a function to determine if it should be hidden."
+                    hidden={(item) => item.hideSection}
                 >
-                    <TextInput label="Text input" path="textInput.text" />
+                    <TextInput label="Text input" path="hideableSection.text" />
                 </Section>
             </Step>
 
-            <Step label="Hidden" id="hidden">
-                <Checkbox label="Show hidden" path="showHidden" />
-                <TextInput label="Text input hidden" path="textInput.hidden" hidden={(item) => !item.showHidden} />
+            <Step label="Hidden" id="hidden-step">
+                <Section label="Hide Settings" description="This sets a flag which inputs are using to hide themselves.">
+                    <Checkbox label="Show hidden" path="showHidden" id="show-hidden" />
+                </Section>
+
+                <Section label="Automatically hidden" description="A section will automatically hide itelf if all child inputs are hidden.">
+                    <TextInput label="Text input hidden" path="hidden.textInput" hidden={(item) => !item.showHidden} required />
+                    <TextArea label="Text area hidden" path="hidden.textArea" hidden={(item) => !item.showHidden} required />
+                    <Select
+                        label="Select hidden"
+                        path="hidden.select"
+                        options={['Option 1', 'Option 2']}
+                        required
+                        hidden={(item) => !item.showHidden}
+                    />
+                    <RadioGroup id="group-hidden" path="hidden.radio" label="Radio (Required)" required hidden={(item) => !item.showHidden}>
+                        <Radio id="radio-1" label="Radio 1" value="radio-1" />
+                        <Radio id="radio-2" label="Radio 2" value="radio-2" />
+                    </RadioGroup>
+                    <Checkbox label="Checkbox conditionally hidden" path="hidden.checkbox" hidden={(item) => !item.showHidden} />
+                </Section>
             </Step>
         </WizardPage>
     )
