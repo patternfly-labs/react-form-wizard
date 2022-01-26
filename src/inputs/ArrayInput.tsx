@@ -10,7 +10,6 @@ import {
     FormFieldGroupHeader,
     Split,
     SplitItem,
-    Stack,
     Text,
 } from '@patternfly/react-core'
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
@@ -114,7 +113,7 @@ export function ArrayInput(props: ArrayInputProps) {
             <DescriptionListGroup id={id}>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
                 <DescriptionListDescription>
-                    <Stack hasGutter>
+                    <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
                         {values.map((value, index) => (
                             <div key={index}>
                                 <ItemContext.Provider value={value}>
@@ -130,7 +129,7 @@ export function ArrayInput(props: ArrayInputProps) {
                                 </ItemContext.Provider>
                             </div>
                         ))}
-                    </Stack>
+                    </div>
                 </DescriptionListDescription>
             </DescriptionListGroup>
         )

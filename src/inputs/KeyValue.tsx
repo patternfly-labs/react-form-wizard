@@ -1,12 +1,4 @@
-import {
-    Button,
-    DescriptionListDescription,
-    DescriptionListGroup,
-    DescriptionListTerm,
-    Divider,
-    Stack,
-    TextInput,
-} from '@patternfly/react-core'
+import { Button, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Divider, TextInput } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment, useState } from 'react'
 import { Mode } from '../contexts/ModeContext'
@@ -71,13 +63,13 @@ export function KeyValue(
             <DescriptionListGroup id={id}>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
                 <DescriptionListDescription>
-                    <Stack hasGutter>
+                    <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
                         {pairs.map((pair) => (
                             <div key={pair.key}>
                                 {pair.key} {pair.value !== undefined && <span> = {pair.value}</span>}
                             </div>
                         ))}
-                    </Stack>
+                    </div>
                 </DescriptionListDescription>
             </DescriptionListGroup>
         )

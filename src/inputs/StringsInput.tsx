@@ -5,7 +5,6 @@ import {
     DescriptionListTerm,
     Divider,
     Split,
-    Stack,
     TextInput,
 } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
@@ -53,12 +52,12 @@ export function StringsInput(props: StringsInputProps) {
             <DescriptionListGroup>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
                 <DescriptionListDescription id={id}>
-                    <Stack hasGutter>
+                    <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
                         {values.map((value, index) => {
                             if (!value) return <Fragment key={index} />
                             return <div key={index}>{value}</div>
                         })}
-                    </Stack>
+                    </div>
                 </DescriptionListDescription>
             </DescriptionListGroup>
         )
@@ -67,13 +66,7 @@ export function StringsInput(props: StringsInputProps) {
     return (
         <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 8 : 4 }}>
             <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    rowGap: 8,
-                }}
-            >
+            <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
                 {values.map((pair, index) => {
                     return (
                         <Split key={index}>
