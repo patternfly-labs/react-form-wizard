@@ -1,7 +1,6 @@
 import get from 'get-value'
-import { Children, isValidElement, ReactElement, ReactNode, useCallback, useContext, useLayoutEffect } from 'react'
+import { useCallback, useContext, useLayoutEffect } from 'react'
 import set from 'set-value'
-import { ArrayInput, ItemSelector, wizardArrayItems, wizardSelectorItem } from '..'
 import { useData } from '../contexts/DataContext'
 import { useSetHasInputs, useUpdateHasInputs } from '../contexts/HasInputsProvider'
 import { useSetHasValue } from '../contexts/HasValueProvider'
@@ -78,168 +77,6 @@ export function useInputHidden(props: { hidden?: (item: any) => boolean }) {
     return props.hidden ? props.hidden(item) : false
 }
 
-export function isHidden(reactElement: ReactElement, item: any) {
-    const hidden = (reactElement.props as { hidden?: HiddenFn }).hidden
-    if (typeof hidden === 'function') {
-        try {
-            const result = hidden(item)
-            if (result === true) return true
-        } catch {
-            // Do nothing
-        }
-    }
-
-    let allChildrenHidden = true
-    switch (reactElement.type) {
-        case ArrayInput: {
-            const items = wizardArrayItems(reactElement.props, item)
-            for (const item of items) {
-                Children.forEach(reactElement.props.children, (child) => {
-                    if (!allChildrenHidden) return
-                    if (!isValidElement(child)) {
-                        allChildrenHidden = false
-                        return
-                    }
-                    if (!isHidden(child, item)) {
-                        allChildrenHidden = false
-                    }
-                })
-            }
-            break
-        }
-        case ItemSelector: {
-            const selectorItem = wizardSelectorItem(reactElement.props, item)
-            if (selectorItem) {
-                Children.forEach(reactElement.props.children, (child) => {
-                    if (!allChildrenHidden) return
-                    if (!isValidElement(child)) {
-                        allChildrenHidden = false
-                        return
-                    }
-                    if (!isHidden(child, selectorItem)) {
-                        allChildrenHidden = false
-                    }
-                })
-            }
-            break
-        }
-        default: {
-            if (reactElement.props.children === 'function') {
-                allChildrenHidden = false
-            } else if (reactElement.props.children === undefined) {
-                allChildrenHidden = false
-            } else {
-                Children.forEach(reactElement.props.children, (child) => {
-                    if (!allChildrenHidden) return
-                    if (!isValidElement(child)) {
-                        allChildrenHidden = false
-                        return
-                    }
-                    if (!isHidden(child, item)) {
-                        allChildrenHidden = false
-                    }
-                })
-            }
-            break
-        }
-    }
-
-    return allChildrenHidden
-}
-
-export function wizardInputHasValidationErrors(reactElement: ReactElement, item: any): boolean {
-    if (isHidden(reactElement, item)) return false
-
-    const { props } = reactElement
-
-    switch (reactElement.type) {
-        case ArrayInput:
-            {
-                const arrayItems = wizardArrayItems(reactElement.props, item)
-                for (const arrayItem of arrayItems) {
-                    for (const child of Children.toArray(reactElement.props.children)) {
-                        if (!isValidElement(child)) continue
-                        if (wizardInputHasValidationErrors(child, arrayItem)) return true
-                    }
-                }
-            }
-            break
-        case ItemSelector: {
-            const selectorItem = wizardSelectorItem(reactElement.props, item)
-            if (selectorItem) {
-                for (const child of Children.toArray(reactElement.props.children)) {
-                    if (!isValidElement(child)) continue
-                    if (wizardInputHasValidationErrors(child, selectorItem)) return true
-                }
-            }
-            break
-        }
-        default:
-            {
-                if (!reactElement.props) break
-                const path = props.path
-                if (path) {
-                    const value = get(item, path) as unknown
-
-                    const required = props.required
-                    if (required && !value) return true
-
-                    const validation = props.validation as (value: any) => string | undefined
-                    if (typeof validation === 'function') {
-                        try {
-                            const result = validation(value)
-                            if (typeof result === 'string') return true
-                        } catch {
-                            // Do nothing
-                        }
-                    }
-                }
-                for (const child of Children.toArray(reactElement.props.children)) {
-                    if (!isValidElement(child)) continue
-                    if (wizardInputHasValidationErrors(child, item)) return true
-                }
-            }
-            break
-    }
-
-    return false
-}
-
-export function inputHasValue(props: unknown, item: unknown) {
-    const path = (props as InputCommonProps).path
-    if (path !== undefined) {
-        const value = get(item as object, path)
-        if (value === undefined) return false
-        if (typeof value === 'string') {
-            return value !== '' && value !== undefined
-        }
-        if (typeof value === 'number') {
-            return value !== 0
-        }
-        if (typeof value === 'boolean') {
-            return true
-        }
-        if (Array.isArray(value)) {
-            return value.length > 0
-        }
-    }
-
-    const children = (props as { children?: ReactNode }).children
-    if (children) {
-        let anyChildHasValue = false
-        Children.forEach(children, (child) => {
-            if (anyChildHasValue) return
-            if (!isValidElement(child)) return
-            if (isHidden(child, item)) return
-            if (inputHasValue(child.props, item)) {
-                anyChildHasValue = true
-            }
-        })
-        return anyChildHasValue
-    }
-    return false
-}
-
 export function lowercaseFirst(label: string) {
     if (label) {
         label = label[0].toLowerCase() + label.substr(1)
@@ -267,6 +104,9 @@ export function useInput(props: InputCommonProps) {
     }, [hidden, error, setHasValidationError])
 
     const validate = useValidate()
+    // if value changes we need to validate in the case of a checkbox which hides child inputs
+    // if hidden changes we need to validate in the case of a inputs which hides child inputs
+    // if error changes we need to validate to set the error or clear errors if there is no other inputs with errors
     useLayoutEffect(() => validate(), [value, hidden, error, validate])
 
     const path = usePath(props)
