@@ -1,8 +1,6 @@
-# PatternFly Labs React Form Wizard
+# PatternFly Labs React Form Wizard [![GitHub package.json version](https://img.shields.io/github/package-json/v/patternfly-labs/react-form-wizard)](https://www.npmjs.com/package/@patternfly-labs/react-form-wizard)
 
-[![GitHub package.json version](https://img.shields.io/github/package-json/v/patternfly-labs/react-form-wizard)](https://www.npmjs.com/package/@patternfly-labs/react-form-wizard)
-
-An opinionated framework for wizards powered by PatternFly.
+An opinionated framework for wizards using [PatternFly](https://www.patternfly.org/).
 
 [Demo](https://patternfly-labs.github.io/react-form-wizard/)
 
@@ -59,13 +57,13 @@ function MyWizardPage() {
 The wizard works by setting an item context which inputs use as a data source.
 Inputs then get value or set value in the item context using [path](https://github.com/jonschlinkert/set-value#object-paths) notation.
 
-```tsx
+```xml
 <TextInput label="Name" path="name" />
 ```
 
 Some inputs can change the item context, such as the `ArrayInput`.
 
-```tsx
+```xml
 <ArrayInput path="resources" placeholder="Add new resource">
    <TextInput label="Name" path="metadata.name" required />
    <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
@@ -77,7 +75,7 @@ Some inputs can change the item context, such as the `ArrayInput`.
 The root data can either be an object or an array of objects.
 When working with an array of objects an`ItemSelector` can be used to set the item context specific item.
 
-```tsx
+```xml
 <ItemSelector selectKey="kind" selectValue="Application">
    <TextInput label="Name" path="metadata.name" required />
    <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
@@ -86,7 +84,7 @@ When working with an array of objects an`ItemSelector` can be used to set the it
 
 `ArrayInput` can also be used to work with a subset of items in this case.
 
-```tsx
+```xml
 <ArrayInput path={null} filter={(item) => item.kind === 'Subscription'}>
    <TextInput label="Name" path="metadata.name" required />
    <Select label="Namespace" path="metadata.namespace" options={['default']} required/>
