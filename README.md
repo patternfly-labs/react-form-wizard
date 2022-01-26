@@ -109,15 +109,15 @@ function Example() {
 
 ### Input common properties
 
+- **label** - The label for the input.
 - **path** - The [path](https://github.com/jonschlinkert/set-value#object-paths) the input is getting and setting value to, in the current item context.
 - **id** - Optional id of the input control. Used for testing. If not set, defaults to a sanitized version of the path.
-- **label** - The label for the input.
-- **validation** - An optional validation function that takes in the current item context and input value and returns an error string if there is an error.
-- **hidden** - A optional hidden function that take in the current item context and returns true if the input should be hidden.
+- **validation** - Optional validation function that takes in the current item context and input value. It should return an error string if there is an error.
+- **hidden** - Optional hidden function that takes in the current item context and returns true if the input should be hidden.
 
 ### Validation
 
-Inputs take an optional validation function. The validation function takes in the current item context and input value, and returns a validation error string if the validation fails.
+Inputs take an optional validation function. The validation function takes in the current item context and input value. It should returns a validation error string if the validation fails.
 
 ### Conditional hiding
 
