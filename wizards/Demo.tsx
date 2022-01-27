@@ -8,6 +8,7 @@ import {
     Grid,
     GridItem,
     gridSpans,
+    InputGroup,
     Label,
     LabelGroup,
     Masthead,
@@ -30,12 +31,14 @@ import {
     SplitItem,
     Stack,
     Text,
+    TextInput,
     Title,
 } from '@patternfly/react-core'
 import { BarsIcon, GithubIcon } from '@patternfly/react-icons'
 import useResizeObserver from '@react-hook/resize-observer'
 import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
+import { ClearInputButton } from '../src/components/ClearInputButton'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
@@ -198,6 +201,7 @@ function DemoHome() {
     const [qualityFilter, setQualityFilter] = useState<string[]>([])
     const [sort, setSort] = useState<SortE>(SortE.name)
     const [sortOpen, setSortOpen] = useState(false)
+    const [search, setSearch] = useState('')
 
     return (
         <Page
@@ -224,12 +228,6 @@ function DemoHome() {
                 <Stack hasGutter>
                     <Flex style={{ paddingBottom: 8 }}>
                         <FlexItem style={{ paddingLeft: 0, paddingRight: 16, minWidth: 200 }}>
-                            {/* <TextInput placeholder="Filter by text" /> */}
-                        </FlexItem>
-                        <FlexItem grow={{ default: 'grow' }}>
-                            <Title headingLevel="h3">Example Wizards</Title>
-                        </FlexItem>
-                        <FlexItem>
                             <Select
                                 variant={SelectVariant.single}
                                 placeholder="Sort by"
@@ -245,10 +243,16 @@ function DemoHome() {
                                 <SelectOption value={SortE.quality}>Sort by Quality</SelectOption>
                             </Select>
                         </FlexItem>
+                        <FlexItem grow={{ default: 'grow' }}>
+                            <InputGroup>
+                                <TextInput placeholder="Search" value={search} onChange={setSearch} />
+                                {search !== '' && <ClearInputButton onClick={() => setSearch('')} />}
+                            </InputGroup>
+                        </FlexItem>
                     </Flex>
                     <Split hasGutter>
-                        <SplitItem style={{ paddingLeft: 0, paddingRight: 32, minWidth: 200 }}>
-                            <Flex direction={{ default: 'column' }} style={{ gap: 32 }}>
+                        <SplitItem style={{ paddingLeft: 0, paddingRight: 32, minWidth: 200, paddingTop: 16 }}>
+                            <Flex direction={{ default: 'column' }} style={{ gap: 24 }}>
                                 <Flex direction={{ default: 'column' }}>
                                     <Title headingLevel="h4">Labels</Title>
                                     <Flex direction={{ default: 'column' }} style={{ paddingLeft: 8 }}>
@@ -268,7 +272,7 @@ function DemoHome() {
                                                     isChecked={labelFilter.includes(label)}
                                                     onChange={(checked) => {
                                                         if (checked) labelFilter.push(label)
-                                                        else labelFilter.splice(labelFilter.indexOf(label))
+                                                        else labelFilter.splice(labelFilter.indexOf(label), 1)
                                                         setLabelFilter([...labelFilter])
                                                     }}
                                                 />
@@ -286,7 +290,7 @@ function DemoHome() {
                                                 isChecked={qualityFilter.includes(quality.toLowerCase())}
                                                 onChange={(checked) => {
                                                     if (checked) qualityFilter.push(quality.toLowerCase())
-                                                    else qualityFilter.splice(qualityFilter.indexOf(quality.toLowerCase()))
+                                                    else qualityFilter.splice(qualityFilter.indexOf(quality.toLowerCase()), 1)
                                                     setQualityFilter([...qualityFilter])
                                                 }}
                                             />
@@ -310,6 +314,12 @@ function DemoHome() {
                                         for (const quality of qualityFilter) {
                                             if (wizard.state === quality) return true
                                         }
+                                        return false
+                                    })
+                                    .filter((wizard) => {
+                                        if (!search) return true
+                                        if (wizard.name.toLowerCase().includes(search.toLowerCase())) return true
+                                        if (wizard.description?.toLowerCase().includes(search.toLowerCase())) return true
                                         return false
                                     })
                                     .sort((lhs, rhs) => {
