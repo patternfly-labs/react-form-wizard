@@ -10,5 +10,5 @@ export enum RouteE {
     ROSA = '?route=rosa',
     App = '?route=app',
     Inputs = '?route=inputs',
-    Results = '?route=results',
+    Wizards = '?route=wizards',
 }

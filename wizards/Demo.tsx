@@ -17,7 +17,6 @@ import {
     MastheadMain,
     MastheadToggle,
     Nav,
-    NavExpandable,
     NavItem,
     NavList,
     Page,
@@ -43,7 +42,6 @@ import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
 import { ClusterForm } from './Cluster/ClusterForm'
-import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { InputsWizard } from './Inputs/InputsWizard'
 import { PlacementExample } from './Placement/PlacementExample'
@@ -188,14 +186,42 @@ export function DemoRouter(): JSX.Element {
             return <RosaExample />
         case RouteE.Inputs:
             return <InputsWizard />
-        case RouteE.Results:
-            return <ResultYaml />
+        case RouteE.Wizards:
+            return <WizardsHome />
         default:
             return <DemoHome />
     }
 }
 
 function DemoHome() {
+    return (
+        <Page
+            additionalGroupedContent={
+                <PageSection variant="light">
+                    <Stack hasGutter>
+                        <Stack>
+                            <Title headingLevel="h2">Welcome to the React Form Wizard by PatternFly Labs</Title>
+                            <Text>A framework for building wizards using PatternFly.</Text>
+                        </Stack>
+                    </Stack>
+                </PageSection>
+            }
+            groupProps={{ sticky: 'top' }}
+        >
+            <PageSection isWidthLimited variant="light">
+                <Stack hasGutter>
+                    <Stack>
+                        <div>
+                            Get started by viewing the <Link to={RouteE.Wizards}>example wizards</Link>.
+                        </div>
+                    </Stack>
+                </Stack>
+            </PageSection>
+        </Page>
+    )
+}
+
+function WizardsHome() {
     const history = useHistory()
     const [labelFilter, setLabelFilter] = useState<string[]>([])
     const [qualityFilter, setQualityFilter] = useState<string[]>([])
@@ -209,16 +235,12 @@ function DemoHome() {
                 <PageSection variant="light">
                     <Stack hasGutter>
                         <Stack>
-                            <Title headingLevel="h2">Welcome to the React Form Wizard by PatternFly Labs</Title>
-                            <Text>A framework for building wizards using PatternFly.</Text>
+                            <Title headingLevel="h2">Example Wizards</Title>
+                            <Text>
+                                Example wizards not only show what can be done with the framework but also serve as a testbed for automated
+                                testing.
+                            </Text>
                         </Stack>
-                        {/* <Text>
-                            Patternfly defines how wizards should look and how input validation errors should look. This framework adds
-                            functionality for tying that together focusing on making a easy but powerful developer experience.
-                        </Text> */}
-                        {/* <Text>
-                            Get started by viewing the <Link to={RouteE.Tutorial}>tutorial</Link>.
-                        </Text> */}
                     </Stack>
                 </PageSection>
             }
@@ -226,32 +248,8 @@ function DemoHome() {
         >
             <PageSection isWidthLimited variant="light">
                 <Stack hasGutter>
-                    <Flex style={{ paddingBottom: 8 }}>
-                        <FlexItem style={{ paddingLeft: 0, paddingRight: 16, minWidth: 200 }}>
-                            <Select
-                                variant={SelectVariant.single}
-                                placeholder="Sort by"
-                                isOpen={sortOpen}
-                                onToggle={setSortOpen}
-                                onSelect={(_, value) => {
-                                    setSort(value as SortE)
-                                    setSortOpen(false)
-                                }}
-                                selections={sort}
-                            >
-                                <SelectOption value={SortE.name}>Sort by Name</SelectOption>
-                                <SelectOption value={SortE.quality}>Sort by Quality</SelectOption>
-                            </Select>
-                        </FlexItem>
-                        <FlexItem grow={{ default: 'grow' }}>
-                            <InputGroup>
-                                <TextInput placeholder="Search" value={search} onChange={setSearch} />
-                                {search !== '' && <ClearInputButton onClick={() => setSearch('')} />}
-                            </InputGroup>
-                        </FlexItem>
-                    </Flex>
                     <Split hasGutter>
-                        <SplitItem style={{ paddingLeft: 0, paddingRight: 32, minWidth: 200, paddingTop: 16 }}>
+                        <SplitItem style={{ paddingLeft: 8, paddingRight: 32, paddingTop: 78 }}>
                             <Flex direction={{ default: 'column' }} style={{ gap: 24 }}>
                                 <Flex direction={{ default: 'column' }}>
                                     <Title headingLevel="h4">Labels</Title>
@@ -300,6 +298,30 @@ function DemoHome() {
                             </Flex>
                         </SplitItem>
                         <SplitItem isFilled>
+                            <Flex style={{ paddingBottom: 24 }}>
+                                <FlexItem grow={{ default: 'grow' }}>
+                                    <InputGroup>
+                                        <TextInput placeholder="Search" value={search} onChange={setSearch} />
+                                        {search !== '' && <ClearInputButton onClick={() => setSearch('')} />}
+                                    </InputGroup>
+                                </FlexItem>
+                                <FlexItem>
+                                    <Select
+                                        variant={SelectVariant.single}
+                                        placeholder="Sort by"
+                                        isOpen={sortOpen}
+                                        onToggle={setSortOpen}
+                                        onSelect={(_, value) => {
+                                            setSort(value as SortE)
+                                            setSortOpen(false)
+                                        }}
+                                        selections={sort}
+                                    >
+                                        <SelectOption value={SortE.name}>Sort by Name</SelectOption>
+                                        <SelectOption value={SortE.quality}>Sort by Quality</SelectOption>
+                                    </Select>
+                                </FlexItem>
+                            </Flex>
                             <Masonry size={400}>
                                 {wizards
                                     .filter((wizard) => {
@@ -448,13 +470,16 @@ function DemoSidebar() {
                         <NavItem isActive={location.search === RouteE.Inputs}>
                             <Link to={RouteE.Inputs}>Inputs</Link>
                         </NavItem>
-                        <NavExpandable title="Wizards" isExpanded={true}>
+                        <NavItem isActive={location.search === RouteE.Wizards}>
+                            <Link to={RouteE.Wizards}>Wizards</Link>
+                        </NavItem>
+                        {/* <NavExpandable title="Wizards" isExpanded={true}>
                             {wizards.map((wizard, index) => (
                                 <NavItem key={index} isActive={location.search === wizard.route}>
                                     <Link to={wizard.route}>{wizard.shortName}</Link>
                                 </NavItem>
                             ))}
-                        </NavExpandable>
+                        </NavExpandable> */}
                     </NavList>
                 </Nav>
             }
