@@ -1,6 +1,6 @@
 import { Button, Text, Title } from '@patternfly/react-core'
 import get from 'get-value'
-import { Fragment, useContext } from 'react'
+import { useContext } from 'react'
 import set from 'set-value'
 import {
     ArrayInput,
@@ -19,6 +19,7 @@ import {
     WizardSubmit,
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
+import { PlacementStep } from '../Placement/PlacementWizard'
 import { Specifications } from './templates'
 
 export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel; namespaces: string[] }) {
@@ -141,7 +142,7 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
             </Step>
 
             <Step label="Placement" id="placement">
-                <PolicyWizardPlacement />
+                <PlacementStep namespaces={[]} clusterSets={[]} />
             </Step>
 
             <Step label="Security groups" id="security-groups">
@@ -361,101 +362,5 @@ export function PolicyWizardTemplates() {
                 />
             </ArrayInput>
         </Section>
-    )
-}
-
-export function PolicyWizardPlacement() {
-    return (
-        <Fragment>
-            <Section label="Placement">
-                <ArrayInput
-                    id="placement-rules"
-                    label="Placement rules"
-                    description="Placement rules determine which clusters a policy will be applied."
-                    path={null}
-                    filter={(resource) => resource.kind === 'PlacementRule'}
-                    placeholder="Add placement rule"
-                    collapsedContent="metadata.name"
-                    collapsedPlaceholder="Expand to enter placement rule"
-                    newValue={{
-                        apiVersion: 'policy.open-cluster-management.io/v1',
-                        kind: 'PlacementRule',
-                        metadata: {},
-                        spec: {
-                            clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
-                            clusterSelector: {
-                                matchExpressions: [{ key: '', operator: 'In', values: [''] }],
-                            },
-                        },
-                    }}
-                    // hidden={(rules) => !rules.length}
-                >
-                    <TextInput
-                        id="name"
-                        path="metadata.name"
-                        label="Name"
-                        required
-                        helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
-                    />
-                    <ArrayInput
-                        id="matchExpressions"
-                        label="Match expressions"
-                        path="spec.clusterSelector.matchExpressions"
-                        placeholder="Add expression"
-                        collapsedPlaceholder="Expand to enter expression"
-                        collapsedContent={'key'}
-                        newValue={{
-                            key: '',
-                            operator: 'In',
-                            values: [''],
-                        }}
-                    >
-                        <TextInput id="key" path="key" label="Label" />
-                        <StringsInput id="values" path="values" label="Equals one of" />
-                    </ArrayInput>
-                </ArrayInput>
-
-                <ArrayInput
-                    id="placement-bindings"
-                    label="Placement bindings"
-                    description="Policies are applied to clusters using placement bindings. Placement bindings bind policies to a placement rule."
-                    path={null}
-                    filter={(resource) => resource.kind === 'PlacementBinding'}
-                    placeholder="Add placement binding"
-                    collapsedContent="metadata.name"
-                    collapsedPlaceholder="Expand to enter placement binding"
-                    newValue={{
-                        apiVersion: 'policy.open-cluster-management.io/v1',
-                        kind: 'PlacementBinding',
-                        metadata: {},
-                        placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
-                        subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
-                    }}
-                    // hidden={(bindings) => !bindings.length}
-                >
-                    <TextInput path="metadata.name" label="Binding name" required />
-                    <TextInput
-                        path="placementRef.name"
-                        label="Rule name"
-                        helperText="The placement rule name that his placement binding is binding to the subjects."
-                        required
-                    />
-                    <ArrayInput
-                        path="subjects"
-                        label="Subjects"
-                        description="Placement bindings can have multiple subjects which the placement is applied to."
-                        placeholder="Add placement subject"
-                        collapsedContent="name"
-                        collapsedPlaceholder="Expand to enter subject"
-                        newValue={{
-                            apiGroup: 'policy.open-cluster-management.io',
-                            kind: 'Policy',
-                        }}
-                    >
-                        <TextInput path="name" label="Subject name" required />
-                    </ArrayInput>
-                </ArrayInput>
-            </Section>
-        </Fragment>
     )
 }

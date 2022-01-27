@@ -31,7 +31,9 @@ import { ClusterForm } from './Cluster/ClusterForm'
 import { ResultYaml } from './components/Results'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { InputsWizard } from './Inputs/InputsWizard'
+import { PlacementExample } from './Placement/PlacementExample'
 import { PolicyExample } from './Policy/PolicyExample'
+import { PolicySetExample } from './PolicySet/PolicySetExample'
 import { RosaExample } from './ROSA/RosaExample'
 import { RouteE } from './Routes'
 
@@ -68,11 +70,21 @@ const wizards: IWizard[] = [
             'Advanced Cluster Management uses credentials to provision clusters on cloud providers. Credentials are also used for integrations such as automation using Ansible.',
     },
     {
+        shortName: 'Placement',
+        name: 'Placement',
+        route: RouteE.Placement,
+    },
+    {
         shortName: 'Policy',
         name: 'Policy',
         route: RouteE.Policy,
         description:
             'Advanced Cluster Management uses policies to generate reports and validate a cluster compliance based on specified security standards, categories, and controls.',
+    },
+    {
+        shortName: 'Policy Set',
+        name: 'Policy Set',
+        route: RouteE.PolicySet,
     },
     {
         shortName: 'ROSA',
@@ -111,8 +123,12 @@ export function DemoRouter(): JSX.Element {
             return <ClusterForm />
         case RouteE.Credentials:
             return <CredentialsExample />
+        case RouteE.Placement:
+            return <PlacementExample />
         case RouteE.Policy:
             return <PolicyExample />
+        case RouteE.PolicySet:
+            return <PolicySetExample />
         case RouteE.ROSA:
             return <RosaExample />
         case RouteE.Inputs:

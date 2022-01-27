@@ -19,7 +19,7 @@ type StringsInputProps = InputCommonProps & {
 }
 
 export function StringsInput(props: StringsInputProps) {
-    const { mode, value, setValue, id } = useInput(props)
+    const { mode, value, setValue, id, hidden } = useInput(props)
 
     let values: string[] = value
     if (props.map) values = props.map(values)
@@ -44,6 +44,10 @@ export function StringsInput(props: StringsInputProps) {
         let newValue = values
         if (props.unmap) newValue = props.unmap(values)
         setValue(newValue)
+    }
+
+    if (hidden) {
+        return <Fragment />
     }
 
     if (mode === Mode.Details) {
