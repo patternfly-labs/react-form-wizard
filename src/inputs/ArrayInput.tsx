@@ -296,8 +296,12 @@ function Dropdown2(props: { children?: ReactNode; placeholder: string }) {
             isPlain
             dropdownItems={Children.toArray(props.children)}
             toggle={
-                <DropdownToggle id="toggle-id" onToggle={onToggle} toggleIndicator={CaretDownIcon}>
-                    {props.placeholder}
+                <DropdownToggle id="toggle-id" onToggle={onToggle} toggleIndicator={CaretDownIcon} style={{ paddingTop: 0 }}>
+                    <span className="pf-c-button pf-m-link pf-m-small" style={{ padding: 0 }}>
+                        <PlusIcon />
+                        &nbsp; &nbsp;
+                        {props.placeholder}
+                    </span>
                 </DropdownToggle>
             }
             isOpen={open}

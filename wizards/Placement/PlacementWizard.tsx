@@ -68,7 +68,7 @@ function MatchExpressions() {
 export function PlacementStep(props: { namespaces: string[]; clusterSets: IResource[] }) {
     return (
         <Fragment>
-            <Section label="Placements">
+            <Section label="Placements" collapsable>
                 <ArrayInput
                     id="placements"
                     label="Placements"
@@ -86,7 +86,7 @@ export function PlacementStep(props: { namespaces: string[]; clusterSets: IResou
                     }}
                     // hidden={(rules) => !rules.length}
                 >
-                    <TextInput label="Name" path="metadata.name" required />
+                    <TextInput label="Name" path="metadata.name" required helperText="Name needs to be unique to the namespace." />
                     <Select
                         label="Namespace"
                         path="metadata.namespace"
@@ -130,7 +130,7 @@ export function PlacementStep(props: { namespaces: string[]; clusterSets: IResou
                     </ArrayInput>
                 </ArrayInput>
             </Section>
-            <Section label="Placement Rules">
+            <Section label="Placement Rules" collapsable>
                 <ArrayInput
                     id="placement-rules"
                     label="Placement rules"
@@ -178,16 +178,16 @@ export function PlacementStep(props: { namespaces: string[]; clusterSets: IResou
                     </ArrayInput>
                 </ArrayInput>
             </Section>
-            <Section label="Placement Bindings">
+            <Section label="Placement Bindings" collapsable>
                 <ArrayInput
                     id="placement-bindings"
                     label="Placement bindings"
                     description="Policies are applied to clusters using placement bindings. Placement bindings bind policies to a placement rule."
                     path={null}
                     filter={(resource) => resource.kind === 'PlacementBinding'}
-                    placeholder="Add placement binding"
+                    placeholder="Add binding"
                     collapsedContent="metadata.name"
-                    collapsedPlaceholder="Expand to enter placement binding"
+                    collapsedPlaceholder="Expand to enter binding"
                     newValue={{
                         apiVersion: 'policy.open-cluster-management.io/v1',
                         kind: 'PlacementBinding',
@@ -196,13 +196,45 @@ export function PlacementStep(props: { namespaces: string[]; clusterSets: IResou
                         subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
                     }}
                     // hidden={(bindings) => !bindings.length}
+                    dropdownItems={[
+                        {
+                            label: 'Add placement binding',
+                            action: () => ({
+                                apiVersion: 'policy.open-cluster-management.io/v1',
+                                kind: 'PlacementBinding',
+                                metadata: {},
+                                placementRef: { apiGroup: 'placements.cluster.open-cluster-management.io', kind: 'Placement' },
+                                subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
+                            }),
+                        },
+                        {
+                            label: 'Add placement rule binding',
+                            action: () => ({
+                                apiVersion: 'policy.open-cluster-management.io/v1',
+                                kind: 'PlacementBinding',
+                                metadata: {},
+                                placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                                subjects: [{ apiGroup: 'policy.open-cluster-management.io', kind: 'Policy' }],
+                            }),
+                        },
+                    ]}
                 >
                     <TextInput path="metadata.name" label="Binding name" required />
-                    <TextInput
+                    <Select
                         path="placementRef.name"
-                        label="Placement target name"
-                        helperText="The placement rule name that his placement binding is binding to the subjects."
+                        label="Placement"
+                        helperText="The placement used to select clusters."
                         required
+                        hidden={(binding) => binding.placementRef?.kind !== 'Placement'}
+                        options={[]}
+                    />
+                    <Select
+                        path="placementRef.name"
+                        label="Placement rule"
+                        helperText="The placement rule used to select clusters for placement."
+                        required
+                        hidden={(binding) => binding.placementRef?.kind !== 'PlacementRule'}
+                        options={[]}
                     />
                     <ArrayInput
                         path="subjects"
