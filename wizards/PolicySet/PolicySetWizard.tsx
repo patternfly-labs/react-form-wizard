@@ -1,4 +1,4 @@
-import { ItemSelector, Multiselect, Section, Select, Step, TextArea, TextInput, WizardCancel, WizardPage, WizardSubmit } from '../../src'
+import { ItemSelector, Section, Select, Step, TableSelect, TextArea, TextInput, WizardCancel, WizardPage, WizardSubmit } from '../../src'
 import { PlacementStep } from '../Placement/PlacementWizard'
 
 interface IResource {
@@ -39,11 +39,14 @@ export function PolicySetWizard(props: {
             <Step label="Policies" id="policies-step">
                 <Section label="Policies">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
-                        <Multiselect
-                            label="Policies"
+                        <TableSelect
+                            id="policies"
                             path="spec.policies"
-                            required
-                            options={props.policies.map((policy) => policy.metadata.name)}
+                            label="Policies"
+                            columns={[{ name: 'Name', cellFn: (policy: IResource) => policy.metadata.name }]}
+                            items={props.policies}
+                            itemToValue={(policy: IResource) => policy.metadata.name}
+                            valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata.name}
                         />
                     </ItemSelector>
                 </Section>

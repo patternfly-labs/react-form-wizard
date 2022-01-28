@@ -98,6 +98,12 @@ describe('inputs wizard', () => {
         })
     })
 
+    it('table-select', () => {
+        cy.get('#table-select').within(() => {
+            cy.contains('Next').click()
+        })
+    })
+
     it('section', () => {
         cy.get('#section-step').within(() => {
             cy.contains('Next').click()

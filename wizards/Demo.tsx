@@ -249,8 +249,26 @@ function WizardsHome() {
             <PageSection isWidthLimited variant="light">
                 <Stack hasGutter>
                     <Split hasGutter>
-                        <SplitItem style={{ paddingLeft: 8, paddingRight: 32, paddingTop: 78 }}>
+                        <SplitItem style={{ paddingLeft: 8, paddingRight: 32, paddingTop: 64 }}>
                             <Flex direction={{ default: 'column' }} style={{ gap: 24 }}>
+                                <Flex direction={{ default: 'column' }}>
+                                    <Title headingLevel="h6">Quality</Title>
+                                    <Flex direction={{ default: 'column' }} style={{ paddingLeft: 8 }}>
+                                        {['Production', 'Beta', 'Alpha', 'Prototype'].map((quality) => (
+                                            <Checkbox
+                                                key={quality}
+                                                id={quality}
+                                                label={quality}
+                                                isChecked={qualityFilter.includes(quality.toLowerCase())}
+                                                onChange={(checked) => {
+                                                    if (checked) qualityFilter.push(quality.toLowerCase())
+                                                    else qualityFilter.splice(qualityFilter.indexOf(quality.toLowerCase()), 1)
+                                                    setQualityFilter([...qualityFilter])
+                                                }}
+                                            />
+                                        ))}
+                                    </Flex>
+                                </Flex>
                                 <Flex direction={{ default: 'column' }}>
                                     <Title headingLevel="h4">Labels</Title>
                                     <Flex direction={{ default: 'column' }} style={{ paddingLeft: 8 }}>
@@ -277,28 +295,10 @@ function WizardsHome() {
                                             ))}
                                     </Flex>
                                 </Flex>
-                                <Flex direction={{ default: 'column' }}>
-                                    <Title headingLevel="h6">Quality</Title>
-                                    <Flex direction={{ default: 'column' }} style={{ paddingLeft: 8 }}>
-                                        {['Production', 'Beta', 'Alpha', 'Prototype'].map((quality) => (
-                                            <Checkbox
-                                                key={quality}
-                                                id={quality}
-                                                label={quality}
-                                                isChecked={qualityFilter.includes(quality.toLowerCase())}
-                                                onChange={(checked) => {
-                                                    if (checked) qualityFilter.push(quality.toLowerCase())
-                                                    else qualityFilter.splice(qualityFilter.indexOf(quality.toLowerCase()), 1)
-                                                    setQualityFilter([...qualityFilter])
-                                                }}
-                                            />
-                                        ))}
-                                    </Flex>
-                                </Flex>
                             </Flex>
                         </SplitItem>
                         <SplitItem isFilled>
-                            <Flex style={{ paddingBottom: 24 }}>
+                            <Flex style={{ paddingBottom: 16 }}>
                                 <FlexItem grow={{ default: 'grow' }}>
                                     <InputGroup>
                                         <TextInput placeholder="Search" value={search} onChange={setSearch} />

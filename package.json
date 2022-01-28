@@ -30,10 +30,11 @@
         "url": "git+https://github.com/patternfly-labs/react-form-wizard.git"
     },
     "peerDependencies": {
-        "@patternfly/react-icons": "^4.19",
-        "@patternfly/react-core": "^4.162",
-        "react": "^17.0",
-        "react-dom": "^17.0"
+        "@patternfly/react-icons": "^4",
+        "@patternfly/react-core": "^4",
+        "@patternfly/react-table": "^4",
+        "react": "^17",
+        "react-dom": "^17"
     },
     "dependencies": {
         "@react-hook/resize-observer": "^1.2.5",
@@ -44,6 +45,7 @@
         "yaml": "^1.10.2"
     },
     "devDependencies": {
+        "@patternfly/react-table": "^4.50.1",
         "@patternfly/react-core": "^4.192.7",
         "@patternfly/react-icons": "^4.43.7",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",

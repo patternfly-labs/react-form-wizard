@@ -1,8 +1,21 @@
 import { useHistory } from 'react-router-dom'
-import { ArrayInput, Checkbox, KeyValue, Radio, RadioGroup, Select, StringsInput, TextArea, TextInput, Tile, Tiles } from '../../src'
-import { Section } from '../../src/Section'
-import { Step } from '../../src/Step'
-import { WizardPage } from '../../src/WizardPage'
+import {
+    ArrayInput,
+    Checkbox,
+    KeyValue,
+    Radio,
+    RadioGroup,
+    Section,
+    Select,
+    Step,
+    StringsInput,
+    TableSelect,
+    TextArea,
+    TextInput,
+    Tile,
+    Tiles,
+    WizardPage,
+} from '../../src'
 
 export function InputsWizard() {
     const history = useHistory()
@@ -129,6 +142,20 @@ export function InputsWizard() {
                         <KeyValue id="labels" path="metadata.labels" label="Labels" />
                         <KeyValue id="labels" path="metadata.annotations" label="Annotations" />
                     </ArrayInput>
+                </Section>
+            </Step>
+
+            <Step label="Table Select" id="table-select">
+                <Section label="Table Select" description="Table select is used when many selections can be made from many options.">
+                    <TableSelect
+                        id="string"
+                        path="tableSelect"
+                        label="Strings"
+                        columns={[{ name: 'Name', cellFn: (item: { name: string }) => item.name }]}
+                        items={new Array(100).fill(0).map((_, i) => ({ name: `Item ${i + 1}` }))}
+                        itemToValue={(item: unknown) => (item as any).name}
+                        valueMatchesItem={(value: unknown, item: { name: string }) => value === item.name}
+                    />
                 </Section>
             </Step>
 
