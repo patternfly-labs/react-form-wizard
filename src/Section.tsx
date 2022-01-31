@@ -2,9 +2,9 @@ import { DescriptionList, Divider, Split, SplitItem, Stack, Title } from '@patte
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useState } from 'react'
 import { LabelHelp } from './components/LabelHelp'
+import { DisplayMode, useDisplayMode } from './contexts/DisplayModeContext'
 import { HasInputsContext, HasInputsProvider } from './contexts/HasInputsProvider'
 import { HasValueContext, HasValueProvider } from './contexts/HasValueProvider'
-import { Mode, useMode } from './contexts/ModeContext'
 import { useShowValidation } from './contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidationProvider'
 import { HiddenFn, useInputHidden } from './inputs/Input'
@@ -20,6 +20,7 @@ type SectionProps = {
     labelHelp?: string
     hidden?: HiddenFn
     collapsable?: boolean
+    autohide?: boolean
 }
 
 export function Section(props: SectionProps) {
@@ -27,7 +28,7 @@ export function Section(props: SectionProps) {
 }
 
 function SectionInternal(props: SectionProps) {
-    const mode = useMode()
+    const mode = useDisplayMode()
     const id = props.id ?? props.label.toLowerCase().split(' ').join('-')
     const showValidation = useShowValidation()
     const [expanded, setExpanded] = useState(props.defaultExpanded === undefined ? true : props.defaultExpanded)
@@ -35,7 +36,7 @@ function SectionInternal(props: SectionProps) {
 
     if (hidden) return <Fragment />
 
-    if (mode === Mode.Details)
+    if (mode === DisplayMode.Details)
         return (
             <HasValueProvider key={id}>
                 <HasValueContext.Consumer>
@@ -71,7 +72,7 @@ function SectionInternal(props: SectionProps) {
                                     id={id}
                                     className="pf-c-form__section"
                                     role="group"
-                                    style={{ display: hasInputs ? undefined : 'none' }}
+                                    style={{ display: !hasInputs && props.autohide !== false ? 'none' : undefined }}
                                 >
                                     <Split
                                         hasGutter

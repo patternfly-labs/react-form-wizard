@@ -2,10 +2,10 @@ import get from 'get-value'
 import { useCallback, useContext, useLayoutEffect } from 'react'
 import set from 'set-value'
 import { useData } from '../contexts/DataContext'
+import { useDisplayMode } from '../contexts/DisplayModeContext'
 import { useSetHasInputs, useUpdateHasInputs } from '../contexts/HasInputsProvider'
 import { useSetHasValue } from '../contexts/HasValueProvider'
 import { ItemContext } from '../contexts/ItemContext'
-import { useMode } from '../contexts/ModeContext'
 import { useShowValidation } from '../contexts/ShowValidationProvider'
 import { useSetHasValidationError, useValidate } from '../contexts/ValidationProvider'
 
@@ -85,7 +85,7 @@ export function lowercaseFirst(label: string) {
 }
 
 export function useInput(props: InputCommonProps) {
-    const mode = useMode()
+    const displayMode = useDisplayMode()
     const [value, setValue] = useValue(props, '')
     const hidden = useInputHidden(props)
 
@@ -125,7 +125,7 @@ export function useInput(props: InputCommonProps) {
     return {
         id,
         path,
-        mode,
+        displayMode,
         value,
         setValue,
         validated,

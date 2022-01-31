@@ -5,7 +5,7 @@ import set from 'set-value'
 import { TextDetail } from '..'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import './Select.css'
 import { InputLabel } from './InputLabel'
@@ -75,7 +75,7 @@ export function GroupedMultiselect<T>(props: Omit<GroupedMultiselectProps<T>, 'v
 type SelectProps<T> = SingleSelectProps<T> | MultiselectProps<T> | GroupedSingleSelectProps<T> | GroupedMultiselectProps<T>
 
 function SelectBase<T = any>(props: SelectProps<T>) {
-    const { mode, value, validated, hidden, id, path } = useInput(props)
+    const { displayMode: mode, value, validated, hidden, id, path } = useInput(props)
 
     const { update } = useData()
 
@@ -245,7 +245,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     if (hidden) return <Fragment />
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
         return <TextDetail id={id} path={props.path} label={props.label} />
     }

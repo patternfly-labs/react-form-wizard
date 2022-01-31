@@ -1,7 +1,7 @@
 import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Gallery, Tile as PFTile } from '@patternfly/react-core'
 import { Children, Fragment, isValidElement, ReactNode, useContext } from 'react'
 import { IRadioGroupContextState, RadioGroupContext } from '..'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
@@ -19,7 +19,7 @@ type TilesProps = InputCommonProps & { children?: ReactNode }
 // helperText?: string
 // children?: ReactNode
 export function Tiles(props: TilesProps) {
-    const { mode, value, setValue, hidden, id } = useInput(props)
+    const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     const state: IRadioGroupContextState = {
         value: value,
@@ -30,7 +30,7 @@ export function Tiles(props: TilesProps) {
 
     if (hidden) return <Fragment />
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         let label: string | undefined
         Children.forEach(props.children, (child) => {
             if (!isValidElement(child)) return

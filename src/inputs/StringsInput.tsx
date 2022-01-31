@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 
 type StringsInputProps = InputCommonProps & {
@@ -19,7 +19,7 @@ type StringsInputProps = InputCommonProps & {
 }
 
 export function StringsInput(props: StringsInputProps) {
-    const { mode, value, setValue, id, hidden } = useInput(props)
+    const { displayMode: mode, value, setValue, id, hidden } = useInput(props)
 
     let values: string[] = value
     if (props.map) values = props.map(values)
@@ -50,7 +50,7 @@ export function StringsInput(props: StringsInputProps) {
         return <Fragment />
     }
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (!values.length) return <Fragment />
         return (
             <DescriptionListGroup>

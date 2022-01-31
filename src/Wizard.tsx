@@ -19,9 +19,9 @@ import Handlebars, { HelperOptions } from 'handlebars'
 import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { DataContext, useData } from './contexts/DataContext'
+import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
 import { HasInputsProvider } from './contexts/HasInputsProvider'
 import { ItemContext, useItem } from './contexts/ItemContext'
-import { Mode, ModeContext } from './contexts/ModeContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
 import { StepHasInputsProvider, useStepHasInputs } from './contexts/StepHasInputsProvider'
 import { StepValidationProvider, useStepHasValidationError } from './contexts/StepValidationProvider'
@@ -60,14 +60,14 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
             setDrawerExpanded(props.showYaml)
         }
     }, [props.showYaml])
-    const mode = Mode.Wizard
+    const mode = DisplayMode.Wizard
     const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const [template2] = useState(() => (props.yamlToDataTemplate ? Handlebars.compile(props.yamlToDataTemplate) : undefined))
 
     return (
         <StepHasInputsProvider>
             <StepValidationProvider>
-                <ModeContext.Provider value={mode}>
+                <DisplayModeContext.Provider value={mode}>
                     <DataContext.Provider value={{ update }}>
                         <ItemContext.Provider value={data}>
                             <ShowValidationProvider>
@@ -87,7 +87,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                 <PageSection
                                                     variant="light"
                                                     style={{ height: '100%' }}
-                                                    type={mode === Mode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
+                                                    type={mode === DisplayMode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
                                                     isWidthLimited
                                                 >
                                                     <ItemContext.Provider value={data}>
@@ -103,7 +103,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                             </ShowValidationProvider>
                         </ItemContext.Provider>
                     </DataContext.Provider>
-                </ModeContext.Provider>
+                </DisplayModeContext.Provider>
             </StepValidationProvider>
         </StepHasInputsProvider>
     )
@@ -114,7 +114,7 @@ function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; on
     steps.push(
         <Step label="Review" id="review-step">
             <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
-                <ModeContext.Provider value={Mode.Details}>{props.children}</ModeContext.Provider>
+                <DisplayModeContext.Provider value={DisplayMode.Details}>{props.children}</DisplayModeContext.Provider>
             </DescriptionList>
         </Step>
     )

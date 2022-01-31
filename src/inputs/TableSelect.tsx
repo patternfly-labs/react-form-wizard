@@ -12,7 +12,7 @@ import {
 } from '@patternfly/react-core'
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
@@ -30,7 +30,7 @@ export type TableSelectProps<T> = InputCommonProps<string> & {
 }
 
 export function TableSelect<T = any>(props: TableSelectProps<T>) {
-    const { mode, value, setValue, hidden, id } = useInput(props)
+    const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     const [page, setPage] = useState(1)
     const onSetPage = useCallback((_: unknown, page) => setPage(page), [])
@@ -84,7 +84,7 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
 
     if (hidden) return <Fragment />
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (!selectedItems.length) return <Fragment />
         if (values.length > 5) {
             return (
