@@ -46,6 +46,7 @@ export interface WizardProps {
     yamlToDataTemplate?: string
     onSubmit: WizardSubmit
     onCancel: WizardCancel
+    hasButtons?: boolean
 }
 
 export type WizardSubmit = (data: object) => Promise<void>
@@ -54,7 +55,7 @@ export type WizardCancel = () => void
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
     const [data, setData] = useState(props.defaultData ?? {})
     const update = useCallback((newData) => setData((data) => JSON.parse(JSON.stringify(newData ?? data))), [])
-    const [drawerExpanded, setDrawerExpanded] = useState<boolean>(props.showYaml === undefined ? false : true)
+    const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false)
     useEffect(() => {
         if (props.showYaml !== undefined) {
             setDrawerExpanded(props.showYaml)
@@ -91,7 +92,11 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                     isWidthLimited
                                                 >
                                                     <ItemContext.Provider value={data}>
-                                                        <WizardInternal onSubmit={props.onSubmit} onCancel={props.onCancel}>
+                                                        <WizardInternal
+                                                            onSubmit={props.onSubmit}
+                                                            onCancel={props.onCancel}
+                                                            hasButtons={props.hasButtons}
+                                                        >
                                                             {props.children}
                                                         </WizardInternal>
                                                     </ItemContext.Provider>
@@ -109,15 +114,17 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     )
 }
 
-function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; onCancel: WizardCancel }) {
+function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; onCancel: WizardCancel; hasButtons?: boolean }) {
     const steps = Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
-    steps.push(
-        <Step label="Review" id="review-step">
-            <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
-                <DisplayModeContext.Provider value={DisplayMode.Details}>{props.children}</DisplayModeContext.Provider>
-            </DescriptionList>
-        </Step>
-    )
+    if (props.hasButtons !== false) {
+        steps.push(
+            <Step label="Review" id="review-step">
+                <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
+                    <DisplayModeContext.Provider value={DisplayMode.Details}>{props.children}</DisplayModeContext.Provider>
+                </DescriptionList>
+            </Step>
+        )
+    }
 
     const [activeIndex, setActiveIndex] = useState(0)
     const next = useCallback(() => setActiveIndex((activeIndex) => activeIndex + 1), [])
@@ -171,6 +178,7 @@ function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; on
                                 back={back}
                                 onSubmit={props.onSubmit}
                                 onCancel={props.onCancel}
+                                hasButtons={props.hasButtons}
                             />
                         </HasInputsProvider>
                     )
@@ -187,6 +195,7 @@ function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; on
                                     back={back}
                                     onSubmit={props.onSubmit}
                                     onCancel={props.onCancel}
+                                    hasButtons={props.hasButtons}
                                 />
                             </ValidationProvider>
                         </ShowValidationProvider>
@@ -205,6 +214,8 @@ export function WizardActiveStep(props: {
     back: () => void
     onSubmit: WizardSubmit
     onCancel: WizardCancel
+    template?: HandlebarsTemplateDelegate
+    hasButtons?: boolean
 }) {
     const hasValidationError = useHasValidationError()
     const showValidation = useShowValidation()
@@ -235,43 +246,49 @@ export function WizardActiveStep(props: {
                 </main>
             </div>
             {hasValidationError && showValidation && <Alert title="Please fix validation errors" isInline variant="danger" />}
-            <footer className="pf-c-wizard__footer">
-                {props.activeStep === props.steps[props.steps.length - 1] ? (
-                    <Button
-                        variant="primary"
-                        isDisabled={hasValidationError && showValidation}
-                        type="submit"
-                        onClick={() => {
-                            setShowValidation(true)
-                            void props.onSubmit(item)
-                        }}
-                    >
-                        Submit
+            {props.hasButtons !== false && (
+                <footer className="pf-c-wizard__footer">
+                    {props.activeStep === props.steps[props.steps.length - 1] ? (
+                        <Button
+                            variant="primary"
+                            isDisabled={hasValidationError && showValidation}
+                            type="submit"
+                            onClick={() => {
+                                setShowValidation(true)
+                                if (props.template) {
+                                    void props.onSubmit(YamlToObject(props.template(item)))
+                                } else {
+                                    void props.onSubmit(item)
+                                }
+                            }}
+                        >
+                            Submit
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="primary"
+                            isDisabled={hasValidationError && showValidation}
+                            type="submit"
+                            onClick={() => {
+                                setShowValidation(true)
+                                if (!hasValidationError) {
+                                    props.next()
+                                }
+                            }}
+                        >
+                            Next
+                        </Button>
+                    )}
+                    <Button variant="secondary" onClick={props.back} isDisabled={props.activeStep === props.steps?.[0]}>
+                        Back
                     </Button>
-                ) : (
-                    <Button
-                        variant="primary"
-                        isDisabled={hasValidationError && showValidation}
-                        type="submit"
-                        onClick={() => {
-                            setShowValidation(true)
-                            if (!hasValidationError) {
-                                props.next()
-                            }
-                        }}
-                    >
-                        Next
-                    </Button>
-                )}
-                <Button variant="secondary" onClick={props.back} isDisabled={props.activeStep === props.steps?.[0]}>
-                    Back
-                </Button>
-                <div className="pf-c-wizard__footer-cancel">
-                    <Button variant="link" onClick={props.onCancel}>
-                        Cancel
-                    </Button>
-                </div>
-            </footer>
+                    <div className="pf-c-wizard__footer-cancel">
+                        <Button variant="link" onClick={props.onCancel}>
+                            Cancel
+                        </Button>
+                    </div>
+                </footer>
+            )}
         </div>
     )
 }

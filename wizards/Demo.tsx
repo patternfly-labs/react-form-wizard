@@ -43,6 +43,7 @@ import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { CredentialsExample } from './Credentials/CredentialsExample'
+import { HomeWizard } from './Home/HomeWizard'
 import { InputsWizard } from './Inputs/InputsWizard'
 import { PlacementExample } from './Placement/PlacementExample'
 import { PolicyExample } from './Policy/PolicyExample'
@@ -193,41 +194,13 @@ export function DemoRouter(): JSX.Element {
         case RouteE.Inputs:
             return <InputsWizard />
         case RouteE.Wizards:
-            return <WizardsHome />
+            return <ExampleWizards />
         default:
-            return <DemoHome />
+            return <HomeWizard />
     }
 }
 
-function DemoHome() {
-    return (
-        <Page
-            additionalGroupedContent={
-                <PageSection variant="light">
-                    <Stack hasGutter>
-                        <Stack>
-                            <Title headingLevel="h2">Welcome to the React Form Wizard by PatternFly Labs</Title>
-                            <Text>A framework for building wizards using PatternFly.</Text>
-                        </Stack>
-                    </Stack>
-                </PageSection>
-            }
-            groupProps={{ sticky: 'top' }}
-        >
-            <PageSection isWidthLimited variant="light">
-                <Stack hasGutter>
-                    <Stack>
-                        <div>
-                            Get started by viewing the <Link to={RouteE.Wizards}>example wizards</Link>.
-                        </div>
-                    </Stack>
-                </Stack>
-            </PageSection>
-        </Page>
-    )
-}
-
-function WizardsHome() {
+function ExampleWizards() {
     const history = useHistory()
     const [labelFilter, setLabelFilter] = useState<string[]>([])
     const [qualityFilter, setQualityFilter] = useState<string[]>([])
@@ -477,7 +450,7 @@ function DemoSidebar() {
                             <Link to={RouteE.Inputs}>Inputs</Link>
                         </NavItem>
                         <NavItem isActive={location.search === RouteE.Wizards}>
-                            <Link to={RouteE.Wizards}>Wizards</Link>
+                            <Link to={RouteE.Wizards}>Example Wizards</Link>
                         </NavItem>
                         {/* <NavExpandable title="Wizards" isExpanded={true}>
                             {wizards.map((wizard, index) => (

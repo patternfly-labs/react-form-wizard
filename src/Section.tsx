@@ -1,9 +1,9 @@
 import { DescriptionList, Divider, Split, SplitItem, Stack, Title } from '@patternfly/react-core'
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
-import { Fragment, ReactNode, useState } from 'react'
+import { Fragment, ReactNode, useEffect, useState } from 'react'
 import { LabelHelp } from './components/LabelHelp'
 import { DisplayMode, useDisplayMode } from './contexts/DisplayModeContext'
-import { HasInputsContext, HasInputsProvider } from './contexts/HasInputsProvider'
+import { HasInputsContext, HasInputsProvider, useSetHasInputs } from './contexts/HasInputsProvider'
 import { HasValueContext, HasValueProvider } from './contexts/HasValueProvider'
 import { useShowValidation } from './contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidationProvider'
@@ -33,6 +33,11 @@ function SectionInternal(props: SectionProps) {
     const showValidation = useShowValidation()
     const [expanded, setExpanded] = useState(props.defaultExpanded === undefined ? true : props.defaultExpanded)
     const hidden = useInputHidden(props)
+
+    const setHasInputs = useSetHasInputs()
+    useEffect(() => {
+        if (props.autohide === false) setHasInputs()
+    }, [setHasInputs, props.autohide])
 
     if (hidden) return <Fragment />
 
