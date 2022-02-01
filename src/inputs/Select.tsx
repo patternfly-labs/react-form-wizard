@@ -90,7 +90,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     const [open, setOpen] = useState(false)
 
     // The drop down items with icons and descriptions - optionally grouped
-    let selectOptions: ({
+    const selectOptions: ({
         id: string
         icon?: ReactNode
         label: string
