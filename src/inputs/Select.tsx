@@ -90,7 +90,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     const [open, setOpen] = useState(false)
 
     // The drop down items with icons and descriptions - optionally grouped
-    const selectOptions: ({
+    let selectOptions: ({
         id: string
         icon?: ReactNode
         label: string
@@ -257,6 +257,18 @@ function SelectBase<T = any>(props: SelectProps<T>) {
         return <TextDetail id={id} path={props.path} label={props.label} />
     }
 
+    const onCreateOption = (newValue: string) => {
+        const compareTo = (compareTo: any) => compareTo === keyedValue
+        selectOptions.push({
+            id: newValue,
+            label: newValue,
+            value: newValue,
+            keyedValue: newValue,
+            compareTo,
+            toString: () => newValue.toString(),
+        })
+    }
+
     return (
         <div id={id}>
             <InputLabel {...props}>
@@ -268,6 +280,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     onSelect={onSelect}
                     onClear={props.required ? undefined : onClear}
                     isCreatable={isCreatable}
+                    onCreateOption={onCreateOption}
                     validated={validated}
                     isGrouped={isGrouped}
                     hasInlineFilter

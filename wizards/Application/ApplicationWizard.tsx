@@ -45,8 +45,7 @@ export function ApplicationWizard(props: {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     placements: string[]
-    gitBranches: string[]
-    gitChannels: { name: string | undefined; namespace: string | undefined; pathname: string }[]
+    subscriptionGitChannels: { name: string | undefined; namespace: string | undefined; pathname: string }[]
     timeZones: string[]
 }) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
@@ -133,7 +132,7 @@ export function ApplicationWizard(props: {
                                 label="URL"
                                 placeholder="Enter or select a Git URL"
                                 labelHelp="The URL path for the Git repository."
-                                options={props.gitChannels.map((gitChannel) => ({
+                                options={props.subscriptionGitChannels.map((gitChannel) => ({
                                     label: gitChannel.pathname,
                                     value: `${gitChannel.namespace}/${gitChannel.name}`,
                                 }))}
@@ -156,7 +155,7 @@ export function ApplicationWizard(props: {
                                 label="Branch"
                                 placeholder="Enter or select a branch"
                                 labelHelp="The branch of the Git repository."
-                                options={props.gitBranches}
+                                options={['branch-1']}
                                 required
                             />
                             <Select
