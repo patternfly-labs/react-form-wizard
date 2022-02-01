@@ -43,6 +43,7 @@ import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { CredentialsExample } from './Credentials/CredentialsExample'
+import { HomeWizard } from './Home/HomeWizard'
 import { InputsWizard } from './Inputs/InputsWizard'
 import { PlacementExample } from './Placement/PlacementExample'
 import { PolicyExample } from './Policy/PolicyExample'
@@ -88,7 +89,7 @@ const wizards: IWizard[] = [
         shortName: 'Ansible',
         name: 'Ansible automation',
         route: RouteE.Ansible,
-        description: 'Advanced Cluster Management uses ansible to run ansible jobs during cluster provisioning and upgrade.',
+        description: 'Multi-Cluster Engine uses ansible to run ansible jobs during cluster provisioning and upgrade.',
         labels: ['MCE'],
         state: StateE.beta,
     },
@@ -105,13 +106,16 @@ const wizards: IWizard[] = [
         name: 'Cluster',
         route: RouteE.Cluster,
         state: StateE.prototype,
+        description:
+            'Multi-Cluster Engine creates clusters on cloud providers. This is an early prototype of a possible cluster wizard flow.',
+        labels: ['MCE'],
     },
     {
         shortName: 'Credentials',
         name: 'Credentials',
         route: RouteE.Credentials,
         description:
-            'Advanced Cluster Management uses credentials to provision clusters on cloud providers. Credentials are also used for integrations such as automation using Ansible.',
+            'Multi-Cluster Engine uses credentials to provision clusters on cloud providers. Credentials are also used for integrations such as automation using Ansible.',
         labels: ['MCE'],
         state: StateE.alpha,
     },
@@ -119,6 +123,8 @@ const wizards: IWizard[] = [
         shortName: 'Placement',
         name: 'Placement',
         route: RouteE.Placement,
+        description:
+            'Advanced Cluster Management has placement custom resources to control the placement of various resources on managed clusters. This is an early prototype of common wizard functionality for handling placement.',
         labels: ['ACM'],
         state: StateE.prototype,
     },
@@ -135,6 +141,7 @@ const wizards: IWizard[] = [
         shortName: 'Policy Set',
         name: 'Policy Set',
         route: RouteE.PolicySet,
+        description: 'Advanced Cluster Management groups policies in policy sets.',
         labels: ['ACM'],
         state: StateE.prototype,
     },
@@ -187,41 +194,13 @@ export function DemoRouter(): JSX.Element {
         case RouteE.Inputs:
             return <InputsWizard />
         case RouteE.Wizards:
-            return <WizardsHome />
+            return <ExampleWizards />
         default:
-            return <DemoHome />
+            return <HomeWizard />
     }
 }
 
-function DemoHome() {
-    return (
-        <Page
-            additionalGroupedContent={
-                <PageSection variant="light">
-                    <Stack hasGutter>
-                        <Stack>
-                            <Title headingLevel="h2">Welcome to the React Form Wizard by PatternFly Labs</Title>
-                            <Text>A framework for building wizards using PatternFly.</Text>
-                        </Stack>
-                    </Stack>
-                </PageSection>
-            }
-            groupProps={{ sticky: 'top' }}
-        >
-            <PageSection isWidthLimited variant="light">
-                <Stack hasGutter>
-                    <Stack>
-                        <div>
-                            Get started by viewing the <Link to={RouteE.Wizards}>example wizards</Link>.
-                        </div>
-                    </Stack>
-                </Stack>
-            </PageSection>
-        </Page>
-    )
-}
-
-function WizardsHome() {
+function ExampleWizards() {
     const history = useHistory()
     const [labelFilter, setLabelFilter] = useState<string[]>([])
     const [qualityFilter, setQualityFilter] = useState<string[]>([])
@@ -374,8 +353,8 @@ function WizardsHome() {
                                                                     border: '1px solid var(--pf-global--palette--gold-200)',
                                                                     backgroundColor: 'var(--pf-global--palette--gold-50)',
                                                                     color: 'var(--pf-global--palette--gold-600)',
-                                                                    paddingLeft: 6,
-                                                                    paddingRight: 6,
+                                                                    paddingLeft: 4,
+                                                                    paddingRight: 4,
                                                                     fontSize: 'small',
                                                                     borderRadius: 4,
                                                                 }}
@@ -471,7 +450,7 @@ function DemoSidebar() {
                             <Link to={RouteE.Inputs}>Inputs</Link>
                         </NavItem>
                         <NavItem isActive={location.search === RouteE.Wizards}>
-                            <Link to={RouteE.Wizards}>Wizards</Link>
+                            <Link to={RouteE.Wizards}>Example Wizards</Link>
                         </NavItem>
                         {/* <NavExpandable title="Wizards" isExpanded={true}>
                             {wizards.map((wizard, index) => (

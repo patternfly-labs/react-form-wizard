@@ -3,18 +3,18 @@ import { CheckIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode } from 'react'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
 export type CheckboxProps = InputCommonProps & { children?: ReactNode; title?: string }
 
 export function Checkbox(props: CheckboxProps) {
-    const { mode, value, setValue, hidden, id } = useInput(props)
+    const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     if (hidden) return <Fragment />
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
         return (
             <Fragment>

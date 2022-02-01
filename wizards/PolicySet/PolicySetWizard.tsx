@@ -1,17 +1,22 @@
+import { Fragment, useMemo } from 'react'
 import { ItemSelector, Section, Select, Step, TableSelect, TextArea, TextInput, WizardCancel, WizardPage, WizardSubmit } from '../../src'
+import { useItem } from '../../src/contexts/ItemContext'
 import { PlacementStep } from '../Placement/PlacementWizard'
 
 interface IResource {
+    kind: string
     metadata: { name: string; namespace: string }
 }
 
-export function PolicySetWizard(props: {
+export interface PolicySetWizardProps {
     namespaces: string[]
     policies: IResource[]
     clusterSets: IResource[]
     onSubmit: WizardSubmit
     onCancel: WizardCancel
-}) {
+}
+
+export function PolicySetWizard(props: PolicySetWizardProps) {
     return (
         <WizardPage
             title="Create policy set"
@@ -26,6 +31,20 @@ export function PolicySetWizard(props: {
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
         >
+            <PolicySetWizardSteps {...props} />
+        </WizardPage>
+    )
+}
+
+export function PolicySetWizardSteps(props: PolicySetWizardProps) {
+    const resources = useItem() as IResource[]
+    const namespacedPolicies = useMemo(() => {
+        const policySet = resources.find((resource: IResource) => resource.kind === 'PolicySet')
+        if (!policySet) return []
+        return props.policies.filter((policy) => policy.metadata.namespace === policySet.metadata.namespace)
+    }, [props.policies, resources])
+    return (
+        <Fragment>
             <Step label="Details" id="details-step">
                 <Section label="Details">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
@@ -37,14 +56,14 @@ export function PolicySetWizard(props: {
             </Step>
 
             <Step label="Policies" id="policies-step">
-                <Section label="Policies">
+                <Section label="Policies" description="Select the policies you want to add to this set">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
                         <TableSelect
                             id="policies"
                             path="spec.policies"
-                            label="Policies"
+                            label=""
                             columns={[{ name: 'Name', cellFn: (policy: IResource) => policy.metadata.name }]}
-                            items={props.policies}
+                            items={namespacedPolicies}
                             itemToValue={(policy: IResource) => policy.metadata.name}
                             valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata.name}
                         />
@@ -55,6 +74,6 @@ export function PolicySetWizard(props: {
             <Step label="Placement" id="placement-step">
                 <PlacementStep namespaces={props.namespaces} clusterSets={props.clusterSets} />
             </Step>
-        </WizardPage>
+        </Fragment>
     )
 }

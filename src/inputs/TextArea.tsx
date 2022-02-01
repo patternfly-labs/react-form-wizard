@@ -6,7 +6,7 @@ import { TextDetail } from '..'
 import { ClearInputButton } from '../components/ClearInputButton'
 import { PasteInputButton } from '../components/PasteInputButton'
 import { ShowSecretsButton } from '../components/ShowSecretsButton'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
@@ -17,13 +17,13 @@ export type TextAreaProps = InputCommonProps<string> & {
 }
 
 export function TextArea(props: TextAreaProps) {
-    const { mode, value, setValue, validated, hidden, id } = useInput(props)
+    const { displayMode: mode, value, setValue, validated, hidden, id } = useInput(props)
 
     const [showSecrets, setShowSecrets] = useState(true)
 
     if (hidden) return <Fragment />
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
         return <TextDetail id={id} path={props.path} label={props.label} />
     }

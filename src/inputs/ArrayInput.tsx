@@ -19,7 +19,7 @@ import { TextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { ShowValidationContext } from '../contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from '../contexts/ValidationProvider'
 import './ArrayInput.css'
@@ -49,7 +49,7 @@ export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
 }
 
 export function ArrayInput(props: ArrayInputProps) {
-    const { mode, value, setValue, hidden, id } = useInput(props as InputCommonProps)
+    const { displayMode: mode, value, setValue, hidden, id } = useInput(props as InputCommonProps)
 
     const path = props.path
 
@@ -105,7 +105,7 @@ export function ArrayInput(props: ArrayInputProps) {
 
     if (hidden) return <Fragment />
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (values.length === 0) {
             return <Fragment />
         }

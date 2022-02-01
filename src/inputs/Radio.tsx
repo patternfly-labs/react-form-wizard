@@ -1,7 +1,7 @@
 import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Radio as PfRadio, Text } from '@patternfly/react-core'
 import { Children, createContext, Fragment, isValidElement, ReactElement, ReactNode, useContext } from 'react'
 import { Indented } from '../components/Indented'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
@@ -18,7 +18,7 @@ export const RadioGroupContext = createContext<IRadioGroupContextState>({})
 type RadioGroupProps = InputCommonProps & { children?: ReactNode }
 
 export function RadioGroup(props: RadioGroupProps) {
-    const { mode, value, setValue, hidden, id } = useInput(props)
+    const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     const state: IRadioGroupContextState = {
         groupID: id,
@@ -30,7 +30,7 @@ export function RadioGroup(props: RadioGroupProps) {
 
     if (hidden) return <Fragment />
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (!state.value) return <Fragment />
 
         let selectedChild: ReactElement | undefined

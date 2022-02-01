@@ -6,7 +6,7 @@ import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
-import { Mode, useMode } from '../contexts/ModeContext'
+import { DisplayMode, useDisplayMode } from '../contexts/DisplayModeContext'
 import { useID } from './Input'
 
 export function TimeRange(props: {
@@ -29,7 +29,7 @@ export function TimeRange(props: {
     const path = props.path ?? id
 
     const { update } = useData()
-    const mode = useMode()
+    const mode = useDisplayMode()
     const item = useContext(ItemContext)
 
     const value = get(item, path)
@@ -46,7 +46,7 @@ export function TimeRange(props: {
 
     if (props.hidden) return <Fragment />
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
         return (
             <Split hasGutter>

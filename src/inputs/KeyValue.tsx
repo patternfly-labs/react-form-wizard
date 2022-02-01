@@ -1,7 +1,7 @@
 import { Button, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Divider, TextInput } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment, useState } from 'react'
-import { Mode } from '../contexts/ModeContext'
+import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 
 type KeyValueProps = InputCommonProps & { placeholder?: string }
@@ -15,7 +15,7 @@ export function KeyValue(
     // helperText?: string
     // required?: boolean
 ) {
-    const { mode, value, setValue, id } = useInput(props)
+    const { displayMode: mode, value, setValue, id } = useInput(props)
     const [pairs] = useState<{ key: string; value: string }[]>(() => Object.keys(value).map((key) => ({ key, value: value[key] })))
     const onKeyChange = (index: number, newKey: string) => {
         pairs[index].key = newKey
@@ -57,7 +57,7 @@ export function KeyValue(
         )
     }
 
-    if (mode === Mode.Details) {
+    if (mode === DisplayMode.Details) {
         if (!pairs.length) return <Fragment />
         return (
             <DescriptionListGroup id={id}>
