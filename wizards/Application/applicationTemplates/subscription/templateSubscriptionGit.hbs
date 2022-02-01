@@ -66,7 +66,7 @@ metadata:
     {{/if}}
   labels:
     app: {{{@root.name}}}
-  name: {{{@root.name}}}-subscription-{{uniqueGroupID}}
+  name: {{{@root.name}}}-subscription-{{{@root.uniqueGroupID}}}
   namespace: {{{@root.namespace}}}
   {{#if selfLinks}}
   selfLink: {{{selfLinks.Subscription}}}
@@ -79,6 +79,7 @@ spec:
 {{#if channelNamespace}}
   channel: {{{channelNamespace}}}/{{{channelName}}}
 {{else}}
-  channel: {{{channelName}}}-ns/{{{channelName}}}
+  {{!-- channel: {{{channelName}}}-ns/{{{channelName}}} --}}
+  channel: '{{{subscription.git.url}}}'
 {{/if}}
 {{>templateSubscriptionPlacement}}
