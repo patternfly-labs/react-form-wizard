@@ -41,6 +41,8 @@ export function ApplicationWizard(props: {
     namespaces: string[]
     onCancel?: FormCancel
     placements: string[]
+    gitChannels: string[]
+    helmChannels: string[]
 }) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
@@ -139,7 +141,7 @@ export function ApplicationWizard(props: {
                                 label="URL"
                                 placeholder="Enter or select a Git URL"
                                 labelHelp="The URL path for the Git repository."
-                                options={urls}
+                                options={props.gitChannels}
                                 required
                             />
                             <FormWizardTextInput
@@ -220,7 +222,7 @@ export function ApplicationWizard(props: {
                                 label="URL"
                                 placeholder="Enter or select a Helm repository URL"
                                 labelHelp="The URL path for the Helm repository."
-                                options={urls}
+                                options={props.helmChannels}
                                 required
                             />
                             <FormWizardTextInput
@@ -354,7 +356,7 @@ export function ApplicationWizard(props: {
                             label="URL"
                             labelHelp="The URL path for the Git repository."
                             placeholder="Enter or select a Git URL"
-                            options={urlOptions}
+                            options={props.gitChannels}
                             required
                         />
                         <FormWizardSelect
@@ -362,7 +364,7 @@ export function ApplicationWizard(props: {
                             label="Revision"
                             labelHelp="Refer to a single commit"
                             placeholder="Enter or select a tracking revision"
-                            options={urlOptions}
+                            options={['Branches', 'Tags']}
                         />
                         <FormWizardSelect
                             id="git.path"
@@ -379,7 +381,7 @@ export function ApplicationWizard(props: {
                             label="URL"
                             labelHelp="The URL path for the Helm repository."
                             placeholder="Enter or select a Helm URL"
-                            options={urlOptions}
+                            options={props.helmChannels}
                             required
                         />
                         <FormWizardTextInput
