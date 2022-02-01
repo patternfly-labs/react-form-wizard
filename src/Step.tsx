@@ -8,7 +8,7 @@ import { useSetStepHasValidationError } from './contexts/StepValidationProvider'
 import { useHasValidationError } from './contexts/ValidationProvider'
 import { HiddenFn, useInputHidden } from './inputs/Input'
 
-export function Step(props: { label: string; children?: ReactNode; id: string; hidden?: HiddenFn }) {
+export function Step(props: { label: string; children?: ReactNode; id: string; hidden?: HiddenFn; autohide?: boolean }) {
     const hasValidationError = useHasValidationError()
     const setStepHasValidationError = useSetStepHasValidationError()
     const hasInputs = useHasInputs()
@@ -24,7 +24,7 @@ export function Step(props: { label: string; children?: ReactNode; id: string; h
     }, [hasInputs, displayMode, props.id, setStepHasInputs])
 
     const hidden = useInputHidden(props)
-    if (hidden) return <Fragment />
+    if (hidden && props.autohide !== false) return <Fragment />
 
     if (displayMode == DisplayMode.Steps) {
         const classname = 'pf-c-wizard__nav-link'

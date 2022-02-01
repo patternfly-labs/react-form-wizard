@@ -1,6 +1,7 @@
 import { Button, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Divider, TextInput } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment, useState } from 'react'
+import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 
@@ -77,7 +78,10 @@ export function KeyValue(
 
     return (
         <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 4 }}>
-            <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
+            <div>
+                <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
+                {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+            </div>
             {props.helperText && <div>{props.helperText}</div>}
             <div
                 style={{

@@ -52,6 +52,20 @@ export interface WizardProps {
 export type WizardSubmit = (data: object) => Promise<void>
 export type WizardCancel = () => void
 
+function getSteps(children: ReactNode | ReactNode[]) {
+    const childArray = Children.toArray(children)
+    let steps = childArray.filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
+    if (steps.length === 0) {
+        if (childArray.length === 1) {
+            const child = childArray[0]
+            if (isValidElement(child)) {
+                steps = getSteps(child.props.children)
+            }
+        }
+    }
+    return steps
+}
+
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
     const [data, setData] = useState(props.defaultData ?? {})
     const update = useCallback((newData) => setData((data) => JSON.parse(JSON.stringify(newData ?? data))), [])
@@ -115,7 +129,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
 }
 
 function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; onCancel: WizardCancel; hasButtons?: boolean }) {
-    const steps = Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
+    const steps = getSteps(props.children)
     if (props.hasButtons !== false) {
         steps.push(
             <Step label="Review" id="review-step">

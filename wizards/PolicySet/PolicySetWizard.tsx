@@ -1,7 +1,6 @@
-import { Fragment, useMemo } from 'react'
 import { ItemSelector, Section, Select, Step, TableSelect, TextArea, TextInput, WizardCancel, WizardPage, WizardSubmit } from '../../src'
-import { useItem } from '../../src/contexts/ItemContext'
-import { PlacementStep } from '../Placement/PlacementWizard'
+import { isValidKubernetesName } from '../components/validation'
+import { PlacementSection, Sync } from '../Placement/PlacementWizard'
 
 interface IResource {
     kind: string
@@ -31,30 +30,17 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
         >
-            <PolicySetWizardSteps {...props} />
-        </WizardPage>
-    )
-}
-
-export function PolicySetWizardSteps(props: PolicySetWizardProps) {
-    const resources = useItem() as IResource[]
-    const namespacedPolicies = useMemo(() => {
-        const policySet = resources.find((resource: IResource) => resource.kind === 'PolicySet')
-        if (!policySet) return []
-        return props.policies.filter((policy) => policy.metadata.namespace === policySet.metadata.namespace)
-    }, [props.policies, resources])
-    return (
-        <Fragment>
             <Step label="Details" id="details-step">
+                <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                <Sync kind="PolicySet" path="metadata.namespace" />
                 <Section label="Details">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
-                        <TextInput label="Name" path="metadata.name" required />
+                        <TextInput label="Name" path="metadata.name" id="name" required validation={isValidKubernetesName} />
                         <TextArea label="Description" path="spec.description" />
-                        <Select label="Namespace" path="metadata.namespace" required options={props.namespaces} />
+                        <Select label="Namespace" path="metadata.namespace" id="namespace" required options={props.namespaces} />
                     </ItemSelector>
                 </Section>
             </Step>
-
             <Step label="Policies" id="policies-step">
                 <Section label="Policies" description="Select the policies you want to add to this set">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
@@ -63,17 +49,20 @@ export function PolicySetWizardSteps(props: PolicySetWizardProps) {
                             path="spec.policies"
                             label=""
                             columns={[{ name: 'Name', cellFn: (policy: IResource) => policy.metadata.name }]}
-                            items={namespacedPolicies}
+                            items={props.policies}
                             itemToValue={(policy: IResource) => policy.metadata.name}
                             valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata.name}
                         />
                     </ItemSelector>
                 </Section>
             </Step>
-
             <Step label="Placement" id="placement-step">
-                <PlacementStep namespaces={props.namespaces} clusterSets={props.clusterSets} />
+                <PlacementSection
+                    clusterSets={props.clusterSets}
+                    bindingKind="PolicySet"
+                    bindingApiGroup="policy.open-cluster-management.io"
+                />
             </Step>
-        </Fragment>
+        </WizardPage>
     )
 }

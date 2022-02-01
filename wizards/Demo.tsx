@@ -357,6 +357,7 @@ function ExampleWizards() {
                                                                     paddingRight: 4,
                                                                     fontSize: 'small',
                                                                     borderRadius: 4,
+                                                                    opacity: 0.6,
                                                                 }}
                                                             >
                                                                 {wizard.state}

@@ -24,13 +24,13 @@ describe('policy wizard', () => {
     })
 
     it('placement', () => {
-        cy.get('#placement-rules').within(() => {
-            //TODO
-        })
+        // cy.get('#placement-rules').within(() => {
+        //     //TODO
+        // })
 
-        cy.get('#placement-bindings').within(() => {
-            //TODO
-        })
+        // cy.get('#placement-bindings').within(() => {
+        //     //TODO
+        // })
 
         cy.contains('Next').click()
     })

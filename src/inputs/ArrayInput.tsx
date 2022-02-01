@@ -17,9 +17,10 @@ import get from 'get-value'
 import { Children, Fragment, ReactNode, useCallback, useContext, useState } from 'react'
 import { TextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
+import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
-import { ItemContext } from '../contexts/ItemContext'
 import { DisplayMode } from '../contexts/DisplayModeContext'
+import { ItemContext } from '../contexts/ItemContext'
 import { ShowValidationContext } from '../contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from '../contexts/ValidationProvider'
 import './ArrayInput.css'
@@ -46,6 +47,7 @@ export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
     collapsedPlaceholder?: ReactNode
     sortable?: boolean
     newValue?: object
+    defaultCollapsed?: boolean
 }
 
 export function ArrayInput(props: ArrayInputProps) {
@@ -76,9 +78,12 @@ export function ArrayInput(props: ArrayInputProps) {
     )
 
     const removeItem = useCallback(
-        (index: number) => {
-            ;(value as Array<object>).splice(index, 1)
-            setValue(value)
+        (item: object) => {
+            const index = (value as Array<object>).indexOf(item)
+            if (index !== -1) {
+                ;(value as Array<object>).splice(index, 1)
+                setValue(value)
+            }
         },
         [setValue, value]
     )
@@ -138,7 +143,10 @@ export function ArrayInput(props: ArrayInputProps) {
         <div id={id} className="form-wizard-array-input">
             {props.label && (
                 <div style={{ paddingBottom: 8, paddingTop: 0 }}>
-                    <div className="pf-c-form__label pf-c-form__label-text">{props.label}</div>
+                    <div>
+                        <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
+                        {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                    </div>
                     {props.description && <Text component="small">{props.description}</Text>}
                 </div>
             )}
@@ -159,6 +167,7 @@ export function ArrayInput(props: ArrayInputProps) {
                             moveUp={moveUp}
                             moveDown={moveDown}
                             removeItem={removeItem}
+                            defaultExpanded={!props.defaultCollapsed}
                         >
                             {props.children}
                         </ArrayInputItem>
@@ -199,7 +208,7 @@ export function ArrayInputItem(props: {
     sortable?: boolean
     moveUp: (index: number) => void
     moveDown: (index: number) => void
-    removeItem: (index: number) => void
+    removeItem: (value: object) => void
 }) {
     const { id, value, index, defaultExpanded, moveUp, moveDown, removeItem } = props
     const [expanded, setExpanded] = useState(defaultExpanded !== undefined ? defaultExpanded : true)
@@ -269,7 +278,11 @@ export function ArrayInputItem(props: {
                                                             </Button>
                                                         </Fragment>
                                                     )}
-                                                    <Button variant="plain" aria-label="Remove item" onClick={() => removeItem(index)}>
+                                                    <Button
+                                                        variant="plain"
+                                                        aria-label="Remove item"
+                                                        onClick={() => removeItem(props.value)}
+                                                    >
                                                         <TrashIcon />
                                                     </Button>
                                                 </Fragment>

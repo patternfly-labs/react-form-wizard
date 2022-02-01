@@ -19,7 +19,8 @@ import {
     WizardSubmit,
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
-import { PlacementStep } from '../Placement/PlacementWizard'
+import { isValidKubernetesName } from '../components/validation'
+import { PlacementSection, Sync } from '../Placement/PlacementWizard'
 import { Specifications } from './templates'
 
 export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel; namespaces: string[] }) {
@@ -81,7 +82,7 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
                     apiVersion: 'policy.open-cluster-management.io/v1',
                     kind: 'Policy',
                     metadata: { name: '', namespace: '' },
-                    spec: { remediationAction: 'inform' },
+                    spec: { remediationAction: 'inform', disabled: false },
                 },
             ]}
             // sync={{
@@ -95,9 +96,11 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
             onCancel={props.onCancel}
         >
             <Step label="Details" id="details">
+                <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                <Sync kind="Policy" path="metadata.namespace" />
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <Section label="Details" prompt="Enter the details for the policy">
-                        <TextInput id="name" path="metadata.name" label="Name" placeholder="Enter name" required />
+                        <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
                         <Select
                             id="namespace"
                             path="metadata.namespace"
@@ -135,14 +138,14 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
                 </ItemSelector>
             </Step>
 
-            <Step label="Templates" id="templates">
+            <Step label="Policy templates" id="templates">
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <PolicyWizardTemplates />
                 </ItemSelector>
             </Step>
 
-            <Step label="Placement" id="placement">
-                <PlacementStep namespaces={[]} clusterSets={[]} />
+            <Step label="Cluster placement" id="placement">
+                <PlacementSection clusterSets={[]} bindingKind="Policy" bindingApiGroup="policy.open-cluster-management.io" />
             </Step>
 
             <Step label="Security groups" id="security-groups">
