@@ -4,7 +4,7 @@ import { PlacementSection, Sync } from '../Placement/PlacementWizard'
 
 interface IResource {
     kind: string
-    metadata: { name: string; namespace: string }
+    metadata: { name?: string; namespace?: string }
 }
 
 export interface PolicySetWizardProps {
