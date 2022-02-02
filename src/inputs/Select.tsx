@@ -34,6 +34,7 @@ type SelectCommonProps<T> = InputCommonProps<T> & {
      * Used in cases where the value is an object, but we need to track select by a string or number
      */
     keyPath?: string
+    isCreatable?: boolean
 }
 
 interface SingleSelectProps<T> extends SelectCommonProps<T> {
@@ -83,6 +84,8 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
 
     const keyPath = props.keyPath ?? props.path
+
+    const isCreatable = props.isCreatable
 
     const [open, setOpen] = useState(false)
 
@@ -177,7 +180,11 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             switch (props.variant) {
                 case 'single':
                 case 'single-grouped':
-                    set(item, path, selectOptionObject.value, { preservePaths: false })
+                    if (isCreatable && typeof selectOptionObject === 'string') {
+                        set(item, path, selectOptionObject, { preservePaths: false })
+                    } else {
+                        set(item, path, selectOptionObject.value, { preservePaths: false })
+                    }
                     setOpen(false)
                     break
                 case 'multi':
@@ -195,7 +202,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             }
             update()
         },
-        [item, props, update, path, value]
+        [item, props, update, path, value, isCreatable]
     )
 
     const isGrouped = useMemo(() => {
@@ -250,6 +257,18 @@ function SelectBase<T = any>(props: SelectProps<T>) {
         return <TextDetail id={id} path={props.path} label={props.label} />
     }
 
+    const onCreateOption = (newValue: string) => {
+        const compareTo = (compareTo: any) => compareTo === keyedValue
+        selectOptions.push({
+            id: newValue,
+            label: newValue,
+            value: newValue,
+            keyedValue: newValue,
+            compareTo,
+            toString: () => newValue.toString(),
+        })
+    }
+
     return (
         <div id={id}>
             <InputLabel {...props}>
@@ -260,8 +279,8 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     selections={selections}
                     onSelect={onSelect}
                     onClear={props.required ? undefined : onClear}
-                    // isCreatable
-                    // onCreateOption
+                    isCreatable={isCreatable}
+                    onCreateOption={onCreateOption}
                     validated={validated}
                     isGrouped={isGrouped}
                     hasInlineFilter
