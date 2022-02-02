@@ -17,6 +17,7 @@ describe('policy wizard', () => {
     it('templates', () => {
         cy.get('#templates').within(() => {
             cy.contains('Add policy template').click()
+            cy.contains('Must have namespace').click()
             //TODO
         })
 
