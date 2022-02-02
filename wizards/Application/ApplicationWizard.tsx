@@ -7,6 +7,7 @@ import {
     Checkbox,
     Hidden,
     KeyValue,
+    Multiselect,
     Radio,
     RadioGroup,
     Section,
@@ -44,6 +45,8 @@ export function ApplicationWizard(props: {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     placements: string[]
+    subscriptionGitChannels: { name: string; namespace: string; pathname: string }[]
+    timeZones: string[]
 }) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
@@ -64,7 +67,7 @@ export function ApplicationWizard(props: {
         <WizardPage
             title="Create application"
             template={ApplicationHandlebars}
-            defaultData={{ curlyServer: '{{server}}', curlyName: '{{name}}' }}
+            defaultData={{ curlyServer: '{{server}}', curlyName: '{{name}}', uniqueGroupID: 1 }}
             onCancel={props.onCancel}
             onSubmit={props.onSubmit}
         >
@@ -98,6 +101,7 @@ export function ApplicationWizard(props: {
                         placeholder="Select the namespace"
                         helperText="The namespace on the hub cluster where the application resources will be created."
                         options={props.namespaces}
+                        isCreatable={true}
                         required
                     />
                 </Section>
@@ -108,7 +112,22 @@ export function ApplicationWizard(props: {
                     <ArrayInput
                         path="repositories"
                         placeholder="Add repository"
-                        collapsedContent={<TextDetail path="url" placeholder="Expand to enter the repository details" />}
+                        collapsedContent={
+                            <Fragment>
+                                <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
+                                    <GitAltIcon />
+                                    <TextDetail path="subscription.git.url" placeholder="Expand to enter the repository details" />
+                                </Hidden>
+                                <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionHelm'}>
+                                    <HelmIcon />
+                                    <TextDetail path="subscription.helm.url" placeholder="Expand to enter the repository details" />
+                                </Hidden>
+                                <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionObjectstorage'}>
+                                    <ObjectStore />
+                                    <TextDetail path="subscription.obj.url" placeholder="Expand to enter the repository details" />
+                                </Hidden>
+                            </Fragment>
+                        }
                     >
                         <Tiles path="repositoryType" label="Repository type">
                             <Tile id="git" value="SubscriptionGit" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
@@ -128,7 +147,10 @@ export function ApplicationWizard(props: {
                                 label="URL"
                                 placeholder="Enter or select a Git URL"
                                 labelHelp="The URL path for the Git repository."
-                                options={urls}
+                                options={props.subscriptionGitChannels.map((gitChannel) => ({
+                                    label: gitChannel.pathname,
+                                    value: `${gitChannel.namespace}/${gitChannel.name}`,
+                                }))}
                                 required
                             />
                             <TextInput
@@ -148,7 +170,7 @@ export function ApplicationWizard(props: {
                                 label="Branch"
                                 placeholder="Enter or select a branch"
                                 labelHelp="The branch of the Git repository."
-                                options={urls}
+                                options={['branch-1']}
                                 required
                             />
                             <Select
@@ -178,6 +200,7 @@ export function ApplicationWizard(props: {
                                 label="Reconcile option"
                                 labelHelp="With the Merge option, new fields are added and existing fields are updated in the resource. Choose to merge if resources are updated after the initial deployment. If you choose to replace, the existing resource is replaced with the Git source."
                                 options={reconcileOptions}
+                                required
                             />
                             <Select
                                 path="subscription.git.reconcileRate"
@@ -195,12 +218,7 @@ export function ApplicationWizard(props: {
                                 label="Disable server certificate verification"
                                 labelHelp="Disable server TLS certificate verification for Git server connection."
                             />
-                            <Select
-                                path="subscription.git.ansibleSecretName"
-                                label="Ansible Automation Platform credential"
-                                labelHelp="If using Configure automation for prehook and posthook tasks, select the Ansible Automation Platform credential. Click the Add credentials tab to create a new secret."
-                                options={props.ansibleCredentials}
-                            />
+                            <AnsibleCredentials ansibleCredentials={props.ansibleCredentials} />
                         </Hidden>
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionHelm'}>
@@ -300,6 +318,7 @@ export function ApplicationWizard(props: {
 
                         <Hidden hidden={(data) => data.repositoryType === undefined}>
                             <Placement placement={props.placements} />
+                            <DeploymentWindow timeZone={props.timeZones} />
                         </Hidden>
                     </ArrayInput>
                 </Section>
@@ -456,12 +475,24 @@ export function Placement(props: { placement: string[] }) {
                     />
                 </Checkbox>
             </Section>
-            <DeploymentWindow />
         </Fragment>
     )
 }
 
-export function DeploymentWindow() {
+export function AnsibleCredentials(props: { ansibleCredentials: string[] }) {
+    return (
+        <Section label="Configure automation for prehook and posthook">
+            <Select
+                path="subscription.git.ansibleSecretName"
+                label="Ansible Automation Platform credential"
+                labelHelp="If using Configure automation for prehook and posthook tasks, select the Ansible Automation Platform credential. Click the Add credentials tab to create a new secret."
+                options={props.ansibleCredentials}
+            />
+        </Section>
+    )
+}
+
+export function DeploymentWindow(props: { timeZone: string[] }) {
     return (
         <Section
             hidden={(data) => {
@@ -480,30 +511,27 @@ export function DeploymentWindow() {
             >
                 <Radio id="always" label="Always active" value="always" />
                 <Radio id="active" label="Active within specified interval" value="active">
-                    <TimeWindow />
+                    <TimeWindow timeZone={props.timeZone} />
                 </Radio>
                 <Radio id="blocked" label="Blocked within specified interval" value="blocked">
-                    <TimeWindow />
+                    <TimeWindow timeZone={props.timeZone} />
                 </Radio>
             </RadioGroup>
         </Section>
     )
 }
 
-export function TimeWindow() {
+export function TimeWindow(props: { timeZone: string[] }) {
     return (
         <Stack hasGutter style={{ paddingBottom: 16 }}>
-            {/* TODO InputCheckBoxGroup */}
-            {/* <FormWizardSection title="Deployment window"> */}
-            <Checkbox path="timeWindow.sunday" label="Sunday" />
-            <Checkbox path="timeWindow.monday" label="Monday" />
-            <Checkbox path="timeWindow.tuesday" label="Tuesday" />
-            <Checkbox path="timeWindow.wednesday" label="Wednesday" />
-            <Checkbox path="timeWindow.thursday" label="Thursday" />
-            <Checkbox path="timeWindow.friday" label="Friday" />
-            <Checkbox path="timeWindow.saturday" label="Saturday" />
-            {/* </FormWizardSection> */}
-            <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={['EST']} required />
+            <Multiselect
+                label="Time window configuration"
+                placeholder="Select at least one day to create a time window."
+                path="timewindow.daysofweek"
+                required
+                options={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}
+            />
+            <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
             <ArrayInput
                 path="timeWindows"
                 placeholder="Add time range"
