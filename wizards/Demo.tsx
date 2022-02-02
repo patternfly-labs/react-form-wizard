@@ -119,15 +119,15 @@ const wizards: IWizard[] = [
         labels: ['MCE'],
         state: StateE.alpha,
     },
-    {
-        shortName: 'Placement',
-        name: 'Placement',
-        route: RouteE.Placement,
-        description:
-            'Advanced Cluster Management has placement custom resources to control the placement of various resources on managed clusters. This is an early prototype of common wizard functionality for handling placement.',
-        labels: ['ACM'],
-        state: StateE.prototype,
-    },
+    // {
+    //     shortName: 'Placement',
+    //     name: 'Placement',
+    //     route: RouteE.Placement,
+    //     description:
+    //         'Advanced Cluster Management has placement custom resources to control the placement of various resources on managed clusters. This is an early prototype of common wizard functionality for handling placement.',
+    //     labels: ['ACM'],
+    //     state: StateE.prototype,
+    // },
     {
         shortName: 'Policy',
         name: 'Policy',
@@ -135,7 +135,7 @@ const wizards: IWizard[] = [
         description:
             'Advanced Cluster Management uses policies to generate reports and validate a cluster compliance based on specified security standards, categories, and controls.',
         labels: ['ACM'],
-        state: StateE.prototype,
+        state: StateE.alpha,
     },
     {
         shortName: 'Policy Set',
@@ -143,7 +143,7 @@ const wizards: IWizard[] = [
         route: RouteE.PolicySet,
         description: 'Advanced Cluster Management groups policies in policy sets.',
         labels: ['ACM'],
-        state: StateE.prototype,
+        state: StateE.alpha,
     },
     {
         shortName: 'ROSA',
@@ -340,6 +340,7 @@ function ExampleWizards() {
                                             isSelectable
                                             isRounded
                                             isFlat
+                                            style={{ transition: 'box-shadow 400ms' }}
                                         >
                                             <CardTitle>
                                                 <Split>

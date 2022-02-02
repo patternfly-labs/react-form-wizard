@@ -12,7 +12,7 @@ export function PlacementExample() {
                 { kind: 'ClusterSet', metadata: { name: 'cluster-set-4', namespace: 'default' } },
             ]}
             onSubmit={() => Promise.resolve()}
-            onCancel={() => history.push('.')}
+            onCancel={() => history.push('./?route=wizards')}
         />
     )
 }

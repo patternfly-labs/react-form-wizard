@@ -11,7 +11,7 @@ export function AnsibleExample() {
             credentials={credentials}
             namespaces={namespaces}
             onSubmit={() => Promise.resolve()}
-            onCancel={() => history.push('.')}
+            onCancel={() => history.push('./?route=wizards')}
         />
     )
 }

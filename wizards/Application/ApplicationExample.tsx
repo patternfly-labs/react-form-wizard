@@ -15,7 +15,7 @@ export function ApplicationExample() {
             argoServers={servers}
             namespaces={namespaces}
             onSubmit={() => Promise.resolve()}
-            onCancel={() => history.push('.')}
+            onCancel={() => history.push('./?route=wizards')}
             placements={placements}
         />
     )

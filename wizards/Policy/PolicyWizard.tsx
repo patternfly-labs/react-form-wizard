@@ -194,6 +194,7 @@ export function PolicyWizardTemplates() {
                 path="spec.policy-templates"
                 label="Policy templates"
                 placeholder="Add policy template"
+                required
                 dropdownItems={Specifications.map((specification) => {
                     return {
                         label: specification.description,

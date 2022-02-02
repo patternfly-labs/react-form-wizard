@@ -25,7 +25,7 @@ export function ClusterForm() {
             template={YamlTemplate}
             breadcrumb={[{ label: 'Managed clusters', to: '.' }]}
             onSubmit={() => Promise.resolve()}
-            onCancel={() => history.push('.')}
+            onCancel={() => history.push('./?route=wizards')}
         >
             <Step label="Infrastructure provider" id="infrastructure-provider">
                 <Section label="Infrastructure provider" prompt="Select the infrastructure for the cluster">

@@ -20,7 +20,7 @@ import {
 export function InputsWizard() {
     const history = useHistory()
     return (
-        <WizardPage title="Inputs" onSubmit={() => Promise.resolve()} onCancel={() => history.push('.')}>
+        <WizardPage title="Inputs" onSubmit={() => Promise.resolve()} onCancel={() => history.push('./?route=wizards')}>
             <Step label="Text Input" id="text-input">
                 <Section label="Text Input">
                     <TextInput label="Text input" path="textInput.text" />
