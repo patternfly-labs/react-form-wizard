@@ -202,7 +202,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             }
             update()
         },
-        [item, props, update, path, value]
+        [item, props, update, path, value, isCreatable]
     )
 
     const isGrouped = useMemo(() => {

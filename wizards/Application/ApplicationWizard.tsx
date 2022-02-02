@@ -45,7 +45,7 @@ export function ApplicationWizard(props: {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     placements: string[]
-    subscriptionGitChannels: { name: string | undefined; namespace: string | undefined; pathname: string }[]
+    subscriptionGitChannels: { name: string; namespace: string; pathname: string }[]
     timeZones: string[]
 }) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
@@ -112,7 +112,22 @@ export function ApplicationWizard(props: {
                     <ArrayInput
                         path="repositories"
                         placeholder="Add repository"
-                        collapsedContent={<TextDetail path="url" placeholder="Expand to enter the repository details" />}
+                        collapsedContent={
+                            <Fragment>
+                                <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
+                                    <GitAltIcon />
+                                    <TextDetail path="subscription.git.url" placeholder="Expand to enter the repository details" />
+                                </Hidden>
+                                <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionHelm'}>
+                                    <HelmIcon />
+                                    <TextDetail path="subscription.helm.url" placeholder="Expand to enter the repository details" />
+                                </Hidden>
+                                <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionObjectstorage'}>
+                                    <ObjectStore />
+                                    <TextDetail path="subscription.obj.url" placeholder="Expand to enter the repository details" />
+                                </Hidden>
+                            </Fragment>
+                        }
                     >
                         <Tiles path="repositoryType" label="Repository type">
                             <Tile id="git" value="SubscriptionGit" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
