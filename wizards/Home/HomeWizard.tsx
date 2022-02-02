@@ -14,7 +14,13 @@ import { Indented } from '../../src/components/Indented'
 export function HomeWizard() {
     const history = useHistory()
     return (
-        <WizardPage title="Welcome" onSubmit={() => Promise.resolve()} onCancel={() => history.push('.')} yaml={false} hasButtons={false}>
+        <WizardPage
+            title="Welcome"
+            onSubmit={() => Promise.resolve(undefined)}
+            onCancel={() => history.push('.')}
+            yaml={false}
+            hasButtons={false}
+        >
             <Step label="Introduction" id="introduction">
                 <Section
                     label="Welcome to the React Form Wizard by PatternFly Labs"

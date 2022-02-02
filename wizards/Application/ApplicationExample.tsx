@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useHistory } from 'react-router'
+import { onCancel, onSubmit } from '../components/utils'
 import { ApplicationWizard } from './ApplicationWizard'
 
 export function ApplicationExample() {
@@ -14,8 +15,8 @@ export function ApplicationExample() {
             ansibleCredentials={ansibleCredentials}
             argoServers={servers}
             namespaces={namespaces}
-            onSubmit={() => Promise.resolve()}
-            onCancel={() => history.push('./?route=wizards')}
+            onSubmit={onSubmit}
+            onCancel={() => onCancel(history)}
             placements={placements}
         />
     )

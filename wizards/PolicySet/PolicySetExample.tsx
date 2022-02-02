@@ -1,4 +1,5 @@
 import { useHistory } from 'react-router-dom'
+import { onCancel, onSubmit } from '../components/utils'
 import { PolicySetWizard } from './PolicySetWizard'
 
 export function PolicySetExample() {
@@ -18,8 +19,8 @@ export function PolicySetExample() {
                 { kind: 'ClusterSet', metadata: { name: 'cluster-set-3', namespace: 'default' } },
                 { kind: 'ClusterSet', metadata: { name: 'cluster-set-4', namespace: 'default' } },
             ]}
-            onSubmit={() => Promise.resolve()}
-            onCancel={() => history.push('./?route=wizards')}
+            onSubmit={onSubmit}
+            onCancel={() => onCancel(history)}
         />
     )
 }

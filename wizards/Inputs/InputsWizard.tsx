@@ -16,11 +16,12 @@ import {
     Tiles,
     WizardPage,
 } from '../../src'
+import { onCancel, onSubmit } from '../components/utils'
 
 export function InputsWizard() {
     const history = useHistory()
     return (
-        <WizardPage title="Inputs" onSubmit={() => Promise.resolve()} onCancel={() => history.push('./?route=wizards')}>
+        <WizardPage title="Inputs" onSubmit={onSubmit} onCancel={() => onCancel(history)}>
             <Step label="Text Input" id="text-input">
                 <Section label="Text Input">
                     <TextInput label="Text input" path="textInput.text" />

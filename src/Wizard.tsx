@@ -49,7 +49,7 @@ export interface WizardProps {
     hasButtons?: boolean
 }
 
-export type WizardSubmit = (data: object) => Promise<void>
+export type WizardSubmit = (data: object) => Promise<string | undefined>
 export type WizardCancel = () => void
 
 function getSteps(children: ReactNode | ReactNode[]) {
@@ -231,6 +231,33 @@ export function WizardActiveStep(props: {
     template?: HandlebarsTemplateDelegate
     hasButtons?: boolean
 }) {
+    const [submitting, setSubmitting] = useState(false)
+    const [submitError, setSubmitError] = useState('')
+
+    const { onSubmit } = props
+    const onSubmit2 = useCallback(
+        async (data: object) => {
+            setSubmitError('')
+            setSubmitting(true)
+            try {
+                const result = await onSubmit(data)
+                if (result) setSubmitError(result)
+            } catch (err) {
+                if (err instanceof Error) {
+                    setSubmitError(err.message)
+                    return err.message
+                } else {
+                    setSubmitError('Unknown error')
+                    return 'Unknown error'
+                }
+            } finally {
+                setSubmitting(false)
+            }
+            return undefined
+        },
+        [onSubmit]
+    )
+
     const hasValidationError = useHasValidationError()
     const showValidation = useShowValidation()
     const setShowValidation = useSetShowValidation()
@@ -247,6 +274,7 @@ export function WizardActiveStep(props: {
                                 step={step}
                                 activeStep={props.activeStep}
                                 setActiveStep={props.setActiveStep}
+                                isDisabled={submitting}
                             />
                         ))}
                     </ol>
@@ -260,28 +288,30 @@ export function WizardActiveStep(props: {
                 </main>
             </div>
             {hasValidationError && showValidation && <Alert title="Please fix validation errors" isInline variant="danger" />}
+            {submitError && <Alert title={submitError} isInline variant="danger" />}
             {props.hasButtons !== false && (
                 <footer className="pf-c-wizard__footer">
                     {props.activeStep === props.steps[props.steps.length - 1] ? (
                         <Button
                             variant="primary"
-                            isDisabled={hasValidationError && showValidation}
+                            isDisabled={(hasValidationError && showValidation) || submitting}
                             type="submit"
                             onClick={() => {
                                 setShowValidation(true)
                                 if (props.template) {
-                                    void props.onSubmit(YamlToObject(props.template(item)))
+                                    void onSubmit2(YamlToObject(props.template(item)))
                                 } else {
-                                    void props.onSubmit(item)
+                                    void onSubmit2(item)
                                 }
                             }}
+                            isLoading={submitting}
                         >
-                            Submit
+                            {submitting ? 'Submitting' : 'Submit'}
                         </Button>
                     ) : (
                         <Button
                             variant="primary"
-                            isDisabled={hasValidationError && showValidation}
+                            isDisabled={(hasValidationError && showValidation) || submitting}
                             type="submit"
                             onClick={() => {
                                 setShowValidation(true)
@@ -293,7 +323,7 @@ export function WizardActiveStep(props: {
                             Next
                         </Button>
                     )}
-                    <Button variant="secondary" onClick={props.back} isDisabled={props.activeStep === props.steps?.[0]}>
+                    <Button variant="secondary" onClick={props.back} isDisabled={props.activeStep === props.steps?.[0] || submitting}>
                         Back
                     </Button>
                     <div className="pf-c-wizard__footer-cancel">
@@ -307,7 +337,12 @@ export function WizardActiveStep(props: {
     )
 }
 
-function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setActiveStep: (activeStep: ReactElement) => void }) {
+function StepNavItem(props: {
+    step: ReactElement
+    activeStep: ReactElement
+    setActiveStep: (activeStep: ReactElement) => void
+    isDisabled: boolean
+}) {
     let classname = 'pf-c-wizard__nav-link'
     if (props.activeStep === props.step) {
         classname += ' pf-m-current'
@@ -328,6 +363,7 @@ function StepNavItem(props: { step: ReactElement; activeStep: ReactElement; setA
                 onClick={() => {
                     props.setActiveStep(props.step)
                 }}
+                disabled={props.isDisabled}
             >
                 <Split>
                     <SplitItem isFilled>{props.step.props.label}</SplitItem>
