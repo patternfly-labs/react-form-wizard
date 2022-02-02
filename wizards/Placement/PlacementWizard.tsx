@@ -23,7 +23,7 @@ import { useItem } from '../../src/contexts/ItemContext'
 
 interface IResource {
     kind: string
-    metadata: { name: string; namespace: string }
+    metadata: { name?: string; namespace?: string }
 }
 
 export function PlacementWizard(props: { clusterSets: IResource[]; onSubmit: WizardSubmit; onCancel: WizardCancel }) {
@@ -39,7 +39,7 @@ export function PlacementWizard(props: { clusterSets: IResource[]; onSubmit: Wiz
 export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?: string; bindingApiGroup?: string }) {
     const resources = useItem() as IResource[]
     const { update } = useData()
-    const hasPlacements = resources?.find((resource) => resource.kind === 'Placement') !== undefined
+    const hasPlacement = resources?.find((resource) => resource.kind === 'Placement') !== undefined
     const hasPlacementRules = resources?.find((resource) => resource.kind === 'PlacementRule') !== undefined
     const hasPlacementBindings = resources?.find((resource) => resource.kind === 'PlacementBinding') !== undefined
     return (
@@ -47,7 +47,7 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
             <Sync kind="Placement" path="metadata.name" targetKind="PlacementBinding" targetPath="placementRef.name" />
             <Sync kind="Placement" path="metadata.name" targetKind="PlacementBinding" />
             <Section label="Cluster placement" autohide={false}>
-                <Hidden hidden={() => hasPlacements || hasPlacementRules || hasPlacementBindings}>
+                <Hidden hidden={() => hasPlacement || hasPlacementRules || hasPlacementBindings}>
                     <Tile
                         title="Deploy to clusters with specific labels"
                         onClick={() => {
@@ -132,24 +132,9 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
                 </Hidden>
 
                 <ItemSelector selectKey="kind" selectValue="Placement" empty={<Fragment />}>
-                    <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." />
-                    <Multiselect
-                        label="Cluster sets"
-                        path="spec.clusterSets"
-                        placeholder="All clusters from cluster sets bound to the namespace"
-                        options={props.clusterSets.map((clusterSet) => clusterSet.metadata.name)}
-                        labelHelp="The cluster sets from which the
-                        clusters are selected. If no cluster sets are selected, all
-                        clusters will be selected from the cluster sets
-                        bound to the namespace."
-                    />
-                    <KeyValue
-                        label="Cluster labels"
-                        path="spec.predicates.0.labelSelector.matchLabels"
-                        labelHelp="If no cluster labels are entered, all clusters will be selected from the cluster sets"
-                        placeholder="Add cluster label"
-                    />
+                    <Placement clusterSets={props.clusterSets} />
                 </ItemSelector>
+
                 <ArrayInput
                     id="placement-rules"
                     label="Placement rules"
@@ -218,6 +203,27 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
                     </ArrayInput>
                 </ArrayInput>
             </Section>
+        </Fragment>
+    )
+}
+
+export function Placement(props: { clusterSets: IResource[] }) {
+    return (
+        <Fragment>
+            <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." />
+            <Multiselect
+                label="Cluster sets"
+                path="spec.clusterSets"
+                placeholder="All clusters from cluster sets bound to the namespace"
+                options={props.clusterSets.map((clusterSet) => clusterSet.metadata.name ?? '')}
+                labelHelp="The cluster sets from which the clusters are selected. If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
+            />
+            <KeyValue
+                label="Cluster labels"
+                path="spec.predicates.0.labelSelector.matchLabels"
+                labelHelp="If no cluster labels are entered, all clusters will be selected from the cluster sets"
+                placeholder="Add cluster label"
+            />
         </Fragment>
     )
 }
