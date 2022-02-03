@@ -108,6 +108,10 @@ export function ArrayInput(props: ArrayInputProps) {
         [setValue, value]
     )
 
+    const onClickButton = () => {
+        addItem(props.newValue ?? {})
+    }
+
     if (hidden) return <Fragment />
 
     if (mode === DisplayMode.Details) {
@@ -177,7 +181,7 @@ export function ArrayInput(props: ArrayInputProps) {
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingTop: values.length ? 8 : 4 }}>
                 {/* <div style={{ flexGrow: 1 }} /> */}
                 {!props.dropdownItems ? (
-                    <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={() => addItem(props.newValue ?? {})}>
+                    <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onClickButton}>
                         <PlusIcon /> &nbsp; {props.placeholder}
                     </Button>
                 ) : (

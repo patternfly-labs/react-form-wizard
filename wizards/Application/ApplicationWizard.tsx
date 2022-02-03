@@ -102,6 +102,7 @@ export function ApplicationWizard(props: {
                         helperText="The namespace on the hub cluster where the application resources will be created."
                         options={props.namespaces}
                         isCreatable={true}
+                        hideResource={true}
                         required
                     />
                 </Section>

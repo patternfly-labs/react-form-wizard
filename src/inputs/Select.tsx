@@ -9,6 +9,7 @@ import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import './Select.css'
 import { InputLabel } from './InputLabel'
+import _ from 'lodash'
 
 export interface Option<T> {
     id?: string
@@ -35,6 +36,7 @@ type SelectCommonProps<T> = InputCommonProps<T> & {
      */
     keyPath?: string
     isCreatable?: boolean
+    hideResource?: boolean
 }
 
 interface SingleSelectProps<T> extends SelectCommonProps<T> {
@@ -86,7 +88,9 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     const keyPath = props.keyPath ?? props.path
 
     const isCreatable = props.isCreatable
+    const hideResource = props.hideResource
 
+    const hiddenResourcePath = hideResource ? `new${_.upperFirst(keyPath)}` : undefined
     const [open, setOpen] = useState(false)
 
     // The drop down items with icons and descriptions - optionally grouped
@@ -184,6 +188,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                         set(item, path, selectOptionObject, { preservePaths: false })
                     } else {
                         set(item, path, selectOptionObject.value, { preservePaths: false })
+                        set(item, hiddenResourcePath, false, { preservePaths: false })
                     }
                     setOpen(false)
                     break
@@ -259,6 +264,8 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     const onCreateOption = (newValue: string) => {
         const compareTo = (compareTo: any) => compareTo === keyedValue
+        set(item, hiddenResourcePath, true, { preservePaths: true })
+        set(item, path, newValue, { preservePaths: true })
         selectOptions.push({
             id: newValue,
             label: newValue,
@@ -267,6 +274,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             compareTo,
             toString: () => newValue.toString(),
         })
+        update()
     }
 
     return (
