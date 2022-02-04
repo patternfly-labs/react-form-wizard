@@ -88,8 +88,8 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     const isCreatable = props.isCreatable
     const hideResource = props.hideResource
-    const newId = keyPath.charAt(0).toUpperCase() + keyPath.slice(1)
-    const hiddenResourcePath = hideResource ? newId : undefined
+    const newId = 'new'.concat(keyPath.charAt(0).toUpperCase() + keyPath.slice(1))
+    const hiddenResourcePath: never | string = hideResource ? newId : ''
     const [open, setOpen] = useState(false)
 
     // The drop down items with icons and descriptions - optionally grouped
