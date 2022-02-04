@@ -45,7 +45,7 @@ export function ApplicationWizard(props: {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     placements: string[]
-    subscriptionGitChannels: { name: string | undefined; namespace: string | undefined; pathname: string | undefined }[]
+    subscriptionGitChannels: { name: string; namespace: string; pathname: string }[]
     timeZones: string[]
 }) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
