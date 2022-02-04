@@ -9,7 +9,6 @@ import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import './Select.css'
 import { InputLabel } from './InputLabel'
-import _ from 'lodash'
 
 export interface Option<T> {
     id?: string
@@ -89,8 +88,8 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     const isCreatable = props.isCreatable
     const hideResource = props.hideResource
-
-    const hiddenResourcePath = hideResource ? `new${_.upperFirst(keyPath)}` : undefined
+    const newId = keyPath.charAt(0).toUpperCase() + keyPath.slice(1)
+    const hiddenResourcePath = hideResource ? newId : undefined
     const [open, setOpen] = useState(false)
 
     // The drop down items with icons and descriptions - optionally grouped
@@ -207,7 +206,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             }
             update()
         },
-        [item, props, update, path, value, isCreatable]
+        [item, props, update, path, value, isCreatable, hiddenResourcePath]
     )
 
     const isGrouped = useMemo(() => {
