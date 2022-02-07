@@ -31,8 +31,9 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
             onCancel={props.onCancel}
         >
             <Step label="Details" id="details-step">
-                <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                <Sync kind="PolicySet" path="metadata.name" />
                 <Sync kind="PolicySet" path="metadata.namespace" />
+                <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
                 <Section label="Details">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
                         <TextInput label="Name" path="metadata.name" id="name" required validation={isValidKubernetesName} />

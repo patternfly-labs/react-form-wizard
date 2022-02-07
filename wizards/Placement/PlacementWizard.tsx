@@ -210,7 +210,7 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
 export function Placement(props: { clusterSets: IResource[] }) {
     return (
         <Fragment>
-            <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." />
+            {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
             <Multiselect
                 label="Cluster sets"
                 path="spec.clusterSets"
@@ -238,7 +238,7 @@ export function Sync(props: { kind: string; path: string; targetKind?: string; t
         for (const resource of resources) {
             if ((props.targetKind === undefined && resource.kind !== props.kind) || resource.kind === props.targetKind) {
                 const existingValue = get(resource, props.targetPath ?? props.path)
-                if (existingValue !== value) {
+                if (value && existingValue !== value) {
                     changed = true
                     set(resource, props.targetPath ?? props.path, value)
                 }

@@ -49,7 +49,7 @@ export interface WizardProps {
     hasButtons?: boolean
 }
 
-export type WizardSubmit = (data: object) => Promise<string | undefined>
+export type WizardSubmit = (data: unknown) => Promise<string | undefined>
 export type WizardCancel = () => void
 
 function getSteps(children: ReactNode | ReactNode[]) {
