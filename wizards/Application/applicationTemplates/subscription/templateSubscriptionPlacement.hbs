@@ -9,14 +9,14 @@
 {{#if selectedRuleName}}
       name: {{{selectedRuleName}}}
 {{else}}       
-      name: {{{@root.name}}}-placement-{{uniqueGroupID}}
+      name: {{{@root.name}}}-placement-{{{@root.uniqueGroupID}}}
 {{/if}} 
 {{#if deployment}}
 {{#if_ne deployment.window 'always'}}
   timewindow:
     windowtype: {{{deployment.window}}}
     location: {{{timeWindow.timezone}}}
-    daysofweek: [{{{timeWindow.days}}}]
+    daysofweek: [{{{timewindow.daysofweek}}}]
     hours:
   {{#if timeWindows}}
   {{#each timeWindows}}
@@ -34,7 +34,7 @@ kind: PlacementRule
 metadata:
   labels:
     app: {{{@root.name}}}
-  name: {{{@root.name}}}-placement-{{uniqueGroupID}}
+  name: {{{@root.name}}}-placement-{{{@root.uniqueGroupID}}}
   namespace: {{{@root.namespace}}}
   {{#if selfLinks}}
   selfLink: {{{selfLinks.PlacementRule}}}

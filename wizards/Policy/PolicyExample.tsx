@@ -1,18 +1,10 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useHistory } from 'react-router'
-import { RouteE } from '../Routes'
+import { onCancel, onSubmit } from '../components/utils'
 import { PolicyWizard } from './PolicyWizard'
 
 export function PolicyExample() {
     const history = useHistory()
-    const onSubmit = useCallback(
-        (data: object) => {
-            sessionStorage.setItem('results', JSON.stringify(data))
-            history.push(RouteE.Results)
-            return Promise.resolve()
-        },
-        [history]
-    )
     const namespaces = useMemo(() => ['default'], [])
-    return <PolicyWizard onSubmit={onSubmit} namespaces={namespaces} />
+    return <PolicyWizard onSubmit={onSubmit} onCancel={() => onCancel(history)} namespaces={namespaces} />
 }

@@ -4,9 +4,11 @@ export enum RouteE {
     Application = '?route=application',
     Cluster = '?route=cluster',
     Credentials = '?route=credentials',
+    Placement = '?route=placement',
     Policy = '?route=policy',
+    PolicySet = '?route=policy-set',
     ROSA = '?route=rosa',
     App = '?route=app',
-    Tutorial = '?route=tutorial',
-    Results = '?route=results',
+    Inputs = '?route=inputs',
+    Wizards = '?route=wizards',
 }

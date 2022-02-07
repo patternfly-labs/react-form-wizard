@@ -1,19 +1,11 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useHistory } from 'react-router'
-import { RouteE } from '../Routes'
+import { onCancel, onSubmit } from '../components/utils'
 import { AnsibleWizard } from './AnsibleWizard'
 
 export function AnsibleExample() {
     const history = useHistory()
-    const onSubmit = useCallback(
-        (data: object) => {
-            sessionStorage.setItem('results', JSON.stringify(data))
-            history.push(RouteE.Results)
-            return Promise.resolve()
-        },
-        [history]
-    )
-    const credentials = useMemo(() => ['my-install-ansible-creds', 'my-upgrade-ansible-creds'], [])
+    const credentials = useMemo(() => ['my-inst-creds', 'my-up-creds'], [])
     const namespaces = useMemo(() => ['default'], [])
-    return <AnsibleWizard onSubmit={onSubmit} credentials={credentials} namespaces={namespaces} />
+    return <AnsibleWizard credentials={credentials} namespaces={namespaces} onSubmit={onSubmit} onCancel={() => onCancel(history)} />
 }
