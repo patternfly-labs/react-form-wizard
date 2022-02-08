@@ -39,7 +39,6 @@ import HelmIcon from './logos/HelmIcon.svg'
 import ObjectStore from './logos/ObjectStore.svg'
 import SubscriptionIcon from './logos/SubscriptionIcon.svg'
 
-export function ApplicationWizard(props: {
 interface ApplicationWizardProps {
     addClusterSets?: string
     ansibleCredentials: string[]
