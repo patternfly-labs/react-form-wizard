@@ -70,8 +70,8 @@ function getSteps(children: ReactNode | ReactNode[]) {
 }
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
-    const [data, setData] = useState(props.defaultData ?? {})
-    const update = useCallback((newData) => setData((data) => JSON.parse(JSON.stringify(newData ?? data))), [])
+    const [data, setData] = useState(props.defaultData ? JSON.parse(JSON.stringify(props.defaultData)) : {})
+    const update = useCallback((newData) => setData((data: unknown) => JSON.parse(JSON.stringify(newData ?? data))), [])
     const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false)
     useEffect(() => {
         if (props.showYaml !== undefined) {
