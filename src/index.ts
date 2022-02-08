@@ -1,3 +1,4 @@
+export * from './contexts/EditMode'
 export * from './inputs/ArrayInput'
 export * from './inputs/Checkbox'
 export * from './inputs/Hidden'

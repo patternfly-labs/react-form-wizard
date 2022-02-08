@@ -55,6 +55,7 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
                                 apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
                                 kind: 'Placement',
                                 metadata: { name: '', namespace: '' },
+                                spec: {},
                             } as IResource)
                             if (props.bindingKind) {
                                 resources.push({
@@ -76,6 +77,7 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
                                 apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
                                 kind: 'Placement',
                                 metadata: { name, namespace: '' },
+                                spec: {},
                             } as IResource)
                             if (props.bindingKind) {
                                 resources.push({

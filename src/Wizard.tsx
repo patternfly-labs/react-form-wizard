@@ -17,9 +17,11 @@ import {
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import Handlebars, { HelperOptions } from 'handlebars'
 import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { EditMode } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { DataContext, useData } from './contexts/DataContext'
 import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
+import { EditModeContext } from './contexts/EditModeContext'
 import { HasInputsProvider } from './contexts/HasInputsProvider'
 import { ItemContext, useItem } from './contexts/ItemContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
@@ -47,9 +49,10 @@ export interface WizardProps {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     hasButtons?: boolean
+    editMode?: EditMode
 }
 
-export type WizardSubmit = (data: unknown) => Promise<string | undefined>
+export type WizardSubmit = (data: unknown) => Promise<void>
 export type WizardCancel = () => void
 
 function getSteps(children: ReactNode | ReactNode[]) {
@@ -75,56 +78,62 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
             setDrawerExpanded(props.showYaml)
         }
     }, [props.showYaml])
-    const mode = DisplayMode.Wizard
+    const displayMode = DisplayMode.Wizard
     const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const [template2] = useState(() => (props.yamlToDataTemplate ? Handlebars.compile(props.yamlToDataTemplate) : undefined))
 
     return (
-        <StepHasInputsProvider>
-            <StepValidationProvider>
-                <DisplayModeContext.Provider value={mode}>
-                    <DataContext.Provider value={{ update }}>
-                        <ItemContext.Provider value={data}>
-                            <ShowValidationProvider>
-                                <ValidationProvider>
-                                    <Drawer isExpanded={drawerExpanded} isInline>
-                                        <DrawerContent
-                                            panelContent={
-                                                <WizardPageDrawer
-                                                    data={data}
-                                                    template={template}
-                                                    template2={template2}
-                                                    templateString={props.template}
-                                                />
-                                            }
-                                        >
-                                            <DrawerContentBody>
-                                                <PageSection
-                                                    variant="light"
-                                                    style={{ height: '100%' }}
-                                                    type={mode === DisplayMode.Wizard ? PageSectionTypes.wizard : PageSectionTypes.default}
-                                                    isWidthLimited
-                                                >
-                                                    <ItemContext.Provider value={data}>
-                                                        <WizardInternal
-                                                            onSubmit={props.onSubmit}
-                                                            onCancel={props.onCancel}
-                                                            hasButtons={props.hasButtons}
-                                                        >
-                                                            {props.children}
-                                                        </WizardInternal>
-                                                    </ItemContext.Provider>
-                                                </PageSection>
-                                            </DrawerContentBody>
-                                        </DrawerContent>
-                                    </Drawer>
-                                </ValidationProvider>
-                            </ShowValidationProvider>
-                        </ItemContext.Provider>
-                    </DataContext.Provider>
-                </DisplayModeContext.Provider>
-            </StepValidationProvider>
-        </StepHasInputsProvider>
+        <EditModeContext.Provider value={props.editMode ?? EditMode.Create}>
+            <StepHasInputsProvider>
+                <StepValidationProvider>
+                    <DisplayModeContext.Provider value={displayMode}>
+                        <DataContext.Provider value={{ update }}>
+                            <ItemContext.Provider value={data}>
+                                <ShowValidationProvider>
+                                    <ValidationProvider>
+                                        <Drawer isExpanded={drawerExpanded} isInline>
+                                            <DrawerContent
+                                                panelContent={
+                                                    <WizardPageDrawer
+                                                        data={data}
+                                                        template={template}
+                                                        template2={template2}
+                                                        templateString={props.template}
+                                                    />
+                                                }
+                                            >
+                                                <DrawerContentBody>
+                                                    <PageSection
+                                                        variant="light"
+                                                        style={{ height: '100%' }}
+                                                        type={
+                                                            displayMode === DisplayMode.Wizard
+                                                                ? PageSectionTypes.wizard
+                                                                : PageSectionTypes.default
+                                                        }
+                                                        isWidthLimited
+                                                    >
+                                                        <ItemContext.Provider value={data}>
+                                                            <WizardInternal
+                                                                onSubmit={props.onSubmit}
+                                                                onCancel={props.onCancel}
+                                                                hasButtons={props.hasButtons}
+                                                            >
+                                                                {props.children}
+                                                            </WizardInternal>
+                                                        </ItemContext.Provider>
+                                                    </PageSection>
+                                                </DrawerContentBody>
+                                            </DrawerContent>
+                                        </Drawer>
+                                    </ValidationProvider>
+                                </ShowValidationProvider>
+                            </ItemContext.Provider>
+                        </DataContext.Provider>
+                    </DisplayModeContext.Provider>
+                </StepValidationProvider>
+            </StepHasInputsProvider>
+        </EditModeContext.Provider>
     )
 }
 
@@ -240,8 +249,7 @@ export function WizardActiveStep(props: {
             setSubmitError('')
             setSubmitting(true)
             try {
-                const result = await onSubmit(data)
-                if (result) setSubmitError(result)
+                await onSubmit(data)
             } catch (err) {
                 if (err instanceof Error) {
                     setSubmitError(err.message)

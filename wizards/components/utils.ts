@@ -1,6 +1,6 @@
 export async function onSubmit() {
-    await new Promise((resolve) => setTimeout(resolve, 5000))
-    return Promise.resolve('No backend connected')
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    return Promise.reject(new Error('No backend connected'))
 }
 
 export function onCancel(history: { push: (location: string) => void }) {

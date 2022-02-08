@@ -1,8 +1,10 @@
 import get from 'get-value'
 import { useCallback, useContext, useLayoutEffect } from 'react'
 import set from 'set-value'
+import { EditMode } from '..'
 import { useData } from '../contexts/DataContext'
 import { useDisplayMode } from '../contexts/DisplayModeContext'
+import { useEditMode } from '../contexts/EditModeContext'
 import { useSetHasInputs, useUpdateHasInputs } from '../contexts/HasInputsProvider'
 import { useSetHasValue } from '../contexts/HasValueProvider'
 import { ItemContext } from '../contexts/ItemContext'
@@ -25,6 +27,7 @@ export type InputCommonProps<ValueT = any> = {
     labelHelp?: string
     labelHelpTitle?: string
     helperText?: string
+    disabledInEditMode?: boolean
 }
 
 export function useID(props: { id?: string; path: string }) {
@@ -85,6 +88,7 @@ export function lowercaseFirst(label: string) {
 }
 
 export function useInput(props: InputCommonProps) {
+    const editMode = useEditMode()
     const displayMode = useDisplayMode()
     const [value, setValue] = useValue(props, '')
     const hidden = useInputHidden(props)
@@ -122,6 +126,13 @@ export function useInput(props: InputCommonProps) {
     //     if (!value) updateHasValue()
     // }, [updateHasValue, value])
 
+    let disabled = props.disabled
+    if (editMode === EditMode.Edit) {
+        if (props.disabledInEditMode) {
+            disabled = props.disabledInEditMode
+        }
+    }
+
     return {
         id,
         path,
@@ -131,5 +142,6 @@ export function useInput(props: InputCommonProps) {
         validated,
         error,
         hidden,
+        disabled,
     }
 }

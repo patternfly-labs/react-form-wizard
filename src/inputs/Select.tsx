@@ -1,4 +1,14 @@
-import { Chip, ChipGroup, Select as PfSelect, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core'
+import {
+    Chip,
+    ChipGroup,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Select as PfSelect,
+    SelectOption,
+    SelectOptionObject,
+    SelectVariant,
+} from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import set from 'set-value'
@@ -76,7 +86,7 @@ export function GroupedMultiselect<T>(props: Omit<GroupedMultiselectProps<T>, 'v
 type SelectProps<T> = SingleSelectProps<T> | MultiselectProps<T> | GroupedSingleSelectProps<T> | GroupedMultiselectProps<T>
 
 function SelectBase<T = any>(props: SelectProps<T>) {
-    const { displayMode: mode, value, validated, hidden, id, path } = useInput(props)
+    const { displayMode: mode, value, validated, hidden, id, path, disabled } = useInput(props)
 
     const { update } = useData()
 
@@ -260,12 +270,20 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
+        // return <TextDetail id={id} path={props.path} label={props.label} />
+        return (
+            <DescriptionListGroup>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription id={id}>{value}</DescriptionListDescription>
+            </DescriptionListGroup>
+        )
     }
 
     return (
         <div id={id}>
             <InputLabel {...props}>
                 <PfSelect
+                    isDisabled={disabled}
                     variant={variant}
                     isOpen={open}
                     onToggle={setOpen}

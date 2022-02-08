@@ -1,4 +1,16 @@
-import { ItemSelector, Section, Select, Step, TableSelect, TextArea, TextInput, WizardCancel, WizardPage, WizardSubmit } from '../../src'
+import {
+    EditMode,
+    ItemSelector,
+    Section,
+    Select,
+    Step,
+    TableSelect,
+    TextArea,
+    TextInput,
+    WizardCancel,
+    WizardPage,
+    WizardSubmit,
+} from '../../src'
 import { isValidKubernetesName } from '../components/validation'
 import { PlacementSection, Sync } from '../Placement/PlacementWizard'
 
@@ -11,24 +23,30 @@ export interface PolicySetWizardProps {
     namespaces: string[]
     policies: IResource[]
     clusterSets: IResource[]
+    title: string
+    editMode?: EditMode
     onSubmit: WizardSubmit
     onCancel: WizardCancel
+    resources?: IResource
 }
 
 export function PolicySetWizard(props: PolicySetWizardProps) {
     return (
         <WizardPage
-            title="Create policy set"
-            defaultData={[
-                {
-                    apiVersion: 'policy.open-cluster-management.io/v1',
-                    kind: 'PolicySet',
-                    metadata: { name: '', namespace: '' },
-                    spec: { description: '', policies: [] },
-                },
-            ]}
+            title={props.title}
+            defaultData={
+                props.resources ?? [
+                    {
+                        apiVersion: 'policy.open-cluster-management.io/v1',
+                        kind: 'PolicySet',
+                        metadata: { name: '', namespace: '' },
+                        spec: { description: '', policies: [] },
+                    },
+                ]
+            }
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
+            editMode={props.editMode}
         >
             <Step label="Details" id="details-step">
                 <Sync kind="PolicySet" path="metadata.name" />
@@ -36,9 +54,23 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                 <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
                 <Section label="Details">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
-                        <TextInput label="Name" path="metadata.name" id="name" required validation={isValidKubernetesName} />
+                        <TextInput
+                            label="Name"
+                            path="metadata.name"
+                            id="name"
+                            required
+                            validation={isValidKubernetesName}
+                            disabledInEditMode
+                        />
                         <TextArea label="Description" path="spec.description" />
-                        <Select label="Namespace" path="metadata.namespace" id="namespace" required options={props.namespaces} />
+                        <Select
+                            label="Namespace"
+                            path="metadata.namespace"
+                            id="namespace"
+                            required
+                            options={props.namespaces}
+                            disabledInEditMode
+                        />
                     </ItemSelector>
                 </Section>
             </Step>
