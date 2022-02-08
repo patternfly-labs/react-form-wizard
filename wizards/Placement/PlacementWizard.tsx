@@ -20,11 +20,7 @@ import {
 } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { useItem } from '../../src/contexts/ItemContext'
-
-interface IResource {
-    kind?: string
-    metadata?: { name?: string; namespace?: string }
-}
+import { IResource } from '../common/resource'
 
 export function PlacementWizard(props: { clusterSets: IResource[]; onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     return (

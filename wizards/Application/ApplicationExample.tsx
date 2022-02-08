@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useHistory } from 'react-router'
-import { onCancel, onSubmit } from '../components/utils'
+import { onCancel, onSubmit } from '../common/utils'
 import { ApplicationWizard } from './ApplicationWizard'
 
 export function ApplicationExample() {

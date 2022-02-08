@@ -1,6 +1,6 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
 import { Section, Select, Step, TextArea, TextInput, Tile, Tiles, WizardCancel, WizardPage, WizardSubmit } from '../../src'
-import { isValidKubernetesName } from '../components/validation'
+import { isValidKubernetesName } from '../common/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
 import GCPIcon from './icons/GCPIcon'

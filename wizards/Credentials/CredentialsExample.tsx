@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom'
-import { onCancel, onSubmit } from '../components/utils'
+import { onCancel, onSubmit } from '../common/utils'
 import { CredentialsWizard } from './CredentialsWizard'
 
 export function CredentialsExample() {

@@ -11,13 +11,9 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
-import { isValidKubernetesName } from '../components/validation'
+import { IResource } from '../common/resource'
+import { isValidKubernetesName } from '../common/validation'
 import { PlacementSection, Sync } from '../Placement/PlacementWizard'
-
-interface IResource {
-    kind?: string
-    metadata?: { name?: string; namespace?: string }
-}
 
 export interface PolicySetWizardProps {
     namespaces: string[]
@@ -27,7 +23,7 @@ export interface PolicySetWizardProps {
     editMode?: EditMode
     onSubmit: WizardSubmit
     onCancel: WizardCancel
-    resources?: IResource
+    resources?: IResource[]
 }
 
 export function PolicySetWizard(props: PolicySetWizardProps) {
