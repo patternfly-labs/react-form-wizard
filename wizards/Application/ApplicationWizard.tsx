@@ -1,7 +1,7 @@
 import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
-import { Fragment, ReactNode, useMemo } from 'react'
+import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
     ArrayInput,
     Checkbox,
@@ -22,6 +22,8 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
+import { useData } from '../../src/contexts/DataContext'
+import { useItem } from '../../src/contexts/ItemContext'
 import ApplicationHandlebars from './applicationTemplates/App.hbs'
 import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
 import ArgoTemplateGit from './applicationTemplates/argoApplicationSet/templateArgoGit.hbs'
@@ -37,6 +39,25 @@ import HelmIcon from './logos/HelmIcon.svg'
 import ObjectStore from './logos/ObjectStore.svg'
 import SubscriptionIcon from './logos/SubscriptionIcon.svg'
 
+export function ApplicationWizard(props: {
+interface ApplicationWizardProps {
+    addClusterSets?: string
+    ansibleCredentials: string[]
+    argoServers: string[]
+    namespaces: string[]
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
+    placements: string[]
+    channels: Channel[]
+    timeZones: string[]
+}
+
+interface IData {
+    namespace: string
+    newNamespace: boolean
+    channels: Record<string, boolean>
+}
+
 interface Channel {
     metadata: {
         name: string
@@ -49,17 +70,7 @@ interface Channel {
     }
 }
 
-export function ApplicationWizard(props: {
-    addClusterSets?: string
-    ansibleCredentials: string[]
-    argoServers: string[]
-    namespaces: string[]
-    onSubmit: WizardSubmit
-    onCancel: WizardCancel
-    placements: string[]
-    channels: Channel[]
-    timeZones: string[]
-}) {
+export function ApplicationWizard(props: ApplicationWizardProps) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
     Handlebars.registerPartial('templateSubscriptionGit', Handlebars.compile(SubscriptionGitHandlebars))
@@ -117,22 +128,9 @@ export function ApplicationWizard(props: {
                     </Tiles>
                 </Section>
             </Step>
-
             <Step id="details" label="Details" hidden={(item) => item.deployType !== 'Subscription'}>
-                <Section label="Details" prompt="Enter the details of the application">
-                    <TextInput path="name" label="Application name" required />
-                    <Select
-                        path="namespace"
-                        label="Namespace"
-                        placeholder="Select the namespace"
-                        helperText="The namespace on the hub cluster where the application resources will be created."
-                        options={props.namespaces}
-                        isCreatable={true}
-                        required
-                    />
-                </Section>
+                <DetailsSection namespaces={props.namespaces} />
             </Step>
-
             <Step id="repositories" label="Repositories" hidden={(item) => item.deployType !== 'Subscription'}>
                 <Section label="Repositories" prompt="Enter the application repositories">
                     <ArrayInput
@@ -349,7 +347,6 @@ export function ApplicationWizard(props: {
                     </ArrayInput>
                 </Section>
             </Step>
-
             <Step id="general" label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <Section label="General">
                     <TextInput path="appSetName" label="ApplicationSet name" placeholder="Enter the application set name" required />
@@ -435,7 +432,6 @@ export function ApplicationWizard(props: {
                     <TextInput path="remoteNamespace" label="Remote namespace" placeholder="Enter the destination namespace" required />
                 </Section>
             </Step>
-
             <Step id="sync-policy" label="Sync policy" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <Section
                     label="Sync policy"
@@ -465,7 +461,6 @@ export function ApplicationWizard(props: {
                     </Checkbox>
                 </Section>
             </Step>
-
             <Step id="placement" label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <Placement placement={props.placements} />
             </Step>
@@ -598,4 +593,41 @@ export function ExternalLinkButton(props: { id: string; href?: string; icon?: Re
 interface ITimeRangeVariableData {
     start: string
     end: string
+}
+
+function DetailsSection(props: { namespaces: string[] }) {
+    const [newNamespaces, setNewNamespaces] = useState<string[]>([])
+    const activeNamespaces = useMemo(() => [...props.namespaces, ...newNamespaces], [newNamespaces, props.namespaces])
+
+    const item = useItem() as IData
+    const data = useData()
+    useEffect(() => {
+        const namespace = item.namespace
+        if (!props.namespaces.includes(namespace)) {
+            if (!item.newNamespace) {
+                item.newNamespace = true
+                data.update()
+            }
+        } else {
+            if (item.newNamespace) {
+                item.newNamespace = false
+                data.update()
+            }
+        }
+    }, [item, data, props.namespaces])
+    return (
+        <Section label="Details" prompt="Enter the details of the application">
+            <TextInput path="name" label="Application name" required />
+            <Select
+                path="namespace"
+                label="Namespace"
+                placeholder="Select the namespace"
+                helperText="The namespace on the hub cluster where the application resources will be created."
+                options={activeNamespaces}
+                isCreatable={true}
+                onCreate={(namespaceName: string) => setNewNamespaces([...newNamespaces, namespaceName])}
+                required
+            />
+        </Section>
+    )
 }

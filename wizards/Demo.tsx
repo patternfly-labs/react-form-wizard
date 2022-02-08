@@ -143,7 +143,7 @@ const wizards: IWizard[] = [
         route: RouteE.PolicySet,
         description: 'Advanced Cluster Management groups policies in policy sets.',
         labels: ['ACM'],
-        state: StateE.alpha,
+        state: StateE.beta,
     },
     {
         shortName: 'ROSA',

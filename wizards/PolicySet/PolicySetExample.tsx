@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom'
-import { onCancel, onSubmit } from '../components/utils'
+import { onCancel, onSubmit } from '../common/utils'
 import { PolicySetWizard } from './PolicySetWizard'
 
 export function PolicySetExample() {
@@ -19,8 +19,10 @@ export function PolicySetExample() {
                 { kind: 'ClusterSet', metadata: { name: 'cluster-set-3', namespace: 'default' } },
                 { kind: 'ClusterSet', metadata: { name: 'cluster-set-4', namespace: 'default' } },
             ]}
+            title="Create policy set"
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
+            // editMode={EditMode.Edit}
         />
     )
 }

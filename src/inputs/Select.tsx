@@ -1,14 +1,23 @@
-import { Chip, ChipGroup, Select as PfSelect, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core'
+import {
+    Chip,
+    ChipGroup,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Select as PfSelect,
+    SelectOption,
+    SelectOptionObject,
+    SelectVariant,
+} from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import set from 'set-value'
-import { TextDetail } from '..'
 import { useData } from '../contexts/DataContext'
-import { ItemContext } from '../contexts/ItemContext'
 import { DisplayMode } from '../contexts/DisplayModeContext'
+import { ItemContext } from '../contexts/ItemContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
-import './Select.css'
 import { InputLabel } from './InputLabel'
+import './Select.css'
 
 export interface Option<T> {
     id?: string
@@ -35,6 +44,7 @@ type SelectCommonProps<T> = InputCommonProps<T> & {
      */
     keyPath?: string
     isCreatable?: boolean
+    onCreate?: (value: string) => void
 }
 
 interface SingleSelectProps<T> extends SelectCommonProps<T> {
@@ -76,7 +86,7 @@ export function GroupedMultiselect<T>(props: Omit<GroupedMultiselectProps<T>, 'v
 type SelectProps<T> = SingleSelectProps<T> | MultiselectProps<T> | GroupedSingleSelectProps<T> | GroupedMultiselectProps<T>
 
 function SelectBase<T = any>(props: SelectProps<T>) {
-    const { displayMode: mode, value, validated, hidden, id, path } = useInput(props)
+    const { displayMode: mode, value, validated, hidden, id, path, disabled } = useInput(props)
 
     const { update } = useData()
 
@@ -117,19 +127,25 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     } else {
                         id = option.id ?? option.label
                         label = option.label
-                        if (!keyPath) throw new Error()
+                        if (!keyPath) throw new Error('keyPath is required')
                         value = option.value
                         keyedValue = get(value as any, keyPath)
-                        if (typeof keyedValue !== 'string' && typeof keyedValue !== 'number') {
-                            throw new Error()
+                        switch (typeof keyedValue) {
+                            case 'string':
+                            case 'number':
+                                break
+                            default:
+                                throw new Error('keyedValue is not a string or number')
                         }
                         toString = () => {
-                            return (
-                                <div key={option.id} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                                    {option?.icon}
-                                    {option.label}
-                                </div>
-                            ) as unknown as string
+                            return option.label
+                            // TODO typeahead uses this... so no typeahread with icons
+                            // return (
+                            //     <div key={option.id} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                            //         {option?.icon}
+                            //         {option.label}
+                            //     </div>
+                            // ) as unknown as string
                         }
                     }
                     const compareTo = (compareTo: any) => compareTo === keyedValue
@@ -254,25 +270,20 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
-        return <TextDetail id={id} path={props.path} label={props.label} />
-    }
-
-    const onCreateOption = (newValue: string) => {
-        const compareTo = (compareTo: any) => compareTo === keyedValue
-        selectOptions.push({
-            id: newValue,
-            label: newValue,
-            value: newValue,
-            keyedValue: newValue,
-            compareTo,
-            toString: () => newValue.toString(),
-        })
+        // return <TextDetail id={id} path={props.path} label={props.label} />
+        return (
+            <DescriptionListGroup>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription id={id}>{value}</DescriptionListDescription>
+            </DescriptionListGroup>
+        )
     }
 
     return (
         <div id={id}>
             <InputLabel {...props}>
                 <PfSelect
+                    isDisabled={disabled}
                     variant={variant}
                     isOpen={open}
                     onToggle={setOpen}
@@ -280,7 +291,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     onSelect={onSelect}
                     onClear={props.required ? undefined : onClear}
                     isCreatable={isCreatable}
-                    onCreateOption={onCreateOption}
+                    onCreateOption={(value) => props.onCreate?.(value)}
                     validated={validated}
                     isGrouped={isGrouped}
                     hasInlineFilter

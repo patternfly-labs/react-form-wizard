@@ -20,11 +20,7 @@ import {
 } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { useItem } from '../../src/contexts/ItemContext'
-
-interface IResource {
-    kind: string
-    metadata: { name?: string; namespace?: string }
-}
+import { IResource } from '../common/resource'
 
 export function PlacementWizard(props: { clusterSets: IResource[]; onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     return (
@@ -55,6 +51,7 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
                                 apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
                                 kind: 'Placement',
                                 metadata: { name: '', namespace: '' },
+                                spec: {},
                             } as IResource)
                             if (props.bindingKind) {
                                 resources.push({
@@ -76,6 +73,7 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
                                 apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
                                 kind: 'Placement',
                                 metadata: { name, namespace: '' },
+                                spec: {},
                             } as IResource)
                             if (props.bindingKind) {
                                 resources.push({
@@ -210,12 +208,12 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
 export function Placement(props: { clusterSets: IResource[] }) {
     return (
         <Fragment>
-            <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." />
+            {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
             <Multiselect
                 label="Cluster sets"
                 path="spec.clusterSets"
                 placeholder="All clusters from cluster sets bound to the namespace"
-                options={props.clusterSets.map((clusterSet) => clusterSet.metadata.name ?? '')}
+                options={props.clusterSets.map((clusterSet) => clusterSet.metadata?.name ?? '')}
                 labelHelp="The cluster sets from which the clusters are selected. If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
             />
             <KeyValue
@@ -238,7 +236,7 @@ export function Sync(props: { kind: string; path: string; targetKind?: string; t
         for (const resource of resources) {
             if ((props.targetKind === undefined && resource.kind !== props.kind) || resource.kind === props.targetKind) {
                 const existingValue = get(resource, props.targetPath ?? props.path)
-                if (existingValue !== value) {
+                if (value && existingValue !== value) {
                     changed = true
                     set(resource, props.targetPath ?? props.path, value)
                 }

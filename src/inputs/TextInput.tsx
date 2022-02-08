@@ -16,7 +16,7 @@ export type TextInputProps = InputCommonProps<string> & {
 }
 
 export function TextInput(props: TextInputProps) {
-    const { displayMode: mode, value, setValue, validated, hidden, id } = useInput(props)
+    const { displayMode: mode, value, setValue, disabled, validated, hidden, id } = useInput(props)
     const [showSecrets, setShowSecrets] = useState(false)
 
     if (hidden) return <Fragment />
@@ -39,10 +39,13 @@ export function TextInput(props: TextInputProps) {
                     onChange={setValue}
                     isReadOnly={props.readonly}
                     type={!props.secret || showSecrets ? 'text' : 'password'}
+                    isDisabled={disabled}
                 />
-                {value !== '' && props.secret && <ShowSecretsButton showSecrets={showSecrets} setShowSecrets={setShowSecrets} />}
-                {value === '' && <PasteInputButton setValue={setValue} setShowSecrets={setShowSecrets} />}
-                {value !== '' && !props.readonly && !props.disabled && <ClearInputButton onClick={() => setValue('')} />}
+                {!disabled && value !== '' && props.secret && (
+                    <ShowSecretsButton showSecrets={showSecrets} setShowSecrets={setShowSecrets} />
+                )}
+                {!disabled && value === '' && <PasteInputButton setValue={setValue} setShowSecrets={setShowSecrets} />}
+                {!disabled && value !== '' && !props.readonly && !props.disabled && <ClearInputButton onClick={() => setValue('')} />}
             </InputGroup>
         </InputLabel>
     )

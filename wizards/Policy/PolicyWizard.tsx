@@ -19,7 +19,7 @@ import {
     WizardSubmit,
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
-import { isValidKubernetesName } from '../components/validation'
+import { isValidKubernetesName } from '../common/validation'
 import { PlacementSection, Sync } from '../Placement/PlacementWizard'
 import { Specifications } from './templates'
 

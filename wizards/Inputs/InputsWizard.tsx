@@ -16,7 +16,7 @@ import {
     Tiles,
     WizardPage,
 } from '../../src'
-import { onCancel, onSubmit } from '../components/utils'
+import { onCancel, onSubmit } from '../common/utils'
 
 export function InputsWizard() {
     const history = useHistory()
