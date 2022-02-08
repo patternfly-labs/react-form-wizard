@@ -4,14 +4,12 @@
 {{! ========================================================== }}
 {{! ========================================================== }}
 
-{{#unless channelNamespace}}
-{{#unless channelNamespaceExists}}
+{{#if newChannel}}
 ---
 apiVersion: v1                      
 kind: Namespace
 metadata:
   name: {{{channelName}}}-ns
-{{/unless}}
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: Channel
@@ -44,7 +42,7 @@ data:
   user: {{{subscription.git.username}}}
   accessToken: {{{subscription.git.accessToken}}}
 {{/if}}
-{{/unless}}      
+{{/if}}
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: Subscription

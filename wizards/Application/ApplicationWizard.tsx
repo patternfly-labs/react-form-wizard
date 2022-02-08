@@ -1,6 +1,8 @@
 import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
+import _ from 'lodash'
+
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
     ArrayInput,
@@ -52,6 +54,9 @@ interface ApplicationWizardProps {
 }
 
 interface IData {
+    newChannel: any
+    repositoryType: any
+    subscription: any
     namespace: string
     newNamespace: boolean
     channels: Record<string, boolean>
@@ -140,17 +145,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </Tiles>
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
-                            <Select
-                                path="subscription.git.url"
-                                label="URL"
-                                placeholder="Enter or select a Git URL"
-                                labelHelp="The URL path for the Git repository."
-                                options={props.subscriptionGitChannels.map((gitChannel) => ({
-                                    label: gitChannel.pathname,
-                                    value: `${gitChannel.namespace}/${gitChannel.name}`,
-                                }))}
-                                required
-                            />
+                            <ChannelSection channels={props.subscriptionGitChannels} />
                             <TextInput
                                 path="subscription.git.username"
                                 label="Username"
@@ -601,4 +596,107 @@ function DetailsSection(props: { namespaces: string[] }) {
             />
         </Section>
     )
+}
+
+interface IChannel {
+    name: string
+    namespace: string
+    pathname: string
+}
+function ChannelSection(props: { channels: IChannel[] }) {
+    const [newChannels, setNewChannels] = useState<IChannel[]>([])
+    const activeChannels = useMemo(() => [...props.channels, ...newChannels], [newChannels, props.channels])
+    const item = useItem() as IData
+    const data = useData()
+    const type = item.repositoryType.replace(/Subscription/g, '').toLowerCase()
+    const pathnames = _.uniq(_.map(props.channels, 'pathname'))
+    useEffect(() => {
+        if (item.subscription) {
+            if (!pathnames.includes(item.subscription[type].url)) {
+                if (!item.newChannel) {
+                    item.newChannel = true
+                    data.update()
+                }
+            } else {
+                if (item.newChannel) {
+                    item.newChannel = false
+                    data.update()
+                }
+            }
+        }
+    }, [item, data, props.channels])
+    return (
+        <Select
+            path="subscription.git.url"
+            label="URL"
+            placeholder="Enter or select a Git URL"
+            labelHelp="The URL path for the Git repository."
+            options={activeChannels.map((gitChannel) => ({
+                label: gitChannel.pathname,
+                // value: `${gitChannel.namespace}/${gitChannel.name}`,
+                value: gitChannel.pathname,
+            }))}
+            isCreatable={true}
+            onCreate={(url: string) => {
+                const channelName = getUniqueChannelName(url, type)
+                const newChannel: IChannel = {
+                    name: channelName,
+                    namespace: `${channelName}-ns`,
+                    pathname: url,
+                }
+                setNewChannels([...newChannels, newChannel])
+            }}
+            required
+        />
+    )
+}
+
+export const getUniqueChannelName = (channelPath: string, type: string) => {
+    //create a unique name for a new channel, based on path and type
+    if (!channelPath || !type) {
+        return ''
+    }
+    let channelType
+
+    switch (type) {
+        case 'git':
+            channelType = 'g'
+            break
+        case 'helm':
+            channelType = 'h'
+            break
+        case 'objectstore':
+            channelType = 'o'
+            break
+        default:
+            channelType = 'ns'
+    }
+
+    let channelName = _.trim(channelPath)
+    if (_.startsWith(channelName, 'https://')) {
+        channelName = _.trimStart(channelName, 'https://')
+    }
+    if (_.startsWith(channelName, 'http://')) {
+        channelName = _.trimStart(channelName, 'http://')
+    }
+    if (_.endsWith(channelName, '.git')) {
+        channelName = _.trimEnd(channelName, '.git')
+    }
+
+    channelName = _.replace(channelName, /\./g, '')
+    channelName = _.replace(channelName, /:/g, '')
+    channelName = _.replace(channelName, /\//g, '-')
+
+    channelName = _.trimEnd(channelName, '-')
+    channelName = channelName.toLowerCase()
+
+    //max name for ns or resources is 63 chars
+    // trim channel name to max 58 char to allow a max of 63 char length
+    //for the channel authentication (which is channelName-auth) object and channel ns (channelName-ns)
+    if (channelName.length > 58) {
+        channelName = channelName.substring(channelName.length - 56)
+    }
+    channelName = `${channelType}${channelName}`
+
+    return channelName
 }
