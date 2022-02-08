@@ -193,9 +193,11 @@ export function Placement(props: { clusterSetBindings: IClusterSetBinding[]; bin
         if (!source) return []
         const namespace = source.metadata?.namespace
         if (!namespace) return []
-        return props.clusterSetBindings
-            .filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === namespace)
-            .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet)
+        return (
+            props.clusterSetBindings
+                ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === namespace)
+                .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
+        )
     }, [props.bindingKind, props.clusterSetBindings, resources])
     return (
         <ItemSelector selectKey="kind" selectValue="Placement" empty={<Fragment />}>
