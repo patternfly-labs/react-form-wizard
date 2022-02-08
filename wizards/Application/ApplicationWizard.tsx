@@ -37,6 +37,18 @@ import HelmIcon from './logos/HelmIcon.svg'
 import ObjectStore from './logos/ObjectStore.svg'
 import SubscriptionIcon from './logos/SubscriptionIcon.svg'
 
+interface Channel {
+    metadata: {
+        name: string
+        namespace: string
+    }
+    spec: {
+        pathname: string
+        type: string
+        secretRef?: string
+    }
+}
+
 export function ApplicationWizard(props: {
     addClusterSets?: string
     ansibleCredentials: string[]
@@ -45,8 +57,7 @@ export function ApplicationWizard(props: {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     placements: string[]
-    helmChannels: string[]
-    subscriptionGitChannels: { name: string; namespace: string; pathname: string }[]
+    channels: Channel[]
     timeZones: string[]
 }) {
     Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
@@ -64,6 +75,20 @@ export function ApplicationWizard(props: {
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
     const urls = useMemo(() => ['url1', 'url2'], [])
     const urlOptions = useMemo(() => ['url1', 'url2'], [])
+    const gitChannels = useMemo(
+        () => props.channels.filter((channel) => channel.spec.type === 'Git' || channel.spec.type === 'GitHub'),
+        [props.channels]
+    )
+    const helmChannels = useMemo(() => props.channels.filter((channel) => channel.spec.type === 'HelmRepo'), [props.channels])
+    const subscriptionGitChannels = gitChannels.map((gitChannel: Channel) => {
+        const { name, namespace } = gitChannel.metadata
+        const { pathname } = gitChannel.spec
+        return {
+            name: name || '',
+            namespace: namespace || '',
+            pathname: pathname || '',
+        }
+    })
     return (
         <WizardPage
             title="Create application"
@@ -148,7 +173,7 @@ export function ApplicationWizard(props: {
                                 label="URL"
                                 placeholder="Enter or select a Git URL"
                                 labelHelp="The URL path for the Git repository."
-                                options={props.subscriptionGitChannels.map((gitChannel) => ({
+                                options={subscriptionGitChannels.map((gitChannel) => ({
                                     label: gitChannel.pathname,
                                     value: `${gitChannel.namespace}/${gitChannel.name}`,
                                 }))}
@@ -228,7 +253,7 @@ export function ApplicationWizard(props: {
                                 label="URL"
                                 placeholder="Enter or select a Helm repository URL"
                                 labelHelp="The URL path for the Helm repository."
-                                options={props.helmChannels}
+                                options={helmChannels}
                                 required
                             />
                             <TextInput
@@ -359,7 +384,7 @@ export function ApplicationWizard(props: {
                             label="URL"
                             labelHelp="The URL path for the Git repository."
                             placeholder="Enter or select a Git URL"
-                            options={props.subscriptionGitChannels.map((gitChannel) => ({
+                            options={subscriptionGitChannels.map((gitChannel) => ({
                                 label: gitChannel.pathname,
                                 value: `${gitChannel.namespace}/${gitChannel.name}`,
                             }))}
@@ -387,7 +412,7 @@ export function ApplicationWizard(props: {
                             label="URL"
                             labelHelp="The URL path for the Helm repository."
                             placeholder="Enter or select a Helm URL"
-                            options={props.helmChannels}
+                            options={helmChannels}
                             required
                         />
                         <TextInput

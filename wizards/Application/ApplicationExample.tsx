@@ -9,8 +9,15 @@ export function ApplicationExample() {
     const servers = useMemo(() => ['default', 'server-1', 'server-2'], [])
     const ansibleCredentials = useMemo(() => ['credential1', 'credential2'], [])
     const placements = useMemo(() => ['placement-1', 'placement-2'], [])
-    const helmChannels = useMemo(() => ['helm-channel-1', 'helm-channel-2'], [])
-    const gitChannels = useMemo(() => [{ name: 'test', namespace: 'test-ns', pathname: 'https://test.com' }], [])
+    const channels = useMemo(
+        () => [
+            { name: 'helm-channel-1', namespace: 'helm-channel-1', pathname: 'https://test.com', type: 'HelmRepo' },
+            { name: 'helm-channel-2', namespace: 'helm-channel-2', pathname: 'https://test.com', type: 'HelmRepo' },
+            { name: 'git-channel-1', namespace: 'git-channel-1', pathname: 'https://test.com', type: 'Git' },
+            { name: 'git-channel-1', namespace: 'git-channel-1', pathname: 'https://test.com', type: 'Git' },
+        ],
+        []
+    )
     const timeZones = useMemo(() => ['EST'], [])
     return (
         <ApplicationWizard
@@ -21,8 +28,7 @@ export function ApplicationExample() {
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
             placements={placements}
-            helmChannels={helmChannels}
-            subscriptionGitChannels={gitChannels}
+            channels={channels}
             timeZones={timeZones}
         />
     )
