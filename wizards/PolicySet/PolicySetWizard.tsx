@@ -15,8 +15,8 @@ import { isValidKubernetesName } from '../components/validation'
 import { PlacementSection, Sync } from '../Placement/PlacementWizard'
 
 interface IResource {
-    kind: string
-    metadata: { name?: string; namespace?: string }
+    kind?: string
+    metadata?: { name?: string; namespace?: string }
 }
 
 export interface PolicySetWizardProps {
@@ -81,10 +81,10 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                             id="policies"
                             path="spec.policies"
                             label=""
-                            columns={[{ name: 'Name', cellFn: (policy: IResource) => policy.metadata.name }]}
+                            columns={[{ name: 'Name', cellFn: (policy: IResource) => policy.metadata?.name }]}
                             items={props.policies}
-                            itemToValue={(policy: IResource) => policy.metadata.name}
-                            valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata.name}
+                            itemToValue={(policy: IResource) => policy.metadata?.name}
+                            valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata?.name}
                         />
                     </ItemSelector>
                 </Section>

@@ -22,8 +22,8 @@ import { useData } from '../../src/contexts/DataContext'
 import { useItem } from '../../src/contexts/ItemContext'
 
 interface IResource {
-    kind: string
-    metadata: { name?: string; namespace?: string }
+    kind?: string
+    metadata?: { name?: string; namespace?: string }
 }
 
 export function PlacementWizard(props: { clusterSets: IResource[]; onSubmit: WizardSubmit; onCancel: WizardCancel }) {
@@ -217,7 +217,7 @@ export function Placement(props: { clusterSets: IResource[] }) {
                 label="Cluster sets"
                 path="spec.clusterSets"
                 placeholder="All clusters from cluster sets bound to the namespace"
-                options={props.clusterSets.map((clusterSet) => clusterSet.metadata.name ?? '')}
+                options={props.clusterSets.map((clusterSet) => clusterSet.metadata?.name ?? '')}
                 labelHelp="The cluster sets from which the clusters are selected. If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
             />
             <KeyValue
