@@ -118,7 +118,11 @@ export function useInput(props: InputCommonProps) {
 
     const setHasValue = useSetHasValue()
     useLayoutEffect(() => {
-        if (value) setHasValue()
+        if (value) {
+            if (Array.isArray(value)) {
+                if (value.length > 0) setHasValue()
+            } else setHasValue()
+        }
     }, [setHasValue, value])
 
     // const updateHasValue = useUpdateHasValue()

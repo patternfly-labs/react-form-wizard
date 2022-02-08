@@ -45,7 +45,6 @@ import { ClusterForm } from './Cluster/ClusterForm'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { HomeWizard } from './Home/HomeWizard'
 import { InputsWizard } from './Inputs/InputsWizard'
-import { PlacementExample } from './Placement/PlacementExample'
 import { PolicyExample } from './Policy/PolicyExample'
 import { PolicySetExample } from './PolicySet/PolicySetExample'
 import { RosaExample } from './ROSA/RosaExample'
@@ -183,8 +182,6 @@ export function DemoRouter(): JSX.Element {
             return <ClusterForm />
         case RouteE.Credentials:
             return <CredentialsExample />
-        case RouteE.Placement:
-            return <PlacementExample />
         case RouteE.Policy:
             return <PolicyExample />
         case RouteE.PolicySet:

@@ -1,38 +1,20 @@
-import { Split, SplitItem, Tile } from '@patternfly/react-core'
+import { SelectOption, Split, SplitItem, Tile } from '@patternfly/react-core'
 import get from 'get-value'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import set from 'set-value'
-import {
-    ArrayInput,
-    Hidden,
-    ItemSelector,
-    KeyValue,
-    Multiselect,
-    Section,
-    Select,
-    Step,
-    StringsInput,
-    TextDetail,
-    TextInput,
-    WizardCancel,
-    WizardPage,
-    WizardSubmit,
-} from '../../src'
+import { ArrayInput, Hidden, ItemSelector, KeyValue, Section, Select, StringsInput, TextDetail, TextInput } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { useItem } from '../../src/contexts/ItemContext'
+import { Multiselect } from '../../src/inputs/Multiselect'
 import { IResource } from '../common/resource'
 
-export function PlacementWizard(props: { clusterSets: IResource[]; onSubmit: WizardSubmit; onCancel: WizardCancel }) {
-    return (
-        <WizardPage title="Create placement" defaultData={[]} onSubmit={props.onSubmit} onCancel={props.onCancel}>
-            <Step label="Cluster placement" id="placement-step" autohide={false}>
-                <PlacementSection clusterSets={props.clusterSets} />
-            </Step>
-        </WizardPage>
-    )
+export type IClusterSetBinding = IResource & {
+    spec: {
+        clusterSet: string
+    }
 }
 
-export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?: string; bindingApiGroup?: string }) {
+export function PlacementSection(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string; bindingApiGroup?: string }) {
     const resources = useItem() as IResource[]
     const { update } = useData()
     const hasPlacement = resources?.find((resource) => resource.kind === 'Placement') !== undefined
@@ -129,9 +111,7 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
                     </Tile>
                 </Hidden>
 
-                <ItemSelector selectKey="kind" selectValue="Placement" empty={<Fragment />}>
-                    <Placement clusterSets={props.clusterSets} />
-                </ItemSelector>
+                <Placement clusterSetBindings={props.clusterSetBindings} bindingKind={props.bindingKind} />
 
                 <ArrayInput
                     id="placement-rules"
@@ -205,24 +185,45 @@ export function PlacementSection(props: { clusterSets: IResource[]; bindingKind?
     )
 }
 
-export function Placement(props: { clusterSets: IResource[] }) {
+export function Placement(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string }) {
+    const resources = useItem() as IResource[]
+    const namespaceClusterSetNames = useMemo(() => {
+        if (!resources.find) return []
+        const source = resources?.find((resource) => resource.kind === props.bindingKind)
+        if (!source) return []
+        const namespace = source.metadata?.namespace
+        if (!namespace) return []
+        return props.clusterSetBindings
+            .filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === namespace)
+            .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet)
+    }, [props.bindingKind, props.clusterSetBindings, resources])
     return (
-        <Fragment>
+        <ItemSelector selectKey="kind" selectValue="Placement" empty={<Fragment />}>
             {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
+            {/* <Multiselect
+                label="Cluster sets"
+                path="spec.clusterSets"
+                placeholder="All clusters from cluster sets bound to the namespace"
+                options={namespaceClusterSetNames}
+                labelHelp="The cluster sets from which the clusters are selected. If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
+            /> */}
             <Multiselect
                 label="Cluster sets"
                 path="spec.clusterSets"
                 placeholder="All clusters from cluster sets bound to the namespace"
-                options={props.clusterSets.map((clusterSet) => clusterSet.metadata?.name ?? '')}
                 labelHelp="The cluster sets from which the clusters are selected. If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
-            />
+            >
+                {namespaceClusterSetNames.map((name) => (
+                    <SelectOption key={name} value={name} />
+                ))}
+            </Multiselect>
             <KeyValue
                 label="Cluster labels"
                 path="spec.predicates.0.labelSelector.matchLabels"
                 labelHelp="If no cluster labels are entered, all clusters will be selected from the cluster sets"
                 placeholder="Add cluster label"
             />
-        </Fragment>
+        </ItemSelector>
     )
 }
 

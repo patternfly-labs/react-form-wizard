@@ -1,4 +1,4 @@
-import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
+import { Button, Flex, FlexItem, SelectOption, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
@@ -524,8 +524,11 @@ export function TimeWindow(props: { timeZone: string[] }) {
                 placeholder="Select at least one day to create a time window."
                 path="timewindow.daysofweek"
                 required
-                options={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}
-            />
+            >
+                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((value) => (
+                    <SelectOption key={value} value={value} />
+                ))}
+            </Multiselect>
             <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
             <ArrayInput
                 path="timeWindows"
