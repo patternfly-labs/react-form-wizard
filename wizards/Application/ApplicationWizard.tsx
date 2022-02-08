@@ -54,6 +54,8 @@ interface ApplicationWizardProps {
 }
 
 interface IData {
+    newChannelNamespace: boolean
+    channelName: any
     newChannel: any
     repositoryType: any
     subscription: any
@@ -145,18 +147,20 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </Tiles>
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
-                            <ChannelSection channels={props.subscriptionGitChannels} />
+                            <ChannelSection channels={props.subscriptionGitChannels} namespaces={props.namespaces} />
                             <TextInput
                                 path="subscription.git.username"
                                 label="Username"
                                 placeholder="Enter the Git user name"
                                 labelHelp="The username if this is a private Git repository and requires connection."
+                                hidden={(data) => !data.newChannel}
                             />
                             <TextInput
                                 path="subscription.git.accessToken"
                                 label="Access token"
                                 placeholder="Enter the Git access token"
                                 labelHelp="The access token if this is a private Git repository and requires connection."
+                                hidden={(data) => !data.newChannel}
                             />
                             <Select
                                 path="subscription.git.branch"
@@ -603,7 +607,7 @@ interface IChannel {
     namespace: string
     pathname: string
 }
-function ChannelSection(props: { channels: IChannel[] }) {
+function ChannelSection(props: { channels: IChannel[]; namespaces: string[] }) {
     const [newChannels, setNewChannels] = useState<IChannel[]>([])
     const activeChannels = useMemo(() => [...props.channels, ...newChannels], [newChannels, props.channels])
     const item = useItem() as IData
@@ -612,9 +616,17 @@ function ChannelSection(props: { channels: IChannel[] }) {
     const pathnames = _.uniq(_.map(props.channels, 'pathname'))
     useEffect(() => {
         if (item.subscription) {
-            if (!pathnames.includes(item.subscription[type].url)) {
+            const selectedUrl = item.subscription[type].url
+            if (!pathnames.includes(selectedUrl)) {
                 if (!item.newChannel) {
                     item.newChannel = true
+                    item.channelName = getUniqueChannelName(selectedUrl, type)
+
+                    if (props.namespaces.includes(`${item.channelName}-ns`)) {
+                        item.newChannelNamespace = false
+                    } else {
+                        item.newChannelNamespace = true
+                    }
                     data.update()
                 }
             } else {

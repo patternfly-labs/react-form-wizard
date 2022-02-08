@@ -5,11 +5,13 @@
 {{! ========================================================== }}
 
 {{#if newChannel}}
+{{#if newChannelNamespace}}
 ---
 apiVersion: v1                      
 kind: Namespace
 metadata:
   name: {{{channelName}}}-ns
+{{/if}}
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: Channel
@@ -77,7 +79,6 @@ spec:
 {{#if channelNamespace}}
   channel: {{{channelNamespace}}}/{{{channelName}}}
 {{else}}
-  {{!-- channel: {{{channelName}}}-ns/{{{channelName}}} --}}
-  channel: '{{{subscription.git.url}}}'
+  channel: {{{channelName}}}-ns/{{{channelName}}}
 {{/if}}
 {{>templateSubscriptionPlacement}}
