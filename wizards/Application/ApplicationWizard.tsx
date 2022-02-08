@@ -250,7 +250,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                                 label="URL"
                                 placeholder="Enter or select a Helm repository URL"
                                 labelHelp="The URL path for the Helm repository."
-                                options={helmChannels}
+                                options={helmChannels.map((channel) => channel.metadata.name)}
                                 required
                             />
                             <TextInput
@@ -408,7 +408,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                             label="URL"
                             labelHelp="The URL path for the Helm repository."
                             placeholder="Enter or select a Helm URL"
-                            options={helmChannels}
+                            options={helmChannels.map((channel) => channel.metadata.name)}
                             required
                         />
                         <TextInput
