@@ -1,8 +1,8 @@
-import { SelectOption, Split, SplitItem, Tile } from '@patternfly/react-core'
+import { Label, SelectOption, Split, SplitItem, Tile } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import set from 'set-value'
-import { ArrayInput, EditMode, ItemSelector, KeyValue, Section, Select, StringsInput, TextDetail, TextInput } from '../../src'
+import { ArrayInput, EditMode, ItemText, KeyValue, NumberInput, Section, Select, StringsInput, TextInput } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
@@ -50,28 +50,30 @@ export type IPlacement = IResource & {
         Predicates represent a slice of predicates to select ManagedClusters.
         The predicates are ORed.
          */
-        predicates: {
-            /** RequiredClusterSelector represents a selector of ManagedClusters by label and claim. */
-            requiredClusterSelector: {
-                /** LabelSelector represents a selector of ManagedClusters by label */
-                labelSelector?: {
-                    matchLabels?: { [key: string]: string }
-                    matchExpressions?: {
-                        key: string
-                        operator: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
-                        values?: string[]
-                    }
-                }
-                /** ClaimSelector represents a selector of ManagedClusters by clusterClaims in status */
-                claimSelector?: {
-                    matchExpressions: {
-                        key: string
-                        operator: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
-                        values: string[]
-                    }
-                }
-            }
-        }[]
+        predicates: Predicate[]
+    }
+}
+
+interface Predicate {
+    /** RequiredClusterSelector represents a selector of ManagedClusters by label and claim. */
+    requiredClusterSelector?: {
+        /** LabelSelector represents a selector of ManagedClusters by label */
+        labelSelector?: {
+            matchLabels?: { [key: string]: string }
+            matchExpressions?: {
+                key: string
+                operator: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
+                values?: string[]
+            }[]
+        }
+        /** ClaimSelector represents a selector of ManagedClusters by clusterClaims in status */
+        claimSelector?: {
+            matchExpressions: {
+                key: string
+                operator: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
+                values: string[]
+            }[]
+        }
     }
 }
 
@@ -100,7 +102,11 @@ export type IClusterSetBinding = IResource & {
     }
 }
 
-export function PlacementSection(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string; bindingApiGroup?: string }) {
+export function PlacementSection(props: {
+    clusterSetBindings: IClusterSetBinding[]
+    bindingSubjectKind: string
+    bindingSubjectApiGroup?: string
+}) {
     const resources = useItem() as IResource[]
     const { update } = useData()
     const hasPlacement = resources?.find((resource) => resource.kind === 'Placement') !== undefined
@@ -115,7 +121,11 @@ export function PlacementSection(props: { clusterSetBindings: IClusterSetBinding
                     <Sync kind="Placement" path="metadata.name" targetKind="PlacementBinding" />
                 </Fragment>
             )}
-            <Section label="Cluster placement" autohide={false} hidden={() => hasPlacement || hasPlacementRules || hasPlacementBindings}>
+            <Section
+                label="Which clusters would you like to deploy the resources?"
+                autohide={false}
+                hidden={() => hasPlacement || hasPlacementRules || hasPlacementBindings}
+            >
                 <Tile
                     title="Deploy to clusters with specific labels"
                     onClick={() => {
@@ -125,13 +135,13 @@ export function PlacementSection(props: { clusterSetBindings: IClusterSetBinding
                             metadata: { name: '', namespace: '' },
                             spec: {},
                         } as IResource)
-                        if (props.bindingKind) {
+                        if (props.bindingSubjectKind) {
                             resources.push({
                                 apiVersion: 'policy.open-cluster-management.io/v1',
                                 kind: 'PlacementBinding',
                                 metadata: { name: '', namespace: '' },
                                 placementRef: { name, kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
-                                subjects: [{ name, kind: props.bindingKind, apiGroup: props.bindingApiGroup }],
+                                subjects: [{ name, kind: props.bindingSubjectKind, apiGroup: props.bindingSubjectApiGroup }],
                             } as IResource)
                         }
                         update()
@@ -147,13 +157,13 @@ export function PlacementSection(props: { clusterSetBindings: IClusterSetBinding
                             metadata: { name, namespace: '' },
                             spec: {},
                         } as IResource)
-                        if (props.bindingKind) {
+                        if (props.bindingSubjectKind) {
                             resources.push({
                                 apiVersion: 'policy.open-cluster-management.io/v1',
                                 kind: 'PlacementBinding',
                                 metadata: { name, namespace: '' },
                                 placementRef: { name, kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
-                                subjects: [{ name, kind: props.bindingKind, apiGroup: props.bindingApiGroup }],
+                                subjects: [{ name, kind: props.bindingSubjectKind, apiGroup: props.bindingSubjectApiGroup }],
                             } as IResource)
                         }
                         update()
@@ -164,13 +174,13 @@ export function PlacementSection(props: { clusterSetBindings: IClusterSetBinding
                     onClick={() => {
                         const name = 'local-cluster'
                         resources.push(placementLocalCluster)
-                        if (props.bindingKind) {
+                        if (props.bindingSubjectKind) {
                             resources.push({
                                 apiVersion: 'policy.open-cluster-management.io/v1',
                                 kind: 'PlacementBinding',
                                 metadata: { name, namespace: '' },
                                 placementRef: { name, kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
-                                subjects: [{ name, kind: props.bindingKind, apiGroup: props.bindingApiGroup }],
+                                subjects: [{ name, kind: props.bindingSubjectKind, apiGroup: props.bindingSubjectApiGroup }],
                             } as IResource)
                         }
                         update()
@@ -186,14 +196,32 @@ export function PlacementSection(props: { clusterSetBindings: IClusterSetBinding
                 </Tile>
             </Section>
 
-            <Placement clusterSetBindings={props.clusterSetBindings} bindingKind={props.bindingKind} />
-            <PlacementRules />
-            <PlacementBindings />
+            <Placement
+                clusterSetBindings={props.clusterSetBindings}
+                bindingKind={props.bindingSubjectKind}
+                hasPlacement={hasPlacement}
+                hasPlacementRules={hasPlacementRules}
+                hasPlacementBindings={hasPlacementBindings}
+            />
+            <PlacementRules hasPlacement={hasPlacement} hasPlacementRules={hasPlacementRules} hasPlacementBindings={hasPlacementBindings} />
+            <PlacementBindings
+                hasPlacement={hasPlacement}
+                hasPlacementRules={hasPlacementRules}
+                hasPlacementBindings={hasPlacementBindings}
+                bindingSubjectKind={props.bindingSubjectKind}
+                bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+            />
         </Fragment>
     )
 }
 
-export function Placement(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string }) {
+export function Placement(props: {
+    clusterSetBindings: IClusterSetBinding[]
+    bindingKind: string
+    hasPlacement: boolean
+    hasPlacementRules: boolean
+    hasPlacementBindings: boolean
+}) {
     const resources = useItem() as IResource[]
     const namespaceClusterSetNames = useMemo(() => {
         if (!resources.find) return []
@@ -208,165 +236,211 @@ export function Placement(props: { clusterSetBindings: IClusterSetBinding[]; bin
         )
     }, [props.bindingKind, props.clusterSetBindings, resources])
     return (
-        <Section label="Placement" description="A placement selects clusters from the cluster sets which have bindings to the namespace.">
-            <ItemSelector selectKey="kind" selectValue="Placement" empty={<Fragment />}>
-                {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
-                <Multiselect
-                    label="Cluster sets"
-                    path="spec.clusterSets"
-                    placeholder="Select the cluster sets"
-                    labelHelp="The cluster sets from which the clusters are selected."
-                    helperText="If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
-                >
-                    {namespaceClusterSetNames.map((name) => (
-                        <SelectOption key={name} value={name} />
-                    ))}
-                </Multiselect>
-                <ArrayInput
-                    label="Predicates"
-                    path="spec.predicates"
-                    placeholder="Add predicate"
-                    collapsedContent="name"
-                    helperText="
-                    A predicate further selects clusters from the clusters selected from the placement cluster sets.
+        <ArrayInput
+            id="placements"
+            label="Placements"
+            helperText="A placement selects clusters from the cluster sets which have bindings to the resource namespace."
+            path={null}
+            isSection
+            filter={(resource) => resource.kind === 'Placement'}
+            placeholder="Add placement"
+            collapsedContent="metadata.name"
+            collapsedPlaceholder="Expand to enter placement"
+            newValue={{
+                apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
+                kind: 'Placement',
+                metadata: { name: '', namespace: '' },
+                spec: {},
+            }}
+            hidden={() => !props.hasPlacement && !props.hasPlacementBindings}
+            defaultCollapsed
+        >
+            {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
+            <Multiselect
+                label="Cluster sets"
+                path="spec.clusterSets"
+                placeholder="Select the cluster sets"
+                labelHelp="The cluster sets from which the clusters are selected."
+                helperText="If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
+            >
+                {namespaceClusterSetNames.map((name) => (
+                    <SelectOption key={name} value={name} />
+                ))}
+            </Multiselect>
+
+            <ArrayInput
+                label="Predicates"
+                path="spec.predicates"
+                placeholder="Add predicate"
+                collapsedContent={<PredicateSummary />}
+                helperText="
+                    A predicate further selects clusters from the clusters selected from the cluster sets.
                     A placement can have multiple predicates.
                     Clusters matching any predicate will be selected.
                     Clusters must match all predicate selectors and expressions to be selected by that predicate.
                     This allows complex 'And/Or' logic for selecting clusters.
                     "
-                    defaultCollapsed
-                >
-                    <KeyValue
-                        label="Cluster label selectors"
-                        path="requiredClusterSelector.labelSelector.matchLabels"
-                        labelHelp="A label selector allows simple selection of clusters using cluster labels."
-                        placeholder="Add label selector"
-                    />
-                    <ArrayInput
-                        label="Cluster label expressions"
-                        path="requiredClusterSelector.labelSelector.matchExpressions"
-                        placeholder="Add label expression"
-                        labelHelp="A label expression allows selection of clusters using cluster labels."
-                        collapsedContent={<MatchExpressionSummary />}
-                        newValue={{ key: '', operator: 'In' }}
-                    >
-                        <MatchExpression />
-                    </ArrayInput>
-                    <ArrayInput
-                        label="Cluster claim expressions"
-                        path="requiredClusterSelector.claimSelector.matchExpressions"
-                        placeholder="Add claim expression"
-                        labelHelp="A label expression allows selection of clusters using cluster claims in status."
-                        collapsedContent={<MatchExpressionSummary />}
-                        newValue={{ key: '', operator: 'In' }}
-                    >
-                        <MatchExpression />
-                    </ArrayInput>
-                </ArrayInput>
-            </ItemSelector>
-        </Section>
-    )
-}
-
-export function PlacementRules() {
-    return (
-        <Section label="Placement rules" description="A placement rule selects clusters.">
-            <ArrayInput
-                id="placement-rules"
-                label="Placement rules"
-                labelHelp="Placement rules determine which clusters a policy will be applied."
-                path={null}
-                filter={(resource) => resource.kind === 'PlacementRule'}
-                placeholder="Add placement rule"
-                collapsedContent="metadata.name"
-                collapsedPlaceholder="Expand to enter placement rule"
-                newValue={{
-                    apiVersion: 'policy.open-cluster-management.io/v1',
-                    kind: 'PlacementRule',
-                    metadata: {},
-                    spec: {
-                        clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
-                        clusterSelector: {
-                            matchExpressions: [{ key: '', operator: 'In', values: [''] }],
-                        },
-                    },
-                }}
-                // hidden={(resources: IResource[]) => resources?.find((resource) => resource.kind === 'PlacementRule') === undefined}
                 defaultCollapsed
             >
-                <TextInput
-                    id="name"
-                    path="metadata.name"
-                    label="Name"
-                    required
-                    helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
+                <KeyValue
+                    label="Cluster label selectors"
+                    path="requiredClusterSelector.labelSelector.matchLabels"
+                    labelHelp="A label selector allows simple selection of clusters using cluster labels."
+                    placeholder="Add label selector"
                 />
                 <ArrayInput
-                    label="Label selectors"
-                    path="spec.clusterSelector.matchExpressions"
-                    placeholder="Add label selector"
-                    collapsedContent={
-                        <Split hasGutter>
-                            <SplitItem>
-                                <TextDetail path="key" />
-                            </SplitItem>
-                            <SplitItem>
-                                <TextDetail path="operator" />
-                            </SplitItem>
-                            <SplitItem>
-                                <TextDetail path="value" />
-                            </SplitItem>
-                        </Split>
-                    }
-                    newValue={{ key: '', operator: 'In', value: [] }}
+                    label="Cluster label expressions"
+                    path="requiredClusterSelector.labelSelector.matchExpressions"
+                    placeholder="Add label expression"
+                    labelHelp="A label expression allows selection of clusters using cluster labels."
+                    collapsedContent={<MatchExpressionSummary />}
+                    newValue={{ key: '', operator: 'In' }}
                 >
                     <MatchExpression />
                 </ArrayInput>
-            </ArrayInput>
-        </Section>
-    )
-}
-
-export function PlacementBindings() {
-    return (
-        <Section label="Placement bindings" description="A placement rule selects clusters.">
-            <ArrayInput
-                id="placement-bindings"
-                label="Placement bindings"
-                labelHelp="Placement bindings bind a ..."
-                path={null}
-                filter={(resource) => resource.kind === 'PlacementBinding'}
-                placeholder="Add placement binding"
-                collapsedContent="metadata.name"
-                collapsedPlaceholder="Expand to enter placement binding"
-                newValue={{
-                    apiVersion: 'policy.open-cluster-management.io/v1',
-                    kind: 'PlacementBinding',
-                    metadata: { name: 'local-cluster', namespace: '' },
-                    placementRef: { name: 'local-cluster', kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
-                    subjects: [{ name: 'local-cluster', kind: 'PolicySet', apiGroup: 'policy.open-cluster-management.io' }],
-                }}
-                // hidden={(resources: IResource[]) => resources?.find((resource) => resource.kind === 'PlacementBinding') === undefined}
-                defaultCollapsed
-            >
-                <TextInput
-                    id="name"
-                    path="metadata.name"
-                    label="Name"
-                    required
-                    helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
-                />
                 <ArrayInput
-                    label="Label selectors"
-                    path="spec.clusterSelector.matchExpressions"
-                    placeholder="Add label selector"
+                    label="Cluster claim expressions"
+                    path="requiredClusterSelector.claimSelector.matchExpressions"
+                    placeholder="Add claim expression"
+                    labelHelp="A label expression allows selection of clusters using cluster claims in status."
                     collapsedContent={<MatchExpressionSummary />}
                     newValue={{ key: '', operator: 'In' }}
                 >
                     <MatchExpression />
                 </ArrayInput>
             </ArrayInput>
-        </Section>
+            <NumberInput label="Limit the number of clusters selected" path="spec.numberOfClusters" zeroIsUndefined />
+        </ArrayInput>
+    )
+}
+
+export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules: boolean; hasPlacementBindings: boolean }) {
+    return (
+        <ArrayInput
+            id="placement-rules"
+            label="Placement rules"
+            labelHelp="Placement rules determine which clusters a resources will be applied."
+            path={null}
+            isSection
+            hidden={() => !props.hasPlacementRules}
+            filter={(resource) => resource.kind === 'PlacementRule'}
+            placeholder="Add placement rule"
+            collapsedContent="metadata.name"
+            collapsedPlaceholder="Expand to enter placement rule"
+            newValue={{
+                apiVersion: 'apps.open-cluster-management.io/v1',
+                kind: 'PlacementRule',
+                metadata: {},
+                spec: {
+                    clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
+                    clusterSelector: {
+                        matchExpressions: [{ key: '', operator: 'In', values: [''] }],
+                    },
+                },
+            }}
+            // hidden={(resources: IResource[]) => resources?.find((resource) => resource.kind === 'PlacementRule') === undefined}
+            defaultCollapsed
+        >
+            <TextInput
+                id="name"
+                path="metadata.name"
+                label="Name"
+                required
+                helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
+            />
+            <ArrayInput
+                label="Label selectors"
+                path="spec.clusterSelector.matchExpressions"
+                placeholder="Add label selector"
+                collapsedContent={<MatchExpressionSummary />}
+                newValue={{ key: '', operator: 'In' }}
+            >
+                <MatchExpression />
+            </ArrayInput>
+        </ArrayInput>
+    )
+}
+
+export function PlacementBindings(props: {
+    hasPlacement: boolean
+    hasPlacementRules: boolean
+    hasPlacementBindings: boolean
+    bindingSubjectKind: string
+    bindingSubjectApiGroup?: string
+}) {
+    return (
+        <ArrayInput
+            id="placement-bindings"
+            label="Placement bindings"
+            helperText="To apply a resource to a cluster, the placement must be bound to the resource using a placement binding."
+            path={null}
+            filter={(resource) => resource.kind === 'PlacementBinding'}
+            placeholder="Add binding"
+            collapsedContent="metadata.name"
+            collapsedPlaceholder="Expand to enter binding"
+            defaultCollapsed
+            isSection
+            hidden={() => !props.hasPlacement && !props.hasPlacementRules && !props.hasPlacementBindings}
+            newValue={{
+                apiVersion: 'policy.open-cluster-management.io/v1',
+                kind: 'PlacementBinding',
+                metadata: {},
+                placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
+            }}
+            // hidden={(bindings) => !bindings.length}
+            dropdownItems={[
+                {
+                    label: 'Add placement binding',
+                    action: () => ({
+                        apiVersion: 'policy.open-cluster-management.io/v1',
+                        kind: 'PlacementBinding',
+                        metadata: {},
+                        placementRef: { apiGroup: 'placements.cluster.open-cluster-management.io', kind: 'Placement' },
+                        subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
+                    }),
+                },
+                {
+                    label: 'Add placement rule binding',
+                    action: () => ({
+                        apiVersion: 'policy.open-cluster-management.io/v1',
+                        kind: 'PlacementBinding',
+                        metadata: {},
+                        placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                        subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
+                    }),
+                },
+            ]}
+        >
+            <TextInput path="metadata.name" label="Binding name" required />
+            <Select
+                path="placementRef.name"
+                label="Placement"
+                helperText="The placement used to select clusters."
+                required
+                hidden={(binding) => binding.placementRef?.kind !== 'Placement'}
+                options={[]}
+            />
+            <Select
+                path="placementRef.name"
+                label="Placement rule"
+                helperText="The placement rule used to select clusters for placement."
+                required
+                hidden={(binding) => binding.placementRef?.kind !== 'PlacementRule'}
+                options={[]}
+            />
+            <ArrayInput
+                path="subjects"
+                label="Subjects"
+                helperText="Placement bindings can have multiple subjects which the placement is applied to."
+                placeholder="Add placement subject"
+                collapsedContent="name"
+                collapsedPlaceholder="Expand to enter subject"
+                newValue={{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }}
+            >
+                <TextInput path="name" label="Subject name" required />
+            </ArrayInput>
+        </ArrayInput>
     )
 }
 
@@ -423,17 +497,66 @@ function MatchExpression() {
     )
 }
 
+function PredicateSummary() {
+    const predicate = useItem() as Predicate
+    const matchLabels = predicate.requiredClusterSelector?.labelSelector?.matchLabels ?? {}
+    const matchExpressions = predicate.requiredClusterSelector?.labelSelector?.matchExpressions ?? []
+    const claimExpressions = predicate.requiredClusterSelector?.claimSelector?.matchExpressions ?? []
+
+    const labelSelectors: string[] = []
+    const claimSelectors: string[] = []
+
+    for (const matchLabel in matchLabels) {
+        labelSelectors.push(`${matchLabel} = ${matchLabels[matchLabel]}`)
+    }
+
+    for (const matchExpression of matchExpressions) {
+        labelSelectors.push(`${matchExpression.key} ${matchExpression.operator} ${matchExpression.values?.join(', ') ?? ''}`)
+    }
+
+    for (const claimExpression of claimExpressions) {
+        claimSelectors.push(`${claimExpression.key} ${claimExpression.operator} ${claimExpression.values?.join(', ') ?? ''}`)
+    }
+
+    if (labelSelectors.length === 0 && claimExpressions.length === 0) {
+        return <div>Expand to enter predicate</div>
+    }
+
+    return (
+        <div style={{ display: 'flex', gap: 4, flexDirection: 'column' }}>
+            {labelSelectors.length > 0 && (
+                <div style={{ display: 'flex', gap: 4, alignItems: 'baseline' }}>
+                    Cluster labels:
+                    {labelSelectors.map((labelSelector) => (
+                        <Label key={labelSelector}>{labelSelector}</Label>
+                    ))}
+                </div>
+            )}
+            {claimSelectors.length > 0 && (
+                <div style={{ display: 'flex', gap: 4, alignItems: 'baseline' }}>
+                    Claim expressions:
+                    {claimSelectors.map((labelSelector) => (
+                        <Label key={labelSelector} isCompact>
+                            {labelSelector}
+                        </Label>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
 function MatchExpressionSummary() {
     return (
         <Split hasGutter>
             <SplitItem>
-                <TextDetail path="key" />
+                <ItemText path="key" />
             </SplitItem>
             <SplitItem>
-                <TextDetail path="operator" />
+                <ItemText path="operator" />
             </SplitItem>
             <SplitItem>
-                <TextDetail path="value" />
+                <ItemText path="values" />
             </SplitItem>
         </Split>
     )

@@ -47,7 +47,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
             editMode={props.editMode}
         >
             <Step label="Details" id="details-step">
-                {props.editMode === EditMode.Create && (
+                {props.editMode !== EditMode.Edit && (
                     <Fragment>
                         <Sync kind="PolicySet" path="metadata.name" />
                         <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
@@ -82,8 +82,8 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
             <Step label="Placement" id="placement-step">
                 <PlacementSection
                     clusterSetBindings={props.clusterSetBindings}
-                    bindingKind="PolicySet"
-                    bindingApiGroup="policy.open-cluster-management.io"
+                    bindingSubjectKind="PolicySet"
+                    bindingSubjectApiGroup="policy.open-cluster-management.io"
                 />
             </Step>
         </WizardPage>

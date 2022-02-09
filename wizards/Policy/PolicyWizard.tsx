@@ -148,7 +148,11 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
             </Step>
 
             <Step label="Cluster placement" id="placement">
-                <PlacementSection clusterSetBindings={[]} bindingKind="Policy" bindingApiGroup="policy.open-cluster-management.io" />
+                <PlacementSection
+                    clusterSetBindings={[]}
+                    bindingSubjectKind="Policy"
+                    bindingSubjectApiGroup="policy.open-cluster-management.io"
+                />
             </Step>
 
             <Step label="Security groups" id="security-groups">
