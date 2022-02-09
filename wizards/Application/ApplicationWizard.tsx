@@ -55,13 +55,12 @@ interface ApplicationWizardProps {
 
 interface IData {
     newChannelNamespace: boolean
-    channelName: any
-    newChannel: any
-    repositoryType: any
+    channelName: string
+    newChannel: boolean
+    repositoryType: string
     subscription: any
     namespace: string
     newNamespace: boolean
-    channels: Record<string, boolean>
 }
 
 interface Channel {
@@ -646,7 +645,7 @@ function ChannelSection(props: { channels: Channel[]; namespaces: string[] }) {
                 }
             }
         }
-    }, [item, data, props.channels])
+    }, [item, data, props.channels, pathnames, props.namespaces, type])
     return (
         <Select
             path={`subscription.${type}.url`}
