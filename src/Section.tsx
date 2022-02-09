@@ -29,7 +29,7 @@ export function Section(props: SectionProps) {
 
 function SectionInternal(props: SectionProps) {
     const mode = useDisplayMode()
-    const id = props.id ?? props.label.toLowerCase().split(' ').join('-')
+    const id = props.id ?? props.label?.toLowerCase().split(' ').join('-') ?? ''
     const showValidation = useShowValidation()
     const [expanded, setExpanded] = useState(props.defaultExpanded === undefined ? true : props.defaultExpanded)
     const hidden = useInputHidden(props)

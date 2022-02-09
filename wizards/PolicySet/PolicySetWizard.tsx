@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import {
     EditMode,
     ItemSelector,
@@ -47,9 +47,13 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
             editMode={props.editMode}
         >
             <Step label="Details" id="details-step">
-                <Sync kind="PolicySet" path="metadata.name" />
+                {props.editMode === EditMode.Create && (
+                    <Fragment>
+                        <Sync kind="PolicySet" path="metadata.name" />
+                        <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                    </Fragment>
+                )}
                 <Sync kind="PolicySet" path="metadata.namespace" />
-                <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
                 <Section label="Details">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
                         <TextInput

@@ -38,7 +38,6 @@ export function wizardArrayItems(props: any, item: any) {
 
 export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
     path: string | null
-    description?: string
     children: ReactNode
     filter?: (item: any) => boolean
     dropdownItems?: { label: string; action: () => object }[]
@@ -147,7 +146,7 @@ export function ArrayInput(props: ArrayInputProps) {
                         <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
                         {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                     </div>
-                    {props.description && <Text component="small">{props.description}</Text>}
+                    {props.helperText && <Text component="small">{props.helperText}</Text>}
                 </div>
             )}
             {values.length === 0 ? (

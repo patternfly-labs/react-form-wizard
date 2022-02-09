@@ -5,6 +5,7 @@ import set from 'set-value'
 import {
     ArrayInput,
     Checkbox,
+    EditMode,
     Hidden,
     ItemSelector,
     Radio,
@@ -23,7 +24,7 @@ import { isValidKubernetesName } from '../common/validation'
 import { PlacementSection, Sync } from '../Placement/PlacementSection'
 import { Specifications } from './templates'
 
-export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel; namespaces: string[] }) {
+export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel; namespaces: string[]; editMode: EditMode }) {
     // const clusterSelectors = useMemo(
     //     () =>
     //         ['cloud: "Amazon"', 'namespace-1', 'namespace-2'].map((selector) => ({
@@ -96,7 +97,9 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
             onCancel={props.onCancel}
         >
             <Step label="Details" id="details">
-                <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                {props.editMode === EditMode.Create && (
+                    <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                )}
                 <Sync kind="Policy" path="metadata.namespace" />
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <Section label="Details" prompt="Enter the details for the policy">
