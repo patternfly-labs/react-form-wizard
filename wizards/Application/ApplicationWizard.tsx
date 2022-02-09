@@ -96,7 +96,6 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
         () => props.channels.filter((channel) => channel.spec.type === 'Git' || channel.spec.type === 'GitHub'),
         [props.channels]
     )
-    debugger
     const helmChannels = useMemo(() => props.channels.filter((channel) => channel.spec.type === 'HelmRepo'), [props.channels])
     const subscriptionGitChannels = gitChannels.map((gitChannel: Channel) => {
         const { name, namespace } = gitChannel.metadata
@@ -645,7 +644,7 @@ function ChannelSection(props: { channels: Channel[]; namespaces: string[] }) {
     const item = useItem() as IData
     const data = useData()
     const type = item.repositoryType.replace(/Subscription/g, '').toLowerCase()
-    const pathnames = _.uniq(_.map(props.channels, 'pathname'))
+    const pathnames = _.uniq(_.map(props.channels, 'spec.pathname'))
     useEffect(() => {
         if (item.subscription) {
             const selectedUrl = item.subscription[type].url
@@ -684,13 +683,13 @@ function ChannelSection(props: { channels: Channel[]; namespaces: string[] }) {
             onCreate={(url: string) => {
                 const channelName = getUniqueChannelName(url, type)
                 const newChannel: Channel = {
-                    metadata:{
+                    metadata: {
                         name: channelName,
-                        namespace: `${channelName}-ns`
-                    }
-                    spec:{
-                        pathname: url
-                    }
+                        namespace: `${channelName}-ns`,
+                    },
+                    spec: {
+                        pathname: url,
+                    },
                 }
                 setNewChannels([...newChannels, newChannel])
             }}

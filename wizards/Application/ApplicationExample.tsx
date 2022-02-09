@@ -12,9 +12,12 @@ export function ApplicationExample() {
     const channels = useMemo(
         () => [
             { metadata: { name: 'helm-channel-1', namespace: 'helm-channel-1' }, spec: { pathname: 'https://test.com', type: 'HelmRepo' } },
-            { metadata: { name: 'helm-channel-2', namespace: 'helm-channel-2' }, spec: { pathname: 'https://test.com', type: 'HelmRepo' } },
+            {
+                metadata: { name: 'helm-channel-2', namespace: 'helm-channel-2' },
+                spec: { pathname: 'https://test2.com', type: 'HelmRepo' },
+            },
             { metadata: { name: 'git-channel-1', namespace: 'git-channel-1' }, spec: { pathname: 'https://test.com', type: 'Git' } },
-            { metadata: { name: 'git-channel-1', namespace: 'git-channel-1' }, spec: { pathname: 'https://test.com', type: 'Git' } },
+            { metadata: { name: 'git-channel-2', namespace: 'git-channel-2' }, spec: { pathname: 'https://test2.com', type: 'Git' } },
         ],
         []
     )
