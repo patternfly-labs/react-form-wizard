@@ -1,4 +1,4 @@
-import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
+import { Button, Flex, FlexItem, SelectOption, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
 import _ from 'lodash'
@@ -49,7 +49,7 @@ interface ApplicationWizardProps {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     placements: string[]
-    subscriptionGitChannels: { name: string; namespace: string; pathname: string }[]
+    channels: Channel[]
     timeZones: string[]
 }
 
@@ -62,6 +62,18 @@ interface IData {
     namespace: string
     newNamespace: boolean
     channels: Record<string, boolean>
+}
+
+interface Channel {
+    metadata: {
+        name: string
+        namespace: string
+    }
+    spec: {
+        pathname: string
+        type: string
+        secretRef?: string
+    }
 }
 
 export function ApplicationWizard(props: ApplicationWizardProps) {
@@ -80,7 +92,21 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
     const urls = useMemo(() => ['url1', 'url2'], [])
     const urlOptions = useMemo(() => ['url1', 'url2'], [])
-
+    const gitChannels = useMemo(
+        () => props.channels.filter((channel) => channel.spec.type === 'Git' || channel.spec.type === 'GitHub'),
+        [props.channels]
+    )
+    debugger
+    const helmChannels = useMemo(() => props.channels.filter((channel) => channel.spec.type === 'HelmRepo'), [props.channels])
+    const subscriptionGitChannels = gitChannels.map((gitChannel: Channel) => {
+        const { name, namespace } = gitChannel.metadata
+        const { pathname } = gitChannel.spec
+        return {
+            name: name || '',
+            namespace: namespace || '',
+            pathname: pathname || '',
+        }
+    })
     return (
         <WizardPage
             title="Create application"
@@ -147,7 +173,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </Tiles>
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
-                            <ChannelSection channels={props.subscriptionGitChannels} namespaces={props.namespaces} />
+                            <ChannelSection channels={gitChannels} namespaces={props.namespaces} />
                             <TextInput
                                 path="subscription.git.username"
                                 label="Username"
@@ -224,7 +250,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                                 label="URL"
                                 placeholder="Enter or select a Helm repository URL"
                                 labelHelp="The URL path for the Helm repository."
-                                options={urls}
+                                options={helmChannels.map((channel) => channel.metadata.name)}
                                 required
                             />
                             <TextInput
@@ -354,7 +380,10 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                             label="URL"
                             labelHelp="The URL path for the Git repository."
                             placeholder="Enter or select a Git URL"
-                            options={urlOptions}
+                            options={subscriptionGitChannels.map((gitChannel) => ({
+                                label: gitChannel.pathname,
+                                value: `${gitChannel.namespace}/${gitChannel.name}`,
+                            }))}
                             required
                         />
                         <Select
@@ -362,7 +391,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                             label="Revision"
                             labelHelp="Refer to a single commit"
                             placeholder="Enter or select a tracking revision"
-                            options={urlOptions}
+                            options={['Branches', 'Tags']}
                         />
                         <Select
                             path="git.path"
@@ -379,7 +408,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                             label="URL"
                             labelHelp="The URL path for the Helm repository."
                             placeholder="Enter or select a Helm URL"
-                            options={urlOptions}
+                            options={helmChannels.map((channel) => channel.metadata.name)}
                             required
                         />
                         <TextInput
@@ -523,8 +552,11 @@ export function TimeWindow(props: { timeZone: string[] }) {
                 placeholder="Select at least one day to create a time window."
                 path="timewindow.daysofweek"
                 required
-                options={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}
-            />
+            >
+                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((value) => (
+                    <SelectOption key={value} value={value} />
+                ))}
+            </Multiselect>
             <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
             <ArrayInput
                 path="timeWindows"
@@ -602,13 +634,13 @@ function DetailsSection(props: { namespaces: string[] }) {
     )
 }
 
-interface IChannel {
-    name: string
-    namespace: string
-    pathname: string
-}
-function ChannelSection(props: { channels: IChannel[]; namespaces: string[] }) {
-    const [newChannels, setNewChannels] = useState<IChannel[]>([])
+// interface IChannel {
+//     name: string
+//     namespace: string
+//     pathname: string
+// }
+function ChannelSection(props: { channels: Channel[]; namespaces: string[] }) {
+    const [newChannels, setNewChannels] = useState<Channel[]>([])
     const activeChannels = useMemo(() => [...props.channels, ...newChannels], [newChannels, props.channels])
     const item = useItem() as IData
     const data = useData()
@@ -643,18 +675,22 @@ function ChannelSection(props: { channels: IChannel[]; namespaces: string[] }) {
             label="URL"
             placeholder="Enter or select a Git URL"
             labelHelp="The URL path for the Git repository."
-            options={activeChannels.map((gitChannel) => ({
-                label: gitChannel.pathname,
+            options={activeChannels.map((channel) => ({
+                label: channel.spec.pathname,
                 // value: `${gitChannel.namespace}/${gitChannel.name}`,
-                value: gitChannel.pathname,
+                value: channel.spec.pathname,
             }))}
             isCreatable={true}
             onCreate={(url: string) => {
                 const channelName = getUniqueChannelName(url, type)
-                const newChannel: IChannel = {
-                    name: channelName,
-                    namespace: `${channelName}-ns`,
-                    pathname: url,
+                const newChannel: Channel = {
+                    metadata:{
+                        name: channelName,
+                        namespace: `${channelName}-ns`
+                    }
+                    spec:{
+                        pathname: url
+                    }
                 }
                 setNewChannels([...newChannels, newChannel])
             }}

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useHistory } from 'react-router'
-import { onCancel, onSubmit } from '../components/utils'
+import { onCancel, onSubmit } from '../common/utils'
 import { ApplicationWizard } from './ApplicationWizard'
 
 export function ApplicationExample() {
@@ -9,7 +9,15 @@ export function ApplicationExample() {
     const servers = useMemo(() => ['default', 'server-1', 'server-2'], [])
     const ansibleCredentials = useMemo(() => ['credential1', 'credential2'], [])
     const placements = useMemo(() => ['placement-1', 'placement-2'], [])
-    const gitChannels = useMemo(() => [{ name: 'test', namespace: 'test-ns', pathname: 'https://test.com' }], [])
+    const channels = useMemo(
+        () => [
+            { metadata: { name: 'helm-channel-1', namespace: 'helm-channel-1' }, spec: { pathname: 'https://test.com', type: 'HelmRepo' } },
+            { metadata: { name: 'helm-channel-2', namespace: 'helm-channel-2' }, spec: { pathname: 'https://test.com', type: 'HelmRepo' } },
+            { metadata: { name: 'git-channel-1', namespace: 'git-channel-1' }, spec: { pathname: 'https://test.com', type: 'Git' } },
+            { metadata: { name: 'git-channel-1', namespace: 'git-channel-1' }, spec: { pathname: 'https://test.com', type: 'Git' } },
+        ],
+        []
+    )
     const timeZones = useMemo(() => ['EST'], [])
     return (
         <ApplicationWizard
@@ -20,7 +28,7 @@ export function ApplicationExample() {
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
             placements={placements}
-            subscriptionGitChannels={gitChannels}
+            channels={channels}
             timeZones={timeZones}
         />
     )

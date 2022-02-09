@@ -52,38 +52,11 @@ interface SingleSelectProps<T> extends SelectCommonProps<T> {
     options: (Option<T> | string | number)[]
 }
 
-interface MultiselectProps<T> extends SelectCommonProps<T[]> {
-    variant: 'multi'
-    options: (Option<T> | string | number)[]
-}
-
-interface GroupedSingleSelectProps<T> extends SelectCommonProps<T> {
-    variant: 'single-grouped'
-    groups: OptionGroup<T>[]
-}
-
-interface GroupedMultiselectProps<T> extends SelectCommonProps<T[]> {
-    variant: 'multi-grouped'
-    groups: OptionGroup<T>[]
-}
-
 export function Select<T>(props: Omit<SingleSelectProps<T>, 'variant'>) {
     return <SelectBase<T> {...props} variant="single" />
 }
 
-export function Multiselect<T>(props: Omit<MultiselectProps<T>, 'variant'>) {
-    return <SelectBase<T> {...props} variant="multi" />
-}
-
-export function GroupedSelect<T>(props: Omit<GroupedSingleSelectProps<T>, 'variant'>) {
-    return <SelectBase<T> {...props} variant="single-grouped" />
-}
-
-export function GroupedMultiselect<T>(props: Omit<GroupedMultiselectProps<T>, 'variant'>) {
-    return <SelectBase<T> {...props} variant="multi-grouped" />
-}
-
-type SelectProps<T> = SingleSelectProps<T> | MultiselectProps<T> | GroupedSingleSelectProps<T> | GroupedMultiselectProps<T>
+type SelectProps<T> = SingleSelectProps<T>
 
 function SelectBase<T = any>(props: SelectProps<T>) {
     const { displayMode: mode, value, validated, hidden, id, path, disabled } = useInput(props)
@@ -111,7 +84,6 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     } & SelectOptionObject)[] = useMemo(() => {
         switch (props.variant) {
             case 'single':
-            case 'multi':
                 return props.options.map((option) => {
                     let id: string
                     let label: string
@@ -151,11 +123,6 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     const compareTo = (compareTo: any) => compareTo === keyedValue
                     return { id, label, value, keyedValue, toString, compareTo }
                 })
-            case 'single-grouped':
-            case 'multi-grouped': {
-                // TODO
-                return []
-            }
         }
     }, [props, keyPath])
 
@@ -195,7 +162,6 @@ function SelectBase<T = any>(props: SelectProps<T>) {
         (_, selectOptionObject) => {
             switch (props.variant) {
                 case 'single':
-                case 'single-grouped':
                     if (isCreatable && typeof selectOptionObject === 'string') {
                         set(item, path, selectOptionObject, { preservePaths: false })
                     } else {
@@ -203,34 +169,11 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     }
                     setOpen(false)
                     break
-                case 'multi':
-                case 'multi-grouped': {
-                    let newValues: any[] = []
-                    if (Array.isArray(value)) newValues = [...value]
-                    if (newValues.includes(selectOptionObject.value)) {
-                        newValues = newValues.filter((value) => value !== selectOptionObject.value)
-                    } else {
-                        newValues.push(selectOptionObject.value)
-                    }
-                    set(item, path, newValues, { preservePaths: false })
-                    break
-                }
             }
             update()
         },
-        [item, props, update, path, value, isCreatable]
+        [isCreatable, item, path, props.variant, update]
     )
-
-    const isGrouped = useMemo(() => {
-        switch (props.variant) {
-            case 'single-grouped':
-            case 'multi-grouped':
-                return true
-            case 'single':
-            case 'multi':
-                return false
-        }
-    }, [props.variant])
 
     const onClear = useCallback(() => {
         // set(item, props.path, '', { preservePaths: false })
@@ -257,11 +200,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     const variant = useMemo(() => {
         switch (props.variant) {
-            case 'multi':
-            case 'multi-grouped':
-                return SelectVariant.checkbox
             case 'single':
-            case 'single-grouped':
                 return SelectVariant.single
         }
     }, [props.variant])
@@ -293,7 +232,6 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     isCreatable={isCreatable}
                     onCreateOption={(value) => props.onCreate?.(value)}
                     validated={validated}
-                    isGrouped={isGrouped}
                     hasInlineFilter
                     onFilter={onFilter}
                     footer={props.footer}

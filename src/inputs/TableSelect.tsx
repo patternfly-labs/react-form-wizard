@@ -27,6 +27,7 @@ export type TableSelectProps<T> = InputCommonProps<string> & {
     items: T[]
     itemToValue?: (item: T) => unknown
     valueMatchesItem?: (value: unknown, item: T) => boolean
+    emptyMessage: string
 }
 
 export function TableSelect<T = any>(props: TableSelectProps<T>) {
@@ -107,6 +108,10 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
                 </DescriptionListDescription>
             </DescriptionListGroup>
         )
+    }
+
+    if (props.items.length === 0) {
+        return <div>{props.emptyMessage}</div>
     }
 
     return (

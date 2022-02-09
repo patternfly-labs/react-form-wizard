@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import {
     EditMode,
     ItemSelector,
@@ -11,23 +12,20 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
-import { isValidKubernetesName } from '../components/validation'
-import { PlacementSection, Sync } from '../Placement/PlacementWizard'
-
-interface IResource {
-    kind?: string
-    metadata?: { name?: string; namespace?: string }
-}
+import { useItem } from '../../src/contexts/ItemContext'
+import { IResource } from '../common/resource'
+import { isValidKubernetesName } from '../common/validation'
+import { IClusterSetBinding, PlacementSection, Sync } from '../Placement/PlacementSection'
 
 export interface PolicySetWizardProps {
     namespaces: string[]
     policies: IResource[]
-    clusterSets: IResource[]
+    clusterSetBindings: IClusterSetBinding[]
     title: string
     editMode?: EditMode
     onSubmit: WizardSubmit
     onCancel: WizardCancel
-    resources?: IResource
+    resources?: IResource[]
 }
 
 export function PolicySetWizard(props: PolicySetWizardProps) {
@@ -75,27 +73,46 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                 </Section>
             </Step>
             <Step label="Policies" id="policies-step">
-                <Section label="Policies" description="Select the policies you want to add to this set">
-                    <ItemSelector selectKey="kind" selectValue="PolicySet">
-                        <TableSelect
-                            id="policies"
-                            path="spec.policies"
-                            label=""
-                            columns={[{ name: 'Name', cellFn: (policy: IResource) => policy.metadata?.name }]}
-                            items={props.policies}
-                            itemToValue={(policy: IResource) => policy.metadata?.name}
-                            valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata?.name}
-                        />
-                    </ItemSelector>
-                </Section>
+                <PoliciesSection policies={props.policies} />
             </Step>
             <Step label="Placement" id="placement-step">
                 <PlacementSection
-                    clusterSets={props.clusterSets}
+                    clusterSetBindings={props.clusterSetBindings}
                     bindingKind="PolicySet"
                     bindingApiGroup="policy.open-cluster-management.io"
                 />
             </Step>
         </WizardPage>
+    )
+}
+
+function PoliciesSection(props: { policies: IResource[] }) {
+    const resources = useItem() as IResource[]
+    const namespacedPolicies = useMemo(() => {
+        if (!resources.find) return []
+        const policySet = resources?.find((resource) => resource.kind === 'PolicySet')
+        if (!policySet) return []
+        const namespace = policySet.metadata?.namespace
+        if (!namespace) return []
+        return props.policies.filter((policy) => policy.metadata?.namespace === namespace)
+    }, [props.policies, resources])
+    return (
+        <Section label="Policies" description="Select the policies you want to add to this set">
+            <ItemSelector selectKey="kind" selectValue="PolicySet">
+                <TableSelect
+                    id="policies"
+                    path="spec.policies"
+                    label=""
+                    columns={[
+                        { name: 'Name', cellFn: (policy: IResource) => policy.metadata?.name },
+                        { name: 'Namespace', cellFn: (policy: IResource) => policy.metadata?.namespace },
+                    ]}
+                    items={namespacedPolicies}
+                    itemToValue={(policy: IResource) => policy.metadata?.name}
+                    valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata?.name}
+                    emptyMessage="No policies availble for selection. Set the namespace to be able to select policies in that namespace."
+                />
+            </ItemSelector>
+        </Section>
     )
 }

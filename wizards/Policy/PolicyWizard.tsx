@@ -19,8 +19,8 @@ import {
     WizardSubmit,
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
-import { isValidKubernetesName } from '../components/validation'
-import { PlacementSection, Sync } from '../Placement/PlacementWizard'
+import { isValidKubernetesName } from '../common/validation'
+import { PlacementSection, Sync } from '../Placement/PlacementSection'
 import { Specifications } from './templates'
 
 export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel; namespaces: string[] }) {
@@ -145,7 +145,7 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
             </Step>
 
             <Step label="Cluster placement" id="placement">
-                <PlacementSection clusterSets={[]} bindingKind="Policy" bindingApiGroup="policy.open-cluster-management.io" />
+                <PlacementSection clusterSetBindings={[]} bindingKind="Policy" bindingApiGroup="policy.open-cluster-management.io" />
             </Step>
 
             <Step label="Security groups" id="security-groups">
