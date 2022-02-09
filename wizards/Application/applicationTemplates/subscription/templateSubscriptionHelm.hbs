@@ -4,14 +4,14 @@
 {{! ========================================================== }}
 {{! ========================================================== }}
 
-{{#unless channelNamespace}}
-{{#unless channelNamespaceExists}}
+{{#if newChannel}}
+{{#if newChannelNamespace}}
 ---
 apiVersion: v1                      
 kind: Namespace
 metadata:
   name: {{{channelName}}}-ns
-{{/unless}}
+{{/if}}
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: Channel
@@ -44,7 +44,7 @@ data:
   user: {{{subscription.helm.username}}}
   password: {{{subscription.helm.password}}}
 {{/if}}
-{{/unless}}      
+{{/if}}      
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: Subscription

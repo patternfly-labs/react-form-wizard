@@ -18,6 +18,14 @@ export function ApplicationExample() {
             },
             { metadata: { name: 'git-channel-1', namespace: 'git-channel-1' }, spec: { pathname: 'https://test.com', type: 'Git' } },
             { metadata: { name: 'git-channel-2', namespace: 'git-channel-2' }, spec: { pathname: 'https://test2.com', type: 'Git' } },
+            {
+                metadata: { name: 'obj-channel-1', namespace: 'obj-channel-1' },
+                spec: { pathname: 'https://test.com', type: 'ObjectBucket' },
+            },
+            {
+                metadata: { name: 'obj-channel-2', namespace: 'obj-channel-2' },
+                spec: { pathname: 'https://test2.com', type: 'ObjectBucket' },
+            },
         ],
         []
     )

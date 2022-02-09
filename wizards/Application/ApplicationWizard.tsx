@@ -97,15 +97,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
         [props.channels]
     )
     const helmChannels = useMemo(() => props.channels.filter((channel) => channel.spec.type === 'HelmRepo'), [props.channels])
-    const subscriptionGitChannels = gitChannels.map((gitChannel: Channel) => {
-        const { name, namespace } = gitChannel.metadata
-        const { pathname } = gitChannel.spec
-        return {
-            name: name || '',
-            namespace: namespace || '',
-            pathname: pathname || '',
-        }
-    })
+    const objChannels = useMemo(() => props.channels.filter((channel) => channel.spec.type === 'ObjectBucket'), [props.channels])
     return (
         <WizardPage
             title="Create application"
@@ -244,25 +236,20 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </Hidden>
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionHelm'}>
-                            <Select
-                                path="subscription.helm.url"
-                                label="URL"
-                                placeholder="Enter or select a Helm repository URL"
-                                labelHelp="The URL path for the Helm repository."
-                                options={helmChannels.map((channel) => channel.metadata.name)}
-                                required
-                            />
+                            <ChannelSection channels={helmChannels} namespaces={props.namespaces} />
                             <TextInput
                                 path="subscription.helm.username"
                                 label="Username"
                                 placeholder="Enter the Helm repository username"
                                 labelHelp="The username if this is a private Helm repository and requires connection."
+                                hidden={(data) => !data.newChannel}
                             />
                             <TextInput
                                 path="subscription.helm.password"
                                 label="Password"
                                 placeholder="Enter the Helm repository password"
                                 labelHelp="The password if this is a private Helm repository and requires connection."
+                                hidden={(data) => !data.newChannel}
                             />
                             <TextInput
                                 path="subscription.helm.chart"
@@ -304,25 +291,20 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </Hidden>
 
                         <Hidden hidden={(data) => data.repositoryType !== 'SubscriptionObjectstorage'}>
-                            <Select
-                                path="subscription.obj.url"
-                                label="URL"
-                                placeholder="Enter or select an ObjectStore bucket URL"
-                                labelHelp="The URL path for the object store."
-                                options={urls}
-                                required
-                            />
+                            <ChannelSection channels={objChannels} namespaces={props.namespaces} />
                             <TextInput
                                 path="subscription.obj.accessKey"
                                 label="Access key"
                                 placeholder="Enter the object store access key"
                                 labelHelp="The access key for accessing the object store."
+                                hidden={(data) => !data.newChannel}
                             />
                             <TextInput
                                 path="subscription.obj.secretKey"
                                 label="Secret key"
                                 placeholder="Enter the object store secret key"
                                 labelHelp="The secret key for accessing the object store."
+                                hidden={(data) => !data.newChannel}
                             />
                             <TextInput
                                 path="subscription.obj.region"
@@ -379,9 +361,9 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                             label="URL"
                             labelHelp="The URL path for the Git repository."
                             placeholder="Enter or select a Git URL"
-                            options={subscriptionGitChannels.map((gitChannel) => ({
-                                label: gitChannel.pathname,
-                                value: `${gitChannel.namespace}/${gitChannel.name}`,
+                            options={gitChannels.map((gitChannel) => ({
+                                label: gitChannel.spec.pathname,
+                                value: gitChannel.spec.pathname,
                             }))}
                             required
                         />
@@ -407,7 +389,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                             label="URL"
                             labelHelp="The URL path for the Helm repository."
                             placeholder="Enter or select a Helm URL"
-                            options={helmChannels.map((channel) => channel.metadata.name)}
+                            options={helmChannels.map((channel) => channel.spec.pathname)}
                             required
                         />
                         <TextInput
@@ -633,11 +615,6 @@ function DetailsSection(props: { namespaces: string[] }) {
     )
 }
 
-// interface IChannel {
-//     name: string
-//     namespace: string
-//     pathname: string
-// }
 function ChannelSection(props: { channels: Channel[]; namespaces: string[] }) {
     const [newChannels, setNewChannels] = useState<Channel[]>([])
     const activeChannels = useMemo(() => [...props.channels, ...newChannels], [newChannels, props.channels])
@@ -647,33 +624,35 @@ function ChannelSection(props: { channels: Channel[]; namespaces: string[] }) {
     const pathnames = _.uniq(_.map(props.channels, 'spec.pathname'))
     useEffect(() => {
         if (item.subscription) {
-            const selectedUrl = item.subscription[type].url
-            if (!pathnames.includes(selectedUrl)) {
-                if (!item.newChannel) {
-                    item.newChannel = true
-                    item.channelName = getUniqueChannelName(selectedUrl, type)
+            const selectedUrl = _.get(item.subscription[type], 'url')
+            if (selectedUrl) {
+                if (!pathnames.includes(selectedUrl)) {
+                    if (!item.newChannel) {
+                        item.newChannel = true
+                        item.channelName = getUniqueChannelName(selectedUrl, type)
 
-                    if (props.namespaces.includes(`${item.channelName}-ns`)) {
-                        item.newChannelNamespace = false
-                    } else {
-                        item.newChannelNamespace = true
+                        if (props.namespaces.includes(`${item.channelName}-ns`)) {
+                            item.newChannelNamespace = false
+                        } else {
+                            item.newChannelNamespace = true
+                        }
+                        data.update()
                     }
-                    data.update()
-                }
-            } else {
-                if (item.newChannel) {
-                    item.newChannel = false
-                    data.update()
+                } else {
+                    if (item.newChannel) {
+                        item.newChannel = false
+                        data.update()
+                    }
                 }
             }
         }
     }, [item, data, props.channels])
     return (
         <Select
-            path="subscription.git.url"
+            path={`subscription.${type}.url`}
             label="URL"
-            placeholder="Enter or select a Git URL"
-            labelHelp="The URL path for the Git repository."
+            placeholder={`Enter or select a ${type} URL`}
+            labelHelp={`The URL path for the ${type} repository.`}
             options={activeChannels.map((channel) => ({
                 label: channel.spec.pathname,
                 // value: `${gitChannel.namespace}/${gitChannel.name}`,
@@ -682,12 +661,24 @@ function ChannelSection(props: { channels: Channel[]; namespaces: string[] }) {
             isCreatable={true}
             onCreate={(url: string) => {
                 const channelName = getUniqueChannelName(url, type)
+                let channelType = ''
+                switch (type) {
+                    case 'git':
+                        channelType = 'Git'
+                        break
+                    case 'helm':
+                        channelType = 'HelmRepo'
+                        break
+                    case 'objectstore':
+                        channelType = 'ObjectBucket'
+                }
                 const newChannel: Channel = {
                     metadata: {
                         name: channelName,
                         namespace: `${channelName}-ns`,
                     },
                     spec: {
+                        type: channelType,
                         pathname: url,
                     },
                 }
