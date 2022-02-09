@@ -1,4 +1,4 @@
 export enum EditMode {
-    Create,
-    Edit,
+    Create = 'Create',
+    Edit = 'Edit',
 }

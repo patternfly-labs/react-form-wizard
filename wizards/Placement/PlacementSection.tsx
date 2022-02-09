@@ -118,7 +118,6 @@ export function PlacementSection(props: {
             {editMode === EditMode.Create && (
                 <Fragment>
                     <Sync kind="Placement" path="metadata.name" targetKind="PlacementBinding" targetPath="placementRef.name" />
-                    <Sync kind="Placement" path="metadata.name" targetKind="PlacementBinding" />
                 </Fragment>
             )}
             <Section
@@ -368,6 +367,7 @@ export function PlacementBindings(props: {
     bindingSubjectKind: string
     bindingSubjectApiGroup?: string
 }) {
+    const editMode = useEditMode()
     return (
         <ArrayInput
             id="placement-bindings"
@@ -375,12 +375,15 @@ export function PlacementBindings(props: {
             helperText="To apply a resource to a cluster, the placement must be bound to the resource using a placement binding."
             path={null}
             filter={(resource) => resource.kind === 'PlacementBinding'}
-            placeholder="Add binding"
+            placeholder="Add placement binding"
             collapsedContent="metadata.name"
             collapsedPlaceholder="Expand to enter binding"
             defaultCollapsed
             isSection
-            hidden={() => !props.hasPlacement && !props.hasPlacementRules && !props.hasPlacementBindings}
+            hidden={() => {
+                if (editMode === EditMode.Create) return true
+                return !props.hasPlacement && !props.hasPlacementRules && !props.hasPlacementBindings
+            }}
             newValue={{
                 apiVersion: 'policy.open-cluster-management.io/v1',
                 kind: 'PlacementBinding',
@@ -388,39 +391,43 @@ export function PlacementBindings(props: {
                 placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
                 subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
             }}
-            // hidden={(bindings) => !bindings.length}
-            dropdownItems={[
-                {
-                    label: 'Add placement binding',
-                    action: () => ({
-                        apiVersion: 'policy.open-cluster-management.io/v1',
-                        kind: 'PlacementBinding',
-                        metadata: {},
-                        placementRef: { apiGroup: 'placements.cluster.open-cluster-management.io', kind: 'Placement' },
-                        subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
-                    }),
-                },
-                {
-                    label: 'Add placement rule binding',
-                    action: () => ({
-                        apiVersion: 'policy.open-cluster-management.io/v1',
-                        kind: 'PlacementBinding',
-                        metadata: {},
-                        placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
-                        subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
-                    }),
-                },
-            ]}
+            dropdownItems={
+                props.hasPlacementRules
+                    ? [
+                          {
+                              label: 'Add placement binding',
+                              action: () => ({
+                                  apiVersion: 'policy.open-cluster-management.io/v1',
+                                  kind: 'PlacementBinding',
+                                  metadata: {},
+                                  placementRef: { apiGroup: 'placements.cluster.open-cluster-management.io', kind: 'Placement' },
+                                  subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
+                              }),
+                          },
+                          {
+                              label: 'Add placement rule binding',
+                              action: () => ({
+                                  apiVersion: 'policy.open-cluster-management.io/v1',
+                                  kind: 'PlacementBinding',
+                                  metadata: {},
+                                  placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                                  subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
+                              }),
+                          },
+                      ]
+                    : undefined
+            }
         >
-            <TextInput path="metadata.name" label="Binding name" required />
-            <Select
+            <TextInput path="metadata.name" label="Binding name" required readonly={true} />
+            {/* <TextInput path="placementRef.name" label="Placement name" required readonly={true} /> */}
+            {/* <Select
                 path="placementRef.name"
                 label="Placement"
                 helperText="The placement used to select clusters."
                 required
                 hidden={(binding) => binding.placementRef?.kind !== 'Placement'}
                 options={[]}
-            />
+            /> */}
             <Select
                 path="placementRef.name"
                 label="Placement rule"
@@ -444,36 +451,57 @@ export function PlacementBindings(props: {
     )
 }
 
-export function Sync(props: { kind: string; path: string; targetKind?: string; targetPath?: string }) {
+export function Sync(props: {
+    kind: string
+    path: string
+    targetKind?: string
+    targetPath?: string
+    addIndex?: boolean
+    prefix?: string
+    postfix?: string
+}) {
     const resources = useItem() as IResource[]
     const { update } = useData()
     const [value, setValue] = useState('')
 
     useEffect(() => {
         let changed = false
+        const indices: Record<string, number> = {}
         for (const resource of resources) {
             if ((props.targetKind === undefined && resource.kind !== props.kind) || resource.kind === props.targetKind) {
-                const existingValue = get(resource, props.targetPath ?? props.path)
-                if (value && existingValue !== value) {
-                    changed = true
-                    set(resource, props.targetPath ?? props.path, value)
+                if (typeof value === 'string') {
+                    let newValue = value
+                    let index = indices[resource.kind ?? '']
+                    if (!index) index = 0
+                    index++
+                    indices[resource.kind ?? ''] = index
+                    if (props.prefix) newValue += props.prefix
+                    if (props.addIndex) newValue = newValue + '-' + index.toString()
+                    if (props.postfix) newValue += props.postfix
+                    const existingValue = get(resource, props.targetPath ?? props.path)
+                    if (existingValue !== newValue) {
+                        changed = true
+                        set(resource, props.targetPath ?? props.path, newValue)
+                    }
                 }
             }
         }
         if (changed) update()
-    }, [props.kind, props.path, props.targetKind, props.targetPath, resources, update, value])
+    }, [props.addIndex, props.kind, props.path, props.postfix, props.prefix, props.targetKind, props.targetPath, resources, update, value])
 
-    if (Array.isArray(resources)) {
-        const resource = resources?.find((resource) => resource.kind === props.kind)
-        if (resource) {
-            const resourceValue = get(resource, props.path)
-            if (resourceValue) {
-                if (value !== resourceValue) {
-                    setValue(resourceValue)
+    useEffect(() => {
+        if (Array.isArray(resources)) {
+            const resource = resources?.find((resource) => resource.kind === props.kind)
+            if (resource) {
+                const resourceValue = get(resource, props.path)
+                if (resourceValue) {
+                    if (value !== resourceValue) {
+                        setValue(resourceValue)
+                    }
                 }
             }
         }
-    }
+    }, [props.kind, props.path, resources, value])
 
     return <Fragment />
 }
