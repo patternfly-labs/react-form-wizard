@@ -46,7 +46,18 @@ import { CredentialsExample } from './Credentials/CredentialsExample'
 import { HomeWizard } from './Home/HomeWizard'
 import { InputsWizard } from './Inputs/InputsWizard'
 import { PolicyExample } from './Policy/PolicyExample'
-import { PolicySetExample } from './PolicySet/PolicySetExample'
+import {
+    CreatePolicySet,
+    EditPolicySet1,
+    EditPolicySet2,
+    EditPolicySet3,
+    EditPolicySet4,
+    EditPolicySet5,
+    EditPolicySet6,
+    EditPolicySet7,
+    EditPolicySet8,
+    PolicySetExamples,
+} from './PolicySet/PolicySetExamples'
 import { RosaExample } from './ROSA/RosaExample'
 import { RouteE } from './Routes'
 
@@ -185,7 +196,25 @@ export function DemoRouter(): JSX.Element {
         case RouteE.Policy:
             return <PolicyExample />
         case RouteE.PolicySet:
-            return <PolicySetExample />
+            return <PolicySetExamples />
+        case RouteE.CreatePolicySet:
+            return <CreatePolicySet />
+        case RouteE.EditPolicySet1:
+            return <EditPolicySet1 />
+        case RouteE.EditPolicySet2:
+            return <EditPolicySet2 />
+        case RouteE.EditPolicySet3:
+            return <EditPolicySet3 />
+        case RouteE.EditPolicySet4:
+            return <EditPolicySet4 />
+        case RouteE.EditPolicySet5:
+            return <EditPolicySet5 />
+        case RouteE.EditPolicySet6:
+            return <EditPolicySet6 />
+        case RouteE.EditPolicySet7:
+            return <EditPolicySet7 />
+        case RouteE.EditPolicySet8:
+            return <EditPolicySet8 />
         case RouteE.ROSA:
             return <RosaExample />
         case RouteE.Inputs:
@@ -336,14 +365,13 @@ function ExampleWizards() {
                                             }}
                                             isSelectable
                                             isRounded
+                                            isLarge
                                             isFlat
                                             style={{ transition: 'box-shadow 400ms' }}
                                         >
                                             <CardTitle>
                                                 <Split>
-                                                    <SplitItem isFilled style={{ fontSize: 'larger' }}>
-                                                        {wizard.name}
-                                                    </SplitItem>
+                                                    <SplitItem isFilled>{wizard.name}</SplitItem>
                                                     <SplitItem>
                                                         {wizard.state !== StateE.production && (
                                                             <div
@@ -465,7 +493,7 @@ function DemoSidebar() {
     )
 }
 
-function Masonry(props: { size: number; children?: ReactNode }) {
+export function Masonry(props: { size: number; children?: ReactNode }) {
     const target = useRef(null)
     const [columns, setColumns] = useState(2)
     useResizeObserver(target, (entry) => {

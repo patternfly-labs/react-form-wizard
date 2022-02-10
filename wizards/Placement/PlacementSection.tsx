@@ -60,21 +60,19 @@ interface Predicate {
         /** LabelSelector represents a selector of ManagedClusters by label */
         labelSelector?: {
             matchLabels?: { [key: string]: string }
-            matchExpressions?: {
-                key?: string
-                operator?: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
-                values?: string[]
-            }[]
+            matchExpressions?: IExpression[]
         }
         /** ClaimSelector represents a selector of ManagedClusters by clusterClaims in status */
         claimSelector?: {
-            matchExpressions?: {
-                key?: string
-                operator?: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
-                values?: string[]
-            }[]
+            matchExpressions?: IExpression[]
         }
     }
+}
+
+interface IExpression {
+    key?: string
+    operator?: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
+    values?: string[]
 }
 
 const placementLocalCluster: IPlacement = {
@@ -106,6 +104,8 @@ export function PlacementSection(props: {
     clusterSetBindings: IClusterSetBinding[]
     bindingSubjectKind: string
     bindingSubjectApiGroup?: string
+    placements: IResource[]
+    placementRules: IResource[]
 }) {
     const resources = useItem() as IResource[]
     const { update } = useData()
@@ -195,7 +195,6 @@ export function PlacementSection(props: {
                     Uses an existing placement to deploy to clusters.
                 </Tile>
             </Section>
-
             <Placements
                 clusterSetBindings={props.clusterSetBindings}
                 bindingKind={props.bindingSubjectKind}
@@ -208,6 +207,8 @@ export function PlacementSection(props: {
                 hasPlacementBindings={hasPlacementBindings}
                 bindingSubjectKind={props.bindingSubjectKind}
                 bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                placements={props.placements}
+                placementRules={props.placementRules}
             />
         </Fragment>
     )
@@ -229,7 +230,7 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
     }, [props.bindingKind, props.clusterSetBindings, resources])
     const editMode = useEditMode()
 
-    if (editMode === EditMode.Create && props.placementCount === 1) {
+    if (editMode === EditMode.Create && props.placementCount <= 1) {
         return (
             <Section
                 label="Cluster placement"
@@ -258,7 +259,6 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
                 metadata: { name: '', namespace: '' },
                 spec: {},
             }}
-            hidden={() => props.placementCount === 0}
             defaultCollapsed
         >
             <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
@@ -283,16 +283,14 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
             </Multiselect>
 
             <ArrayInput
-                label="Predicates"
+                label="Cluster selectors"
                 path="spec.predicates"
-                placeholder="Add predicate"
+                placeholder="Add cluster selector"
                 collapsedContent={<PredicateSummary />}
                 helperText="
-            A predicate further selects clusters from the clusters selected from the cluster sets.
-            A placement can have multiple predicates.
-            Clusters matching any predicate will be selected.
-            Clusters must match all predicate selectors and expressions to be selected by that predicate.
-            This allows complex 'And/Or' logic for selecting clusters.
+            A cluster selector further selects clusters from the clusters in the cluster sets which have bindings to the namespace.
+            Clusters matching any cluster selector will be selected.
+            Clusters must match all cluster selector criteria to be selected by that cluster selector.
             "
                 defaultCollapsed
             >
@@ -352,7 +350,6 @@ export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules
                     },
                 },
             }}
-            // hidden={(resources: IResource[]) => resources?.find((resource) => resource.kind === 'PlacementRule') === undefined}
             defaultCollapsed
         >
             <TextInput
@@ -381,6 +378,8 @@ export function PlacementBindings(props: {
     hasPlacementBindings: boolean
     bindingSubjectKind: string
     bindingSubjectApiGroup?: string
+    placements: IResource[]
+    placementRules: IResource[]
 }) {
     const editMode = useEditMode()
     return (
@@ -403,7 +402,7 @@ export function PlacementBindings(props: {
                 apiVersion: 'policy.open-cluster-management.io/v1',
                 kind: 'PlacementBinding',
                 metadata: {},
-                placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+                placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: 'Placement' },
                 subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
             }}
             dropdownItems={
@@ -415,7 +414,7 @@ export function PlacementBindings(props: {
                                   apiVersion: 'policy.open-cluster-management.io/v1',
                                   kind: 'PlacementBinding',
                                   metadata: {},
-                                  placementRef: { apiGroup: 'placements.cluster.open-cluster-management.io', kind: 'Placement' },
+                                  placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: 'Placement' },
                                   subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
                               }),
                           },
@@ -433,23 +432,30 @@ export function PlacementBindings(props: {
                     : undefined
             }
         >
-            <TextInput path="metadata.name" label="Binding name" required readonly={true} />
+            <TextInput path="metadata.name" label="Binding name" required />
             {/* <TextInput path="placementRef.name" label="Placement name" required readonly={true} /> */}
-            {/* <Select
+            <Select
+                path="placementRef.kind"
+                label="Placement kind"
+                helperText="The placement rule used to select clusters for placement."
+                required
+                options={['Placement', 'PlacementRule']}
+            />
+            <Select
                 path="placementRef.name"
                 label="Placement"
                 helperText="The placement used to select clusters."
                 required
                 hidden={(binding) => binding.placementRef?.kind !== 'Placement'}
-                options={[]}
-            /> */}
+                options={props.placements.map((placement) => placement.metadata?.name ?? '')}
+            />
             <Select
                 path="placementRef.name"
                 label="Placement rule"
                 helperText="The placement rule used to select clusters for placement."
                 required
                 hidden={(binding) => binding.placementRef?.kind !== 'PlacementRule'}
-                options={[]}
+                options={props.placementRules.map((placement) => placement.metadata?.name ?? '')}
             />
             <ArrayInput
                 path="subjects"
@@ -460,6 +466,7 @@ export function PlacementBindings(props: {
                 collapsedPlaceholder="Expand to enter subject"
                 newValue={{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }}
             >
+                <Select path="kind" label="Subject kind" required options={['PolicySet', 'Policy']} />
                 <TextInput path="name" label="Subject name" required />
             </ArrayInput>
         </ArrayInput>
@@ -588,6 +595,12 @@ function PredicateSummary() {
 }
 
 function MatchExpressionSummary() {
+    const expression = useItem() as IExpression
+    switch (expression.operator) {
+        case 'In':
+            break
+    }
+
     return (
         <Split hasGutter>
             <SplitItem>

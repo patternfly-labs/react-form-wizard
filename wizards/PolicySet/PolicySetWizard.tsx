@@ -21,6 +21,8 @@ export interface PolicySetWizardProps {
     namespaces: string[]
     policies: IResource[]
     clusterSetBindings: IClusterSetBinding[]
+    placements: IResource[]
+    placementRules: IResource[]
     title: string
     editMode?: EditMode
     onSubmit: WizardSubmit
@@ -92,6 +94,8 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                     clusterSetBindings={props.clusterSetBindings}
                     bindingSubjectKind="PolicySet"
                     bindingSubjectApiGroup="policy.open-cluster-management.io"
+                    placements={props.placements}
+                    placementRules={props.placementRules}
                 />
             </Step>
         </WizardPage>
