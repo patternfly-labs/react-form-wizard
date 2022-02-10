@@ -122,7 +122,7 @@ function PoliciesSection(props: { policies: IResource[] }) {
                     items={namespacedPolicies}
                     itemToValue={(policy: IResource) => policy.metadata?.name}
                     valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata?.name}
-                    emptyMessage="No policies availble for selection. Set the namespace to be able to select policies in that namespace."
+                    emptyMessage="No policies available for selection. Set the namespace to be able to select policies in that namespace."
                 />
             </ItemSelector>
         </Section>

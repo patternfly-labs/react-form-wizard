@@ -2,7 +2,7 @@ import { Label, SelectOption, Split, SplitItem, Tile } from '@patternfly/react-c
 import get from 'get-value'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import set from 'set-value'
-import { ArrayInput, EditMode, ItemText, KeyValue, NumberInput, Section, Select, StringsInput, TextInput } from '../../src'
+import { ArrayInput, EditMode, ItemSelector, ItemText, KeyValue, NumberInput, Section, Select, StringsInput, TextInput } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
@@ -17,10 +17,10 @@ A slice of PlacementDecisions with label cluster.open-cluster-management.io/plac
 If a ManagedCluster is selected and added into the PlacementDecisions, other components may apply workload on it; once it is removed from the PlacementDecisions, the workload applied on this ManagedCluster should be evicted accordingly.
 */
 export type IPlacement = IResource & {
-    apiVersion: 'cluster.open-cluster-management.io/v1alpha1'
-    kind: 'Placement'
+    apiVersion?: 'cluster.open-cluster-management.io/v1alpha1'
+    kind?: 'Placement'
     metadata?: { name?: string; namespace?: string }
-    spec: {
+    spec?: {
         /** 
         ClusterSets represent the ManagedClusterSets from which theManagedClusters are selected. If the slice is empty,
         ManagedClusters will be selected from the ManagedClusterSets bound to the placement namespace, otherwise 
@@ -50,7 +50,7 @@ export type IPlacement = IResource & {
         Predicates represent a slice of predicates to select ManagedClusters.
         The predicates are ORed.
          */
-        predicates: Predicate[]
+        predicates?: Predicate[]
     }
 }
 
@@ -61,17 +61,17 @@ interface Predicate {
         labelSelector?: {
             matchLabels?: { [key: string]: string }
             matchExpressions?: {
-                key: string
-                operator: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
+                key?: string
+                operator?: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
                 values?: string[]
             }[]
         }
         /** ClaimSelector represents a selector of ManagedClusters by clusterClaims in status */
         claimSelector?: {
-            matchExpressions: {
-                key: string
-                operator: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
-                values: string[]
+            matchExpressions?: {
+                key?: string
+                operator?: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
+                values?: string[]
             }[]
         }
     }
@@ -109,7 +109,8 @@ export function PlacementSection(props: {
 }) {
     const resources = useItem() as IResource[]
     const { update } = useData()
-    const hasPlacement = resources?.find((resource) => resource.kind === 'Placement') !== undefined
+    const placementCount = resources?.filter((resource) => resource.kind === 'Placement').length
+    const hasPlacement = placementCount !== 0
     const hasPlacementRules = resources?.find((resource) => resource.kind === 'PlacementRule') !== undefined
     const hasPlacementBindings = resources?.find((resource) => resource.kind === 'PlacementBinding') !== undefined
     const editMode = useEditMode()
@@ -195,12 +196,10 @@ export function PlacementSection(props: {
                 </Tile>
             </Section>
 
-            <Placement
+            <Placements
                 clusterSetBindings={props.clusterSetBindings}
                 bindingKind={props.bindingSubjectKind}
-                hasPlacement={hasPlacement}
-                hasPlacementRules={hasPlacementRules}
-                hasPlacementBindings={hasPlacementBindings}
+                placementCount={placementCount}
             />
             <PlacementRules hasPlacement={hasPlacement} hasPlacementRules={hasPlacementRules} hasPlacementBindings={hasPlacementBindings} />
             <PlacementBindings
@@ -214,13 +213,7 @@ export function PlacementSection(props: {
     )
 }
 
-export function Placement(props: {
-    clusterSetBindings: IClusterSetBinding[]
-    bindingKind: string
-    hasPlacement: boolean
-    hasPlacementRules: boolean
-    hasPlacementBindings: boolean
-}) {
+export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string; placementCount: number }) {
     const resources = useItem() as IResource[]
     const namespaceClusterSetNames = useMemo(() => {
         if (!resources.find) return []
@@ -234,6 +227,20 @@ export function Placement(props: {
                 .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
         )
     }, [props.bindingKind, props.clusterSetBindings, resources])
+    const editMode = useEditMode()
+
+    if (editMode === EditMode.Create && props.placementCount === 1) {
+        return (
+            <Section
+                label="Cluster placement"
+                description="Placement selects clusters from the cluster sets which have bindings to the resource namespace."
+            >
+                <ItemSelector selectKey="kind" selectValue="Placement">
+                    <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
+                </ItemSelector>
+            </Section>
+        )
+    }
     return (
         <ArrayInput
             id="placements"
@@ -251,9 +258,17 @@ export function Placement(props: {
                 metadata: { name: '', namespace: '' },
                 spec: {},
             }}
-            hidden={() => !props.hasPlacement && !props.hasPlacementBindings}
+            hidden={() => props.placementCount === 0}
             defaultCollapsed
         >
+            <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
+        </ArrayInput>
+    )
+}
+
+export function Placement(props: { namespaceClusterSetNames: string[] }) {
+    return (
+        <Fragment>
             {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
             <Multiselect
                 label="Cluster sets"
@@ -262,7 +277,7 @@ export function Placement(props: {
                 labelHelp="The cluster sets from which the clusters are selected."
                 helperText="If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
             >
-                {namespaceClusterSetNames.map((name) => (
+                {props.namespaceClusterSetNames.map((name) => (
                     <SelectOption key={name} value={name} />
                 ))}
             </Multiselect>
@@ -273,12 +288,12 @@ export function Placement(props: {
                 placeholder="Add predicate"
                 collapsedContent={<PredicateSummary />}
                 helperText="
-                    A predicate further selects clusters from the clusters selected from the cluster sets.
-                    A placement can have multiple predicates.
-                    Clusters matching any predicate will be selected.
-                    Clusters must match all predicate selectors and expressions to be selected by that predicate.
-                    This allows complex 'And/Or' logic for selecting clusters.
-                    "
+            A predicate further selects clusters from the clusters selected from the cluster sets.
+            A placement can have multiple predicates.
+            Clusters matching any predicate will be selected.
+            Clusters must match all predicate selectors and expressions to be selected by that predicate.
+            This allows complex 'And/Or' logic for selecting clusters.
+            "
                 defaultCollapsed
             >
                 <KeyValue
@@ -309,7 +324,7 @@ export function Placement(props: {
                 </ArrayInput>
             </ArrayInput>
             <NumberInput label="Limit the number of clusters selected" path="spec.numberOfClusters" zeroIsUndefined />
-        </ArrayInput>
+        </Fragment>
     )
 }
 
@@ -539,11 +554,11 @@ function PredicateSummary() {
     }
 
     for (const matchExpression of matchExpressions) {
-        labelSelectors.push(`${matchExpression.key} ${matchExpression.operator} ${matchExpression.values?.join(', ') ?? ''}`)
+        labelSelectors.push(`${matchExpression.key ?? ''} ${matchExpression.operator ?? ''} ${matchExpression.values?.join(', ') ?? ''}`)
     }
 
     for (const claimExpression of claimExpressions) {
-        claimSelectors.push(`${claimExpression.key} ${claimExpression.operator} ${claimExpression.values?.join(', ') ?? ''}`)
+        claimSelectors.push(`${claimExpression.key ?? ''} ${claimExpression.operator ?? ''} ${claimExpression.values?.join(', ') ?? ''}`)
     }
 
     if (labelSelectors.length === 0 && claimExpressions.length === 0) {
@@ -564,9 +579,7 @@ function PredicateSummary() {
                 <div style={{ display: 'flex', gap: 4, alignItems: 'baseline' }}>
                     Claim expressions:
                     {claimSelectors.map((labelSelector) => (
-                        <Label key={labelSelector} isCompact>
-                            {labelSelector}
-                        </Label>
+                        <Label key={labelSelector}>{labelSelector}</Label>
                     ))}
                 </div>
             )}
