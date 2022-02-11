@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import {
     EditMode,
     ItemSelector,
@@ -18,20 +18,25 @@ import { isValidKubernetesName } from '../common/validation'
 import { IClusterSetBinding, PlacementSection, Sync } from '../Placement/PlacementSection'
 
 export interface PolicySetWizardProps {
+    title: string
     namespaces: string[]
     policies: IResource[]
+    placements: IResource[]
+    placementRules: IResource[]
     clusterSetBindings: IClusterSetBinding[]
-    title: string
     editMode?: EditMode
+    resources?: IResource[]
     onSubmit: WizardSubmit
     onCancel: WizardCancel
-    resources?: IResource[]
 }
 
 export function PolicySetWizard(props: PolicySetWizardProps) {
     return (
         <WizardPage
             title={props.title}
+            onSubmit={props.onSubmit}
+            onCancel={props.onCancel}
+            editMode={props.editMode}
             defaultData={
                 props.resources ?? [
                     {
@@ -42,14 +47,23 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                     },
                 ]
             }
-            onSubmit={props.onSubmit}
-            onCancel={props.onCancel}
-            editMode={props.editMode}
         >
             <Step label="Details" id="details-step">
-                <Sync kind="PolicySet" path="metadata.name" />
+                {props.editMode !== EditMode.Edit && (
+                    <Fragment>
+                        <Sync kind="PolicySet" path="metadata.name" targetKind="Placement" prefix="-placement" addIndex />
+                        <Sync
+                            kind="PolicySet"
+                            path="metadata.name"
+                            targetKind="PlacementBinding"
+                            prefix="-placement"
+                            addIndex
+                            postfix="-binding"
+                        />
+                        <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                    </Fragment>
+                )}
                 <Sync kind="PolicySet" path="metadata.namespace" />
-                <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
                 <Section label="Details">
                     <ItemSelector selectKey="kind" selectValue="PolicySet">
                         <TextInput
@@ -78,8 +92,10 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
             <Step label="Placement" id="placement-step">
                 <PlacementSection
                     clusterSetBindings={props.clusterSetBindings}
-                    bindingKind="PolicySet"
-                    bindingApiGroup="policy.open-cluster-management.io"
+                    bindingSubjectKind="PolicySet"
+                    bindingSubjectApiGroup="policy.open-cluster-management.io"
+                    placements={props.placements}
+                    placementRules={props.placementRules}
                 />
             </Step>
         </WizardPage>
@@ -110,7 +126,7 @@ function PoliciesSection(props: { policies: IResource[] }) {
                     items={namespacedPolicies}
                     itemToValue={(policy: IResource) => policy.metadata?.name}
                     valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata?.name}
-                    emptyMessage="No policies availble for selection. Set the namespace to be able to select policies in that namespace."
+                    emptyMessage="No policies available for selection. Set the namespace to be able to select policies in that namespace."
                 />
             </ItemSelector>
         </Section>

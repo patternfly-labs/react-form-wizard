@@ -1,4 +1,12 @@
-import { Button, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Divider, TextInput } from '@patternfly/react-core'
+import {
+    Button,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Divider,
+    Text,
+    TextInput,
+} from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment, useState } from 'react'
 import { LabelHelp } from '../components/LabelHelp'
@@ -7,15 +15,7 @@ import { InputCommonProps, useInput } from './Input'
 
 type KeyValueProps = InputCommonProps & { placeholder?: string }
 
-export function KeyValue(
-    props: KeyValueProps
-    // id?: string
-    // label?: string
-    // path?: string
-    // placeholder?: string
-    // helperText?: string
-    // required?: boolean
-) {
+export function KeyValue(props: KeyValueProps) {
     const { displayMode: mode, value, setValue, id } = useInput(props)
     const [pairs] = useState<{ key: string; value: string }[]>(() => Object.keys(value).map((key) => ({ key, value: value[key] })))
     const onKeyChange = (index: number, newKey: string) => {
@@ -82,7 +82,7 @@ export function KeyValue(
                 <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
                 {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
             </div>
-            {props.helperText && <div>{props.helperText}</div>}
+            {props.helperText && <Text component="small">{props.helperText}</Text>}
             <div
                 style={{
                     display: 'grid',

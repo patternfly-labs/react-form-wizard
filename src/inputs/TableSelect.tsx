@@ -87,6 +87,19 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
 
     if (mode === DisplayMode.Details) {
         if (!selectedItems.length) return <Fragment />
+        if (!props.label) {
+            if (values.length > 5) {
+                return <div id={id}>{values.length} selected</div>
+            }
+            return (
+                <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
+                    {values.map((value, index) => {
+                        if (!value) return <Fragment key={index} />
+                        return <div key={index}>{value}</div>
+                    })}
+                </div>
+            )
+        }
         if (values.length > 5) {
             return (
                 <DescriptionListGroup>

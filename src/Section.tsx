@@ -1,4 +1,4 @@
-import { DescriptionList, Divider, Split, SplitItem, Stack, Title } from '@patternfly/react-core'
+import { DescriptionList, Divider, Split, SplitItem, Stack, Text, Title } from '@patternfly/react-core'
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useEffect, useState } from 'react'
 import { LabelHelp } from './components/LabelHelp'
@@ -29,7 +29,7 @@ export function Section(props: SectionProps) {
 
 function SectionInternal(props: SectionProps) {
     const mode = useDisplayMode()
-    const id = props.id ?? props.label.toLowerCase().split(' ').join('-')
+    const id = props.id ?? props.label?.toLowerCase().split(' ').join('-') ?? ''
     const showValidation = useShowValidation()
     const [expanded, setExpanded] = useState(props.defaultExpanded === undefined ? true : props.defaultExpanded)
     const hidden = useInputHidden(props)
@@ -97,7 +97,11 @@ function SectionInternal(props: SectionProps) {
                                                         />
                                                     )}
                                                 </Split>
-                                                {expanded && props.description && <p style={{ paddingTop: 8 }}>{props.description}</p>}
+                                                {expanded && props.description && (
+                                                    <Text component="small" style={{ paddingTop: 8 }}>
+                                                        {props.description}
+                                                    </Text>
+                                                )}
                                             </Stack>
                                         </SplitItem>
                                         {showValidation && !expanded && hasValidationError && (

@@ -14,7 +14,7 @@ export function YamlToObject(yaml: string) {
         return YAML.parse(yaml, { prettyErrors: true })
     } catch {
         try {
-            return YAML.parseAllDocuments(yaml, { prettyErrors: true })
+            return YAML.parseAllDocuments(yaml, { prettyErrors: true }).map((doc) => doc.toJSON())
         } catch {
             return {}
         }
