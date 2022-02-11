@@ -35,7 +35,7 @@ export function Sync(props: {
                     const existingValue = get(resource, props.targetPath ?? props.path)
                     if (existingValue !== newValue) {
                         changed = true
-                        set(resource, props.targetPath ?? props.path, newValue)
+                        set(resource, props.targetPath ?? props.path, newValue, { preservePaths: false })
                     }
                 }
             }

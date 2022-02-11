@@ -41,6 +41,7 @@ import { ClearInputButton } from '../src/components/ClearInputButton'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
+import { ArgoExample } from './Argo/ArgoExample'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { HomeWizard } from './Home/HomeWizard'
@@ -107,6 +108,14 @@ const wizards: IWizard[] = [
         shortName: 'Application',
         name: 'Application',
         route: RouteE.Application,
+        description: 'Advanced Cluster Management configures applications for deployment to clusters managed by ACM.',
+        labels: ['ACM'],
+        state: StateE.alpha,
+    },
+    {
+        shortName: 'ArgoCD',
+        name: 'ArgoCD',
+        route: RouteE.ArgoCD,
         description: 'Advanced Cluster Management configures applications for deployment to clusters managed by ACM.',
         labels: ['ACM'],
         state: StateE.alpha,
@@ -187,6 +196,8 @@ export function DemoRouter(): JSX.Element {
             return <AnsibleExample />
         case RouteE.Application:
             return <ApplicationExample />
+        case RouteE.ArgoCD:
+            return <ArgoExample />
         case RouteE.App:
             return <AppExample />
         case RouteE.Cluster:
