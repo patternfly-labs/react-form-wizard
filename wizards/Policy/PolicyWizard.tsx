@@ -21,8 +21,9 @@ import {
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
+import { Sync } from '../common/Sync'
 import { isValidKubernetesName } from '../common/validation'
-import { IClusterSetBinding, PlacementSection, Sync } from '../Placement/PlacementSection'
+import { IClusterSetBinding, PlacementSection } from '../Placement/PlacementSection'
 import { Specifications } from './templates'
 
 export function PolicyWizard(props: {

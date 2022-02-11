@@ -21,6 +21,7 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
+import { Sync } from '../common/Sync'
 import { Placement } from '../Placement/PlacementSection'
 import HelmIcon from './logos/HelmIcon.svg'
 
@@ -61,7 +62,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                             'cluster.open-cluster-management.io/placement': '-placement',
                                         },
                                     },
-                                    requeueAfterSeconds: null,
+                                    requeueAfterSeconds: 180,
                                 },
                             },
                         ],
@@ -71,7 +72,11 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             },
                             spec: {
                                 project: 'default',
-                                source: null,
+                                source: {},
+                                destination: {
+                                    namespace: '',
+                                    server: '{{server}}',
+                                },
                             },
                         },
                     },
@@ -87,6 +92,20 @@ export function ArgoWizard(props: ArgoWizardProps) {
             onSubmit={props.onSubmit}
         >
             <Step id="general" label="General">
+                <Sync
+                    kind="Placement"
+                    path="metadata.name"
+                    targetPath="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
+                />
+                <Sync kind="ApplicationSet" path="metadata.name" prefix="-placement" />
+                <Sync kind="ApplicationSet" path="metadata.namespace" />
+                <Sync
+                    kind="ApplicationSet"
+                    path="metadata.name"
+                    targetKind="ApplicationSet"
+                    targetPath="spec.template.metadata.name"
+                    postfix="-{{name}}"
+                />
                 <ItemSelector selectKey="kind" selectValue="ApplicationSet">
                     <Section label="General">
                         <TextInput path="metadata.name" label="ApplicationSet name" placeholder="Enter the application set name" required />
@@ -218,7 +237,9 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 </ItemSelector>
             </Step>
             <Step id="placement" label="Placement">
-                <Placement clusterSetBindings={[]} bindingKind="Test" />
+                <ItemSelector selectKey="kind" selectValue="Placement">
+                    <Placement namespaceClusterSetNames={[]} />
+                </ItemSelector>
             </Step>
         </WizardPage>
     )
