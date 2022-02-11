@@ -299,7 +299,106 @@ const twoPlacementResources: IResource[] = [
                         labelSelector: {
                             matchLabels: {
                                 'local-cluster': 'true',
+                                abc: '123',
+                                def: '456',
+                                ghi: '789',
                             },
+                            matchExpressions: [
+                                {
+                                    key: 'abc',
+                                    operator: 'In',
+                                    values: ['123', '456', '789'],
+                                },
+                                {
+                                    key: 'def',
+                                    operator: 'NotIn',
+                                    values: ['123', '456', '789'],
+                                },
+                                {
+                                    key: 'ghi',
+                                    operator: 'Exists',
+                                },
+                                {
+                                    key: 'jkl',
+                                    operator: 'DoesNotExist',
+                                },
+                            ],
+                        },
+                        claimSelector: {
+                            matchExpressions: [
+                                {
+                                    key: 'abc',
+                                    operator: 'In',
+                                    values: ['123', '456', '789'],
+                                },
+                                {
+                                    key: 'def',
+                                    operator: 'NotIn',
+                                    values: ['123', '456', '789'],
+                                },
+                                {
+                                    key: 'ghi',
+                                    operator: 'Exists',
+                                },
+                                {
+                                    key: 'jkl',
+                                    operator: 'DoesNotExist',
+                                },
+                            ],
+                        },
+                    },
+                },
+                {
+                    requiredClusterSelector: {
+                        labelSelector: {
+                            matchLabels: {
+                                'local-cluster': 'true',
+                                abc: '123',
+                                def: '456',
+                                ghi: '789',
+                            },
+                            matchExpressions: [
+                                {
+                                    key: 'abc',
+                                    operator: 'In',
+                                    values: ['123', '456', '789'],
+                                },
+                                {
+                                    key: 'def',
+                                    operator: 'NotIn',
+                                    values: ['123', '456', '789'],
+                                },
+                                {
+                                    key: 'ghi',
+                                    operator: 'Exists',
+                                },
+                                {
+                                    key: 'jkl',
+                                    operator: 'DoesNotExist',
+                                },
+                            ],
+                        },
+                        claimSelector: {
+                            matchExpressions: [
+                                {
+                                    key: 'abc',
+                                    operator: 'In',
+                                    values: ['123', '456', '789'],
+                                },
+                                {
+                                    key: 'def',
+                                    operator: 'NotIn',
+                                    values: ['123', '456', '789'],
+                                },
+                                {
+                                    key: 'ghi',
+                                    operator: 'Exists',
+                                },
+                                {
+                                    key: 'jkl',
+                                    operator: 'DoesNotExist',
+                                },
+                            ],
                         },
                     },
                 },
@@ -328,7 +427,7 @@ const twoPlacementResources: IResource[] = [
     } as IResource,
 ]
 
-const policySetWithTwoPlacementResources: IResource[] = [...policySetWithSinglePlacementResources, ...twoPlacementResources]
+const policySetWithTwoPlacementResources: IResource[] = [policySetResource, ...twoPlacementResources]
 
 const singlePlacementRuleResources: IResource[] = [
     {
@@ -425,7 +524,7 @@ const twoPlacementRuleResources: IResource[] = [
     } as IResource,
 ]
 
-const policySetWithTwoPlacementRuleResources: IResource[] = [...policySetWithSinglePlacementRuleResources, ...twoPlacementRuleResources]
+const policySetWithTwoPlacementRuleResources: IResource[] = [policySetResource, ...twoPlacementRuleResources]
 
 const policySetWithTwoPlacementAndTwoPlacementRuleResources: IResource[] = [
     policySetResource,

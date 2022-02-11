@@ -1,6 +1,6 @@
-import { Label, SelectOption, Split, SplitItem, Tile } from '@patternfly/react-core'
+import { Label, SelectOption, Text, Tile } from '@patternfly/react-core'
 import { Fragment, useMemo } from 'react'
-import { ArrayInput, EditMode, ItemSelector, ItemText, KeyValue, NumberInput, Section, Select, StringsInput, TextInput } from '../../src'
+import { ArrayInput, EditMode, ItemSelector, KeyValue, NumberInput, Section, Select, StringsInput, TextInput } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
@@ -304,8 +304,9 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
                     path="requiredClusterSelector.labelSelector.matchExpressions"
                     placeholder="Add label expression"
                     labelHelp="A label expression allows selection of clusters using cluster labels."
-                    collapsedContent={<MatchExpressionSummary />}
+                    collapsedContent={<MatchExpressionCollapsed />}
                     newValue={{ key: '', operator: 'In' }}
+                    defaultCollapsed
                 >
                     <MatchExpression />
                 </ArrayInput>
@@ -314,8 +315,9 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
                     path="requiredClusterSelector.claimSelector.matchExpressions"
                     placeholder="Add claim expression"
                     labelHelp="A label expression allows selection of clusters using cluster claims in status."
-                    collapsedContent={<MatchExpressionSummary />}
+                    collapsedContent={<MatchExpressionCollapsed />}
                     newValue={{ key: '', operator: 'In' }}
+                    defaultCollapsed
                 >
                     <MatchExpression />
                 </ArrayInput>
@@ -362,7 +364,7 @@ export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules
                 label="Label selectors"
                 path="spec.clusterSelector.matchExpressions"
                 placeholder="Add label selector"
-                collapsedContent={<MatchExpressionSummary />}
+                collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In' }}
             >
                 <MatchExpression />
@@ -493,69 +495,115 @@ function MatchExpression() {
 
 function PredicateSummary() {
     const predicate = useItem() as Predicate
-    const matchLabels = predicate.requiredClusterSelector?.labelSelector?.matchLabels ?? {}
-    const matchExpressions = predicate.requiredClusterSelector?.labelSelector?.matchExpressions ?? []
-    const claimExpressions = predicate.requiredClusterSelector?.claimSelector?.matchExpressions ?? []
+    const labelSelectorLabels = predicate.requiredClusterSelector?.labelSelector?.matchLabels ?? {}
+    const labelSelectorExpressions = predicate.requiredClusterSelector?.labelSelector?.matchExpressions ?? []
+    const claimSelectorExpressions = predicate.requiredClusterSelector?.claimSelector?.matchExpressions ?? []
 
     const labelSelectors: string[] = []
-    const claimSelectors: string[] = []
+    const labelExpressions: string[] = []
+    const claimExpressions: string[] = []
 
-    for (const matchLabel in matchLabels) {
-        labelSelectors.push(`${matchLabel} = ${matchLabels[matchLabel]}`)
+    for (const matchLabel in labelSelectorLabels) {
+        labelSelectors.push(`${matchLabel}=${labelSelectorLabels[matchLabel]}`)
     }
 
-    for (const matchExpression of matchExpressions) {
-        labelSelectors.push(`${matchExpression.key ?? ''} ${matchExpression.operator ?? ''} ${matchExpression.values?.join(', ') ?? ''}`)
+    for (const matchExpression of labelSelectorExpressions) {
+        labelExpressions.push(`${matchExpression.key ?? ''} ${matchExpression.operator ?? ''} ${matchExpression.values?.join(', ') ?? ''}`)
     }
 
-    for (const claimExpression of claimExpressions) {
-        claimSelectors.push(`${claimExpression.key ?? ''} ${claimExpression.operator ?? ''} ${claimExpression.values?.join(', ') ?? ''}`)
+    for (const claimExpression of claimSelectorExpressions) {
+        claimExpressions.push(`${claimExpression.key ?? ''} ${claimExpression.operator ?? ''} ${claimExpression.values?.join(', ') ?? ''}`)
     }
 
-    if (labelSelectors.length === 0 && claimExpressions.length === 0) {
+    if (labelSelectors.length === 0 && claimSelectorExpressions.length === 0) {
         return <div>Expand to enter predicate</div>
     }
 
     return (
-        <div style={{ display: 'flex', gap: 4, flexDirection: 'column' }}>
+        <div style={{ display: 'flex', gap: 12, flexDirection: 'column' }}>
             {labelSelectors.length > 0 && (
-                <div style={{ display: 'flex', gap: 4, alignItems: 'baseline' }}>
-                    Cluster labels:
-                    {labelSelectors.map((labelSelector) => (
-                        <Label key={labelSelector}>{labelSelector}</Label>
-                    ))}
+                <div style={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+                    <Text component="small">Cluster labels</Text>
+                    <div style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
+                        {labelSelectors.map((labelSelector) => (
+                            <Label key={labelSelector}>{labelSelector}</Label>
+                        ))}
+                    </div>
                 </div>
             )}
-            {claimSelectors.length > 0 && (
-                <div style={{ display: 'flex', gap: 4, alignItems: 'baseline' }}>
-                    Claim expressions:
-                    {claimSelectors.map((labelSelector) => (
-                        <Label key={labelSelector}>{labelSelector}</Label>
-                    ))}
+            {labelSelectorExpressions.length > 0 && (
+                <div style={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+                    <Text component="small">Cluster claim label expressions</Text>
+                    <div style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
+                        {labelSelectorExpressions.map((expression, index) => (
+                            <MatchExpressionSummary key={index} expression={expression} />
+                        ))}
+                    </div>
+                </div>
+            )}
+            {claimSelectorExpressions.length > 0 && (
+                <div style={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+                    <Text component="small">Cluster claim label expressions</Text>
+                    <div style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
+                        {claimSelectorExpressions.map((expression, index) => (
+                            <MatchExpressionSummary key={index} expression={expression} />
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
     )
 }
 
-function MatchExpressionSummary() {
+function MatchExpressionCollapsed() {
     const expression = useItem() as IExpression
+    return <MatchExpressionSummary expression={expression} />
+}
+
+function MatchExpressionSummary(props: { expression: IExpression }) {
+    const { expression } = props
+
+    let operator = 'unknown'
     switch (expression.operator) {
         case 'In':
+            if (expression.values && expression.values.length > 1) {
+                operator = 'equals any of'
+            } else {
+                operator = 'equals'
+            }
+            break
+        case 'NotIn':
+            if (expression.values && expression.values.length > 1) {
+                operator = 'does not equal any of'
+            } else {
+                operator = 'does not equal'
+            }
+            break
+        case 'Exists':
+            operator = 'exists'
+            break
+        case 'DoesNotExist':
+            operator = 'does not exist'
             break
     }
 
     return (
-        <Split hasGutter>
-            <SplitItem>
-                <ItemText path="key" />
-            </SplitItem>
-            <SplitItem>
-                <ItemText path="operator" />
-            </SplitItem>
-            <SplitItem>
-                <ItemText path="values" />
-            </SplitItem>
-        </Split>
+        <div
+            style={{
+                display: 'flex',
+                alignItems: 'baseline',
+                border: '1px solid #0003',
+                padding: '0px 6px 2px 3px',
+                gap: 4,
+                borderRadius: 12,
+                flexWrap: 'wrap',
+            }}
+        >
+            <Label isCompact>{expression.key}</Label>
+            <span style={{ whiteSpace: 'nowrap', opacity: 0.7 }}>
+                <Text component="small">{operator}</Text>
+            </span>
+            {expression.values && expression.values.join(', ')}
+        </div>
     )
 }

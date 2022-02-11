@@ -2,7 +2,13 @@ import { Stack } from '@patternfly/react-core'
 import { Fragment, ReactNode, useContext } from 'react'
 import { ItemContext } from '../contexts/ItemContext'
 
-export function Indented(props: { children?: ReactNode; hidden?: (item: any) => boolean; paddingTop?: number; paddingBottom?: number }) {
+export function Indented(props: {
+    id?: string
+    children?: ReactNode
+    hidden?: (item: any) => boolean
+    paddingTop?: number
+    paddingBottom?: number
+}) {
     const { paddingBottom, paddingTop } = props
     const item = useContext(ItemContext)
 
@@ -12,7 +18,7 @@ export function Indented(props: { children?: ReactNode; hidden?: (item: any) => 
     if (hidden) return <Fragment />
 
     return (
-        <Stack hasGutter style={{ paddingLeft: 22, paddingBottom, paddingTop }}>
+        <Stack id={props.id} hasGutter style={{ paddingLeft: 22, paddingBottom, paddingTop }}>
             {props.children}
         </Stack>
     )

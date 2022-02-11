@@ -7,11 +7,14 @@ import {
     DropdownPosition,
     DropdownToggle,
     DropdownToggleCheckbox,
+    List,
+    ListItem,
     Pagination,
     PaginationVariant,
 } from '@patternfly/react-core'
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
+import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
@@ -92,12 +95,13 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
                 return <div id={id}>{values.length} selected</div>
             }
             return (
-                <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
-                    {values.map((value, index) => {
-                        if (!value) return <Fragment key={index} />
-                        return <div key={index}>{value}</div>
-                    })}
-                </div>
+                <List style={{ marginTop: -4, marginBottom: -16 }}>
+                    {values.map((value, index) => (
+                        <ListItem key={index} style={{ paddingBottom: 4 }}>
+                            {value}
+                        </ListItem>
+                    ))}
+                </List>
             )
         }
         if (values.length > 5) {
@@ -109,17 +113,20 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
             )
         }
         return (
-            <DescriptionListGroup>
-                <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                <DescriptionListDescription id={id}>
-                    <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
-                        {values.map((value, index) => {
-                            if (!value) return <Fragment key={index} />
-                            return <div key={index}>{value}</div>
-                        })}
-                    </div>
-                </DescriptionListDescription>
-            </DescriptionListGroup>
+            <Fragment>
+                <DescriptionListGroup>
+                    <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                </DescriptionListGroup>
+                <Indented>
+                    <List style={{ marginTop: -4 }}>
+                        {values.map((value, index) => (
+                            <ListItem key={index} style={{ paddingBottom: 4 }}>
+                                {value}
+                            </ListItem>
+                        ))}
+                    </List>
+                </Indented>
+            </Fragment>
         )
     }
 

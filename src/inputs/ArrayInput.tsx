@@ -1,7 +1,5 @@
 import {
     Button,
-    DescriptionList,
-    DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
     Divider,
@@ -9,6 +7,8 @@ import {
     DropdownItem,
     DropdownToggle,
     FormFieldGroupHeader,
+    List,
+    ListItem,
     Split,
     SplitItem,
     Text,
@@ -19,6 +19,7 @@ import get from 'get-value'
 import { Children, Fragment, ReactNode, useCallback, useContext, useState } from 'react'
 import { TextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
+import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -120,10 +121,10 @@ export function ArrayInput(props: ArrayInputProps) {
             return (
                 <Fragment>
                     <Title headingLevel="h2">{props.label}</Title>
-                    <DescriptionList id={id} isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
+                    <Indented id={id}>
+                        <List style={{ marginTop: -4 }}>
                             {values.map((value, index) => (
-                                <div key={index}>
+                                <ListItem key={index} style={{ paddingBottom: 4 }}>
                                     <ItemContext.Provider value={value}>
                                         {typeof props.collapsedContent === 'string' ? (
                                             <TextDetail
@@ -135,20 +136,22 @@ export function ArrayInput(props: ArrayInputProps) {
                                             props.collapsedContent
                                         )}
                                     </ItemContext.Provider>
-                                </div>
+                                </ListItem>
                             ))}
-                        </div>
-                    </DescriptionList>
+                        </List>
+                    </Indented>
                 </Fragment>
             )
         }
         return (
-            <DescriptionListGroup id={id}>
-                <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                <DescriptionListDescription>
-                    <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
+            <Fragment>
+                <DescriptionListGroup>
+                    <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                </DescriptionListGroup>
+                <Indented id={id}>
+                    <List style={{ marginTop: -4 }}>
                         {values.map((value, index) => (
-                            <div key={index}>
+                            <ListItem key={index} style={{ paddingBottom: 4 }}>
                                 <ItemContext.Provider value={value}>
                                     {typeof props.collapsedContent === 'string' ? (
                                         <TextDetail
@@ -160,11 +163,11 @@ export function ArrayInput(props: ArrayInputProps) {
                                         props.collapsedContent
                                     )}
                                 </ItemContext.Provider>
-                            </div>
+                            </ListItem>
                         ))}
-                    </div>
-                </DescriptionListDescription>
-            </DescriptionListGroup>
+                    </List>
+                </Indented>
+            </Fragment>
         )
     }
     return (
