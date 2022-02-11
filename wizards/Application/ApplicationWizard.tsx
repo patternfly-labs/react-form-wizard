@@ -1,7 +1,6 @@
 import { Button, Flex, FlexItem, SelectOption, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
-import _ from 'lodash'
 
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
@@ -620,10 +619,10 @@ function ChannelSection(props: { channels: Channel[]; namespaces: string[] }) {
     const item = useItem() as IData
     const data = useData()
     const type = item.repositoryType.replace(/Subscription/g, '').toLowerCase()
-    const pathnames = _.uniq(_.map(props.channels, 'spec.pathname'))
+    const pathnames = Array.from(new Set(props.channels.map((channel) => channel.spec.pathname)))
     useEffect(() => {
         if (item.subscription) {
-            const selectedUrl = _.get(item.subscription[type], 'url')
+            const selectedUrl = item.subscription[type].url
             if (selectedUrl) {
                 if (!pathnames.includes(selectedUrl)) {
                     if (!item.newChannel) {
@@ -709,22 +708,22 @@ export const getUniqueChannelName = (channelPath: string, type: string) => {
             channelType = 'ns'
     }
 
-    let channelName = _.trim(channelPath)
-    if (_.startsWith(channelName, 'https://')) {
-        channelName = _.trimStart(channelName, 'https://')
+    let channelName = channelPath.trim()
+    if (channelName.startsWith('https://')) {
+        channelName = channelName.replace('https://', '')
     }
-    if (_.startsWith(channelName, 'http://')) {
-        channelName = _.trimStart(channelName, 'http://')
+    if (channelName.startsWith('http://')) {
+        channelName = channelName.replace('http://', '')
     }
-    if (_.endsWith(channelName, '.git')) {
-        channelName = _.trimEnd(channelName, '.git')
+    if (channelName.endsWith('.git')) {
+        const lastIndex = channelName.lastIndexOf('.git')
+        channelName = channelName.substring(0, lastIndex)
     }
 
-    channelName = _.replace(channelName, /\./g, '')
-    channelName = _.replace(channelName, /:/g, '')
-    channelName = _.replace(channelName, /\//g, '-')
+    channelName = channelName.replace(/\./g, '')
+    channelName = channelName.replace(/:/g, '')
+    channelName = channelName.replace(/\//g, '-')
 
-    channelName = _.trimEnd(channelName, '-')
     channelName = channelName.toLowerCase()
 
     //max name for ns or resources is 63 chars
