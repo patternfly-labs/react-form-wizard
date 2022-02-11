@@ -4,61 +4,15 @@ import { ReactNode } from 'react'
 import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
 import { IResource } from '../common/resource'
+import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { DashboardCard, DashboardPage } from '../Dashboard'
-import { IClusterSetBinding } from '../Placement/PlacementSection'
 import { RouteE } from '../Routes'
 import { PolicySetWizard } from './PolicySetWizard'
 
 export function onCancel(history: { push: (location: string) => void }) {
     history.push(`./${RouteE.PolicySet}`)
 }
-
-const namespaces = ['default', 'my-namespace-1', 'my-namespace-2']
-
-const policies: IResource[] = [
-    { kind: 'Policy', metadata: { name: 'my-policy-1', namespace: 'my-namespace-1' } },
-    { kind: 'Policy', metadata: { name: 'my-policy-2', namespace: 'my-namespace-1' } },
-    { kind: 'Policy', metadata: { name: 'my-policy-3', namespace: 'my-namespace-2' } },
-    { kind: 'Policy', metadata: { name: 'my-policy-4', namespace: 'my-namespace-2' } },
-]
-
-const clusterSetBindings: IClusterSetBinding[] = [
-    {
-        kind: 'ManagedClusterSetBinding',
-        metadata: { name: 'my-cluster-set-1-binding', namespace: 'my-namespace-1' },
-        spec: { clusterSet: 'my-cluster-set-1' },
-    },
-    {
-        kind: 'ManagedClusterSetBinding',
-        metadata: { name: 'my-cluster-set-2-binding', namespace: 'my-namespace-1' },
-        spec: { clusterSet: 'my-cluster-set-2' },
-    },
-    {
-        kind: 'ManagedClusterSetBinding',
-        metadata: { name: 'my-cluster-set-3-binding', namespace: 'my-namespace-2' },
-        spec: { clusterSet: 'my-cluster-set-3' },
-    },
-    {
-        kind: 'ManagedClusterSetBinding',
-        metadata: { name: 'my-cluster-set-4-binding', namespace: 'my-namespace-2' },
-        spec: { clusterSet: 'my-cluster-set-4' },
-    },
-]
-
-const placements: IResource[] = [
-    { kind: 'Placement', metadata: { name: 'my-placement-1', namespace: 'my-namespace-1' } },
-    { kind: 'Placement', metadata: { name: 'my-placement-2', namespace: 'my-namespace-1' } },
-    { kind: 'Placement', metadata: { name: 'my-placement-3', namespace: 'my-namespace-2' } },
-    { kind: 'Placement', metadata: { name: 'my-placement-4', namespace: 'my-namespace-2' } },
-]
-
-const placementRules: IResource[] = [
-    { kind: 'PlacementRule', metadata: { name: 'my-placement-rule-1', namespace: 'my-namespace-1' } },
-    { kind: 'PlacementRule', metadata: { name: 'my-placement-rule-2', namespace: 'my-namespace-1' } },
-    { kind: 'PlacementRule', metadata: { name: 'my-placement-rule-3', namespace: 'my-namespace-2' } },
-    { kind: 'PlacementRule', metadata: { name: 'my-placement-rule-4', namespace: 'my-namespace-2' } },
-]
 
 function Checked(props: { children: ReactNode }) {
     return (
@@ -110,12 +64,12 @@ export function CreatePolicySet() {
     const history = useHistory()
     return (
         <PolicySetWizard
+            title="Create policy set"
             namespaces={namespaces}
             policies={policies}
-            clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
-            title="Create policy set"
+            clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
         />

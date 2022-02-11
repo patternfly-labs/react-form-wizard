@@ -20,11 +20,23 @@ import {
     WizardSubmit,
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
+import { IResource } from '../common/resource'
 import { isValidKubernetesName } from '../common/validation'
-import { PlacementSection, Sync } from '../Placement/PlacementSection'
+import { IClusterSetBinding, PlacementSection, Sync } from '../Placement/PlacementSection'
 import { Specifications } from './templates'
 
-export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel; namespaces: string[]; editMode: EditMode }) {
+export function PolicyWizard(props: {
+    title: string
+    namespaces: string[]
+    policies: IResource[]
+    placements: IResource[]
+    placementRules: IResource[]
+    clusterSetBindings: IClusterSetBinding[]
+    editMode?: EditMode
+    resources?: IResource[]
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
+}) {
     // const clusterSelectors = useMemo(
     //     () =>
     //         ['cloud: "Amazon"', 'namespace-1', 'namespace-2'].map((selector) => ({
@@ -76,25 +88,21 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
 
     return (
         <WizardPage
-            title="Create policy"
+            title={props.title}
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
-            defaultData={[
-                {
-                    apiVersion: 'policy.open-cluster-management.io/v1',
-                    kind: 'Policy',
-                    metadata: { name: '', namespace: '' },
-                    spec: { remediationAction: 'inform', disabled: false },
-                },
-            ]}
-            // sync={{
-            //     source: { key: 'kind', value: 'Policy', path: 'metadata.namespace' },
-            //     targets: [
-            //         { key: 'kind', value: 'PlacementBinding', path: 'metadata.namespace' },
-            //         { key: 'kind', value: 'PlacementRule', path: 'metadata.namespace' },
-            //     ],
-            // }}
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
+            editMode={props.editMode}
+            defaultData={
+                props.resources ?? [
+                    {
+                        apiVersion: 'policy.open-cluster-management.io/v1',
+                        kind: 'Policy',
+                        metadata: { name: '', namespace: '' },
+                        spec: { remediationAction: 'inform', disabled: false },
+                    },
+                ]
+            }
         >
             <Step label="Details" id="details">
                 {props.editMode === EditMode.Create && (
@@ -149,7 +157,9 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
 
             <Step label="Cluster placement" id="placement">
                 <PlacementSection
-                    clusterSetBindings={[]}
+                    placements={props.placements}
+                    placementRules={props.placementRules}
+                    clusterSetBindings={props.clusterSetBindings}
                     bindingSubjectKind="Policy"
                     bindingSubjectApiGroup="policy.open-cluster-management.io"
                 />

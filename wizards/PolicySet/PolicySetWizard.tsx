@@ -18,22 +18,25 @@ import { isValidKubernetesName } from '../common/validation'
 import { IClusterSetBinding, PlacementSection, Sync } from '../Placement/PlacementSection'
 
 export interface PolicySetWizardProps {
+    title: string
     namespaces: string[]
     policies: IResource[]
-    clusterSetBindings: IClusterSetBinding[]
     placements: IResource[]
     placementRules: IResource[]
-    title: string
+    clusterSetBindings: IClusterSetBinding[]
     editMode?: EditMode
+    resources?: IResource[]
     onSubmit: WizardSubmit
     onCancel: WizardCancel
-    resources?: IResource[]
 }
 
 export function PolicySetWizard(props: PolicySetWizardProps) {
     return (
         <WizardPage
             title={props.title}
+            onSubmit={props.onSubmit}
+            onCancel={props.onCancel}
+            editMode={props.editMode}
             defaultData={
                 props.resources ?? [
                     {
@@ -44,9 +47,6 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                     },
                 ]
             }
-            onSubmit={props.onSubmit}
-            onCancel={props.onCancel}
-            editMode={props.editMode}
         >
             <Step label="Details" id="details-step">
                 {props.editMode !== EditMode.Edit && (
