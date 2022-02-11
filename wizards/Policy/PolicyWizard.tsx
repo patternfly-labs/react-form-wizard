@@ -5,6 +5,7 @@ import set from 'set-value'
 import {
     ArrayInput,
     Checkbox,
+    EditMode,
     Hidden,
     ItemSelector,
     Radio,
@@ -19,11 +20,23 @@ import {
     WizardSubmit,
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
+import { IResource } from '../common/resource'
 import { isValidKubernetesName } from '../common/validation'
-import { PlacementSection, Sync } from '../Placement/PlacementSection'
+import { IClusterSetBinding, PlacementSection, Sync } from '../Placement/PlacementSection'
 import { Specifications } from './templates'
 
-export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel; namespaces: string[] }) {
+export function PolicyWizard(props: {
+    title: string
+    namespaces: string[]
+    policies: IResource[]
+    placements: IResource[]
+    placementRules: IResource[]
+    clusterSetBindings: IClusterSetBinding[]
+    editMode?: EditMode
+    resources?: IResource[]
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
+}) {
     // const clusterSelectors = useMemo(
     //     () =>
     //         ['cloud: "Amazon"', 'namespace-1', 'namespace-2'].map((selector) => ({
@@ -75,28 +88,26 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
 
     return (
         <WizardPage
-            title="Create policy"
+            title={props.title}
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
-            defaultData={[
-                {
-                    apiVersion: 'policy.open-cluster-management.io/v1',
-                    kind: 'Policy',
-                    metadata: { name: '', namespace: '' },
-                    spec: { remediationAction: 'inform', disabled: false },
-                },
-            ]}
-            // sync={{
-            //     source: { key: 'kind', value: 'Policy', path: 'metadata.namespace' },
-            //     targets: [
-            //         { key: 'kind', value: 'PlacementBinding', path: 'metadata.namespace' },
-            //         { key: 'kind', value: 'PlacementRule', path: 'metadata.namespace' },
-            //     ],
-            // }}
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
+            editMode={props.editMode}
+            defaultData={
+                props.resources ?? [
+                    {
+                        apiVersion: 'policy.open-cluster-management.io/v1',
+                        kind: 'Policy',
+                        metadata: { name: '', namespace: '' },
+                        spec: { remediationAction: 'inform', disabled: false },
+                    },
+                ]
+            }
         >
             <Step label="Details" id="details">
-                <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                {props.editMode === EditMode.Create && (
+                    <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                )}
                 <Sync kind="Policy" path="metadata.namespace" />
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <Section label="Details" prompt="Enter the details for the policy">
@@ -145,7 +156,13 @@ export function PolicyWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCa
             </Step>
 
             <Step label="Cluster placement" id="placement">
-                <PlacementSection clusterSetBindings={[]} bindingKind="Policy" bindingApiGroup="policy.open-cluster-management.io" />
+                <PlacementSection
+                    placements={props.placements}
+                    placementRules={props.placementRules}
+                    clusterSetBindings={props.clusterSetBindings}
+                    bindingSubjectKind="Policy"
+                    bindingSubjectApiGroup="policy.open-cluster-management.io"
+                />
             </Step>
 
             <Step label="Security groups" id="security-groups">

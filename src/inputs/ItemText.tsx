@@ -12,5 +12,18 @@ export function ItemText(props: { id?: string; path: string; placeholder?: React
         return <Fragment />
     }
 
+    if (Array.isArray(value)) {
+        return (
+            <Fragment>
+                {value.map((v, index) => (
+                    <span key={v}>
+                        {index !== 0 ? ', ' : ''}
+                        {v}
+                    </span>
+                ))}
+            </Fragment>
+        )
+    }
+
     return <Fragment>{value}</Fragment>
 }

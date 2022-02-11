@@ -118,6 +118,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                                 onSubmit={props.onSubmit}
                                                                 onCancel={props.onCancel}
                                                                 hasButtons={props.hasButtons}
+                                                                template={template}
                                                             >
                                                                 {props.children}
                                                             </WizardInternal>
@@ -137,7 +138,13 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     )
 }
 
-function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; onCancel: WizardCancel; hasButtons?: boolean }) {
+function WizardInternal(props: {
+    template?: HandlebarsTemplateDelegate
+    children: ReactNode
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
+    hasButtons?: boolean
+}) {
     const steps = getSteps(props.children)
     if (props.hasButtons !== false) {
         steps.push(
@@ -202,6 +209,7 @@ function WizardInternal(props: { children: ReactNode; onSubmit: WizardSubmit; on
                                 onSubmit={props.onSubmit}
                                 onCancel={props.onCancel}
                                 hasButtons={props.hasButtons}
+                                template={props.template}
                             />
                         </HasInputsProvider>
                     )
@@ -375,15 +383,6 @@ function StepNavItem(props: {
             >
                 <Split>
                     <SplitItem isFilled>{props.step.props.label}</SplitItem>
-                    {/* {stepHasInputs[props.step.props.id] === true ? (
-                        <SplitItem>
-                            <CircleIcon color="var(--pf-global--success-color--100)" />
-                        </SplitItem>
-                    ) : (
-                        <SplitItem>
-                            <CircleIcon color="var(--pf-global--danger-color--100)" />
-                        </SplitItem>
-                    )} */}
                     {props.step.props.id !== 'review-step' && stepHasValidationError[props.step.props.id] && (
                         <SplitItem>
                             <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
@@ -433,7 +432,6 @@ function WizardPageDrawer(props: {
                         </Tabs>
                     </div>
                 ) : (
-                    // <PageSection>
                     <YamlEditor
                         data={props.template ? YamlToObject(props.template(props.data)) : props.data}
                         setData={(data: any) => {
@@ -442,7 +440,6 @@ function WizardPageDrawer(props: {
                             update(newData)
                         }}
                     />
-                    // </PageSection>
                 )}
             </DrawerPanelContent>
         </Fragment>

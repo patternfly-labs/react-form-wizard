@@ -1,5 +1,6 @@
 import {
     Button,
+    DescriptionList,
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
@@ -11,6 +12,7 @@ import {
     Split,
     SplitItem,
     Text,
+    Title,
 } from '@patternfly/react-core'
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
@@ -38,7 +40,6 @@ export function wizardArrayItems(props: any, item: any) {
 
 export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
     path: string | null
-    description?: string
     children: ReactNode
     filter?: (item: any) => boolean
     dropdownItems?: { label: string; action: () => object }[]
@@ -48,6 +49,7 @@ export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
     sortable?: boolean
     newValue?: object
     defaultCollapsed?: boolean
+    isSection?: boolean
 }
 
 export function ArrayInput(props: ArrayInputProps) {
@@ -114,6 +116,32 @@ export function ArrayInput(props: ArrayInputProps) {
         if (values.length === 0) {
             return <Fragment />
         }
+        if (props.isSection) {
+            return (
+                <Fragment>
+                    <Title headingLevel="h2">{props.label}</Title>
+                    <DescriptionList id={id} isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
+                            {values.map((value, index) => (
+                                <div key={index}>
+                                    <ItemContext.Provider value={value}>
+                                        {typeof props.collapsedContent === 'string' ? (
+                                            <TextDetail
+                                                id={props.collapsedContent}
+                                                path={props.collapsedContent}
+                                                placeholder={props.collapsedPlaceholder}
+                                            />
+                                        ) : (
+                                            props.collapsedContent
+                                        )}
+                                    </ItemContext.Provider>
+                                </div>
+                            ))}
+                        </div>
+                    </DescriptionList>
+                </Fragment>
+            )
+        }
         return (
             <DescriptionListGroup id={id}>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
@@ -143,11 +171,18 @@ export function ArrayInput(props: ArrayInputProps) {
         <div id={id} className="form-wizard-array-input">
             {props.label && (
                 <div style={{ paddingBottom: 8, paddingTop: 0 }}>
-                    <div>
-                        <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
-                        {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
-                    </div>
-                    {props.description && <Text component="small">{props.description}</Text>}
+                    {props.isSection ? (
+                        <Split hasGutter style={{ paddingBottom: 8 }}>
+                            <span className="pf-c-form__section-title">{props.label}</span>
+                            {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                        </Split>
+                    ) : (
+                        <div>
+                            <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
+                            {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
+                        </div>
+                    )}
+                    {props.helperText && <Text component="small">{props.helperText}</Text>}
                 </div>
             )}
             {values.length === 0 ? (

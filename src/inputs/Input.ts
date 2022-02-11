@@ -32,7 +32,7 @@ export type InputCommonProps<ValueT = any> = {
 
 export function useID(props: { id?: string; path: string }) {
     if (props.id) return props.id
-    return props.path.toLowerCase().split('.').join('-')
+    return props.path?.toLowerCase().split('.').join('-') ?? ''
 }
 
 export function usePath(props: { path: string }) {
