@@ -367,11 +367,13 @@ export function PolicyWizardTemplates() {
                         id="include-namespaces"
                         path="objectDefinition.spec.namespaceSelector.include"
                         label="Include namespaces"
+                        placeholder="Add namespace"
                     />
                     <StringsInput
                         id="exclude-namespaces"
                         path="objectDefinition.spec.namespaceSelector.exclude"
                         label="Exclude namespaces"
+                        placeholder="Add namespace"
                     />
                 </Hidden>
 

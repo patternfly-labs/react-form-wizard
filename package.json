@@ -20,6 +20,7 @@
         "tsc": "tsc --noEmit -p tsconfig.eslint.json",
         "eslint": "eslint src wizards",
         "prettier": "prettier --check src wizards !**/*.hbs",
+        "prettier:fix": "prettier --write src wizards !**/*.hbs",
         "cypress": "concurrently npm:start npm:cypress:run --prefix-colors cyan,green --kill-others --success first",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run --config video=false",

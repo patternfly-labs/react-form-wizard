@@ -46,7 +46,25 @@ import { ClusterForm } from './Cluster/ClusterForm'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { HomeWizard } from './Home/HomeWizard'
 import { InputsWizard } from './Inputs/InputsWizard'
-import { PolicyExample } from './Policy/PolicyExample'
+import {
+    CreatePolicy,
+    EditPolicyCertificate,
+    EditPolicyComplianceOperatorCisScan,
+    EditPolicyComplianceOperatorE8Scan,
+    EditPolicyComplianceOperatorInstall,
+    EditPolicyEtcdEncryption,
+    EditPolicyGatekeeperOperatorDownstream,
+    EditPolicyImageManifestVuln,
+    EditPolicyLimitClusterAdmin,
+    EditPolicyLimitMemory,
+    EditPolicyNamespace,
+    EditPolicyPod,
+    EditPolicyPsp,
+    EditPolicyRole,
+    EditPolicyRoleBinding,
+    EditPolicyScc,
+    PolicyExamples,
+} from './Policy/PolicyExamples'
 import {
     CreatePolicySet,
     EditPolicySet1,
@@ -205,7 +223,39 @@ export function DemoRouter(): JSX.Element {
         case RouteE.Credentials:
             return <CredentialsExample />
         case RouteE.Policy:
-            return <PolicyExample />
+            return <PolicyExamples />
+        case RouteE.CreatePolicy:
+            return <CreatePolicy />
+        case RouteE.EditPolicyLimitClusterAdmin:
+            return <EditPolicyLimitClusterAdmin />
+        case RouteE.EditPolicyRole:
+            return <EditPolicyRole />
+        case RouteE.EditPolicyRoleBinding:
+            return <EditPolicyRoleBinding />
+        case RouteE.EditPolicyComplianceOperatorInstall:
+            return <EditPolicyComplianceOperatorInstall />
+        case RouteE.EditPolicyComplianceOperatorCisScan:
+            return <EditPolicyComplianceOperatorCisScan />
+        case RouteE.EditPolicyComplianceOperatorE8Scan:
+            return <EditPolicyComplianceOperatorE8Scan />
+        case RouteE.EditPolicyGatekeeperOperatorDownstream:
+            return <EditPolicyGatekeeperOperatorDownstream />
+        case RouteE.EditPolicyNamespace:
+            return <EditPolicyNamespace />
+        case RouteE.EditPolicyPod:
+            return <EditPolicyPod />
+        case RouteE.EditPolicyCertificate:
+            return <EditPolicyCertificate />
+        case RouteE.EditPolicyEtcdEncryption:
+            return <EditPolicyEtcdEncryption />
+        case RouteE.EditPolicyLimitMemory:
+            return <EditPolicyLimitMemory />
+        case RouteE.EditPolicyImageManifestVuln:
+            return <EditPolicyImageManifestVuln />
+        case RouteE.EditPolicyPsp:
+            return <EditPolicyPsp />
+        case RouteE.EditPolicyScc:
+            return <EditPolicyScc />
         case RouteE.PolicySet:
             return <PolicySetExamples />
         case RouteE.CreatePolicySet:

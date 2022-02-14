@@ -2,7 +2,7 @@
 
 describe('policy wizard', () => {
     it('displays', () => {
-        cy.visit('http://localhost:3000/?route=policy')
+        cy.visit('http://localhost:3000/?route=create-policy')
         cy.get('h1').contains('Create policy')
         cy.get('#nav-toggle').click()
         cy.get('#yaml-switch').click({ force: true })
