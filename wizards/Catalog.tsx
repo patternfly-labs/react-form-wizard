@@ -229,7 +229,7 @@ export function DataDrivenCatalog(props: {
                     <FlexItem grow={{ default: 'grow' }}>
                         <Stack hasGutter>
                             {breadcrumbs}
-                            <Title headingLevel="h2">{props.title}</Title>
+                            <Title headingLevel="h1">{props.title}</Title>
                         </Stack>
                     </FlexItem>
                     <FlexItem alignSelf={{ default: 'alignSelfFlexEnd' }} grow={{ default: 'grow' }}>
