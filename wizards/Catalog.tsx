@@ -199,7 +199,7 @@ export function DataDrivenCatalog(props: {
                             </Split>
                         </CardHeader>
                         <CardBody>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
                                 {Array.isArray(card.descriptions) &&
                                     card.descriptions.map((description, index) => (
                                         <Text component="p" key={index}>
