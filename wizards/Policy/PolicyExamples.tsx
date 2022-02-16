@@ -45,7 +45,7 @@ export function PolicyExamples() {
     const history = useHistory()
     return (
         <DataDrivenCatalog
-            title="Polciy Wizard Examples"
+            title="Policy Wizard Examples"
             breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Policy Wizard Examples' }]}
             filterGroups={[
                 {
