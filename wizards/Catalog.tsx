@@ -297,7 +297,7 @@ function Filter(props: { filter: ICatalogFilter; selectedValues?: CatalogFilterV
                 label={filter.label ?? filter.value.toString()}
             />
             {filter.filters && (
-                <List>
+                <Stack hasGutter>
                     {filter.filters.map((filter) => (
                         <Filter
                             key={filter.id ?? filter.value.toString()}
@@ -306,7 +306,7 @@ function Filter(props: { filter: ICatalogFilter; selectedValues?: CatalogFilterV
                             onClick={onClick}
                         />
                     ))}
-                </List>
+                </Stack>
             )}
         </Fragment>
     )
