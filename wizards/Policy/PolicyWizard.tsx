@@ -1,6 +1,6 @@
 import { Button, Text, Title } from '@patternfly/react-core'
 import get from 'get-value'
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import set from 'set-value'
 import {
     ArrayInput,
@@ -106,9 +106,21 @@ export function PolicyWizard(props: {
             }
         >
             <Step label="Details" id="details">
-                {props.editMode === EditMode.Create && (
-                    <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                {props.editMode !== EditMode.Edit && (
+                    <Fragment>
+                        <Sync kind="Policy" path="metadata.name" targetKind="Placement" prefix="-placement" addIndex />
+                        <Sync
+                            kind="Policy"
+                            path="metadata.name"
+                            targetKind="PlacementBinding"
+                            prefix="-placement"
+                            addIndex
+                            postfix="-binding"
+                        />
+                        <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                    </Fragment>
                 )}
+
                 <Sync kind="Policy" path="metadata.namespace" />
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <Section label="Details" prompt="Enter the details for the policy">

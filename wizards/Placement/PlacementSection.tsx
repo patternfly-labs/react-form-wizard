@@ -16,7 +16,7 @@ A slice of PlacementDecisions with label cluster.open-cluster-management.io/plac
 If a ManagedCluster is selected and added into the PlacementDecisions, other components may apply workload on it; once it is removed from the PlacementDecisions, the workload applied on this ManagedCluster should be evicted accordingly.
 */
 export type IPlacement = IResource & {
-    apiVersion?: 'cluster.open-cluster-management.io/v1alpha1'
+    apiVersion?: 'cluster.open-cluster-management.io/v1beta1'
     kind?: 'Placement'
     metadata?: { name?: string; namespace?: string }
     spec?: {
@@ -75,7 +75,7 @@ interface IExpression {
 }
 
 const placementLocalCluster: IPlacement = {
-    apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
+    apiVersion: 'cluster.open-cluster-management.io/v1beta1',
     kind: 'Placement',
     metadata: { name: '', namespace: '' },
     spec: {
@@ -129,7 +129,7 @@ export function PlacementSection(props: {
                     title="Deploy to clusters with specific labels"
                     onClick={() => {
                         resources.push({
-                            apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
+                            apiVersion: 'cluster.open-cluster-management.io/v1beta1',
                             kind: 'Placement',
                             metadata: { name: '', namespace: '' },
                             spec: {},
@@ -151,7 +151,7 @@ export function PlacementSection(props: {
                     onClick={() => {
                         const name = 'all-clusters'
                         resources.push({
-                            apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
+                            apiVersion: 'cluster.open-cluster-management.io/v1beta1',
                             kind: 'Placement',
                             metadata: { name, namespace: '' },
                             spec: {},
@@ -253,7 +253,7 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
             collapsedContent="metadata.name"
             collapsedPlaceholder="Expand to enter placement"
             newValue={{
-                apiVersion: 'cluster.open-cluster-management.io/v1alpha1',
+                apiVersion: 'cluster.open-cluster-management.io/v1beta1',
                 kind: 'Placement',
                 metadata: { name: '', namespace: '' },
                 spec: {},
