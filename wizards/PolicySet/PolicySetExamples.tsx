@@ -1,12 +1,9 @@
-import { Split, SplitItem } from '@patternfly/react-core'
-import { CheckIcon } from '@patternfly/react-icons'
-import { ReactNode } from 'react'
 import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
+import { DataDrivenCatalog } from '../Catalog'
 import { IResource } from '../common/resource'
 import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
-import { DashboardCard, DashboardPage } from '../Dashboard'
 import { RouteE } from '../Routes'
 import { PolicySetWizard } from './PolicySetWizard'
 
@@ -14,49 +11,82 @@ export function onCancel(history: { push: (location: string) => void }) {
     history.push(`./${RouteE.PolicySet}`)
 }
 
-function Checked(props: { children: ReactNode }) {
-    return (
-        <Split hasGutter>
-            <SplitItem>
-                <CheckIcon color="green" />
-            </SplitItem>
-            <SplitItem>{props.children}</SplitItem>
-        </Split>
-    )
-}
 export function PolicySetExamples() {
+    const history = useHistory()
     return (
-        <DashboardPage title="Policy set examples">
-            <DashboardCard title="Create policy set" route={RouteE.CreatePolicySet}>
-                <Checked>Create a new policy set.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy set 1" route={RouteE.EditPolicySet1}>
-                <Checked>Single placement.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy set 2" route={RouteE.EditPolicySet2}>
-                <Checked>Two placements.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy set 3" route={RouteE.EditPolicySet3}>
-                <Checked>Single placement rule.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy set 4" route={RouteE.EditPolicySet4}>
-                <Checked>Two placement rules.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy set 5" route={RouteE.EditPolicySet5}>
-                <Checked>Two placements.</Checked>
-                <Checked>Two placement rules.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy set 6" route={RouteE.EditPolicySet6}>
-                <Checked>Placement binding.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy set 7" route={RouteE.EditPolicySet7}>
-                <Checked>Placement rule binding.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy set 8" route={RouteE.EditPolicySet8}>
-                <Checked>Placement binding.</Checked>
-                <Checked>Placement rule binding.</Checked>
-            </DashboardCard>
-        </DashboardPage>
+        <DataDrivenCatalog
+            title="Example Wizards"
+            breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Policy Examples' }]}
+            filterGroups={[
+                {
+                    id: 'placements',
+                    label: 'Placement Types',
+                    filters: [
+                        { value: 'Placement' },
+                        { value: 'Placement Binding' },
+                        { value: 'Placement Rule' },
+                        { value: 'Placement Rule Binding' },
+                    ],
+                },
+            ]}
+            cards={[
+                {
+                    title: 'Create policy set',
+                    descriptions: ['Create a new policy set.'],
+                    // featureGroups: [{ title: 'Features', features: ['Create a new policy set.'] }],
+                    labels: ['Placement'],
+                    onClick: () => history.push(RouteE.CreatePolicySet),
+                },
+                {
+                    title: 'Edit policy with single placement',
+                    featureGroups: [{ title: 'Features', features: ['Single placement'] }],
+                    labels: ['Placement', 'Placement Binding'],
+                    onClick: () => history.push(RouteE.EditPolicySet1),
+                },
+                {
+                    title: 'Edit policy with two placements',
+                    featureGroups: [{ title: 'Features', features: ['Two placements'] }],
+                    labels: ['Placement', 'Placement Binding'],
+                    onClick: () => history.push(RouteE.EditPolicySet2),
+                },
+                {
+                    title: 'Edit policy with single placement rule',
+                    featureGroups: [{ title: 'Features', features: ['Single placement rule'] }],
+                    labels: ['Placement Rule', 'Placement Rule Binding'],
+                    onClick: () => history.push(RouteE.EditPolicySet3),
+                },
+                {
+                    title: 'Edit policy with two placement rules',
+                    featureGroups: [{ title: 'Features', features: ['Two placements rules'] }],
+                    labels: ['Placement Rule', 'Placement Rule Binding'],
+                    onClick: () => history.push(RouteE.EditPolicySet4),
+                },
+                {
+                    title: 'Edit policy with both placement types',
+                    featureGroups: [{ title: 'Features', features: ['Two placements', 'Two placement rules'] }],
+                    labels: ['Placement', 'Placement Rule', 'Placement Binding', 'Placement Rule Binding'],
+                    onClick: () => history.push(RouteE.EditPolicySet5),
+                },
+                {
+                    title: 'Edit policy with placement binding',
+                    featureGroups: [{ title: 'Features', features: ['Placement binding'] }],
+                    labels: ['Placement Binding'],
+                    onClick: () => history.push(RouteE.EditPolicySet6),
+                },
+                {
+                    title: 'Edit policy with placement rule binding',
+                    featureGroups: [{ title: 'Features', features: ['Placement rule binding'] }],
+                    labels: ['Placement Rule Binding'],
+                    onClick: () => history.push(RouteE.EditPolicySet7),
+                },
+                {
+                    title: 'Edit policy with both placement bindings',
+                    featureGroups: [{ title: 'Features', features: ['Placement binding', 'Placement rule binding'] }],
+                    labels: ['Placement Binding', 'Placement Rule Binding'],
+                    onClick: () => history.push(RouteE.EditPolicySet8),
+                },
+            ]}
+        />
     )
 }
 

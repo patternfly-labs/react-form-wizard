@@ -40,6 +40,7 @@ function Checked(props: { children: ReactNode }) {
         </Split>
     )
 }
+
 export function PolicyExamples() {
     const history = useHistory()
     return (

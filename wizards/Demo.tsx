@@ -1,16 +1,7 @@
 import {
-    Card,
-    CardBody,
-    CardTitle,
-    Checkbox,
-    Flex,
-    FlexItem,
     Grid,
     GridItem,
     gridSpans,
-    InputGroup,
-    Label,
-    LabelGroup,
     Masthead,
     MastheadBrand,
     MastheadContent,
@@ -20,28 +11,20 @@ import {
     NavItem,
     NavList,
     Page,
-    PageSection,
     PageSidebar,
     PageToggleButton,
-    Select,
-    SelectOption,
-    SelectVariant,
-    Split,
-    SplitItem,
     Stack,
-    Text,
-    TextInput,
     Title,
 } from '@patternfly/react-core'
 import { BarsIcon, GithubIcon } from '@patternfly/react-icons'
 import useResizeObserver from '@react-hook/resize-observer'
 import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
-import { ClearInputButton } from '../src/components/ClearInputButton'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
 import { ArgoExample } from './Argo/ArgoExample'
+import { DataDrivenCatalog } from './Catalog'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { HomeWizard } from './Home/HomeWizard'
@@ -85,23 +68,6 @@ enum StateE {
     alpha = 'alpha',
     beta = 'beta',
     production = 'production',
-}
-
-function stateValue(state?: StateE) {
-    switch (state) {
-        case StateE.beta:
-            return 1
-        case StateE.alpha:
-            return 2
-        case StateE.prototype:
-            return 3
-    }
-    return 0
-}
-
-enum SortE {
-    name = 'name',
-    quality = 'quality',
 }
 
 interface IWizard {
@@ -289,194 +255,25 @@ export function DemoRouter(): JSX.Element {
 
 function ExampleWizards() {
     const history = useHistory()
-    const [labelFilter, setLabelFilter] = useState<string[]>([])
-    const [qualityFilter, setQualityFilter] = useState<string[]>([])
-    const [sort, setSort] = useState<SortE>(SortE.name)
-    const [sortOpen, setSortOpen] = useState(false)
-    const [search, setSearch] = useState('')
 
     return (
-        <Page
-            additionalGroupedContent={
-                <PageSection variant="light">
-                    <Stack hasGutter>
-                        <Stack>
-                            <Title headingLevel="h2">Example Wizards</Title>
-                            <Text>
-                                Example wizards not only show what can be done with the framework but also serve as a testbed for automated
-                                testing.
-                            </Text>
-                        </Stack>
-                    </Stack>
-                </PageSection>
-            }
-            groupProps={{ sticky: 'top' }}
-        >
-            <PageSection isWidthLimited variant="light">
-                <Stack hasGutter>
-                    <Split hasGutter>
-                        <SplitItem style={{ paddingLeft: 8, paddingRight: 32, paddingTop: 64 }}>
-                            <Flex direction={{ default: 'column' }} style={{ gap: 24 }}>
-                                <Flex direction={{ default: 'column' }}>
-                                    <Title headingLevel="h6">Quality</Title>
-                                    <Flex direction={{ default: 'column' }} style={{ paddingLeft: 8 }}>
-                                        {['Production', 'Beta', 'Alpha', 'Prototype'].map((quality) => (
-                                            <Checkbox
-                                                key={quality}
-                                                id={quality}
-                                                label={quality}
-                                                isChecked={qualityFilter.includes(quality.toLowerCase())}
-                                                onChange={(checked) => {
-                                                    if (checked) qualityFilter.push(quality.toLowerCase())
-                                                    else qualityFilter.splice(qualityFilter.indexOf(quality.toLowerCase()), 1)
-                                                    setQualityFilter([...qualityFilter])
-                                                }}
-                                            />
-                                        ))}
-                                    </Flex>
-                                </Flex>
-                                <Flex direction={{ default: 'column' }}>
-                                    <Title headingLevel="h4">Labels</Title>
-                                    <Flex direction={{ default: 'column' }} style={{ paddingLeft: 8 }}>
-                                        {wizards
-                                            .reduce((labels, wizard) => {
-                                                for (const label of wizard.labels ?? []) {
-                                                    if (!labels.includes(label)) labels.push(label)
-                                                }
-                                                return labels
-                                            }, [] as string[])
-                                            .sort()
-                                            .map((label) => (
-                                                <Checkbox
-                                                    key={label}
-                                                    id={label}
-                                                    label={label}
-                                                    isChecked={labelFilter.includes(label)}
-                                                    onChange={(checked) => {
-                                                        if (checked) labelFilter.push(label)
-                                                        else labelFilter.splice(labelFilter.indexOf(label), 1)
-                                                        setLabelFilter([...labelFilter])
-                                                    }}
-                                                />
-                                            ))}
-                                    </Flex>
-                                </Flex>
-                            </Flex>
-                        </SplitItem>
-                        <SplitItem isFilled>
-                            <Flex style={{ paddingBottom: 16 }}>
-                                <FlexItem grow={{ default: 'grow' }}>
-                                    <InputGroup>
-                                        <TextInput placeholder="Search" value={search} onChange={setSearch} />
-                                        {search !== '' && <ClearInputButton onClick={() => setSearch('')} />}
-                                    </InputGroup>
-                                </FlexItem>
-                                <FlexItem>
-                                    <Select
-                                        variant={SelectVariant.single}
-                                        placeholder="Sort by"
-                                        isOpen={sortOpen}
-                                        onToggle={setSortOpen}
-                                        onSelect={(_, value) => {
-                                            setSort(value as SortE)
-                                            setSortOpen(false)
-                                        }}
-                                        selections={sort}
-                                    >
-                                        <SelectOption value={SortE.name}>Sort by Name</SelectOption>
-                                        <SelectOption value={SortE.quality}>Sort by Quality</SelectOption>
-                                    </Select>
-                                </FlexItem>
-                            </Flex>
-                            <Masonry size={400}>
-                                {wizards
-                                    .filter((wizard) => {
-                                        if (labelFilter.length == 0) return true
-                                        for (const filterLabel of labelFilter) {
-                                            if (wizard.labels?.includes(filterLabel)) return true
-                                        }
-                                        return false
-                                    })
-                                    .filter((wizard) => {
-                                        if (qualityFilter.length == 0) return true
-                                        for (const quality of qualityFilter) {
-                                            if (wizard.state === quality) return true
-                                        }
-                                        return false
-                                    })
-                                    .filter((wizard) => {
-                                        if (!search) return true
-                                        if (wizard.name.toLowerCase().includes(search.toLowerCase())) return true
-                                        if (wizard.description?.toLowerCase().includes(search.toLowerCase())) return true
-                                        return false
-                                    })
-                                    .sort((lhs, rhs) => {
-                                        switch (sort) {
-                                            case SortE.quality:
-                                                return stateValue(lhs.state) > stateValue(rhs.state) ? 1 : -1
-                                            default:
-                                                return lhs.name > rhs.name ? 1 : -1
-                                        }
-                                    })
-                                    .map((wizard, index) => (
-                                        <Card
-                                            key={index}
-                                            onClick={() => {
-                                                history.push(wizard.route)
-                                            }}
-                                            isSelectable
-                                            isRounded
-                                            isLarge
-                                            isFlat
-                                            style={{ transition: 'box-shadow 400ms' }}
-                                        >
-                                            <CardTitle>
-                                                <Split>
-                                                    <SplitItem isFilled>{wizard.name}</SplitItem>
-                                                    <SplitItem>
-                                                        {wizard.state !== StateE.production && (
-                                                            <div
-                                                                style={{
-                                                                    border: '1px solid var(--pf-global--palette--gold-200)',
-                                                                    backgroundColor: 'var(--pf-global--palette--gold-50)',
-                                                                    color: 'var(--pf-global--palette--gold-600)',
-                                                                    paddingLeft: 4,
-                                                                    paddingRight: 4,
-                                                                    fontSize: 'small',
-                                                                    borderRadius: 4,
-                                                                    opacity: 0.6,
-                                                                }}
-                                                            >
-                                                                {wizard.state}
-                                                            </div>
-                                                        )}
-                                                    </SplitItem>
-                                                </Split>
-                                            </CardTitle>
-                                            {(wizard.description || wizard.labels) && (
-                                                <CardBody>
-                                                    <Stack hasGutter>
-                                                        {wizard.description && <div>{wizard.description}</div>}
-                                                        {wizard.labels && wizard.labels.length && (
-                                                            <LabelGroup isCompact>
-                                                                {wizard.labels.map((label) => (
-                                                                    <Label isCompact color="blue" key={label}>
-                                                                        {label}
-                                                                    </Label>
-                                                                ))}
-                                                            </LabelGroup>
-                                                        )}
-                                                    </Stack>
-                                                </CardBody>
-                                            )}
-                                        </Card>
-                                    ))}
-                            </Masonry>
-                        </SplitItem>
-                    </Split>
-                </Stack>
-            </PageSection>
-        </Page>
+        <DataDrivenCatalog
+            title="Example Wizards"
+            breadcrumbs={[{ label: 'Example Wizards' }]}
+            filterGroups={[
+                {
+                    id: 'labels',
+                    label: 'Products',
+                    filters: [{ value: 'ACM' }, { value: 'MCE' }],
+                },
+            ]}
+            cards={wizards.map((wizard) => ({
+                title: wizard.name,
+                descriptions: wizard.description ? [wizard.description] : undefined,
+                labels: wizard.labels,
+                onClick: () => history.push(wizard.route),
+            }))}
+        />
     )
 }
 
