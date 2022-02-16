@@ -15,8 +15,8 @@ export function PolicySetExamples() {
     const history = useHistory()
     return (
         <DataDrivenCatalog
-            title="Example Wizards"
-            breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Policy Examples' }]}
+            title="Policy Set Wizard Examples"
+            breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Policy Set Wizard Examples' }]}
             filterGroups={[
                 {
                     id: 'placements',

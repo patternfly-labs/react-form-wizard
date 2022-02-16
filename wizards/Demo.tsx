@@ -64,10 +64,11 @@ import { RosaExample } from './ROSA/RosaExample'
 import { RouteE } from './Routes'
 
 enum StateE {
-    prototype = 'prototype',
-    alpha = 'alpha',
-    beta = 'beta',
-    production = 'production',
+    prototype = 'Prototype',
+    alpha = 'Alpha',
+    beta = 'Beta',
+    production = 'Production',
+    techPreview = 'Tech preview',
 }
 
 interface IWizard {
@@ -271,6 +272,7 @@ function ExampleWizards() {
                 title: wizard.name,
                 descriptions: wizard.description ? [wizard.description] : undefined,
                 labels: wizard.labels,
+                badge: wizard.state,
                 onClick: () => history.push(wizard.route),
             }))}
         />

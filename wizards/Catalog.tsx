@@ -22,6 +22,8 @@ import {
     Page,
     PageSection,
     SearchInput,
+    Split,
+    SplitItem,
     Stack,
     Text,
     Title,
@@ -60,6 +62,7 @@ interface ICatalogCard {
     descriptions?: string[]
     featureGroups?: ICatalogCardFeatureGroup[]
     labels?: string[]
+    badge?: string
     onClick: () => void
 }
 
@@ -71,11 +74,12 @@ interface ICatalogCardFeatureGroup {
 const fuseCardOptions: Fuse.IFuseOptions<ICatalogCard> = {
     includeScore: true,
     keys: [
-        { name: 'title', weight: 0.4 },
+        { name: 'title', weight: 0.35 },
         { name: 'descriptions', weight: 0.15 },
         { name: 'featureGroups.features', weight: 0.15 },
         { name: 'labels', weight: 0.15 },
         { name: 'labels.label', weight: 0.15 },
+        { name: 'badge', weight: 0.15 },
     ],
 }
 
@@ -181,7 +185,18 @@ export function DataDrivenCatalog(props: {
                 {searchedCards.map((card) => (
                     <Card id={card.id} key={card.id ?? card.title} onClick={card.onClick} isFlat isLarge isSelectableRaised>
                         <CardHeader>
-                            <CardTitle>{card.title}</CardTitle>
+                            <Split hasGutter style={{ width: '100%' }}>
+                                <SplitItem isFilled>
+                                    <CardTitle>{card.title}</CardTitle>
+                                </SplitItem>
+                                {card.badge && (
+                                    <SplitItem>
+                                        <Label isCompact color="orange">
+                                            {card.badge}
+                                        </Label>
+                                    </SplitItem>
+                                )}
+                            </Split>
                         </CardHeader>
                         <CardBody>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
