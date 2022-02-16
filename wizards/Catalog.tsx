@@ -223,7 +223,7 @@ export function DataDrivenCatalog(props: {
                                     ))}
 
                                 {card.labels && (
-                                    <LabelGroup>
+                                    <LabelGroup numLabels={999}>
                                         {card.labels.map((label) => (
                                             <Label key={label}>{label}</Label>
                                         ))}
