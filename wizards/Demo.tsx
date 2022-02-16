@@ -591,7 +591,7 @@ export function Masonry(props: { size: number; children?: ReactNode }) {
 
     return (
         <div ref={target}>
-            <Grid hasGutter>
+            <Grid hasGutter style={{ maxWidth: realColumns * props.size }}>
                 {new Array(realColumns).fill(0).map((_, index) => (
                     <GridItem span={span} key={index}>
                         <Stack hasGutter>

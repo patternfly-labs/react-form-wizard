@@ -253,6 +253,7 @@ export function PolicyWizardTemplates() {
                     }
                 })}
                 collapsedContent="objectDefinition.metadata.name"
+                defaultCollapsed
             >
                 {/* CertificatePolicy */}
                 <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'CertificatePolicy'}>

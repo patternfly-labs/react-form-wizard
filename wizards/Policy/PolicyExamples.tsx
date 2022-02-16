@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
 import { YamlToObject } from '../../src/components/YamlEditor'
+import { DataDrivenCatalog } from '../Catalog'
 import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { DashboardCard, DashboardPage } from '../Dashboard'
@@ -40,47 +41,130 @@ function Checked(props: { children: ReactNode }) {
     )
 }
 export function PolicyExamples() {
+    const history = useHistory()
+    return (
+        <DataDrivenCatalog
+            title="Polciy Wizard Examples"
+            breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Policy Wizard Examples' }]}
+            filterGroups={[
+                {
+                    id: 'security-groups',
+                    label: 'Security Groups',
+                    filters: [
+                        { value: 'Access Control' },
+                        { value: 'Security Assessment and Authorization' },
+                        { value: 'Configuration Management' },
+                        { value: 'System and Communications Protection' },
+                        { value: 'System and Information Integrity' },
+                    ],
+                },
+            ]}
+            cards={[
+                {
+                    title: 'Create Policy',
+                    descriptions: [
+                        'A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls',
+                    ],
+                    onClick: () => history.push(RouteE.CreatePolicy),
+                },
+                {
+                    title: 'Edit Limit Cluster Admin Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Limit Cluster Admin'] }],
+                    labels: ['Access Control'],
+                    onClick: () => history.push(RouteE.EditPolicyLimitClusterAdmin),
+                },
+                {
+                    title: 'Edit Role Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Role'] }],
+                    labels: ['Access Control'],
+                    onClick: () => history.push(RouteE.EditPolicyRole),
+                },
+                {
+                    title: 'Edit Role Binding Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Role Binding'] }],
+                    labels: ['Access Control'],
+                    onClick: () => history.push(RouteE.EditPolicyRoleBinding),
+                },
+                {
+                    title: 'Edit Compliance Operator Install Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Compliance Operator Install'] }],
+                    labels: ['Security Assessment and Authorization'],
+                    onClick: () => history.push(RouteE.EditPolicyComplianceOperatorInstall),
+                },
+                {
+                    title: 'Edit Compliance Operator Cis Scan Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Compliance Operator Cis Scan'] }],
+                    labels: ['Configuration Management'],
+                    onClick: () => history.push(RouteE.EditPolicyComplianceOperatorCisScan),
+                },
+                {
+                    title: 'Edit Compliance Operator E8 Scan Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Compliance Operator E8 Scan'] }],
+                    labels: ['Configuration Management'],
+                    onClick: () => history.push(RouteE.EditPolicyComplianceOperatorE8Scan),
+                },
+                {
+                    title: 'Edit Gatekeeper Operator Downstream Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Gatekeeper Operator Downstream'] }],
+                    labels: ['Configuration Management'],
+                    onClick: () => history.push(RouteE.EditPolicyGatekeeperOperatorDownstream),
+                },
+                {
+                    title: 'Edit Namespace Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Namespace'] }],
+                    labels: ['Configuration Management'],
+                    onClick: () => history.push(RouteE.EditPolicyNamespace),
+                },
+                {
+                    title: 'Edit Pod Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Pod'] }],
+                    labels: ['Configuration Management'],
+                    onClick: () => history.push(RouteE.EditPolicyPod),
+                },
+                {
+                    title: 'Edit Certificate Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Certificate'] }],
+                    labels: ['System and Communications Protection'],
+                    onClick: () => history.push(RouteE.EditPolicyCertificate),
+                },
+                {
+                    title: 'Edit Etcd Encryption Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Etcd Encryption'] }],
+                    labels: ['System and Communications Protection'],
+                    onClick: () => history.push(RouteE.EditPolicyEtcdEncryption),
+                },
+                {
+                    title: 'Edit Limit Memory Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Limit Memory'] }],
+                    labels: ['System and Communications Protection'],
+                    onClick: () => history.push(RouteE.EditPolicyLimitMemory),
+                },
+                {
+                    title: 'Edit Psp Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Psp'] }],
+                    labels: ['System and Communications Protection'],
+                    onClick: () => history.push(RouteE.EditPolicyPsp),
+                },
+                {
+                    title: 'Edit Security Context Constraints Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Security Context Constraints'] }],
+                    labels: ['System and Communications Protection'],
+                    onClick: () => history.push(RouteE.EditPolicyScc),
+                },
+                {
+                    title: 'Edit Image Manifest Vuln Policy',
+                    featureGroups: [{ title: 'Policies', features: ['Image Manifest Vuln'] }],
+                    labels: ['System and Information Integrity'],
+                    onClick: () => history.push(RouteE.EditPolicyImageManifestVuln),
+                },
+            ]}
+        />
+    )
+}
+
+export function PolicyExamples2() {
     return (
         <DashboardPage title="Policy examples">
-            <DashboardCard title="Create policy" route={RouteE.CreatePolicy}>
-                <Checked>Create a new policy.</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyLimitClusterAdmin}>
-                <Checked>Limit Cluster Admin</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyRole}>
-                <Checked>Role</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyRoleBinding}>
-                <Checked>Role Binding</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyComplianceOperatorInstall}>
-                <Checked>Compliance Operator Install</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyComplianceOperatorCisScan}>
-                <Checked>Compliance Operator Cis Scan</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyComplianceOperatorE8Scan}>
-                <Checked>Compliance Operator E8 Scan</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyGatekeeperOperatorDownstream}>
-                <Checked>Gatekeeper Operator Downstream</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyNamespace}>
-                <Checked>Namespace</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyPod}>
-                <Checked>Pod</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyCertificate}>
-                <Checked>Certificate</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyEtcdEncryption}>
-                <Checked>Etcd Encryption</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyLimitMemory}>
-                <Checked>Limit Memory</Checked>
-            </DashboardCard>
             <DashboardCard title="Edit policy" route={RouteE.EditPolicyImageManifestVuln}>
                 <Checked>Image Manifest Vuln</Checked>
             </DashboardCard>
@@ -88,7 +172,7 @@ export function PolicyExamples() {
                 <Checked>Psp</Checked>
             </DashboardCard>
             <DashboardCard title="Edit policy" route={RouteE.EditPolicyScc}>
-                <Checked>Scc</Checked>
+                <Checked>Security Context Constraints</Checked>
             </DashboardCard>
         </DashboardPage>
     )

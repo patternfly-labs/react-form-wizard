@@ -45,9 +45,9 @@
         "yaml": "^1.10.2"
     },
     "devDependencies": {
-        "@patternfly/react-table": "^4.65.0",
         "@patternfly/react-core": "^4.196.0",
         "@patternfly/react-icons": "^4.47.0",
+        "@patternfly/react-table": "^4.65.0",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
         "@react-hook/resize-observer": "^1.2.5",
         "@svgr/webpack": "^6.2.1",
@@ -82,6 +82,7 @@
         "eslint-plugin-prettier": "^4.0.0",
         "eslint-plugin-react": "^7.28.0",
         "eslint-plugin-react-hooks": "^4.3.0",
+        "fuse.js": "^6.5.3",
         "html-webpack-plugin": "^5.5.0",
         "mini-css-extract-plugin": "^2.5.3",
         "prettier": "^2.5.1",
