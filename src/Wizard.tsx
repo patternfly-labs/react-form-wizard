@@ -83,7 +83,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     const [template2] = useState(() => (props.yamlToDataTemplate ? Handlebars.compile(props.yamlToDataTemplate) : undefined))
 
     return (
-        <EditModeContext.Provider value={props.editMode ?? EditMode.Create}>
+        <EditModeContext.Provider value={props.editMode === undefined ? EditMode.Create : props.editMode}>
             <StepHasInputsProvider>
                 <StepValidationProvider>
                     <DisplayModeContext.Provider value={displayMode}>

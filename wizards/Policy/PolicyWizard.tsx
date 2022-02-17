@@ -124,7 +124,14 @@ export function PolicyWizard(props: {
                 <Sync kind="Policy" path="metadata.namespace" />
                 <ItemSelector selectKey="kind" selectValue="Policy">
                     <Section label="Details" prompt="Enter the details for the policy">
-                        <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
+                        <TextInput
+                            id="name"
+                            path="metadata.name"
+                            label="Name"
+                            required
+                            validation={isValidKubernetesName}
+                            disabledInEditMode
+                        />
                         <Select
                             id="namespace"
                             path="metadata.namespace"
@@ -138,6 +145,7 @@ export function PolicyWizard(props: {
                                     Create new namespace
                                 </Button>
                             }
+                            disabledInEditMode
                         />
                         <RadioGroup path="spec.remediationAction" label="Remediation" required>
                             <Radio

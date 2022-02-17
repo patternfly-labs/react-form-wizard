@@ -1,7 +1,9 @@
-import { Label, SelectOption, Text, Tile } from '@patternfly/react-core'
+import { Chip, Label, SelectOption, Text, Tile } from '@patternfly/react-core'
+import get from 'get-value'
 import { Fragment, useMemo } from 'react'
-import { ArrayInput, EditMode, ItemSelector, KeyValue, NumberInput, Section, Select, StringsInput, TextInput } from '../../src'
+import { ArrayInput, EditMode, Hidden, ItemSelector, KeyValue, NumberInput, Section, Select, StringsInput, TextInput } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
+import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { Multiselect } from '../../src/inputs/Multiselect'
@@ -83,9 +85,13 @@ const placementLocalCluster: IPlacement = {
             {
                 requiredClusterSelector: {
                     labelSelector: {
-                        matchLabels: {
-                            'local-cluster': 'true',
-                        },
+                        matchExpressions: [
+                            {
+                                key: 'local-cluster',
+                                operator: 'In',
+                                values: ['true'],
+                            },
+                        ],
                     },
                 },
             },
@@ -266,6 +272,8 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
 }
 
 export function Placement(props: { namespaceClusterSetNames: string[] }) {
+    const editMode = useEditMode()
+
     return (
         <Fragment>
             {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
@@ -281,6 +289,17 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
                 ))}
             </Multiselect>
 
+            <Hidden
+                hidden={(placement) => {
+                    if (editMode === EditMode.Edit) return true
+                    if (!placement.spec?.predicates) return false
+                    if (placement.spec.predicates.length <= 1) return false
+                    return true
+                }}
+            >
+                <PlacementPredicate rootPath="spec.predicates.0." />
+            </Hidden>
+
             <ArrayInput
                 label="Cluster selectors"
                 path="spec.predicates"
@@ -292,37 +311,59 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
             Clusters must match all cluster selector criteria to be selected by that cluster selector.
             "
                 defaultCollapsed
+                hidden={(placement) => {
+                    if (editMode === EditMode.Edit) return false
+                    if (!placement.spec?.predicates) return true
+                    if (placement.spec.predicates.length <= 1) return true
+                    return false
+                }}
             >
-                <KeyValue
-                    label="Cluster label selectors"
-                    path="requiredClusterSelector.labelSelector.matchLabels"
-                    labelHelp="A label selector allows simple selection of clusters using cluster labels."
-                    placeholder="Add label selector"
-                />
-                <ArrayInput
-                    label="Cluster label expressions"
-                    path="requiredClusterSelector.labelSelector.matchExpressions"
-                    placeholder="Add label expression"
-                    labelHelp="A label expression allows selection of clusters using cluster labels."
-                    collapsedContent={<MatchExpressionCollapsed />}
-                    newValue={{ key: '', operator: 'In' }}
-                    defaultCollapsed
-                >
-                    <MatchExpression />
-                </ArrayInput>
-                <ArrayInput
-                    label="Cluster claim expressions"
-                    path="requiredClusterSelector.claimSelector.matchExpressions"
-                    placeholder="Add claim expression"
-                    labelHelp="A label expression allows selection of clusters using cluster claims in status."
-                    collapsedContent={<MatchExpressionCollapsed />}
-                    newValue={{ key: '', operator: 'In' }}
-                    defaultCollapsed
-                >
-                    <MatchExpression />
-                </ArrayInput>
+                <PlacementPredicate />
             </ArrayInput>
-            <NumberInput label="Limit the number of clusters selected" path="spec.numberOfClusters" zeroIsUndefined />
+            <NumberInput
+                label="Limit the number of clusters selected"
+                path="spec.numberOfClusters"
+                zeroIsUndefined
+                hidden={(placement) => placement.spec?.numberOfClusterss === undefined}
+            />
+        </Fragment>
+    )
+}
+
+export function PlacementPredicate(props: { rootPath?: string }) {
+    const rootPath = props.rootPath ?? ''
+    return (
+        <Fragment>
+            <KeyValue
+                label="Label selectors"
+                path={`${rootPath}requiredClusterSelector.labelSelector.matchLabels`}
+                labelHelp="A label selector allows simple selection of clusters using cluster labels."
+                placeholder="Add label selector"
+                hidden={(item) => get(item, `${rootPath}requiredClusterSelector.labelSelector.matchLabels`) === undefined}
+            />
+            <ArrayInput
+                label="Label expressions"
+                path={`${rootPath}requiredClusterSelector.labelSelector.matchExpressions`}
+                placeholder="Add label expression"
+                labelHelp="A label expression allows selection of clusters using cluster labels."
+                collapsedContent={<MatchExpressionCollapsed />}
+                newValue={{ key: '', operator: 'In' }}
+                defaultCollapsed
+            >
+                <MatchExpression />
+            </ArrayInput>
+            <ArrayInput
+                label="Claim expressions"
+                path={`${rootPath}requiredClusterSelector.claimSelector.matchExpressions`}
+                placeholder="Add claim expression"
+                labelHelp="A claim expression allows selection of clusters using cluster claims in status."
+                collapsedContent={<MatchExpressionCollapsed />}
+                newValue={{ key: '', operator: 'In' }}
+                defaultCollapsed
+                hidden={(item) => get(item, `${rootPath}requiredClusterSelector.claimSelector.matchExpressions`) === undefined}
+            >
+                <MatchExpression />
+            </ArrayInput>
         </Fragment>
     )
 }
@@ -482,13 +523,18 @@ function MatchExpression() {
                 label="Operator"
                 path="operator"
                 options={[
-                    { label: 'equals one of', value: 'In' },
+                    { label: 'equals any of', value: 'In' },
                     { label: 'does not equal any of', value: 'NotIn' },
                     { label: 'exists', value: 'Exists' },
                     { label: 'does not exist', value: 'DoesNotExist' },
                 ]}
             />
-            <StringsInput label="Values" path="values" hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)} />
+            <StringsInput
+                label="Values"
+                path="values"
+                hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
+                placeholder="Add value"
+            />
         </Fragment>
     )
 }
@@ -500,23 +546,12 @@ function PredicateSummary() {
     const claimSelectorExpressions = predicate.requiredClusterSelector?.claimSelector?.matchExpressions ?? []
 
     const labelSelectors: string[] = []
-    const labelExpressions: string[] = []
-    const claimExpressions: string[] = []
-
     for (const matchLabel in labelSelectorLabels) {
         labelSelectors.push(`${matchLabel}=${labelSelectorLabels[matchLabel]}`)
     }
 
-    for (const matchExpression of labelSelectorExpressions) {
-        labelExpressions.push(`${matchExpression.key ?? ''} ${matchExpression.operator ?? ''} ${matchExpression.values?.join(', ') ?? ''}`)
-    }
-
-    for (const claimExpression of claimSelectorExpressions) {
-        claimExpressions.push(`${claimExpression.key ?? ''} ${claimExpression.operator ?? ''} ${claimExpression.values?.join(', ') ?? ''}`)
-    }
-
-    if (labelSelectors.length === 0 && claimSelectorExpressions.length === 0) {
-        return <div>Expand to enter predicate</div>
+    if (labelSelectors.length === 0 && labelSelectorExpressions.length === 0 && claimSelectorExpressions.length === 0) {
+        return <div>Expand to enter details</div>
     }
 
     return (
@@ -533,7 +568,7 @@ function PredicateSummary() {
             )}
             {labelSelectorExpressions.length > 0 && (
                 <div style={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
-                    <Text component="small">Cluster claim label expressions</Text>
+                    <Text component="small">Cluster label expressions</Text>
                     <div style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
                         {labelSelectorExpressions.map((expression, index) => (
                             <MatchExpressionSummary key={index} expression={expression} />
@@ -543,7 +578,7 @@ function PredicateSummary() {
             )}
             {claimSelectorExpressions.length > 0 && (
                 <div style={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
-                    <Text component="small">Cluster claim label expressions</Text>
+                    <Text component="small">Cluster claim expressions</Text>
                     <div style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
                         {claimSelectorExpressions.map((expression, index) => (
                             <MatchExpressionSummary key={index} expression={expression} />
@@ -587,23 +622,27 @@ function MatchExpressionSummary(props: { expression: IExpression }) {
             break
     }
 
+    const displayMode = useDisplayMode()
+
+    if (!expression.key) {
+        if (displayMode === DisplayMode.Details) return <Fragment />
+        return <div>Expand to enter expression</div>
+    }
+
     return (
-        <div
-            style={{
-                display: 'flex',
-                alignItems: 'baseline',
-                border: '1px solid #0003',
-                padding: '0px 6px 2px 3px',
-                gap: 4,
-                borderRadius: 12,
-                flexWrap: 'wrap',
-            }}
-        >
-            <Label isCompact>{expression.key}</Label>
-            <span style={{ whiteSpace: 'nowrap', opacity: 0.7 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', rowGap: 4 }}>
+            <Label>{expression.key}</Label>
+            <span style={{ whiteSpace: 'nowrap', opacity: 0.7, paddingLeft: 6, paddingRight: 6 }}>
                 <Text component="small">{operator}</Text>
             </span>
-            {expression.values && expression.values.join(', ')}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                {expression.values &&
+                    expression.values.map((value) => (
+                        <Chip key={value} style={{ margin: -1 }} isReadOnly>
+                            {value}
+                        </Chip>
+                    ))}
+            </div>
         </div>
     )
 }

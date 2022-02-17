@@ -16,7 +16,7 @@ import { InputCommonProps, useInput } from './Input'
 type KeyValueProps = InputCommonProps & { placeholder?: string }
 
 export function KeyValue(props: KeyValueProps) {
-    const { displayMode: mode, value, setValue, id } = useInput(props)
+    const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
     const [pairs] = useState<{ key: string; value: string }[]>(() => Object.keys(value).map((key) => ({ key, value: value[key] })))
     const onKeyChange = (index: number, newKey: string) => {
         pairs[index].key = newKey
@@ -57,6 +57,8 @@ export function KeyValue(props: KeyValueProps) {
             }, {} as Record<string, string>)
         )
     }
+
+    if (hidden) return <Fragment />
 
     if (mode === DisplayMode.Details) {
         if (!pairs.length) return <Fragment />
