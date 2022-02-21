@@ -43,7 +43,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
 
     return (
         <WizardPage
-            title="Create application"
+            title="Create application set"
             defaultData={[
                 {
                     apiVersion: 'argoproj.io/v1alpha1',
@@ -205,34 +205,59 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         {/* Git only sync policies */}
                         <Hidden hidden={(data) => data.repositoryType !== 'Git'}>
                             <Checkbox
-                                path="spec.template.spec.syncPolicy.automated.prune"
                                 label="Delete resources that are no longer defined in Git"
+                                path="spec.template.spec.syncPolicy.automated.prune"
                             />
                             <Checkbox
-                                path="syncPolicy.pruneLast"
                                 label="Delete resources that are no longer defined in Git at the end of a sync operation"
+                                path="spec.template.spec.syncPolicy.syncOptions"
+                                map={mapCheckbox('PruneLast')}
+                                unmap={unmapCheckbox('PruneLast')}
                             />
-                            <Checkbox path="syncPolicy.replace" label="Replace resources instead of applying changes from Git" />
+                            <Checkbox
+                                label="Replace resources instead of applying changes from Git"
+                                path="spec.template.spec.syncPolicy.syncOptions"
+                                map={mapCheckbox('Replace')}
+                                unmap={unmapCheckbox('Replace')}
+                            />
                         </Hidden>
                         <Checkbox
                             path="spec.template.spec.syncPolicy.automated.allowEmpty"
                             label="Allow applications to have empty resources"
                         />
-                        <Checkbox path="syncPolicy.applyOutOfSyncOnly" label="Only synchronize out-of-sync resources" />
+                        <Checkbox
+                            label="Only synchronize out-of-sync resources"
+                            path="spec.template.spec.syncPolicy.syncOptions"
+                            map={mapCheckbox('ApplyOutOfSyncOnly')}
+                            unmap={unmapCheckbox('ApplyOutOfSyncOnly')}
+                        />
                         <Checkbox
                             path="spec.template.spec.syncPolicy.automated.selfHeal"
                             label="Automatically sync when cluster state changes"
                         />
-                        <Checkbox path="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
-                        <Checkbox path="syncPolicy.validate" label="Disable kubectl validation" />
-                        <Checkbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
+                        <Checkbox
+                            label="Automatically create namespace if it does not exist"
+                            path="spec.template.spec.syncPolicy.syncOptions"
+                            map={mapCheckbox('CreateNamespace')}
+                            unmap={unmapCheckbox('CreateNamespace')}
+                        />
+                        <Checkbox
+                            label="Disable kubectl validation"
+                            path="spec.template.spec.syncPolicy.syncOptions"
+                            map={mapCheckbox('Validate')}
+                            unmap={unmapCheckbox('Validate')}
+                        />
+                        {/* PrunePropagationPolicy=background */}
+                        {/* <Checkbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
                             <Select
-                                path="syncPolicy.propagationPolicy"
                                 label="Propogation policy"
                                 options={['foreground', 'background', 'orphan']}
+                                path="spec.template.spec.syncPolicy.syncOptions"
+                                // map={mapSelect('PrunePropagationPolicy')}
+                                // unmap={mapSelect('PrunePropagationPolicy')}
                                 required
                             />
-                        </Checkbox>
+                        </Checkbox> */}
                     </Section>
                 </ItemSelector>
             </Step>
@@ -325,4 +350,29 @@ export function ExternalLinkButton(props: { id: string; href?: string; icon?: Re
 interface ITimeRangeVariableData {
     start: string
     end: string
+}
+
+function mapCheckbox(key: string) {
+    return function mapCheckboxValue(array: unknown, value: boolean | string) {
+        let newArray: unknown[]
+        if (Array.isArray(array)) {
+            newArray = array
+        } else {
+            newArray = []
+        }
+        const index = newArray.findIndex((entry) => typeof entry === 'string' && entry.startsWith(`${key}=`))
+        if (index !== -1) {
+            newArray[index] = `${key}=${value.toString()}`
+        } else {
+            newArray.push(`${key}=${value.toString()}`)
+        }
+        return newArray
+    }
+}
+
+function unmapCheckbox(key: string) {
+    return function unmapCheckboxValue(array: unknown) {
+        if (Array.isArray(array)) return array?.includes(`${key}=true`)
+        return false
+    }
 }
