@@ -1,5 +1,5 @@
 import get from 'get-value'
-import { useCallback, useContext, useLayoutEffect } from 'react'
+import { useContext, useLayoutEffect } from 'react'
 import set from 'set-value'
 import { EditMode } from '..'
 import { useData } from '../contexts/DataContext'
@@ -28,6 +28,9 @@ export type InputCommonProps<ValueT = any> = {
     labelHelpTitle?: string
     helperText?: string
     disabledInEditMode?: boolean
+
+    inputValueToPathValue?: (inputValue: unknown, pathValue: unknown) => unknown
+    pathValueToInputValue?: (pathValue: unknown) => unknown
 }
 
 export function useID(props: { id?: string; path: string }) {
@@ -40,20 +43,25 @@ export function usePath(props: { path: string }) {
 }
 
 export function useValue(
-    props: Pick<InputCommonProps, 'id' | 'path' | 'label'>,
+    props: Pick<InputCommonProps, 'id' | 'path' | 'label' | 'inputValueToPathValue' | 'pathValueToInputValue'>,
     defaultValue: any
 ): [value: any, setValue: (value: any) => void] {
     const item = useContext(ItemContext)
     const { update } = useData()
     const path = usePath(props)
-    const value = get(item, path) ?? defaultValue
-    const setValue = useCallback(
-        (value: any) => {
-            set(item, path, value, { preservePaths: false })
-            update()
-        },
-        [item, path, update]
-    )
+    const pathValue = get(item, path) ?? defaultValue
+    const setValue = (newValue: any) => {
+        if (props.inputValueToPathValue) {
+            set(item, path, props.inputValueToPathValue(newValue, pathValue), { preservePaths: false })
+        } else {
+            set(item, path, newValue, { preservePaths: false })
+        }
+        update()
+    }
+    let value = pathValue
+    if (props.pathValueToInputValue) {
+        value = props.pathValueToInputValue(pathValue)
+    }
     return [value, setValue]
 }
 

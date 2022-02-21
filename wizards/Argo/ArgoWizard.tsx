@@ -209,16 +209,18 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 path="spec.template.spec.syncPolicy.automated.prune"
                             />
                             <Checkbox
+                                id="prune-last"
                                 label="Delete resources that are no longer defined in Git at the end of a sync operation"
                                 path="spec.template.spec.syncPolicy.syncOptions"
-                                map={mapCheckbox('PruneLast')}
-                                unmap={unmapCheckbox('PruneLast')}
+                                inputValueToPathValue={booleanToSyncOptions('PruneLast')}
+                                pathValueToInputValue={syncOptionsToBoolean('PruneLast')}
                             />
                             <Checkbox
+                                id="replace"
                                 label="Replace resources instead of applying changes from Git"
                                 path="spec.template.spec.syncPolicy.syncOptions"
-                                map={mapCheckbox('Replace')}
-                                unmap={unmapCheckbox('Replace')}
+                                inputValueToPathValue={booleanToSyncOptions('Replace')}
+                                pathValueToInputValue={syncOptionsToBoolean('Replace')}
                             />
                         </Hidden>
                         <Checkbox
@@ -226,38 +228,46 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             label="Allow applications to have empty resources"
                         />
                         <Checkbox
+                            id="apply-out-of-sync-only"
                             label="Only synchronize out-of-sync resources"
                             path="spec.template.spec.syncPolicy.syncOptions"
-                            map={mapCheckbox('ApplyOutOfSyncOnly')}
-                            unmap={unmapCheckbox('ApplyOutOfSyncOnly')}
+                            inputValueToPathValue={booleanToSyncOptions('ApplyOutOfSyncOnly')}
+                            pathValueToInputValue={syncOptionsToBoolean('ApplyOutOfSyncOnly')}
                         />
                         <Checkbox
                             path="spec.template.spec.syncPolicy.automated.selfHeal"
                             label="Automatically sync when cluster state changes"
                         />
                         <Checkbox
+                            id="create-namespace"
                             label="Automatically create namespace if it does not exist"
                             path="spec.template.spec.syncPolicy.syncOptions"
-                            map={mapCheckbox('CreateNamespace')}
-                            unmap={unmapCheckbox('CreateNamespace')}
+                            inputValueToPathValue={booleanToSyncOptions('CreateNamespace')}
+                            pathValueToInputValue={syncOptionsToBoolean('CreateNamespace')}
                         />
                         <Checkbox
+                            id="validate"
                             label="Disable kubectl validation"
                             path="spec.template.spec.syncPolicy.syncOptions"
-                            map={mapCheckbox('Validate')}
-                            unmap={unmapCheckbox('Validate')}
+                            inputValueToPathValue={booleanToSyncOptions('Validate')}
+                            pathValueToInputValue={syncOptionsToBoolean('Validate')}
                         />
-                        {/* PrunePropagationPolicy=background */}
-                        {/* <Checkbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
+                        <Checkbox
+                            id="propagation-policy"
+                            label="Prune propagation policy"
+                            path="spec.template.spec.syncPolicy.syncOptions"
+                            inputValueToPathValue={checkboxPrunePropagationPolicyToSyncOptions}
+                            pathValueToInputValue={checkboxSyncOptionsToPrunePropagationPolicy}
+                        >
                             <Select
                                 label="Propogation policy"
                                 options={['foreground', 'background', 'orphan']}
                                 path="spec.template.spec.syncPolicy.syncOptions"
-                                // map={mapSelect('PrunePropagationPolicy')}
-                                // unmap={mapSelect('PrunePropagationPolicy')}
+                                inputValueToPathValue={prunePropagationPolicyToSyncOptions}
+                                pathValueToInputValue={syncOptionsToPrunePropagationPolicy}
                                 required
                             />
-                        </Checkbox> */}
+                        </Checkbox>
                     </Section>
                 </ItemSelector>
             </Step>
@@ -352,8 +362,8 @@ interface ITimeRangeVariableData {
     end: string
 }
 
-function mapCheckbox(key: string) {
-    return function mapCheckboxValue(array: unknown, value: boolean | string) {
+function booleanToSyncOptions(key: string) {
+    return (value: unknown, array: unknown) => {
         let newArray: unknown[]
         if (Array.isArray(array)) {
             newArray = array
@@ -361,18 +371,81 @@ function mapCheckbox(key: string) {
             newArray = []
         }
         const index = newArray.findIndex((entry) => typeof entry === 'string' && entry.startsWith(`${key}=`))
-        if (index !== -1) {
-            newArray[index] = `${key}=${value.toString()}`
-        } else {
-            newArray.push(`${key}=${value.toString()}`)
+        if (typeof value === 'boolean') {
+            if (index !== -1) {
+                newArray[index] = `${key}=${value.toString()}`
+            } else {
+                newArray.push(`${key}=${value.toString()}`)
+            }
         }
         return newArray
     }
 }
 
-function unmapCheckbox(key: string) {
-    return function unmapCheckboxValue(array: unknown) {
+function syncOptionsToBoolean(key: string) {
+    return (array: unknown) => {
         if (Array.isArray(array)) return array?.includes(`${key}=true`)
         return false
     }
+}
+
+function checkboxPrunePropagationPolicyToSyncOptions(value: unknown, array: unknown) {
+    let newArray: unknown[]
+    if (Array.isArray(array)) {
+        newArray = array
+    } else {
+        newArray = []
+    }
+    if (typeof value === 'boolean') {
+        const index = newArray.findIndex((entry) => typeof entry === 'string' && entry.startsWith(`PrunePropagationPolicy=`))
+        if (value === true) {
+            if (index === -1) {
+                newArray.push(`PrunePropagationPolicy=background`)
+            }
+        } else {
+            if (index !== -1) {
+                newArray.splice(index, 1)
+            }
+        }
+    }
+    return newArray
+}
+
+function checkboxSyncOptionsToPrunePropagationPolicy(array: unknown) {
+    return (
+        Array.isArray(array) &&
+        array.find((entry) => typeof entry === 'string' && entry.startsWith(`PrunePropagationPolicy=`)) !== undefined
+    )
+}
+
+function prunePropagationPolicyToSyncOptions(value: unknown, array: unknown) {
+    let newArray: unknown[]
+    if (Array.isArray(array)) {
+        newArray = array
+    } else {
+        newArray = []
+    }
+    const index = newArray.findIndex((entry) => typeof entry === 'string' && entry.startsWith(`PrunePropagationPolicy=`))
+    if (typeof value === 'string') {
+        if (index !== -1) {
+            newArray[index] = `PrunePropagationPolicy=${value}`
+        } else {
+            newArray.push(`PrunePropagationPolicy=${value}`)
+        }
+    }
+    return newArray
+}
+
+function syncOptionsToPrunePropagationPolicy(array: unknown) {
+    if (Array.isArray(array)) {
+        const index = array.findIndex((entry) => typeof entry === 'string' && entry.startsWith(`PrunePropagationPolicy=`))
+        if (index !== -1) {
+            const value = array[index]
+            if (typeof value === 'string') {
+                return value.slice('PrunePropagationPolicy='.length)
+            }
+        }
+    }
+
+    return 'background'
 }

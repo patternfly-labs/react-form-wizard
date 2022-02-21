@@ -10,11 +10,8 @@ import {
     SelectVariant,
 } from '@patternfly/react-core'
 import get from 'get-value'
-import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
-import set from 'set-value'
-import { useData } from '../contexts/DataContext'
+import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { ItemContext } from '../contexts/ItemContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 import './Select.css'
@@ -59,11 +56,8 @@ export function Select<T>(props: Omit<SingleSelectProps<T>, 'variant'>) {
 type SelectProps<T> = SingleSelectProps<T>
 
 function SelectBase<T = any>(props: SelectProps<T>) {
-    const { displayMode: mode, value, validated, hidden, id, path, disabled } = useInput(props)
+    const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
 
-    const { update } = useData()
-
-    const item = useContext(ItemContext)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
 
     const keyPath = props.keyPath ?? props.path
@@ -163,22 +157,22 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             switch (props.variant) {
                 case 'single':
                     if (isCreatable && typeof selectOptionObject === 'string') {
-                        set(item, path, selectOptionObject, { preservePaths: false })
+                        setValue(selectOptionObject)
                     } else {
-                        set(item, path, selectOptionObject.value, { preservePaths: false })
+                        setValue(selectOptionObject.value)
                     }
                     setOpen(false)
                     break
             }
-            update()
         },
-        [isCreatable, item, path, props.variant, update]
+        [isCreatable, props.variant, setValue]
     )
 
     const onClear = useCallback(() => {
+        // TODO
         // set(item, props.path, '', { preservePaths: false })
-        update()
-    }, [update])
+        // update()
+    }, [])
 
     const onFilter = useCallback(
         (_, value: string) =>
