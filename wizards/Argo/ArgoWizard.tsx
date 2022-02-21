@@ -66,12 +66,6 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         },
                     },
                 },
-                {
-                    apiVersion: 'cluster.open-cluster-management.io/v1beta1',
-                    kind: 'Placement',
-                    metadata: { name: '', namespace: '' },
-                    spec: {},
-                },
             ]}
             onCancel={props.onCancel}
             onSubmit={props.onSubmit}
