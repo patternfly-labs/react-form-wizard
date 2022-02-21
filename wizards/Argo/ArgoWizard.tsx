@@ -354,7 +354,7 @@ interface ITimeRangeVariableData {
     end: string
 }
 
-function repositoryTypeToSource(value: unknown, source: unknown) {
+function repositoryTypeToSource(value: unknown) {
     if (value === 'Git') {
         return {
             repoURL: '',
