@@ -4,6 +4,7 @@ import { Fragment, ReactNode, useMemo } from 'react'
 import {
     ArrayInput,
     Checkbox,
+    DetailsHidden,
     Hidden,
     ItemSelector,
     Multiselect,
@@ -48,36 +49,20 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 {
                     apiVersion: 'argoproj.io/v1alpha1',
                     kind: 'ApplicationSet',
-                    metadata: {
-                        name: '',
-                        namespace: '',
-                    },
+                    metadata: { name: '', namespace: '' },
                     spec: {
                         generators: [
                             {
                                 clusterDecisionResource: {
                                     configMapRef: 'acm-placement',
-                                    labelSelector: {
-                                        matchLabels: {
-                                            'cluster.open-cluster-management.io/placement': '-placement',
-                                        },
-                                    },
+                                    labelSelector: { matchLabels: { 'cluster.open-cluster-management.io/placement': '-placement' } },
                                     requeueAfterSeconds: 180,
                                 },
                             },
                         ],
                         template: {
-                            metadata: {
-                                name: '-{{name}}',
-                            },
-                            spec: {
-                                project: 'default',
-                                source: {},
-                                destination: {
-                                    namespace: '',
-                                    server: '{{server}}',
-                                },
-                            },
+                            metadata: { name: '-{{name}}' },
+                            spec: { project: 'default', source: {}, destination: { namespace: '', server: '{{server}}' } },
                         },
                     },
                 },
@@ -117,7 +102,9 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             options={props.argoServers}
                             required
                         />
-                        <ExternalLinkButton id="addClusterSets" icon={<PlusIcon />} href={props.addClusterSets} />
+                        <DetailsHidden>
+                            <ExternalLinkButton id="addClusterSets" icon={<PlusIcon />} href={props.addClusterSets} />
+                        </DetailsHidden>
                         <Select
                             path="spec.generators.0.clusterDecisionResource.requeueAfterSeconds"
                             label="Requeue time"
@@ -131,12 +118,17 @@ export function ArgoWizard(props: ArgoWizardProps) {
             <Step id="template" label="Template">
                 <ItemSelector selectKey="kind" selectValue="ApplicationSet">
                     <Section label="Source">
-                        <Tiles path="repositoryType" label="Repository type">
+                        <Tiles
+                            path="spec.template.spec.source"
+                            label="Repository type"
+                            inputValueToPathValue={repositoryTypeToSource}
+                            pathValueToInputValue={sourceToRepositoryType}
+                        >
                             <Tile id="git" value="Git" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
                             <Tile id="helm" value="Helm" label="Helm" icon={<HelmIcon />} description="Use a Helm repository" />
                         </Tiles>
                         {/* Git repo */}
-                        <Hidden hidden={(data) => data.repositoryType !== 'Git'}>
+                        <Hidden hidden={(data) => data.spec.template.spec.source.path === undefined}>
                             <Select
                                 path="spec.template.spec.source.repoURL"
                                 label="URL"
@@ -161,7 +153,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             />
                         </Hidden>
                         {/* Helm repo */}
-                        <Hidden hidden={(data) => data.repositoryType !== 'Helm'}>
+                        <Hidden hidden={(data) => data.spec.template.spec.source.chart === undefined}>
                             <Select
                                 path="spec.template.spec.source.repoURL"
                                 label="URL"
@@ -203,7 +195,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         description="Settings used to configure application syncing when there are differences between the desired state and the live cluster state."
                     >
                         {/* Git only sync policies */}
-                        <Hidden hidden={(data) => data.repositoryType !== 'Git'}>
+                        <Hidden hidden={(data) => data.spec.template.spec.source.path === undefined}>
                             <Checkbox
                                 label="Delete resources that are no longer defined in Git"
                                 path="spec.template.spec.syncPolicy.automated.prune"
@@ -360,6 +352,35 @@ export function ExternalLinkButton(props: { id: string; href?: string; icon?: Re
 interface ITimeRangeVariableData {
     start: string
     end: string
+}
+
+function repositoryTypeToSource(value: unknown, source: unknown) {
+    if (value === 'Git') {
+        return {
+            repoURL: '',
+            targetRevision: '',
+            path: '',
+        }
+    }
+    if (value === 'Helm') {
+        return {
+            repoURL: '',
+            chart: '',
+            targetRevision: '',
+        }
+    }
+    return value
+}
+
+function sourceToRepositoryType(source: unknown) {
+    if (typeof source === 'object' && source !== null) {
+        const isGit = 'repoURL' in source && 'path' in source && 'targetRevision' in source
+        if (isGit) return 'Git'
+
+        const isHelm = 'repoURL' in source && 'chart' in source && 'targetRevision' in source
+        if (isHelm) return 'Helm'
+    }
+    return undefined
 }
 
 function booleanToSyncOptions(key: string) {
