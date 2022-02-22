@@ -468,19 +468,11 @@ const singlePlacementRuleResources: IResource[] = [
             namespace: 'my-namespace-1',
         },
         spec: {
-            numberOfClusters: 1,
-            clusterSets: ['my-cluster-set-1'],
-            predicates: [
-                {
-                    requiredClusterSelector: {
-                        labelSelector: {
-                            matchLabels: {
-                                'local-cluster': 'true',
-                            },
-                        },
-                    },
+            clusterSelector: {
+                matchLabels: {
+                    'local-cluster': 'true',
                 },
-            ],
+            },
         },
     } as IResource,
     {
@@ -517,19 +509,31 @@ const twoPlacementRuleResources: IResource[] = [
             namespace: 'my-namespace-1',
         },
         spec: {
-            numberOfClusters: 1,
-            clusterSets: ['policy-test-cluster-set'],
-            predicates: [
-                {
-                    requiredClusterSelector: {
-                        labelSelector: {
-                            matchLabels: {
-                                'local-cluster': 'true',
-                            },
-                        },
-                    },
+            clusterSelector: {
+                matchLabels: {
+                    'local-cluster': 'true',
                 },
-            ],
+                matchExpressions: [
+                    {
+                        key: 'abc',
+                        operator: 'In',
+                        values: ['123', '456', '789'],
+                    },
+                    {
+                        key: 'def',
+                        operator: 'NotIn',
+                        values: ['123', '456', '789'],
+                    },
+                    {
+                        key: 'ghi',
+                        operator: 'Exists',
+                    },
+                    {
+                        key: 'jkl',
+                        operator: 'DoesNotExist',
+                    },
+                ],
+            },
         },
     } as IResource,
     {

@@ -1,4 +1,4 @@
-import { Chip, Label, SelectOption, Text, Tile } from '@patternfly/react-core'
+import { Flex, FlexItem, SelectOption, Tile } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useMemo } from 'react'
 import { ArrayInput, EditMode, Hidden, ItemSelector, KeyValue, NumberInput, Section, Select, StringsInput, TextInput } from '../../src'
@@ -9,6 +9,7 @@ import { useItem } from '../../src/contexts/ItemContext'
 import { Multiselect } from '../../src/inputs/Multiselect'
 import { IResource } from '../common/resource'
 import { Sync } from '../common/Sync'
+import { IExpression } from './IMatchExpression'
 
 /**
 Placement defines a rule to select a set of ManagedClusters from the ManagedClusterSets bound to the placement namespace. 
@@ -68,12 +69,6 @@ interface Predicate {
             matchExpressions?: IExpression[]
         }
     }
-}
-
-interface IExpression {
-    key?: string
-    operator?: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
-    values?: string[]
 }
 
 const placementLocalCluster: IPlacement = {
@@ -335,30 +330,30 @@ export function PlacementPredicate(props: { rootPath?: string }) {
     return (
         <Fragment>
             <KeyValue
-                label="Label selectors"
+                label="Cluster label selectors"
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchLabels`}
-                labelHelp="A label selector allows simple selection of clusters using cluster labels."
-                placeholder="Add label selector"
+                labelHelp="A clsuter label selector allows simple selection of clusters using cluster labels."
+                placeholder="Add cluster label selector"
                 hidden={(item) => get(item, `${rootPath}requiredClusterSelector.labelSelector.matchLabels`) === undefined}
             />
             <ArrayInput
-                label="Label expressions"
+                label="Cluster label expressions"
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchExpressions`}
                 placeholder="Add label expression"
                 labelHelp="A label expression allows selection of clusters using cluster labels."
                 collapsedContent={<MatchExpressionCollapsed />}
-                newValue={{ key: '', operator: 'In' }}
+                newValue={{ key: '', operator: 'In', values: [''] }}
                 defaultCollapsed
             >
                 <MatchExpression />
             </ArrayInput>
             <ArrayInput
-                label="Claim expressions"
+                label="Cluster claim expressions"
                 path={`${rootPath}requiredClusterSelector.claimSelector.matchExpressions`}
                 placeholder="Add claim expression"
                 labelHelp="A claim expression allows selection of clusters using cluster claims in status."
                 collapsedContent={<MatchExpressionCollapsed />}
-                newValue={{ key: '', operator: 'In' }}
+                newValue={{ key: '', operator: 'In', values: [''] }}
                 defaultCollapsed
                 hidden={(item) => get(item, `${rootPath}requiredClusterSelector.claimSelector.matchExpressions`) === undefined}
             >
@@ -387,9 +382,6 @@ export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules
                 metadata: {},
                 spec: {
                     clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
-                    clusterSelector: {
-                        matchExpressions: [{ key: '', operator: 'In', values: [''] }],
-                    },
                 },
             }}
             defaultCollapsed
@@ -401,12 +393,20 @@ export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules
                 required
                 helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
             />
+            <KeyValue
+                label="Cluster label selector"
+                path={`spec.clusterSelector.matchLabels`}
+                labelHelp="A cluster label selector allows simple selection of clusters using cluster labels."
+                placeholder="Add cluster label selector"
+                hidden={(item) => get(item, `spec.clusterSelector.matchLabels`) === undefined}
+            />
             <ArrayInput
-                label="Label selectors"
+                label="Cluster label expression"
                 path="spec.clusterSelector.matchExpressions"
-                placeholder="Add label selector"
+                placeholder="Add cluster label expression"
                 collapsedContent={<MatchExpressionCollapsed />}
-                newValue={{ key: '', operator: 'In' }}
+                newValue={{ key: '', operator: 'In', values: [''] }}
+                defaultCollapsed
             >
                 <MatchExpression />
             </ArrayInput>
@@ -517,10 +517,10 @@ export function PlacementBindings(props: {
 
 function MatchExpression() {
     return (
-        <Fragment>
-            <TextInput label="Key" path="key" required />
+        <Flex style={{ rowGap: 16 }}>
+            <TextInput label="Label" path="key" required disablePaste />
             <Select
-                label="Operator"
+                label=" "
                 path="operator"
                 options={[
                     { label: 'equals any of', value: 'In' },
@@ -528,14 +528,17 @@ function MatchExpression() {
                     { label: 'exists', value: 'Exists' },
                     { label: 'does not exist', value: 'DoesNotExist' },
                 ]}
+                required
             />
-            <StringsInput
-                label="Values"
-                path="values"
-                hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
-                placeholder="Add value"
-            />
-        </Fragment>
+            <FlexItem grow={{ default: 'grow' }}>
+                <StringsInput
+                    label="Values"
+                    path="values"
+                    hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
+                    placeholder="Add value"
+                />
+            </FlexItem>
+        </Flex>
     )
 }
 
@@ -555,21 +558,21 @@ function PredicateSummary() {
     }
 
     return (
-        <div style={{ display: 'flex', gap: 12, flexDirection: 'column' }}>
+        <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
             {labelSelectors.length > 0 && (
-                <div style={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
-                    <Text component="small">Cluster labels</Text>
-                    <div style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 4, flexDirection: 'column' }}>
+                    <div className="pf-c-form__label pf-c-form__label-text">Cluster label selectors</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {labelSelectors.map((labelSelector) => (
-                            <Label key={labelSelector}>{labelSelector}</Label>
+                            <span key={labelSelector}>{labelSelector}</span>
                         ))}
                     </div>
                 </div>
             )}
             {labelSelectorExpressions.length > 0 && (
-                <div style={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
-                    <Text component="small">Cluster label expressions</Text>
-                    <div style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 4, flexDirection: 'column' }}>
+                    <div className="pf-c-form__label pf-c-form__label-text">Cluster label expressions</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {labelSelectorExpressions.map((expression, index) => (
                             <MatchExpressionSummary key={index} expression={expression} />
                         ))}
@@ -577,9 +580,9 @@ function PredicateSummary() {
                 </div>
             )}
             {claimSelectorExpressions.length > 0 && (
-                <div style={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
-                    <Text component="small">Cluster claim expressions</Text>
-                    <div style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 4, flexDirection: 'column' }}>
+                    <div className="pf-c-form__label pf-c-form__label-text">Cluster claim expressions</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {claimSelectorExpressions.map((expression, index) => (
                             <MatchExpressionSummary key={index} expression={expression} />
                         ))}
@@ -630,19 +633,8 @@ function MatchExpressionSummary(props: { expression: IExpression }) {
     }
 
     return (
-        <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', rowGap: 4 }}>
-            <Label>{expression.key}</Label>
-            <span style={{ whiteSpace: 'nowrap', opacity: 0.7, paddingLeft: 6, paddingRight: 6 }}>
-                <Text component="small">{operator}</Text>
-            </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                {expression.values &&
-                    expression.values.map((value) => (
-                        <Chip key={value} style={{ margin: -1 }} isReadOnly>
-                            {value}
-                        </Chip>
-                    ))}
-            </div>
+        <div>
+            {expression.key} {operator} {expression.values?.map((value) => value).join(', ')}
         </div>
     )
 }

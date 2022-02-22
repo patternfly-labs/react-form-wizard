@@ -1,7 +1,5 @@
 import {
     Button,
-    DescriptionListGroup,
-    DescriptionListTerm,
     Divider,
     Dropdown,
     DropdownItem,
@@ -51,6 +49,7 @@ export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
     newValue?: object
     defaultCollapsed?: boolean
     isSection?: boolean
+    summaryList?: boolean
 }
 
 export function ArrayInput(props: ArrayInputProps) {
@@ -122,7 +121,7 @@ export function ArrayInput(props: ArrayInputProps) {
                 <Fragment>
                     <Title headingLevel="h2">{props.label}</Title>
                     <Indented id={id}>
-                        <List style={{ marginTop: -4 }}>
+                        <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
                             {values.map((value, index) => (
                                 <ListItem key={index} style={{ paddingBottom: 4 }}>
                                     <ItemContext.Provider value={value}>
@@ -145,11 +144,9 @@ export function ArrayInput(props: ArrayInputProps) {
         }
         return (
             <Fragment>
-                <DescriptionListGroup>
-                    <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                </DescriptionListGroup>
+                <div className="pf-c-description-list__term">{props.label}</div>
                 <Indented id={id}>
-                    <List style={{ marginTop: -4 }}>
+                    <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
                         {values.map((value, index) => (
                             <ListItem key={index} style={{ paddingBottom: 4 }}>
                                 <ItemContext.Provider value={value}>

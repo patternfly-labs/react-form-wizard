@@ -13,6 +13,7 @@ export type TextInputProps = InputCommonProps<string> & {
     label: string
     placeholder?: string
     secret?: boolean
+    disablePaste?: boolean
 }
 
 export function TextInput(props: TextInputProps) {
@@ -44,8 +45,12 @@ export function TextInput(props: TextInputProps) {
                 {!disabled && value !== '' && props.secret && (
                     <ShowSecretsButton showSecrets={showSecrets} setShowSecrets={setShowSecrets} />
                 )}
-                {!disabled && value === '' && <PasteInputButton setValue={setValue} setShowSecrets={setShowSecrets} />}
-                {!disabled && value !== '' && !props.readonly && !props.disabled && <ClearInputButton onClick={() => setValue('')} />}
+                {!props.disablePaste && !disabled && value === '' && (
+                    <PasteInputButton setValue={setValue} setShowSecrets={setShowSecrets} />
+                )}
+                {!props.disablePaste && !disabled && value !== '' && !props.readonly && !props.disabled && (
+                    <ClearInputButton onClick={() => setValue('')} />
+                )}
             </InputGroup>
         </InputLabel>
     )

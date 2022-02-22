@@ -31,6 +31,7 @@ export type TableSelectProps<T> = InputCommonProps<string> & {
     itemToValue?: (item: T) => unknown
     valueMatchesItem?: (value: unknown, item: T) => boolean
     emptyMessage: string
+    summaryList?: boolean
 }
 
 export function TableSelect<T = any>(props: TableSelectProps<T>) {
@@ -95,7 +96,7 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
                 return <div id={id}>{values.length} selected</div>
             }
             return (
-                <List style={{ marginTop: -4, marginBottom: -16 }}>
+                <List isPlain={props.summaryList !== true}>
                     {values.map((value, index) => (
                         <ListItem key={index} style={{ paddingBottom: 4 }}>
                             {value}
@@ -114,11 +115,9 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
         }
         return (
             <Fragment>
-                <DescriptionListGroup>
-                    <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                </DescriptionListGroup>
-                <Indented>
-                    <List style={{ marginTop: -4 }}>
+                <div className="pf-c-description-list__term">{props.label}</div>
+                <Indented paddingBottom={4}>
+                    <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
                         {values.map((value, index) => (
                             <ListItem key={index} style={{ paddingBottom: 4 }}>
                                 {value}

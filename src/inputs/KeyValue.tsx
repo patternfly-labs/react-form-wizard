@@ -1,19 +1,12 @@
-import {
-    Button,
-    DescriptionListDescription,
-    DescriptionListGroup,
-    DescriptionListTerm,
-    Divider,
-    Text,
-    TextInput,
-} from '@patternfly/react-core'
+import { Button, Divider, List, ListItem, Text, TextInput } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment, useState } from 'react'
+import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
 
-type KeyValueProps = InputCommonProps & { placeholder?: string }
+type KeyValueProps = InputCommonProps & { placeholder?: string; summaryList?: boolean }
 
 export function KeyValue(props: KeyValueProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
@@ -63,18 +56,18 @@ export function KeyValue(props: KeyValueProps) {
     if (mode === DisplayMode.Details) {
         if (!pairs.length) return <Fragment />
         return (
-            <DescriptionListGroup id={id}>
-                <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                <DescriptionListDescription>
-                    <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
-                        {pairs.map((pair) => (
-                            <div key={pair.key}>
+            <Fragment>
+                <div className="pf-c-description-list__term">{props.label}</div>
+                <Indented id={id}>
+                    <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
+                        {pairs.map((pair, index) => (
+                            <ListItem key={index} style={{ paddingBottom: 4 }}>
                                 {pair.key} {pair.value !== undefined && <span> = {pair.value}</span>}
-                            </div>
+                            </ListItem>
                         ))}
-                    </div>
-                </DescriptionListDescription>
-            </DescriptionListGroup>
+                    </List>
+                </Indented>
+            </Fragment>
         )
     }
 
