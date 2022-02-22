@@ -9,7 +9,15 @@ export function ArgoExample() {
     const servers = useMemo(() => ['default', 'server-1', 'server-2'], [])
     const ansibleCredentials = useMemo(() => ['credential1', 'credential2'], [])
     const placements = useMemo(() => ['placement-1', 'placement-2'], [])
-    const gitChannels = useMemo(() => [{ name: 'test', namespace: 'test-ns', pathname: 'https://test.com' }], [])
+    const channels = useMemo(
+        () => [
+            { metadata: { name: 'helm-channel-1', namespace: 'helm-channel-1' }, spec: { pathname: 'https://test.com', type: 'HelmRepo' } },
+            { metadata: { name: 'helm-channel-2', namespace: 'helm-channel-2' }, spec: { pathname: 'https://test.com', type: 'HelmRepo' } },
+            { metadata: { name: 'git-channel-1', namespace: 'git-channel-1' }, spec: { pathname: 'https://test.com', type: 'Git' } },
+            { metadata: { name: 'git-channel-1', namespace: 'git-channel-1' }, spec: { pathname: 'https://test.com', type: 'Git' } },
+        ],
+        []
+    )
     const timeZones = useMemo(() => ['EST'], [])
     return (
         <ArgoWizard
@@ -20,8 +28,14 @@ export function ArgoExample() {
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
             placements={placements}
-            subscriptionGitChannels={gitChannels}
+            channels={channels}
             timeZones={timeZones}
+            getGitRevisions={async () => {
+                return ['branch-1', 'branch-2']
+            }}
+            getGitPaths={async () => {
+                return ['path-1', 'path-2']
+            }}
         />
     )
 }
