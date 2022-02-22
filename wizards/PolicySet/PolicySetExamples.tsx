@@ -461,7 +461,7 @@ const policySetWithTwoPlacementResources: IResource[] = [policySetResource, ...t
 
 const singlePlacementRuleResources: IResource[] = [
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: 'apps.open-cluster-management.io/v1beta1',
         kind: 'PlacementRule',
         metadata: {
             name: 'my-policy-set-placement-rule-1',
@@ -502,7 +502,7 @@ const policySetWithSinglePlacementRuleResources: IResource[] = [policySetResourc
 const twoPlacementRuleResources: IResource[] = [
     ...policySetWithSinglePlacementRuleResources,
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: 'apps.open-cluster-management.io/v1beta1',
         kind: 'PlacementRule',
         metadata: {
             name: 'my-policy-set-placement-rule-2',
@@ -597,7 +597,7 @@ const placementRuleBindingResource: IResource = {
     placementRef: {
         name: 'my-placement-rule-1',
         kind: 'PlacementRule',
-        apiGroup: 'cluster.open-cluster-management.io',
+        apiGroup: 'apps.open-cluster-management.io',
     },
     subjects: [
         {

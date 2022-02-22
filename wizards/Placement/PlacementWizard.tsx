@@ -14,6 +14,9 @@ export function PlacementWizard(props: {
     resources?: IResource[]
     onSubmit: WizardSubmit
     onCancel: WizardCancel
+    bindingSubjectKind: string
+    bindingSubjectApiGroup: string
+    defaultPlacementType: 'placement' | 'placement-rule'
 }) {
     return (
         <WizardPage
@@ -25,11 +28,12 @@ export function PlacementWizard(props: {
         >
             <Step label="Cluster placement" id="placement">
                 <PlacementSection
-                    placements={props.placements}
-                    placementRules={props.placementRules}
-                    clusterSetBindings={props.clusterSetBindings}
-                    bindingSubjectKind="Policy"
-                    bindingSubjectApiGroup="policy.open-cluster-management.io"
+                    existingPlacements={props.placements}
+                    existingPlacementRules={props.placementRules}
+                    existingclusterSetBindings={props.clusterSetBindings}
+                    bindingSubjectKind={props.bindingSubjectKind}
+                    bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                    defaultPlacementType={props.defaultPlacementType}
                 />
             </Step>
         </WizardPage>

@@ -15,7 +15,7 @@ export function MatchExpression() {
         <Flex style={{ rowGap: 16 }}>
             <TextInput label="Label" path="key" required disablePaste />
             <Select
-                label=" "
+                label="Operator"
                 path="operator"
                 options={[
                     { label: 'equals any of', value: 'In' },
@@ -25,7 +25,7 @@ export function MatchExpression() {
                 ]}
                 required
             />
-            <FlexItem grow={{ default: 'grow' }}>
+            <FlexItem>
                 <StringsInput
                     label="Values"
                     path="values"

@@ -1,11 +1,12 @@
 import { SelectOption } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useMemo } from 'react'
-import { ArrayInput, EditMode, Hidden, ItemSelector, KeyValue, NumberInput, Section } from '../../src'
+import { ArrayInput, EditMode, Hidden, ItemSelector, KeyValue, NumberInput } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { Multiselect } from '../../src/inputs/Multiselect'
 import { IResource } from '../common/resource'
+import { Sync } from '../common/Sync'
 import { IClusterSetBinding } from './ClusterSetBinding'
 import { IExpression, MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
@@ -69,7 +70,14 @@ export interface Predicate {
     }
 }
 
-export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string; placementCount: number }) {
+export function Placements(props: {
+    clusterSetBindings: IClusterSetBinding[]
+    bindingKind: string
+    placementCount: number
+    showPlacementRules: boolean
+    showPlacementBindings: boolean
+}) {
+    const editMode = useEditMode()
     const resources = useItem() as IResource[]
     const namespaceClusterSetNames = useMemo(() => {
         if (!resources.find) return []
@@ -83,18 +91,15 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
                 .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
         )
     }, [props.bindingKind, props.clusterSetBindings, resources])
-    const editMode = useEditMode()
 
-    if (editMode === EditMode.Create && props.placementCount <= 1) {
+    if (!props.showPlacementRules && !props.showPlacementBindings && props.placementCount === 1) {
         return (
-            <Section
-                label="Cluster placement"
-                description="Placement selects clusters from the cluster sets which have bindings to the resource namespace."
-            >
+            <Fragment>
+                <Sync kind="Placement" path="metadata.name" targetKind="PlacementBinding" targetPath="placementRef.name" />
                 <ItemSelector selectKey="kind" selectValue="Placement">
                     <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
                 </ItemSelector>
-            </Section>
+            </Fragment>
         )
     }
     return (
@@ -114,7 +119,7 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
                 metadata: { name: '', namespace: '' },
                 spec: {},
             }}
-            defaultCollapsed
+            defaultCollapsed={editMode === EditMode.Edit}
         >
             <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
         </ArrayInput>
@@ -123,7 +128,6 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
 
 export function Placement(props: { namespaceClusterSetNames: string[] }) {
     const editMode = useEditMode()
-
     return (
         <Fragment>
             {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
@@ -182,6 +186,7 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
 
 export function PlacementPredicate(props: { rootPath?: string }) {
     const rootPath = props.rootPath ?? ''
+    const editMode = useEditMode()
     return (
         <Fragment>
             <KeyValue
@@ -198,7 +203,7 @@ export function PlacementPredicate(props: { rootPath?: string }) {
                 labelHelp="A label expression allows selection of clusters using cluster labels."
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [''] }}
-                defaultCollapsed
+                defaultCollapsed={editMode !== EditMode.Create}
             >
                 <MatchExpression />
             </ArrayInput>
@@ -209,7 +214,7 @@ export function PlacementPredicate(props: { rootPath?: string }) {
                 labelHelp="A claim expression allows selection of clusters using cluster claims in status."
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [''] }}
-                defaultCollapsed
+                defaultCollapsed={editMode !== EditMode.Create}
                 hidden={(item) => get(item, `${rootPath}requiredClusterSelector.claimSelector.matchExpressions`) === undefined}
             >
                 <MatchExpression />
