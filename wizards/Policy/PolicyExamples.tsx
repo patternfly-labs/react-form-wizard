@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
 import { YamlToObject } from '../../src/components/YamlEditor'
-import { DataDrivenCatalog } from '../Catalog'
+import { Catalog } from '../Catalog'
 import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { DashboardCard, DashboardPage } from '../Dashboard'
@@ -44,7 +44,7 @@ function Checked(props: { children: ReactNode }) {
 export function PolicyExamples() {
     const history = useHistory()
     return (
-        <DataDrivenCatalog
+        <Catalog
             title="Policy Wizard Examples"
             breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Policy Wizard Examples' }]}
             filterGroups={[

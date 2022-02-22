@@ -1,4 +1,4 @@
-import { IClusterSetBinding } from '../Placement/PlacementSection'
+import { IClusterSetBinding } from '../Placement/ClusterSetBinding'
 import { IResource } from './resource'
 
 export const namespaces = ['default', 'my-namespace-1', 'my-namespace-2']

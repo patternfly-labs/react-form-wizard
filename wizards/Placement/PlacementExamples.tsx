@@ -5,96 +5,54 @@ import { IResource } from '../common/resource'
 import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { RouteE } from '../Routes'
-import { PolicySetWizard } from './PolicySetWizard'
+import { PlacementWizard } from './PlacementWizard'
 
 export function onCancel(history: { push: (location: string) => void }) {
-    history.push(`./${RouteE.PolicySet}`)
+    history.push(`./${RouteE.Placement}`)
 }
 
-export function PolicySetExamples() {
+export function PlacementExamples() {
     const history = useHistory()
     return (
         <Catalog
-            title="Policy Set Wizard Examples"
-            breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Policy Set Wizard Examples' }]}
-            filterGroups={[
-                {
-                    id: 'placements',
-                    label: 'Placement Types',
-                    filters: [
-                        { value: 'Placement' },
-                        { value: 'Placement Binding' },
-                        { value: 'Placement Rule' },
-                        { value: 'Placement Rule Binding' },
-                    ],
-                },
-            ]}
+            title="Placement Examples"
+            breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Placement Examples' }]}
             cards={[
                 {
-                    title: 'Create policy set',
-                    descriptions: ['Create a new policy set.'],
-                    // featureGroups: [{ title: 'Features', features: ['Create a new policy set.'] }],
-                    labels: ['Placement'],
-                    onClick: () => history.push(RouteE.CreatePolicySet),
+                    title: 'Create placement',
+                    descriptions: ['Create a new placement.'],
+                    onClick: () => history.push(RouteE.CreatePlacement),
                 },
                 {
-                    title: 'Edit policy set with single placement',
-                    featureGroups: [{ title: 'Features', features: ['Single placement'] }],
-                    labels: ['Placement', 'Placement Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet1),
+                    title: 'Create placement rule',
+                    descriptions: ['Create a new placement rule.'],
+                    onClick: () => history.push(RouteE.CreatePlacementRule),
                 },
                 {
-                    title: 'Edit policy set with two placements',
-                    featureGroups: [{ title: 'Features', features: ['Two placements'] }],
-                    labels: ['Placement', 'Placement Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet2),
+                    title: 'Edit placement',
+                    featureGroups: [{ title: 'Features', features: ['Placement', 'Placement binding'] }],
+                    onClick: () => history.push(RouteE.EditPlacement),
                 },
                 {
-                    title: 'Edit policy set with single placement rule',
-                    featureGroups: [{ title: 'Features', features: ['Single placement rule'] }],
-                    labels: ['Placement Rule', 'Placement Rule Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet3),
+                    title: 'Edit placement rule',
+                    featureGroups: [{ title: 'Features', features: ['Placement rule', 'Placement binding'] }],
+                    onClick: () => history.push(RouteE.EditPlacementRule),
                 },
                 {
-                    title: 'Edit policy set with two placement rules',
-                    featureGroups: [{ title: 'Features', features: ['Two placements rules'] }],
-                    labels: ['Placement Rule', 'Placement Rule Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet4),
-                },
-                {
-                    title: 'Edit policy set with both placement types',
-                    featureGroups: [{ title: 'Features', features: ['Two placements', 'Two placement rules'] }],
-                    labels: ['Placement', 'Placement Rule', 'Placement Binding', 'Placement Rule Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet5),
-                },
-                {
-                    title: 'Edit policy set with placement binding',
-                    featureGroups: [{ title: 'Features', features: ['Placement binding'] }],
-                    labels: ['Placement Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet6),
-                },
-                {
-                    title: 'Edit policy set with placement rule binding',
-                    featureGroups: [{ title: 'Features', features: ['Placement rule binding'] }],
-                    labels: ['Placement Rule Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet7),
-                },
-                {
-                    title: 'Edit policy set with both placement bindings',
-                    featureGroups: [{ title: 'Features', features: ['Placement binding', 'Placement rule binding'] }],
-                    labels: ['Placement Binding', 'Placement Rule Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet8),
+                    title: 'Edit placements and placement rules',
+                    featureGroups: [{ title: 'Features', features: ['2 placements', '2 placement rules', '2 placement bindings'] }],
+                    onClick: () => history.push(RouteE.EditPlacements),
                 },
             ]}
         />
     )
 }
 
-export function CreatePolicySet() {
+export function CreatePlacement() {
     const history = useHistory()
     return (
-        <PolicySetWizard
-            title="Create policy set"
+        <PlacementWizard
+            title="Create placement"
             namespaces={namespaces}
             policies={policies}
             placements={placements}
@@ -106,169 +64,82 @@ export function CreatePolicySet() {
     )
 }
 
-export function EditPolicySet1() {
+export function CreatePlacementRule() {
     const history = useHistory()
     return (
-        <PolicySetWizard
+        <PlacementWizard
+            title="Create placement rule"
             namespaces={namespaces}
             policies={policies}
-            clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
-            title="Edit policy set"
+            clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
-            editMode={EditMode.Edit}
-            resources={policySetWithSinglePlacementResources}
         />
     )
 }
 
-export function EditPolicySet2() {
+export function EditPlacement() {
     const history = useHistory()
     return (
-        <PolicySetWizard
+        <PlacementWizard
             namespaces={namespaces}
             policies={policies}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
-            title="Edit policy set"
-            onSubmit={onSubmit}
-            onCancel={() => onCancel(history)}
-            editMode={EditMode.Edit}
-            resources={policySetWithTwoPlacementResources}
-        />
-    )
-}
-
-export function EditPolicySet3() {
-    const history = useHistory()
-    return (
-        <PolicySetWizard
-            namespaces={namespaces}
-            policies={policies}
-            clusterSetBindings={clusterSetBindings}
-            placements={placements}
-            placementRules={placementRules}
-            title="Edit policy set"
+            title="Edit placement"
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
-            resources={policySetWithSinglePlacementRuleResources}
+            resources={[...placement1Resources]}
         />
     )
 }
 
-export function EditPolicySet4() {
+export function EditPlacementRule() {
     const history = useHistory()
     return (
-        <PolicySetWizard
+        <PlacementWizard
             namespaces={namespaces}
             policies={policies}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
-            title="Edit policy set"
+            title="Edit placement rule"
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
-            resources={policySetWithTwoPlacementRuleResources}
+            resources={[...placementRule1Resources]}
         />
     )
 }
 
-export function EditPolicySet5() {
+export function EditPlacements() {
     const history = useHistory()
     return (
-        <PolicySetWizard
+        <PlacementWizard
             namespaces={namespaces}
             policies={policies}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
-            title="Edit policy set"
+            title="Edit placements"
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
-            resources={policySetWithTwoPlacementAndTwoPlacementRuleResources}
+            resources={[...placement1Resources, ...placement2Resources, ...placementRule1Resources, ...placementRule2Resources]}
         />
     )
 }
 
-export function EditPolicySet6() {
-    const history = useHistory()
-    return (
-        <PolicySetWizard
-            namespaces={namespaces}
-            policies={policies}
-            clusterSetBindings={clusterSetBindings}
-            placements={placements}
-            placementRules={placementRules}
-            title="Edit policy set"
-            onSubmit={onSubmit}
-            onCancel={() => onCancel(history)}
-            editMode={EditMode.Edit}
-            resources={policySetWithPlacementBindingResources}
-        />
-    )
-}
-
-export function EditPolicySet7() {
-    const history = useHistory()
-    return (
-        <PolicySetWizard
-            namespaces={namespaces}
-            policies={policies}
-            clusterSetBindings={clusterSetBindings}
-            placements={placements}
-            placementRules={placementRules}
-            title="Edit policy set"
-            onSubmit={onSubmit}
-            onCancel={() => onCancel(history)}
-            editMode={EditMode.Edit}
-            resources={policySetWithPlacementRuleBindingResources}
-        />
-    )
-}
-
-export function EditPolicySet8() {
-    const history = useHistory()
-    return (
-        <PolicySetWizard
-            namespaces={namespaces}
-            policies={policies}
-            clusterSetBindings={clusterSetBindings}
-            placements={placements}
-            placementRules={placementRules}
-            title="Edit policy set"
-            onSubmit={onSubmit}
-            onCancel={() => onCancel(history)}
-            editMode={EditMode.Edit}
-            resources={policySetWithBindingsResources}
-        />
-    )
-}
-
-const policySetResource: IResource = {
-    apiVersion: 'policy.open-cluster-management.io/v1',
-    kind: 'PolicySet',
-    metadata: {
-        name: 'my-policy-set',
-        namespace: 'my-namespace-1',
-    },
-    spec: {
-        description: 'Policy set with a single Placement and PlacementBinding.',
-        policies: ['my-policy-1', 'my-policy-2'],
-    },
-} as IResource
-
-const singlePlacementResources: IResource[] = [
+const placement1Resources: IResource[] = [
     {
         apiVersion: 'cluster.open-cluster-management.io/v1beta1',
         kind: 'Placement',
         metadata: {
-            name: 'my-policy-set-placement-1',
+            name: 'my-placement-1',
             namespace: 'my-namespace-1',
         },
         spec: {
@@ -291,33 +162,24 @@ const singlePlacementResources: IResource[] = [
         apiVersion: 'policy.open-cluster-management.io/v1',
         kind: 'PlacementBinding',
         metadata: {
-            name: 'my-policy-set-placement-1-binding',
+            name: 'my-placement-1-binding',
             namespace: 'my-namespace-1',
         },
         placementRef: {
-            name: 'my-policy-set-placement-1',
+            name: 'my-placement-1',
             kind: 'Placement',
             apiGroup: 'cluster.open-cluster-management.io',
         },
-        subjects: [
-            {
-                name: 'my-policy-set',
-                kind: 'PolicySet',
-                apiGroup: 'policy.open-cluster-management.io',
-            },
-        ],
+        subjects: [],
     } as IResource,
 ]
 
-const policySetWithSinglePlacementResources: IResource[] = [policySetResource, ...singlePlacementResources]
-
-const twoPlacementResources: IResource[] = [
-    ...singlePlacementResources,
+const placement2Resources: IResource[] = [
     {
         apiVersion: 'cluster.open-cluster-management.io/v1beta1',
         kind: 'Placement',
         metadata: {
-            name: 'my-policy-set-placement-2',
+            name: 'my-placement-2',
             namespace: 'my-namespace-1',
         },
         spec: {
@@ -439,32 +301,24 @@ const twoPlacementResources: IResource[] = [
         apiVersion: 'policy.open-cluster-management.io/v1',
         kind: 'PlacementBinding',
         metadata: {
-            name: 'my-policy-set-placement-2-binding',
+            name: 'my-placement-2-binding',
             namespace: 'my-namespace-1',
         },
         placementRef: {
-            name: 'my-policy-set-placement-2',
+            name: 'my-placement-2',
             kind: 'Placement',
             apiGroup: 'cluster.open-cluster-management.io',
         },
-        subjects: [
-            {
-                name: 'my-policy-set',
-                kind: 'PolicySet',
-                apiGroup: 'policy.open-cluster-management.io',
-            },
-        ],
+        subjects: [],
     } as IResource,
 ]
 
-const policySetWithTwoPlacementResources: IResource[] = [policySetResource, ...twoPlacementResources]
-
-const singlePlacementRuleResources: IResource[] = [
+const placementRule1Resources: IResource[] = [
     {
         apiVersion: 'cluster.open-cluster-management.io/v1beta1',
         kind: 'PlacementRule',
         metadata: {
-            name: 'my-policy-set-placement-rule-1',
+            name: 'my-placement-rule-1',
             namespace: 'my-namespace-1',
         },
         spec: {
@@ -479,33 +333,24 @@ const singlePlacementRuleResources: IResource[] = [
         apiVersion: 'policy.open-cluster-management.io/v1',
         kind: 'PlacementBinding',
         metadata: {
-            name: 'my-policy-set-placement-rule-1-binding',
+            name: 'my-placement-rule-1-binding',
             namespace: 'my-namespace-1',
         },
         placementRef: {
-            name: 'my-policy-set-placement-rule-1',
+            name: 'my-placement-rule-1',
             kind: 'Placement',
             apiGroup: 'cluster.open-cluster-management.io',
         },
-        subjects: [
-            {
-                name: 'my-policy-set',
-                kind: 'PolicySet',
-                apiGroup: 'policy.open-cluster-management.io',
-            },
-        ],
+        subjects: [],
     } as IResource,
 ]
 
-const policySetWithSinglePlacementRuleResources: IResource[] = [policySetResource, ...singlePlacementRuleResources]
-
-const twoPlacementRuleResources: IResource[] = [
-    ...policySetWithSinglePlacementRuleResources,
+const placementRule2Resources: IResource[] = [
     {
         apiVersion: 'cluster.open-cluster-management.io/v1beta1',
         kind: 'PlacementRule',
         metadata: {
-            name: 'my-policy-set-placement-rule-2',
+            name: 'my-placement-rule-2',
             namespace: 'my-namespace-1',
         },
         spec: {
@@ -540,74 +385,14 @@ const twoPlacementRuleResources: IResource[] = [
         apiVersion: 'policy.open-cluster-management.io/v1',
         kind: 'PlacementBinding',
         metadata: {
-            name: 'my-policy-set-placement-rule-2-binding',
+            name: 'my-placement-rule-2-binding',
             namespace: 'my-namespace-1',
         },
         placementRef: {
-            name: 'my-policy-set-placement-rule-2',
+            name: 'my-placement-rule-2',
             kind: 'Placement',
             apiGroup: 'cluster.open-cluster-management.io',
         },
-        subjects: [
-            {
-                name: 'my-policy-set',
-                kind: 'PolicySet',
-                apiGroup: 'policy.open-cluster-management.io',
-            },
-        ],
+        subjects: [],
     } as IResource,
 ]
-
-const policySetWithTwoPlacementRuleResources: IResource[] = [policySetResource, ...twoPlacementRuleResources]
-
-const policySetWithTwoPlacementAndTwoPlacementRuleResources: IResource[] = [
-    policySetResource,
-    ...twoPlacementResources,
-    ...twoPlacementRuleResources,
-]
-
-const placementBindingResource: IResource = {
-    apiVersion: 'policy.open-cluster-management.io/v1',
-    kind: 'PlacementBinding',
-    metadata: {
-        name: 'my-policy-set-placement-binding',
-        namespace: 'my-namespace-1',
-    },
-    placementRef: {
-        name: 'my-placement-1',
-        kind: 'Placement',
-        apiGroup: 'cluster.open-cluster-management.io',
-    },
-    subjects: [
-        {
-            name: 'my-policy-set',
-            kind: 'PolicySet',
-            apiGroup: 'policy.open-cluster-management.io',
-        },
-    ],
-} as IResource
-
-const placementRuleBindingResource: IResource = {
-    apiVersion: 'policy.open-cluster-management.io/v1',
-    kind: 'PlacementBinding',
-    metadata: {
-        name: 'my-policy-set-placement-rule-binding',
-        namespace: 'my-namespace-1',
-    },
-    placementRef: {
-        name: 'my-placement-rule-1',
-        kind: 'PlacementRule',
-        apiGroup: 'cluster.open-cluster-management.io',
-    },
-    subjects: [
-        {
-            name: 'my-policy-set',
-            kind: 'PolicySet',
-            apiGroup: 'policy.open-cluster-management.io',
-        },
-    ],
-} as IResource
-
-const policySetWithPlacementBindingResources: IResource[] = [policySetResource, placementBindingResource]
-const policySetWithPlacementRuleBindingResources: IResource[] = [policySetResource, placementRuleBindingResource]
-const policySetWithBindingsResources: IResource[] = [policySetResource, placementBindingResource, placementRuleBindingResource]

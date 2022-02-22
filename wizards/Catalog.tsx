@@ -83,7 +83,7 @@ const fuseCardOptions: Fuse.IFuseOptions<ICatalogCard> = {
     ],
 }
 
-export function DataDrivenCatalog(props: {
+export function Catalog(props: {
     title: string
     breadcrumbs?: ICatalogBreadcrumb[]
     filterGroups?: ICatalogFilterGroup[]

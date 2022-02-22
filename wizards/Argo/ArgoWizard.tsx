@@ -23,7 +23,7 @@ import {
     WizardSubmit,
 } from '../../src'
 import { Sync } from '../common/Sync'
-import { Placement } from '../Placement/PlacementSection'
+import { Placement } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
 
 interface ArgoWizardProps {

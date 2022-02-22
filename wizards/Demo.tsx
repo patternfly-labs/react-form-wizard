@@ -24,11 +24,19 @@ import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
 import { ArgoExample } from './Argo/ArgoExample'
-import { DataDrivenCatalog } from './Catalog'
+import { Catalog } from './Catalog'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { HomeWizard } from './Home/HomeWizard'
 import { InputsWizard } from './Inputs/InputsWizard'
+import {
+    CreatePlacement,
+    CreatePlacementRule,
+    EditPlacement,
+    EditPlacementRule,
+    EditPlacements,
+    PlacementExamples,
+} from './Placement/PlacementExamples'
 import {
     CreatePolicy,
     EditPolicyCertificate,
@@ -123,15 +131,15 @@ const wizards: IWizard[] = [
         labels: ['MCE'],
         state: StateE.alpha,
     },
-    // {
-    //     shortName: 'Placement',
-    //     name: 'Placement',
-    //     route: RouteE.Placement,
-    //     description:
-    //         'Advanced Cluster Management has placement custom resources to control the placement of various resources on managed clusters. This is an early prototype of common wizard functionality for handling placement.',
-    //     labels: ['ACM'],
-    //     state: StateE.prototype,
-    // },
+    {
+        shortName: 'Placement',
+        name: 'Placement',
+        route: RouteE.Placement,
+        description:
+            'Advanced Cluster Management has placement custom resources to control the placement of various resources on managed clusters. This is an early prototype of common wizard functionality for handling placement.',
+        labels: ['ACM'],
+        state: StateE.prototype,
+    },
     {
         shortName: 'Policy',
         name: 'Policy',
@@ -223,6 +231,18 @@ export function DemoRouter(): JSX.Element {
             return <EditPolicyPsp />
         case RouteE.EditPolicyScc:
             return <EditPolicyScc />
+        case RouteE.Placement:
+            return <PlacementExamples />
+        case RouteE.CreatePlacement:
+            return <CreatePlacement />
+        case RouteE.CreatePlacementRule:
+            return <CreatePlacementRule />
+        case RouteE.EditPlacement:
+            return <EditPlacement />
+        case RouteE.EditPlacementRule:
+            return <EditPlacementRule />
+        case RouteE.EditPlacements:
+            return <EditPlacements />
         case RouteE.PolicySet:
             return <PolicySetExamples />
         case RouteE.CreatePolicySet:
@@ -258,7 +278,7 @@ function ExampleWizards() {
     const history = useHistory()
 
     return (
-        <DataDrivenCatalog
+        <Catalog
             title="Example Wizards"
             breadcrumbs={[{ label: 'Example Wizards' }]}
             filterGroups={[

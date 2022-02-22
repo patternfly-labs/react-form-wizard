@@ -16,7 +16,8 @@ import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
 import { Sync } from '../common/Sync'
 import { isValidKubernetesName } from '../common/validation'
-import { IClusterSetBinding, PlacementSection } from '../Placement/PlacementSection'
+import { IClusterSetBinding } from '../Placement/ClusterSetBinding'
+import { PlacementSection } from '../Placement/PlacementSection'
 
 export interface PolicySetWizardProps {
     title: string
