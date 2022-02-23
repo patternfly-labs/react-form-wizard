@@ -313,11 +313,11 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     </Section>
                 </ItemSelector>
             </Step>
-            <Step id="placement" label="Placement">
+            {/* <Step id="placement" label="Placement">
                 <ItemSelector selectKey="kind" selectValue="Placement">
                     <Placement namespaceClusterSetNames={[]} />
                 </ItemSelector>
-            </Step>
+            </Step> */}
         </WizardPage>
     )
 }
