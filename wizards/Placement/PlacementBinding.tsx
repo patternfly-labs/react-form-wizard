@@ -1,17 +1,41 @@
-import { ArrayInput, EditMode, Select, TextInput } from '../../src'
-import { useEditMode } from '../../src/contexts/EditModeContext'
+import { ArrayInput, ItemSelector, Select, TextInput } from '../../src'
 import { IResource } from '../common/resource'
 
+export const PlacementBindingApiVersion = 'policy.open-cluster-management.io/v1'
+export const PlacementBindingKind = 'PlacementBinding'
+
 export function PlacementBindings(props: {
-    hasPlacement: boolean
-    hasPlacementRules: boolean
-    hasPlacementBindings: boolean
+    showPlacements: boolean
+    showPlacementRules: boolean
+    showPlacementBindings: boolean
+    placementCount: number
+    placementRuleCount: number
+    placementBindingCount: number
     bindingSubjectKind: string
     bindingSubjectApiGroup?: string
-    placements: IResource[]
-    placementRules: IResource[]
+    existingPlacements: IResource[]
+    existingPlacementRules: IResource[]
 }) {
-    const editMode = useEditMode()
+    if (!props.showPlacements && props.placementBindingCount === 1) {
+        return (
+            <ItemSelector selectKey="kind" selectValue="PlacementBinding">
+                <Select
+                    path="placementRef.name"
+                    label="Placement"
+                    required
+                    hidden={(binding) => binding.placementRef?.kind !== 'Placement'}
+                    options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
+                />
+                <Select
+                    path="placementRef.name"
+                    label="Placement rule"
+                    required
+                    hidden={(binding) => binding.placementRef?.kind !== 'PlacementRule'}
+                    options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
+                />
+            </ItemSelector>
+        )
+    }
     return (
         <ArrayInput
             id="placement-bindings"
@@ -24,10 +48,10 @@ export function PlacementBindings(props: {
             collapsedPlaceholder="Expand to enter binding"
             defaultCollapsed
             isSection
-            hidden={() => {
-                if (editMode === EditMode.Create) return true
-                return !props.hasPlacement && !props.hasPlacementRules && !props.hasPlacementBindings
-            }}
+            // hidden={() => {
+            //     if (editMode === EditMode.Create) return true
+            //     return !props.hasPlacement && !props.hasPlacementRules && !props.hasPlacementBindings
+            // }}
             newValue={{
                 apiVersion: 'policy.open-cluster-management.io/v1',
                 kind: 'PlacementBinding',
@@ -35,32 +59,32 @@ export function PlacementBindings(props: {
                 placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: 'Placement' },
                 subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
             }}
-            dropdownItems={
-                props.hasPlacementRules
-                    ? [
-                          {
-                              label: 'Add placement binding',
-                              action: () => ({
-                                  apiVersion: 'policy.open-cluster-management.io/v1',
-                                  kind: 'PlacementBinding',
-                                  metadata: {},
-                                  placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: 'Placement' },
-                                  subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
-                              }),
-                          },
-                          {
-                              label: 'Add placement rule binding',
-                              action: () => ({
-                                  apiVersion: 'policy.open-cluster-management.io/v1',
-                                  kind: 'PlacementBinding',
-                                  metadata: {},
-                                  placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
-                                  subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
-                              }),
-                          },
-                      ]
-                    : undefined
-            }
+            // dropdownItems={
+            //     props.hasPlacementRules
+            //         ? [
+            //               {
+            //                   label: 'Add placement binding',
+            //                   action: () => ({
+            //                       apiVersion: 'policy.open-cluster-management.io/v1',
+            //                       kind: 'PlacementBinding',
+            //                       metadata: {},
+            //                       placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: 'Placement' },
+            //                       subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
+            //                   }),
+            //               },
+            //               {
+            //                   label: 'Add placement rule binding',
+            //                   action: () => ({
+            //                       apiVersion: 'policy.open-cluster-management.io/v1',
+            //                       kind: 'PlacementBinding',
+            //                       metadata: {},
+            //                       placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
+            //                       subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
+            //                   }),
+            //               },
+            //           ]
+            //         : undefined
+            // }
         >
             <TextInput path="metadata.name" label="Binding name" required />
             {/* <TextInput path="placementRef.name" label="Placement name" required readonly={true} /> */}
@@ -77,7 +101,7 @@ export function PlacementBindings(props: {
                 helperText="The placement used to select clusters."
                 required
                 hidden={(binding) => binding.placementRef?.kind !== 'Placement'}
-                options={props.placements.map((placement) => placement.metadata?.name ?? '')}
+                options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
             />
             <Select
                 path="placementRef.name"
@@ -85,7 +109,7 @@ export function PlacementBindings(props: {
                 helperText="The placement rule used to select clusters for placement."
                 required
                 hidden={(binding) => binding.placementRef?.kind !== 'PlacementRule'}
-                options={props.placementRules.map((placement) => placement.metadata?.name ?? '')}
+                options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
             />
             <ArrayInput
                 path="subjects"

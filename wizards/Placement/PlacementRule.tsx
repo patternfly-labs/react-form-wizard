@@ -1,10 +1,16 @@
 import get from 'get-value'
-import { ArrayInput, KeyValue, TextInput } from '../../src'
+import { Fragment } from 'react'
+import { ArrayInput, EditMode, ItemSelector, KeyValue } from '../../src'
+import { useEditMode } from '../../src/contexts/EditModeContext'
 import { IResource } from '../common/resource'
+import { Sync } from '../common/Sync'
 import { IExpression, MatchExpression, MatchExpressionCollapsed } from './MatchExpression'
 
+export const PlacementRuleApiVersion = 'apps.open-cluster-management.io/v1'
+export const PlacementRuleKind = 'PlacementRule'
+
 export type IPlacementRule = IResource & {
-    apiVersion?: 'cluster.open-cluster-management.io/v1beta1'
+    apiVersion?: 'apps.open-cluster-management.io/v1'
     kind?: 'PlacementRule'
     metadata?: { name?: string; namespace?: string }
     spec?: {
@@ -32,7 +38,20 @@ export type IPlacementRule = IResource & {
     }
 }
 
-export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules: boolean; hasPlacementBindings: boolean }) {
+export function PlacementRules(props: { showPlacements: boolean; placementRuleCount: number; showPlacementBindings: boolean }) {
+    const editMode = useEditMode()
+    if (!props.showPlacements && !props.showPlacementBindings && props.placementRuleCount === 1) {
+        return (
+            <Fragment>
+                <Sync kind="PlacementRule" path="metadata.name" targetKind="PlacementBinding" />
+                <Sync kind="PlacementRule" path="metadata.namespace" targetKind="PlacementBinding" />
+                <Sync kind="PlacementRule" path="metadata.name" targetKind="PlacementBinding" targetPath="placementRef.name" />
+                <ItemSelector selectKey="kind" selectValue="PlacementRule">
+                    <PlacementRule />
+                </ItemSelector>
+            </Fragment>
+        )
+    }
     return (
         <ArrayInput
             id="placement-rules"
@@ -40,7 +59,7 @@ export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules
             labelHelp="Placement rules determine which clusters a resources will be applied."
             path={null}
             isSection
-            hidden={() => !props.hasPlacementRules}
+            // hidden={() => !props.placementRuleCount }
             filter={(resource) => resource.kind === 'PlacementRule'}
             placeholder="Add placement rule"
             collapsedContent="metadata.name"
@@ -53,15 +72,24 @@ export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules
                     clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
                 },
             }}
-            defaultCollapsed
+            defaultCollapsed={editMode !== EditMode.Create}
         >
-            <TextInput
+            <PlacementRule />
+        </ArrayInput>
+    )
+}
+
+function PlacementRule() {
+    const editMode = useEditMode()
+    return (
+        <Fragment>
+            {/* <TextInput
                 id="name"
                 path="metadata.name"
                 label="Name"
                 required
                 helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
-            />
+            /> */}
             <KeyValue
                 label="Cluster label selector"
                 path={`spec.clusterSelector.matchLabels`}
@@ -70,15 +98,16 @@ export function PlacementRules(props: { hasPlacement: boolean; hasPlacementRules
                 hidden={(item) => get(item, `spec.clusterSelector.matchLabels`) === undefined}
             />
             <ArrayInput
+                id="label-expressions"
                 label="Cluster label expression"
                 path="spec.clusterSelector.matchExpressions"
                 placeholder="Add cluster label expression"
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [''] }}
-                defaultCollapsed
+                defaultCollapsed={editMode !== EditMode.Create}
             >
                 <MatchExpression />
             </ArrayInput>
-        </ArrayInput>
+        </Fragment>
     )
 }

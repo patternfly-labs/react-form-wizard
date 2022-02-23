@@ -109,15 +109,8 @@ export function PolicyWizard(props: {
             <Step label="Details" id="details">
                 {props.editMode !== EditMode.Edit && (
                     <Fragment>
-                        <Sync kind="Policy" path="metadata.name" targetKind="Placement" prefix="-placement" addIndex />
-                        <Sync
-                            kind="Policy"
-                            path="metadata.name"
-                            targetKind="PlacementBinding"
-                            prefix="-placement"
-                            addIndex
-                            postfix="-binding"
-                        />
+                        <Sync kind="Policy" path="metadata.namespace" />
+                        <Sync kind="Policy" path="metadata.name" prefix="-placement" />
                         <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
                     </Fragment>
                 )}
@@ -179,11 +172,12 @@ export function PolicyWizard(props: {
 
             <Step label="Cluster placement" id="placement">
                 <PlacementSection
-                    placements={props.placements}
-                    placementRules={props.placementRules}
-                    clusterSetBindings={props.clusterSetBindings}
+                    existingPlacements={props.placements}
+                    existingPlacementRules={props.placementRules}
+                    existingclusterSetBindings={props.clusterSetBindings}
                     bindingSubjectKind="Policy"
                     bindingSubjectApiGroup="policy.open-cluster-management.io"
+                    defaultPlacementType="placement-rule"
                 />
             </Step>
 

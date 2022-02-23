@@ -17,6 +17,7 @@ import { IResource } from '../common/resource'
 import { Sync } from '../common/Sync'
 import { isValidKubernetesName } from '../common/validation'
 import { IClusterSetBinding } from '../Placement/ClusterSetBinding'
+import { PlacementBindingApiVersion } from '../Placement/PlacementBinding'
 import { PlacementSection } from '../Placement/PlacementSection'
 
 export interface PolicySetWizardProps {
@@ -47,21 +48,36 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                         metadata: { name: '', namespace: '' },
                         spec: { description: '', policies: [] },
                     },
+                    {
+                        apiVersion: 'apps.open-cluster-management.io/v1beta1',
+                        kind: 'PlacementRule',
+                        metadata: { name: '', namespace: '' },
+                    },
+                    {
+                        apiVersion: PlacementBindingApiVersion,
+                        kind: 'PlacementBinding',
+                        metadata: { name: '', namespace: '' },
+                        placementRef: {
+                            name: '',
+                            kind: 'PlacementRule',
+                            apiGroup: 'apps.open-cluster-management.io',
+                        },
+                        subjects: [
+                            {
+                                apiGroup: 'policy.open-cluster-management.io',
+                                kind: 'PolicySet',
+                                name: '',
+                            },
+                        ],
+                    } as IResource,
                 ]
             }
         >
             <Step label="Details" id="details-step">
                 {props.editMode !== EditMode.Edit && (
                     <Fragment>
-                        <Sync kind="PolicySet" path="metadata.name" targetKind="Placement" prefix="-placement" addIndex />
-                        <Sync
-                            kind="PolicySet"
-                            path="metadata.name"
-                            targetKind="PlacementBinding"
-                            prefix="-placement"
-                            addIndex
-                            postfix="-binding"
-                        />
+                        <Sync kind="PolicySet" path="metadata.name" prefix="-placement" />
+                        <Sync kind="PolicySet" path="metadata.name" prefix="-placement" />
                         <Sync kind="PolicySet" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
                     </Fragment>
                 )}
@@ -93,11 +109,12 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
             </Step>
             <Step label="Placement" id="placement-step">
                 <PlacementSection
-                    clusterSetBindings={props.clusterSetBindings}
+                    existingclusterSetBindings={props.clusterSetBindings}
                     bindingSubjectKind="PolicySet"
                     bindingSubjectApiGroup="policy.open-cluster-management.io"
-                    placements={props.placements}
-                    placementRules={props.placementRules}
+                    existingPlacements={props.placements}
+                    existingPlacementRules={props.placementRules}
+                    defaultPlacementType="placement-rule"
                 />
             </Step>
         </WizardPage>

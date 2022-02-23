@@ -23,7 +23,7 @@ import {
     WizardSubmit,
 } from '../../src'
 import { Sync } from '../common/Sync'
-import { Placement } from '../Placement/Placement'
+import { Placement, PlacementApiVersion } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
 
 interface Channel {
@@ -110,6 +110,11 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         },
                     },
                 },
+                {
+                    apiVersion: PlacementApiVersion,
+                    kind: 'Placement',
+                    metadata: { name: '', namespace: '' },
+                },
             ]}
             onCancel={props.onCancel}
             onSubmit={props.onSubmit}
@@ -131,8 +136,15 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 />
                 <ItemSelector selectKey="kind" selectValue="ApplicationSet">
                     <Section label="General">
-                        <TextInput path="metadata.name" label="ApplicationSet name" placeholder="Enter the application set name" required />
+                        <TextInput
+                            path="metadata.name"
+                            label="ApplicationSet name"
+                            placeholder="Enter the application set name"
+                            required
+                            id="name"
+                        />
                         <Select
+                            id="namespace"
                             path="metadata.namespace"
                             label="Argo server"
                             placeholder="Select the Argo server"
@@ -230,6 +242,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     </Section>
                     <Section label="Destination">
                         <TextInput
+                            id="destination"
                             path="spec.template.spec.destination.namespace"
                             label="Remote namespace"
                             placeholder="Enter the destination namespace"
@@ -313,11 +326,13 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     </Section>
                 </ItemSelector>
             </Step>
-            {/* <Step id="placement" label="Placement">
-                <ItemSelector selectKey="kind" selectValue="Placement">
-                    <Placement namespaceClusterSetNames={[]} />
-                </ItemSelector>
-            </Step> */}
+            <Step id="placement" label="Cluster placement">
+                <Section label="Cluster placement">
+                    <ItemSelector selectKey="kind" selectValue="Placement">
+                        <Placement namespaceClusterSetNames={[]} />
+                    </ItemSelector>
+                </Section>
+            </Step>
         </WizardPage>
     )
 }

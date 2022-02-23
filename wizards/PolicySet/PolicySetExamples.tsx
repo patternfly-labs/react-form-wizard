@@ -4,6 +4,8 @@ import { Catalog } from '../Catalog'
 import { IResource } from '../common/resource'
 import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
+import { PlacementApiVersion } from '../Placement/Placement'
+import { PlacementBindingApiVersion } from '../Placement/PlacementBinding'
 import { RouteE } from '../Routes'
 import { PolicySetWizard } from './PolicySetWizard'
 
@@ -265,7 +267,7 @@ const policySetResource: IResource = {
 
 const singlePlacementResources: IResource[] = [
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: PlacementApiVersion,
         kind: 'Placement',
         metadata: {
             name: 'my-policy-set-placement-1',
@@ -288,7 +290,7 @@ const singlePlacementResources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: 'policy.open-cluster-management.io/v1',
+        apiVersion: PlacementBindingApiVersion,
         kind: 'PlacementBinding',
         metadata: {
             name: 'my-policy-set-placement-1-binding',
@@ -314,7 +316,7 @@ const policySetWithSinglePlacementResources: IResource[] = [policySetResource, .
 const twoPlacementResources: IResource[] = [
     ...singlePlacementResources,
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: PlacementApiVersion,
         kind: 'Placement',
         metadata: {
             name: 'my-policy-set-placement-2',
@@ -436,7 +438,7 @@ const twoPlacementResources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: 'policy.open-cluster-management.io/v1',
+        apiVersion: PlacementBindingApiVersion,
         kind: 'PlacementBinding',
         metadata: {
             name: 'my-policy-set-placement-2-binding',
@@ -461,7 +463,7 @@ const policySetWithTwoPlacementResources: IResource[] = [policySetResource, ...t
 
 const singlePlacementRuleResources: IResource[] = [
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: 'apps.open-cluster-management.io/v1beta1',
         kind: 'PlacementRule',
         metadata: {
             name: 'my-policy-set-placement-rule-1',
@@ -476,7 +478,7 @@ const singlePlacementRuleResources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: 'policy.open-cluster-management.io/v1',
+        apiVersion: PlacementBindingApiVersion,
         kind: 'PlacementBinding',
         metadata: {
             name: 'my-policy-set-placement-rule-1-binding',
@@ -502,7 +504,7 @@ const policySetWithSinglePlacementRuleResources: IResource[] = [policySetResourc
 const twoPlacementRuleResources: IResource[] = [
     ...policySetWithSinglePlacementRuleResources,
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: 'apps.open-cluster-management.io/v1beta1',
         kind: 'PlacementRule',
         metadata: {
             name: 'my-policy-set-placement-rule-2',
@@ -537,7 +539,7 @@ const twoPlacementRuleResources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: 'policy.open-cluster-management.io/v1',
+        apiVersion: PlacementBindingApiVersion,
         kind: 'PlacementBinding',
         metadata: {
             name: 'my-policy-set-placement-rule-2-binding',
@@ -567,7 +569,7 @@ const policySetWithTwoPlacementAndTwoPlacementRuleResources: IResource[] = [
 ]
 
 const placementBindingResource: IResource = {
-    apiVersion: 'policy.open-cluster-management.io/v1',
+    apiVersion: PlacementBindingApiVersion,
     kind: 'PlacementBinding',
     metadata: {
         name: 'my-policy-set-placement-binding',
@@ -588,7 +590,7 @@ const placementBindingResource: IResource = {
 } as IResource
 
 const placementRuleBindingResource: IResource = {
-    apiVersion: 'policy.open-cluster-management.io/v1',
+    apiVersion: PlacementBindingApiVersion,
     kind: 'PlacementBinding',
     metadata: {
         name: 'my-policy-set-placement-rule-binding',
@@ -597,7 +599,7 @@ const placementRuleBindingResource: IResource = {
     placementRef: {
         name: 'my-placement-rule-1',
         kind: 'PlacementRule',
-        apiGroup: 'cluster.open-cluster-management.io',
+        apiGroup: 'apps.open-cluster-management.io',
     },
     subjects: [
         {

@@ -5,6 +5,8 @@ import { IResource } from '../common/resource'
 import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { RouteE } from '../Routes'
+import { PlacementApiVersion } from './Placement'
+import { PlacementBindingApiVersion } from './PlacementBinding'
 import { PlacementWizard } from './PlacementWizard'
 
 export function onCancel(history: { push: (location: string) => void }) {
@@ -60,6 +62,10 @@ export function CreatePlacement() {
             clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
+            defaultPlacementType="placement"
+            bindingSubjectKind="PolicySet"
+            bindingSubjectApiGroup="policy.open-cluster-management.io"
+            resources={[]}
         />
     )
 }
@@ -76,6 +82,16 @@ export function CreatePlacementRule() {
             clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
+            defaultPlacementType="placement-rule"
+            bindingSubjectKind="PolicySet"
+            bindingSubjectApiGroup="policy.open-cluster-management.io"
+            resources={[
+                {
+                    apiVersion: 'apps.open-cluster-management.io/v1beta1',
+                    kind: 'PlacementRule',
+                    metadata: { name: '', namespace: '' },
+                },
+            ]}
         />
     )
 }
@@ -94,6 +110,9 @@ export function EditPlacement() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={[...placement1Resources]}
+            defaultPlacementType="placement"
+            bindingSubjectKind="PolicySet"
+            bindingSubjectApiGroup="policy.open-cluster-management.io"
         />
     )
 }
@@ -112,6 +131,9 @@ export function EditPlacementRule() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={[...placementRule1Resources]}
+            defaultPlacementType="placement-rule"
+            bindingSubjectKind="PolicySet"
+            bindingSubjectApiGroup="policy.open-cluster-management.io"
         />
     )
 }
@@ -130,13 +152,16 @@ export function EditPlacements() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={[...placement1Resources, ...placement2Resources, ...placementRule1Resources, ...placementRule2Resources]}
+            defaultPlacementType="placement-rule"
+            bindingSubjectKind="PolicySet"
+            bindingSubjectApiGroup="policy.open-cluster-management.io"
         />
     )
 }
 
 const placement1Resources: IResource[] = [
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: PlacementApiVersion,
         kind: 'Placement',
         metadata: {
             name: 'my-placement-1',
@@ -159,7 +184,7 @@ const placement1Resources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: 'policy.open-cluster-management.io/v1',
+        apiVersion: PlacementBindingApiVersion,
         kind: 'PlacementBinding',
         metadata: {
             name: 'my-placement-1-binding',
@@ -176,7 +201,7 @@ const placement1Resources: IResource[] = [
 
 const placement2Resources: IResource[] = [
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: PlacementApiVersion,
         kind: 'Placement',
         metadata: {
             name: 'my-placement-2',
@@ -298,7 +323,7 @@ const placement2Resources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: 'policy.open-cluster-management.io/v1',
+        apiVersion: PlacementBindingApiVersion,
         kind: 'PlacementBinding',
         metadata: {
             name: 'my-placement-2-binding',
@@ -315,7 +340,7 @@ const placement2Resources: IResource[] = [
 
 const placementRule1Resources: IResource[] = [
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: 'apps.open-cluster-management.io/v1beta1',
         kind: 'PlacementRule',
         metadata: {
             name: 'my-placement-rule-1',
@@ -330,7 +355,7 @@ const placementRule1Resources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: 'policy.open-cluster-management.io/v1',
+        apiVersion: PlacementBindingApiVersion,
         kind: 'PlacementBinding',
         metadata: {
             name: 'my-placement-rule-1-binding',
@@ -347,7 +372,7 @@ const placementRule1Resources: IResource[] = [
 
 const placementRule2Resources: IResource[] = [
     {
-        apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+        apiVersion: 'apps.open-cluster-management.io/v1beta1',
         kind: 'PlacementRule',
         metadata: {
             name: 'my-placement-rule-2',
@@ -382,7 +407,7 @@ const placementRule2Resources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: 'policy.open-cluster-management.io/v1',
+        apiVersion: PlacementBindingApiVersion,
         kind: 'PlacementBinding',
         metadata: {
             name: 'my-placement-rule-2-binding',

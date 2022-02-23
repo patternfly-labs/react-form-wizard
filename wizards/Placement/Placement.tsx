@@ -1,14 +1,17 @@
 import { SelectOption } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useMemo } from 'react'
-import { ArrayInput, EditMode, Hidden, ItemSelector, KeyValue, NumberInput, Section } from '../../src'
+import { ArrayInput, EditMode, Hidden, ItemSelector, KeyValue, NumberInput } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { Multiselect } from '../../src/inputs/Multiselect'
 import { IResource } from '../common/resource'
+import { Sync } from '../common/Sync'
 import { IClusterSetBinding } from './ClusterSetBinding'
 import { IExpression, MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
+export const PlacementApiVersion = 'cluster.open-cluster-management.io/v1beta1'
+export const PlacementKind = 'Placement'
 /**
 Placement defines a rule to select a set of ManagedClusters from the ManagedClusterSets bound to the placement namespace. 
 Here is how the placement policy combines with other selection methods to determine a matching list of ManagedClusters: 1) Kubernetes clusters are registered with hub as cluster-scoped ManagedClusters; 2) ManagedClusters are organized into cluster-scoped ManagedClusterSets; 3) ManagedClusterSets are bound to workload namespaces; 4) Namespace-scoped Placements specify a slice of ManagedClusterSets which select a working set    of potential ManagedClusters; 5) Then Placements subselect from that working set using label/claim selection. 
@@ -69,7 +72,14 @@ export interface Predicate {
     }
 }
 
-export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string; placementCount: number }) {
+export function Placements(props: {
+    clusterSetBindings: IClusterSetBinding[]
+    bindingKind: string
+    placementCount: number
+    showPlacementRules: boolean
+    showPlacementBindings: boolean
+}) {
+    const editMode = useEditMode()
     const resources = useItem() as IResource[]
     const namespaceClusterSetNames = useMemo(() => {
         if (!resources.find) return []
@@ -83,18 +93,15 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
                 .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
         )
     }, [props.bindingKind, props.clusterSetBindings, resources])
-    const editMode = useEditMode()
 
-    if (editMode === EditMode.Create && props.placementCount <= 1) {
+    if (!props.showPlacementRules && !props.showPlacementBindings && props.placementCount === 1) {
         return (
-            <Section
-                label="Cluster placement"
-                description="Placement selects clusters from the cluster sets which have bindings to the resource namespace."
-            >
+            <Fragment>
+                <Sync kind="Placement" path="metadata.name" targetKind="PlacementBinding" targetPath="placementRef.name" />
                 <ItemSelector selectKey="kind" selectValue="Placement">
                     <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
                 </ItemSelector>
-            </Section>
+            </Fragment>
         )
     }
     return (
@@ -109,12 +116,12 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
             collapsedContent="metadata.name"
             collapsedPlaceholder="Expand to enter placement"
             newValue={{
-                apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+                apiVersion: PlacementApiVersion,
                 kind: 'Placement',
                 metadata: { name: '', namespace: '' },
                 spec: {},
             }}
-            defaultCollapsed
+            defaultCollapsed={editMode === EditMode.Edit}
         >
             <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
         </ArrayInput>
@@ -123,7 +130,6 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
 
 export function Placement(props: { namespaceClusterSetNames: string[] }) {
     const editMode = useEditMode()
-
     return (
         <Fragment>
             {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
@@ -182,6 +188,7 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
 
 export function PlacementPredicate(props: { rootPath?: string }) {
     const rootPath = props.rootPath ?? ''
+    const editMode = useEditMode()
     return (
         <Fragment>
             <KeyValue
@@ -198,7 +205,7 @@ export function PlacementPredicate(props: { rootPath?: string }) {
                 labelHelp="A label expression allows selection of clusters using cluster labels."
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [''] }}
-                defaultCollapsed
+                defaultCollapsed={editMode !== EditMode.Create}
             >
                 <MatchExpression />
             </ArrayInput>
@@ -209,7 +216,7 @@ export function PlacementPredicate(props: { rootPath?: string }) {
                 labelHelp="A claim expression allows selection of clusters using cluster claims in status."
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [''] }}
-                defaultCollapsed
+                defaultCollapsed={editMode !== EditMode.Create}
                 hidden={(item) => get(item, `${rootPath}requiredClusterSelector.claimSelector.matchExpressions`) === undefined}
             >
                 <MatchExpression />
