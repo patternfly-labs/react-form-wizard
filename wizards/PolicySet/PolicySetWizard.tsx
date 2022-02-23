@@ -17,6 +17,7 @@ import { IResource } from '../common/resource'
 import { Sync } from '../common/Sync'
 import { isValidKubernetesName } from '../common/validation'
 import { IClusterSetBinding } from '../Placement/ClusterSetBinding'
+import { PlacementBindingApiVersion } from '../Placement/PlacementBinding'
 import { PlacementSection } from '../Placement/PlacementSection'
 
 export interface PolicySetWizardProps {
@@ -53,7 +54,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                         metadata: { name: '', namespace: '' },
                     },
                     {
-                        apiVersion: 'policy.open-cluster-management.io/v1',
+                        apiVersion: PlacementBindingApiVersion,
                         kind: 'PlacementBinding',
                         metadata: { name: '', namespace: '' },
                         placementRef: {

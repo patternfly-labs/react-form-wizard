@@ -1,6 +1,9 @@
 import { ArrayInput, ItemSelector, Select, TextInput } from '../../src'
 import { IResource } from '../common/resource'
 
+export const PlacementBindingApiVersion = 'policy.open-cluster-management.io/v1'
+export const PlacementBindingKind = 'PlacementBinding'
+
 export function PlacementBindings(props: {
     showPlacements: boolean
     showPlacementRules: boolean

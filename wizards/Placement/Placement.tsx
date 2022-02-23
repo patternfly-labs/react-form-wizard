@@ -10,6 +10,8 @@ import { Sync } from '../common/Sync'
 import { IClusterSetBinding } from './ClusterSetBinding'
 import { IExpression, MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
+export const PlacementApiVersion = 'cluster.open-cluster-management.io/v1beta1'
+export const PlacementKind = 'Placement'
 /**
 Placement defines a rule to select a set of ManagedClusters from the ManagedClusterSets bound to the placement namespace. 
 Here is how the placement policy combines with other selection methods to determine a matching list of ManagedClusters: 1) Kubernetes clusters are registered with hub as cluster-scoped ManagedClusters; 2) ManagedClusters are organized into cluster-scoped ManagedClusterSets; 3) ManagedClusterSets are bound to workload namespaces; 4) Namespace-scoped Placements specify a slice of ManagedClusterSets which select a working set    of potential ManagedClusters; 5) Then Placements subselect from that working set using label/claim selection. 
@@ -114,7 +116,7 @@ export function Placements(props: {
             collapsedContent="metadata.name"
             collapsedPlaceholder="Expand to enter placement"
             newValue={{
-                apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+                apiVersion: PlacementApiVersion,
                 kind: 'Placement',
                 metadata: { name: '', namespace: '' },
                 spec: {},

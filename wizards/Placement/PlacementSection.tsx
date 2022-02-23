@@ -7,8 +7,8 @@ import { useSetHasInputs } from '../../src/contexts/HasInputsProvider'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from './ClusterSetBinding'
-import { Placements } from './Placement'
-import { PlacementBindings } from './PlacementBinding'
+import { PlacementApiVersion, Placements } from './Placement'
+import { PlacementBindingApiVersion, PlacementBindings } from './PlacementBinding'
 import { PlacementRules } from './PlacementRule'
 
 export function PlacementSection(props: {
@@ -50,7 +50,7 @@ export function PlacementSection(props: {
         const placementBindingCount = resources?.filter((resource) => resource.kind === 'PlacementBinding').length
         if (placementCount === 1 && placementRuleCount === 0 && placementBindingCount === 0) {
             resources.push({
-                apiVersion: 'policy.open-cluster-management.io/v1',
+                apiVersion: PlacementBindingApiVersion,
                 kind: 'PlacementBinding',
                 metadata: { name: '', namespace: '' },
                 placementRef: { name: '', kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
@@ -59,7 +59,7 @@ export function PlacementSection(props: {
             update()
         } else if (placementCount === 0 && placementRuleCount === 1 && placementBindingCount === 0) {
             resources.push({
-                apiVersion: 'policy.open-cluster-management.io/v1',
+                apiVersion: PlacementBindingApiVersion,
                 kind: 'PlacementBinding',
                 metadata: { name: '', namespace: '' },
                 placementRef: { name: '', kind: 'PlacementRule', apiGroup: 'apps.open-cluster-management.io' },
@@ -103,7 +103,7 @@ export function PlacementSection(props: {
                                         .filter((resource) => resource.kind !== 'PlacementBinding')
                                     if (props.defaultPlacementType === 'placement') {
                                         newResources.push({
-                                            apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+                                            apiVersion: PlacementApiVersion,
                                             kind: 'Placement',
                                             metadata: { name: '', namespace: '' },
                                         } as IResource)
@@ -116,7 +116,7 @@ export function PlacementSection(props: {
                                     }
                                     if (props.defaultPlacementType === 'placement') {
                                         newResources.push({
-                                            apiVersion: 'policy.open-cluster-management.io/v1',
+                                            apiVersion: PlacementBindingApiVersion,
                                             kind: 'PlacementBinding',
                                             metadata: { name: '', namespace: '' },
                                             placementRef: { name: '', kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
@@ -126,7 +126,7 @@ export function PlacementSection(props: {
                                         } as IResource)
                                     } else {
                                         newResources.push({
-                                            apiVersion: 'policy.open-cluster-management.io/v1',
+                                            apiVersion: PlacementBindingApiVersion,
                                             kind: 'PlacementBinding',
                                             metadata: { name: '', namespace: '' },
                                             placementRef: { name: '', kind: 'PlacementRule', apiGroup: 'apps.open-cluster-management.io' },
@@ -150,7 +150,7 @@ export function PlacementSection(props: {
                                         .filter((resource) => resource.kind !== 'PlacementBinding')
                                     if (props.defaultPlacementType === 'placement') {
                                         newResources.push({
-                                            apiVersion: 'policy.open-cluster-management.io/v1',
+                                            apiVersion: PlacementBindingApiVersion,
                                             kind: 'PlacementBinding',
                                             metadata: { name: '', namespace: '' },
                                             placementRef: { name: '', kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
@@ -160,7 +160,7 @@ export function PlacementSection(props: {
                                         } as IResource)
                                     } else {
                                         newResources.push({
-                                            apiVersion: 'policy.open-cluster-management.io/v1',
+                                            apiVersion: PlacementBindingApiVersion,
                                             kind: 'PlacementBinding',
                                             metadata: { name: '', namespace: '' },
                                             placementRef: { name: '', kind: 'PlacementRule', apiGroup: 'apps.open-cluster-management.io' },

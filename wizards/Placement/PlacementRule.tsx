@@ -6,8 +6,11 @@ import { IResource } from '../common/resource'
 import { Sync } from '../common/Sync'
 import { IExpression, MatchExpression, MatchExpressionCollapsed } from './MatchExpression'
 
+export const PlacementRuleApiVersion = 'apps.open-cluster-management.io/v1'
+export const PlacementRuleKind = 'PlacementRule'
+
 export type IPlacementRule = IResource & {
-    apiVersion?: 'cluster.open-cluster-management.io/v1beta1'
+    apiVersion?: 'apps.open-cluster-management.io/v1'
     kind?: 'PlacementRule'
     metadata?: { name?: string; namespace?: string }
     spec?: {

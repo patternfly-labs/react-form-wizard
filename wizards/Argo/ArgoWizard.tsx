@@ -23,7 +23,7 @@ import {
     WizardSubmit,
 } from '../../src'
 import { Sync } from '../common/Sync'
-import { Placement } from '../Placement/Placement'
+import { Placement, PlacementApiVersion } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
 
 interface ArgoWizardProps {
@@ -67,7 +67,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     },
                 },
                 {
-                    apiVersion: 'cluster.open-cluster-management.io/v1beta1',
+                    apiVersion: PlacementApiVersion,
                     kind: 'Placement',
                     metadata: { name: '', namespace: '' },
                 },
