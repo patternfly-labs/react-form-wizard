@@ -1,10 +1,8 @@
 /* eslint-disable i18next/no-literal-string */
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
-import CompressionPlugin from 'compression-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import ReactRefreshTypeScript from 'react-refresh-typescript'
 import webpack from 'webpack'
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 
@@ -30,13 +28,9 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
                 {
                     test: /\.(ts|tsx|js|jsx)$/,
                     exclude: /node_modules/,
-                    loader: 'ts-loader',
+                    loader: require.resolve('babel-loader'),
                     options: {
-                        configFile: isDevelopment ? 'tsconfig.dev.json' : 'tsconfig.json',
-                        transpileOnly: true,
-                        getCustomTransformers: () => ({
-                            before: [isDevelopment && ReactRefreshTypeScript()].filter(Boolean),
-                        }),
+                        plugins: [isDevelopment && require.resolve('react-refresh/babel')].filter(Boolean),
                     },
                     type: 'javascript/auto',
                 },
@@ -46,7 +40,6 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': isProduction ? JSON.stringify('production') : JSON.stringify('development'),
             }),
-            isProduction && new CompressionPlugin({ algorithm: 'gzip' }),
             isDevelopment && new ReactRefreshWebpackPlugin(),
             new HtmlWebpackPlugin({ title: 'Form Wizard', favicon: 'wizards/assets/favicon.svg' }),
             new MiniCssExtractPlugin({
