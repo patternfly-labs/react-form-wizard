@@ -225,7 +225,7 @@ export function PlacementPredicate(props: { rootPath?: string }) {
     )
 }
 
-function PredicateSummary() {
+export function PredicateSummary() {
     const predicate = useItem() as Predicate
     const labelSelectorLabels = predicate.requiredClusterSelector?.labelSelector?.matchLabels ?? {}
     const labelSelectorExpressions = predicate.requiredClusterSelector?.labelSelector?.matchExpressions ?? []
