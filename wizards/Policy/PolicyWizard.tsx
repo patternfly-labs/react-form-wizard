@@ -22,11 +22,12 @@ import {
 import { ItemContext } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
+import { PlacementBindingKind } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind } from '../common/resources/IPlacementRule'
+import { PolicyApiGroup, PolicyKind, PolicyType } from '../common/resources/IPolicy'
 import { Sync } from '../common/Sync'
 import { isValidKubernetesName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
-import { PolicyApiGroup, PolicyKind, PolicyType } from '../common/resources/IPolicy'
 import { Specifications } from './templates'
 
 export function PolicyWizard(props: {
@@ -110,14 +111,14 @@ export function PolicyWizard(props: {
             <Step label="Details" id="details">
                 {props.editMode !== EditMode.Edit && (
                     <Fragment>
-                        <Sync kind="Policy" path="metadata.namespace" />
-                        <Sync kind="Policy" path="metadata.name" prefix="-placement" />
-                        <Sync kind="Policy" path="metadata.name" targetKind="PlacementBinding" targetPath="subjects.0.name" />
+                        <Sync kind={PolicyKind} path="metadata.namespace" />
+                        <Sync kind={PolicyKind} path="metadata.name" prefix="-placement" />
+                        <Sync kind={PolicyKind} path="metadata.name" targetKind={PlacementBindingKind} targetPath="subjects.0.name" />
                     </Fragment>
                 )}
 
-                <Sync kind="Policy" path="metadata.namespace" />
-                <ItemSelector selectKey="kind" selectValue="Policy">
+                <Sync kind={PolicyKind} path="metadata.namespace" />
+                <ItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <Section label="Details" prompt="Enter the details for the policy">
                         <TextInput
                             id="name"
@@ -166,7 +167,7 @@ export function PolicyWizard(props: {
             </Step>
 
             <Step label="Policy templates" id="templates">
-                <ItemSelector selectKey="kind" selectValue="Policy">
+                <ItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <PolicyWizardTemplates />
                 </ItemSelector>
             </Step>
@@ -183,7 +184,7 @@ export function PolicyWizard(props: {
             </Step>
 
             <Step label="Security groups" id="security-groups">
-                <ItemSelector selectKey="kind" selectValue="Policy">
+                <ItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <Section label="Security groups">
                         <StringsInput
                             id="categories"

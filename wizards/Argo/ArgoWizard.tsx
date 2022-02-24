@@ -22,7 +22,7 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
-import { PlacementType } from '../common/resources/IPlacement'
+import { PlacementKind, PlacementType } from '../common/resources/IPlacement'
 import { Sync } from '../common/Sync'
 import { Placement } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
@@ -77,7 +77,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
         >
             <Step id="general" label="General">
                 <Sync
-                    kind="Placement"
+                    kind={PlacementKind}
                     path="metadata.name"
                     targetPath="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
                 />
@@ -272,7 +272,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
             </Step>
             <Step id="placement" label="Cluster placement">
                 <Section label="Cluster placement">
-                    <ItemSelector selectKey="kind" selectValue="Placement">
+                    <ItemSelector selectKey="kind" selectValue={PlacementKind}>
                         <Placement namespaceClusterSetNames={[]} />
                     </ItemSelector>
                 </Section>

@@ -8,6 +8,7 @@ import { Multiselect } from '../../src/inputs/Multiselect'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementKind, PlacementType, Predicate } from '../common/resources/IPlacement'
+import { PlacementBindingKind } from '../common/resources/IPlacementBinding'
 import { Sync } from '../common/Sync'
 import { MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
@@ -36,8 +37,8 @@ export function Placements(props: {
     if (!props.showPlacementRules && !props.showPlacementBindings && props.placementCount === 1) {
         return (
             <Fragment>
-                <Sync kind="Placement" path="metadata.name" targetKind="PlacementBinding" targetPath="placementRef.name" />
-                <ItemSelector selectKey="kind" selectValue="Placement">
+                <Sync kind={PlacementKind} path="metadata.name" targetKind={PlacementBindingKind} targetPath="placementRef.name" />
+                <ItemSelector selectKey="kind" selectValue={PlacementKind}>
                     <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
                 </ItemSelector>
             </Fragment>
