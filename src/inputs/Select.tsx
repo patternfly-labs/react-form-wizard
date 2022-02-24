@@ -28,7 +28,7 @@ export interface Option<T> {
 export interface OptionGroup<T> {
     id?: string
     label: string
-    options: (Option<T> | string | number)[]
+    options: (Option<T> | string | number)[] | undefined
 }
 
 type SelectCommonProps<T> = InputCommonProps<T> & {
@@ -46,7 +46,7 @@ type SelectCommonProps<T> = InputCommonProps<T> & {
 
 interface SingleSelectProps<T> extends SelectCommonProps<T> {
     variant: 'single'
-    options: (Option<T> | string | number)[]
+    options: (Option<T> | string | number)[] | undefined
 }
 
 export function Select<T>(props: Omit<SingleSelectProps<T>, 'variant'>) {
@@ -67,18 +67,20 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     const [open, setOpen] = useState(false)
 
     // The drop down items with icons and descriptions - optionally grouped
-    const selectOptions: ({
-        id: string
-        icon?: ReactNode
-        label: string
-        description?: string
-        value: string | number | T
-        keyedValue: string | number
-        disabled?: boolean
-    } & SelectOptionObject)[] = useMemo(() => {
+    const selectOptions:
+        | ({
+              id: string
+              icon?: ReactNode
+              label: string
+              description?: string
+              value: string | number | T
+              keyedValue: string | number
+              disabled?: boolean
+          } & SelectOptionObject)[]
+        | undefined = useMemo(() => {
         switch (props.variant) {
             case 'single':
-                return props.options.map((option) => {
+                return props.options?.map((option) => {
                     let id: string
                     let label: string
                     let value: string | number | T
@@ -144,11 +146,11 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     const selections = useMemo(() => {
         if (Array.isArray(keyedValue)) {
-            return selectOptions.filter(
+            return selectOptions?.filter(
                 (selectOption) => keyedValue.find((keyedValue) => keyedValue === selectOption.keyedValue) !== undefined
             )
         } else {
-            return selectOptions.find((selectOption) => keyedValue === selectOption.keyedValue)
+            return selectOptions?.find((selectOption) => keyedValue === selectOption.keyedValue)
         }
     }, [keyedValue, selectOptions])
 
@@ -175,20 +177,23 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     }, [])
 
     const onFilter = useCallback(
-        (_, value: string) =>
-            selectOptions
-                .filter((option) => option.label.toLowerCase().includes(value.toLowerCase()))
-                .map((option) => (
-                    <SelectOption
-                        key={option.id}
-                        id={option.id}
-                        value={option}
-                        description={option.description}
-                        isDisabled={option.disabled}
-                    >
-                        {option.toString()}
-                    </SelectOption>
-                )),
+        (_, value: string) => {
+            if (selectOptions)
+                return selectOptions
+                    .filter((option) => option.label.toLowerCase().includes(value.toLowerCase()))
+                    .map((option) => (
+                        <SelectOption
+                            key={option.id}
+                            id={option.id}
+                            value={option}
+                            description={option.description}
+                            isDisabled={option.disabled}
+                        >
+                            {option.toString()}
+                        </SelectOption>
+                    ))
+            return []
+        },
         [selectOptions]
     )
 
@@ -211,12 +216,13 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             </DescriptionListGroup>
         )
     }
-
+    // TODO: implement loading state for when options are undefined
+    // currently disabling select field when undefined
     return (
         <div id={id}>
             <InputLabel {...props}>
                 <PfSelect
-                    isDisabled={disabled}
+                    isDisabled={disabled || !selectOptions}
                     variant={variant}
                     isOpen={open}
                     onToggle={setOpen}
@@ -247,7 +253,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                         )
                     }
                 >
-                    {selectOptions.map((option) => (
+                    {selectOptions?.map((option) => (
                         <SelectOption
                             key={option.id}
                             id={option.id}

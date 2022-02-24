@@ -31,7 +31,7 @@ export type InputCommonProps<ValueT = any> = {
 
     inputValueToPathValue?: (inputValue: unknown, pathValue: unknown) => unknown
     pathValueToInputValue?: (pathValue: unknown) => unknown
-    onValueChange?: (value: unknown) => void
+    onValueChange?: (value: unknown, item?: any) => void
 }
 
 export function useID(props: { id?: string; path: string }) {
@@ -58,7 +58,7 @@ export function useValue(
         }
         set(item, path, newValue, { preservePaths: false })
         update()
-        onValueChange?.(newValue)
+        onValueChange?.(newValue, item)
     }
     let value = pathValue
     if (props.pathValueToInputValue) {
