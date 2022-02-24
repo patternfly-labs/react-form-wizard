@@ -26,7 +26,7 @@ import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 import { Sync } from '../common/Sync'
 import { isValidKubernetesName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
-import { PolicyApiGroup, PolicyKind, PolicyType } from './Policy'
+import { PolicyApiGroup, PolicyKind, PolicyType } from '../common/resources/IPolicy'
 import { Specifications } from './templates'
 
 export function PolicyWizard(props: {

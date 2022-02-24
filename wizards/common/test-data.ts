@@ -1,6 +1,6 @@
 import { IPlacement, PlacementType } from '../common/resources/IPlacement'
 import { IPlacementRule, PlacementRuleType } from '../common/resources/IPlacementRule'
-import { PolicyType } from '../Policy/Policy'
+import { PolicyType } from './resources/IPolicy'
 import { IResource } from './resource'
 import { ClusterSetBindingType, IClusterSetBinding } from './resources/IClusterSetBinding'
 
