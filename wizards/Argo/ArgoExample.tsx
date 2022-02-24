@@ -31,10 +31,10 @@ export function ArgoExample() {
             channels={channels}
             timeZones={timeZones}
             getGitRevisions={() => {
-                return new Promise(() => ['branch-1', 'branch-2'])
+                return new Promise((resolve) => resolve(['branch-1', 'branch-2']))
             }}
             getGitPaths={() => {
-                return new Promise(() => ['path-1', 'path-2'])
+                return new Promise((resolve) => resolve(['path-1', 'path-2']))
             }}
         />
     )
