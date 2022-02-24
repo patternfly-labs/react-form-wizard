@@ -187,7 +187,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 options={gitChannels}
                                 onValueChange={(value) => {
                                     const channel = props.channels?.find((channel) => channel.spec.pathname === value)
-                                    getGitBranchList(channel!, props.getGitRevisions, setGitRevisions)
+                                    channel && getGitBranchList(channel, props.getGitRevisions, setGitRevisions)
                                 }}
                                 required
                             />
@@ -202,7 +202,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                         const channel = props.channels?.find(
                                             (channel) => channel?.spec?.pathname === item.spec.template.spec.source.repoURL
                                         )
-                                        getGitPathList(channel!, value as string, props.getGitPaths, setGitPaths)
+                                        channel && getGitPathList(channel, value as string, props.getGitPaths, setGitPaths)
                                     }}
                                 />
                                 <Select
@@ -402,12 +402,12 @@ export function TimeWindow(props: { timeZone: string[] }) {
     )
 }
 
-function getGitBranchList(
+async function getGitBranchList(
     channel: Channel,
     getGitBranches: (channelPath: string, secretArgs?: { secretRef?: string; namespace?: string } | undefined) => Promise<unknown>,
     setGitBranches: (branches: any) => void
 ) {
-    getGitBranches(channel.spec.pathname, {
+    await getGitBranches(channel.spec.pathname, {
         secretRef: channel.spec?.secretRef?.name,
         namespace: channel.metadata?.namespace,
     }).then((result) => {
@@ -417,13 +417,13 @@ function getGitBranchList(
     })
 }
 
-function getGitPathList(
+async function getGitPathList(
     channel: Channel,
     branch: string,
     getGitPaths: (channelPath: string, branch: string, secretArgs?: { secretRef?: string; namespace?: string }) => Promise<unknown>,
     setGitPaths: (paths: any) => void
 ) {
-    getGitPaths(channel?.spec?.pathname, branch, {
+    await getGitPaths(channel?.spec?.pathname, branch, {
         secretRef: channel?.spec?.secretRef?.name,
         namespace: channel.metadata?.namespace,
     }).then((result) => {
