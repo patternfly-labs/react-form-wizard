@@ -3,12 +3,7 @@ import { Fragment } from 'react'
 import { Select, StringsInput, TextInput } from '../../src'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
-
-export interface IExpression {
-    key?: string
-    operator?: 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
-    values?: string[]
-}
+import { IExpression } from '../common/resources/IMatchExpression'
 
 export function MatchExpression() {
     return (

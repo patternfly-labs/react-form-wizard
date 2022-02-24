@@ -21,10 +21,12 @@ import {
 } from '../../src'
 import { ItemContext } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
+import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
+import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 import { Sync } from '../common/Sync'
 import { isValidKubernetesName } from '../common/validation'
-import { IClusterSetBinding } from '../Placement/ClusterSetBinding'
 import { PlacementSection } from '../Placement/PlacementSection'
+import { PolicyApiGroup, PolicyKind, PolicyType } from './Policy'
 import { Specifications } from './templates'
 
 export function PolicyWizard(props: {
@@ -98,8 +100,7 @@ export function PolicyWizard(props: {
             defaultData={
                 props.resources ?? [
                     {
-                        apiVersion: 'policy.open-cluster-management.io/v1',
-                        kind: 'Policy',
+                        ...PolicyType,
                         metadata: { name: '', namespace: '' },
                         spec: { remediationAction: 'inform', disabled: false },
                     },
@@ -175,9 +176,9 @@ export function PolicyWizard(props: {
                     existingPlacements={props.placements}
                     existingPlacementRules={props.placementRules}
                     existingclusterSetBindings={props.clusterSetBindings}
-                    bindingSubjectKind="Policy"
-                    bindingSubjectApiGroup="policy.open-cluster-management.io"
-                    defaultPlacementType="placement-rule"
+                    bindingSubjectKind={PolicyKind}
+                    bindingSubjectApiGroup={PolicyApiGroup}
+                    defaultPlacementKind={PlacementRuleKind}
                 />
             </Step>
 

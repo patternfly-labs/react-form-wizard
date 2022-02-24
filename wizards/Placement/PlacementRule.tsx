@@ -2,41 +2,9 @@ import get from 'get-value'
 import { Fragment } from 'react'
 import { ArrayInput, EditMode, ItemSelector, KeyValue } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
-import { IResource } from '../common/resource'
+import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { Sync } from '../common/Sync'
-import { IExpression, MatchExpression, MatchExpressionCollapsed } from './MatchExpression'
-
-export const PlacementRuleApiVersion = 'apps.open-cluster-management.io/v1'
-export const PlacementRuleKind = 'PlacementRule'
-
-export type IPlacementRule = IResource & {
-    apiVersion?: 'apps.open-cluster-management.io/v1'
-    kind?: 'PlacementRule'
-    metadata?: { name?: string; namespace?: string }
-    spec?: {
-        clusterConditions?: {
-            status: string
-            type: string
-        }[]
-        clusterReplicas: number
-        clusterSelector: {
-            matchExpressions: IExpression[]
-            matchLabels: Record<string, string>
-        }
-        clusters: { name: string }[]
-        policies: {
-            apiVersion: string
-            fieldPath: string
-            kind: string
-            name: string
-            namespace: string
-            resourceVersion: string
-            uid: string
-        }[]
-        resourceHint: { order: string; type: string }
-        schedulerName: string
-    }
-}
+import { MatchExpression, MatchExpressionCollapsed } from './MatchExpression'
 
 export function PlacementRules(props: { showPlacements: boolean; placementRuleCount: number; showPlacementBindings: boolean }) {
     const editMode = useEditMode()
@@ -60,17 +28,14 @@ export function PlacementRules(props: { showPlacements: boolean; placementRuleCo
             path={null}
             isSection
             // hidden={() => !props.placementRuleCount }
-            filter={(resource) => resource.kind === 'PlacementRule'}
+            filter={(resource) => resource.kind === PlacementRuleKind}
             placeholder="Add placement rule"
             collapsedContent="metadata.name"
             collapsedPlaceholder="Expand to enter placement rule"
             newValue={{
-                apiVersion: 'apps.open-cluster-management.io/v1',
-                kind: 'PlacementRule',
+                ...PlacementRuleType,
                 metadata: {},
-                spec: {
-                    clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' },
-                },
+                spec: { clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' } },
             }}
             defaultCollapsed={editMode !== EditMode.Create}
         >

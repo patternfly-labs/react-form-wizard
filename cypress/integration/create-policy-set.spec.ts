@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 import YAML from 'yaml'
+import { PlacementBindingType } from '../../wizards/common/resources/IPlacementBinding'
+import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../../wizards/common/resources/IPlacementRule'
+import { PolicySetApiGroup, PolicySetKind, PolicySetType } from '../../wizards/common/resources/IPolicySet'
 import { RouteE } from '../../wizards/Routes'
 
 describe('create policy set', () => {
@@ -34,55 +37,20 @@ describe('create policy set', () => {
     it('review', () => {
         const expected = [
             {
-                apiVersion: 'policy.open-cluster-management.io/v1',
-                kind: 'PolicySet',
-                metadata: {
-                    name: 'my-policy-set',
-                    namespace: 'my-namespace-1',
-                },
-                spec: {
-                    description: '',
-                    policies: ['my-policy-1', 'my-policy-2'],
-                },
+                ...PolicySetType,
+                metadata: { name: 'my-policy-set', namespace: 'my-namespace-1' },
+                spec: { description: '', policies: ['my-policy-1', 'my-policy-2'] },
             },
             {
-                apiVersion: 'apps.open-cluster-management.io/v1beta1',
-                kind: 'PlacementRule',
-                metadata: {
-                    name: 'my-policy-set-placement',
-                    namespace: 'my-namespace-1',
-                },
-                spec: {
-                    clusterSelector: {
-                        matchExpressions: [
-                            {
-                                key: 'local-cluster',
-                                operator: 'In',
-                                values: ['true'],
-                            },
-                        ],
-                    },
-                },
+                ...PlacementRuleType,
+                metadata: { name: 'my-policy-set-placement', namespace: 'my-namespace-1' },
+                spec: { clusterSelector: { matchExpressions: [{ key: 'local-cluster', operator: 'In', values: ['true'] }] } },
             },
             {
-                apiVersion: 'policy.open-cluster-management.io/v1',
-                kind: 'PlacementBinding',
-                metadata: {
-                    name: 'my-policy-set-placement',
-                    namespace: 'my-namespace-1',
-                },
-                placementRef: {
-                    name: 'my-policy-set-placement',
-                    kind: 'PlacementRule',
-                    apiGroup: 'apps.open-cluster-management.io',
-                },
-                subjects: [
-                    {
-                        apiGroup: 'policy.open-cluster-management.io',
-                        kind: 'PolicySet',
-                        name: 'my-policy-set',
-                    },
-                ],
+                ...PlacementBindingType,
+                metadata: { name: 'my-policy-set-placement', namespace: 'my-namespace-1' },
+                placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: 'my-policy-set-placement' },
+                subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
             },
         ]
 

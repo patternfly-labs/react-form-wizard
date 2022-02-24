@@ -1,8 +1,8 @@
 import { ArrayInput, ItemSelector, Select, TextInput } from '../../src'
 import { IResource } from '../common/resource'
-
-export const PlacementBindingApiVersion = 'policy.open-cluster-management.io/v1'
-export const PlacementBindingKind = 'PlacementBinding'
+import { PlacementApiGroup, PlacementKind } from '../common/resources/IPlacement'
+import { PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
+import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 
 export function PlacementBindings(props: {
     showPlacements: boolean
@@ -18,19 +18,19 @@ export function PlacementBindings(props: {
 }) {
     if (!props.showPlacements && props.placementBindingCount === 1) {
         return (
-            <ItemSelector selectKey="kind" selectValue="PlacementBinding">
+            <ItemSelector selectKey="kind" selectValue={PlacementBindingKind}>
                 <Select
                     path="placementRef.name"
                     label="Placement"
                     required
-                    hidden={(binding) => binding.placementRef?.kind !== 'Placement'}
+                    hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
                     options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
                 />
                 <Select
                     path="placementRef.name"
                     label="Placement rule"
                     required
-                    hidden={(binding) => binding.placementRef?.kind !== 'PlacementRule'}
+                    hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
                     options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
                 />
             </ItemSelector>
@@ -42,7 +42,7 @@ export function PlacementBindings(props: {
             label="Placement bindings"
             helperText="To apply a resource to a cluster, the placement must be bound to the resource using a placement binding."
             path={null}
-            filter={(resource) => resource.kind === 'PlacementBinding'}
+            filter={(resource) => resource.kind === PlacementBindingKind}
             placeholder="Add placement binding"
             collapsedContent="metadata.name"
             collapsedPlaceholder="Expand to enter binding"
@@ -53,11 +53,10 @@ export function PlacementBindings(props: {
             //     return !props.hasPlacement && !props.hasPlacementRules && !props.hasPlacementBindings
             // }}
             newValue={{
-                apiVersion: 'policy.open-cluster-management.io/v1',
-                kind: 'PlacementBinding',
+                ...PlacementBindingType,
                 metadata: {},
-                placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: 'Placement' },
-                subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
+                placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
+                subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
             }}
             // dropdownItems={
             //     props.hasPlacementRules
@@ -68,7 +67,7 @@ export function PlacementBindings(props: {
             //                       apiVersion: 'policy.open-cluster-management.io/v1',
             //                       kind: 'PlacementBinding',
             //                       metadata: {},
-            //                       placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: 'Placement' },
+            //                       placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: PlacemenKind },
             //                       subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
             //                   }),
             //               },
@@ -93,14 +92,14 @@ export function PlacementBindings(props: {
                 label="Placement kind"
                 helperText="The placement rule used to select clusters for placement."
                 required
-                options={['Placement', 'PlacementRule']}
+                options={['Placement', PlacementRuleKind]}
             />
             <Select
                 path="placementRef.name"
                 label="Placement"
                 helperText="The placement used to select clusters."
                 required
-                hidden={(binding) => binding.placementRef?.kind !== 'Placement'}
+                hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
                 options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
             />
             <Select
@@ -108,7 +107,7 @@ export function PlacementBindings(props: {
                 label="Placement rule"
                 helperText="The placement rule used to select clusters for placement."
                 required
-                hidden={(binding) => binding.placementRef?.kind !== 'PlacementRule'}
+                hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
                 options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
             />
             <ArrayInput

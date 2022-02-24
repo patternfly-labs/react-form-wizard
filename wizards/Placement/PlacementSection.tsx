@@ -6,9 +6,12 @@ import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useSetHasInputs } from '../../src/contexts/HasInputsProvider'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
-import { IClusterSetBinding } from './ClusterSetBinding'
-import { PlacementApiVersion, Placements } from './Placement'
-import { PlacementBindingApiVersion, PlacementBindings } from './PlacementBinding'
+import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
+import { PlacementApiGroup, PlacementApiVersion, PlacementKind } from '../common/resources/IPlacement'
+import { PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
+import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
+import { Placements } from './Placement'
+import { PlacementBindings } from './PlacementBinding'
 import { PlacementRules } from './PlacementRule'
 
 export function PlacementSection(props: {
@@ -17,14 +20,14 @@ export function PlacementSection(props: {
     existingPlacements: IResource[]
     existingPlacementRules: IResource[]
     existingclusterSetBindings: IClusterSetBinding[]
-    defaultPlacementType: 'placement' | 'placement-rule'
+    defaultPlacementKind: 'Placement' | 'PlacementRule'
 }) {
     const { update } = useData()
     const resources = useItem() as IResource[]
     const editMode = useEditMode()
 
-    const [showPlacements, setShowPlacements] = useState(props.defaultPlacementType === 'placement')
-    const [showPlacementRules, setShowPlacementRules] = useState(props.defaultPlacementType === 'placement-rule')
+    const [showPlacements, setShowPlacements] = useState(props.defaultPlacementKind === PlacementKind)
+    const [showPlacementRules, setShowPlacementRules] = useState(props.defaultPlacementKind === PlacementRuleKind)
     const [showPlacementBindings, setShowPlacementBindings] = useState(false)
 
     const [placementCount, setPlacementCount] = useState(0)
@@ -32,9 +35,9 @@ export function PlacementSection(props: {
     const [placementBindingCount, setPlacementBindingCount] = useState(0)
 
     useEffect(() => {
-        setPlacementCount(resources?.filter((resource) => resource.kind === 'Placement').length)
-        setPlacementRuleCount(resources?.filter((resource) => resource.kind === 'PlacementRule').length)
-        setPlacementBindingCount(resources?.filter((resource) => resource.kind === 'PlacementBinding').length)
+        setPlacementCount(resources?.filter((resource) => resource.kind === PlacementKind).length)
+        setPlacementRuleCount(resources?.filter((resource) => resource.kind === PlacementRuleKind).length)
+        setPlacementBindingCount(resources?.filter((resource) => resource.kind === PlacementBindingKind).length)
     }, [resources, setPlacementCount, setPlacementRuleCount, setPlacementBindingCount])
 
     useEffect(() => {
@@ -45,24 +48,22 @@ export function PlacementSection(props: {
     }, [placementCount, placementRuleCount, setShowPlacements, setShowPlacementRules, setShowPlacementBindings, placementBindingCount])
 
     useEffect(() => {
-        const placementCount = resources?.filter((resource) => resource.kind === 'Placement').length
-        const placementRuleCount = resources?.filter((resource) => resource.kind === 'PlacementRule').length
-        const placementBindingCount = resources?.filter((resource) => resource.kind === 'PlacementBinding').length
+        const placementCount = resources?.filter((resource) => resource.kind === PlacementKind).length
+        const placementRuleCount = resources?.filter((resource) => resource.kind === PlacementRuleKind).length
+        const placementBindingCount = resources?.filter((resource) => resource.kind === PlacementBindingKind).length
         if (placementCount === 1 && placementRuleCount === 0 && placementBindingCount === 0) {
             resources.push({
-                apiVersion: PlacementBindingApiVersion,
-                kind: 'PlacementBinding',
+                ...PlacementBindingType,
                 metadata: { name: '', namespace: '' },
-                placementRef: { name: '', kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
+                placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
                 subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
             } as IResource)
             update()
         } else if (placementCount === 0 && placementRuleCount === 1 && placementBindingCount === 0) {
             resources.push({
-                apiVersion: PlacementBindingApiVersion,
-                kind: 'PlacementBinding',
+                ...PlacementBindingType,
                 metadata: { name: '', namespace: '' },
-                placementRef: { name: '', kind: 'PlacementRule', apiGroup: 'apps.open-cluster-management.io' },
+                placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
                 subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
             } as IResource)
             update()
@@ -98,38 +99,35 @@ export function PlacementSection(props: {
                                 onClick={() => {
                                     let newResources = [...resources]
                                     newResources = resources
-                                        .filter((resource) => resource.kind !== 'Placement')
-                                        .filter((resource) => resource.kind !== 'PlacementRule')
-                                        .filter((resource) => resource.kind !== 'PlacementBinding')
-                                    if (props.defaultPlacementType === 'placement') {
+                                        .filter((resource) => resource.kind !== PlacementKind)
+                                        .filter((resource) => resource.kind !== PlacementRuleKind)
+                                        .filter((resource) => resource.kind !== PlacementBindingKind)
+                                    if (props.defaultPlacementKind === PlacementKind) {
                                         newResources.push({
                                             apiVersion: PlacementApiVersion,
-                                            kind: 'Placement',
+                                            kind: PlacementKind,
                                             metadata: { name: '', namespace: '' },
                                         } as IResource)
                                     } else {
                                         newResources.push({
-                                            apiVersion: 'apps.open-cluster-management.io/v1beta1',
-                                            kind: 'PlacementRule',
+                                            ...PlacementRuleType,
                                             metadata: { name: '', namespace: '' },
                                         } as IResource)
                                     }
-                                    if (props.defaultPlacementType === 'placement') {
+                                    if (props.defaultPlacementKind === PlacementKind) {
                                         newResources.push({
-                                            apiVersion: PlacementBindingApiVersion,
-                                            kind: 'PlacementBinding',
+                                            ...PlacementBindingType,
                                             metadata: { name: '', namespace: '' },
-                                            placementRef: { name: '', kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
+                                            placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
                                             subjects: [
                                                 { apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' },
                                             ],
                                         } as IResource)
                                     } else {
                                         newResources.push({
-                                            apiVersion: PlacementBindingApiVersion,
-                                            kind: 'PlacementBinding',
+                                            ...PlacementBindingType,
                                             metadata: { name: '', namespace: '' },
-                                            placementRef: { name: '', kind: 'PlacementRule', apiGroup: 'apps.open-cluster-management.io' },
+                                            placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: '' },
                                             subjects: [
                                                 { apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' },
                                             ],
@@ -145,25 +143,23 @@ export function PlacementSection(props: {
                                 onClick={() => {
                                     let newResources = [...resources]
                                     newResources = resources
-                                        .filter((resource) => resource.kind !== 'Placement')
-                                        .filter((resource) => resource.kind !== 'PlacementRule')
-                                        .filter((resource) => resource.kind !== 'PlacementBinding')
-                                    if (props.defaultPlacementType === 'placement') {
+                                        .filter((resource) => resource.kind !== PlacementKind)
+                                        .filter((resource) => resource.kind !== PlacementRuleKind)
+                                        .filter((resource) => resource.kind !== PlacementBindingKind)
+                                    if (props.defaultPlacementKind === PlacementKind) {
                                         newResources.push({
-                                            apiVersion: PlacementBindingApiVersion,
-                                            kind: 'PlacementBinding',
+                                            ...PlacementBindingType,
                                             metadata: { name: '', namespace: '' },
-                                            placementRef: { name: '', kind: 'Placement', apiGroup: 'cluster.open-cluster-management.io' },
+                                            placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
                                             subjects: [
                                                 { apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' },
                                             ],
                                         } as IResource)
                                     } else {
                                         newResources.push({
-                                            apiVersion: PlacementBindingApiVersion,
-                                            kind: 'PlacementBinding',
+                                            ...PlacementBindingType,
                                             metadata: { name: '', namespace: '' },
-                                            placementRef: { name: '', kind: 'PlacementRule', apiGroup: 'apps.open-cluster-management.io' },
+                                            placementRef: { apiGroup: PlacementApiGroup, kind: PlacementRuleKind, name: '' },
                                             subjects: [
                                                 { apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' },
                                             ],
@@ -180,9 +176,9 @@ export function PlacementSection(props: {
                                 onClick={() => {
                                     let newResources = [...resources]
                                     newResources = resources
-                                        .filter((resource) => resource.kind !== 'Placement')
-                                        .filter((resource) => resource.kind !== 'PlacementRule')
-                                        .filter((resource) => resource.kind !== 'PlacementBinding')
+                                        .filter((resource) => resource.kind !== PlacementKind)
+                                        .filter((resource) => resource.kind !== PlacementRuleKind)
+                                        .filter((resource) => resource.kind !== PlacementBindingKind)
                                     update(newResources)
                                     setShowPlacements(false)
                                     setShowPlacementRules(false)

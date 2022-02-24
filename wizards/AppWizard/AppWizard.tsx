@@ -10,6 +10,7 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
+import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 
 export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel }) {
     return (
@@ -58,7 +59,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                                     'apps.open-cluster-management.io/reconcile-option': 'merge',
                                 },
                             },
-                            spec: { channel: '', placement: { placementRef: { kind: 'PlacementRule', name: '' } } },
+                            spec: { channel: '', placement: { placementRef: { kind: PlacementRuleKind, name: '' } } },
                         }}
                         collapsedPlaceholder="Expand to enter the subscription details"
                     >
@@ -167,12 +168,8 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                         collapsedPlaceholder="Expand to enter the placement details"
                         label="Placements"
                         path={null}
-                        filter={(item) => item.kind === 'PlacementRule'}
-                        newValue={{
-                            apiVersion: 'apps.open-cluster-management.io/v1',
-                            kind: 'PlacementRule',
-                            metadata: { name: '' },
-                        }}
+                        filter={(item) => item.kind === PlacementRuleKind}
+                        newValue={{ ...PlacementRuleType, metadata: { name: '' } }}
                     >
                         <TextInput id="text-input" path="metadata.name" label="Name" required />
                         <KeyValue id="" path="spec.clusterSelector.matchLabels" label="Cluster labels"></KeyValue>

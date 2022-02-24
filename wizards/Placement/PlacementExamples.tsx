@@ -2,11 +2,13 @@ import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
 import { Catalog } from '../Catalog'
 import { IResource } from '../common/resource'
+import { PlacementApiGroup, PlacementKind, PlacementType } from '../common/resources/IPlacement'
+import { PlacementBindingApiVersion, PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
+import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
+import { PolicySetApiGroup, PolicySetKind } from '../common/resources/IPolicySet'
 import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { RouteE } from '../Routes'
-import { PlacementApiVersion } from './Placement'
-import { PlacementBindingApiVersion } from './PlacementBinding'
 import { PlacementWizard } from './PlacementWizard'
 
 export function onCancel(history: { push: (location: string) => void }) {
@@ -62,9 +64,9 @@ export function CreatePlacement() {
             clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
-            defaultPlacementType="placement"
-            bindingSubjectKind="PolicySet"
-            bindingSubjectApiGroup="policy.open-cluster-management.io"
+            defaultPlacementType={PlacementKind}
+            bindingSubjectKind={PolicySetKind}
+            bindingSubjectApiGroup={PolicySetApiGroup}
             resources={[]}
         />
     )
@@ -82,16 +84,10 @@ export function CreatePlacementRule() {
             clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
-            defaultPlacementType="placement-rule"
-            bindingSubjectKind="PolicySet"
-            bindingSubjectApiGroup="policy.open-cluster-management.io"
-            resources={[
-                {
-                    apiVersion: 'apps.open-cluster-management.io/v1beta1',
-                    kind: 'PlacementRule',
-                    metadata: { name: '', namespace: '' },
-                },
-            ]}
+            defaultPlacementType={PlacementRuleKind}
+            bindingSubjectKind={PolicySetKind}
+            bindingSubjectApiGroup={PolicySetApiGroup}
+            resources={[{ ...PlacementRuleType, metadata: { name: '', namespace: '' } }]}
         />
     )
 }
@@ -110,9 +106,9 @@ export function EditPlacement() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={[...placement1Resources]}
-            defaultPlacementType="placement"
-            bindingSubjectKind="PolicySet"
-            bindingSubjectApiGroup="policy.open-cluster-management.io"
+            defaultPlacementType={PlacementKind}
+            bindingSubjectKind={PolicySetKind}
+            bindingSubjectApiGroup={PolicySetApiGroup}
         />
     )
 }
@@ -131,9 +127,9 @@ export function EditPlacementRule() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={[...placementRule1Resources]}
-            defaultPlacementType="placement-rule"
-            bindingSubjectKind="PolicySet"
-            bindingSubjectApiGroup="policy.open-cluster-management.io"
+            defaultPlacementType={PlacementRuleKind}
+            bindingSubjectKind={PolicySetKind}
+            bindingSubjectApiGroup={PolicySetApiGroup}
         />
     )
 }
@@ -152,21 +148,17 @@ export function EditPlacements() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={[...placement1Resources, ...placement2Resources, ...placementRule1Resources, ...placementRule2Resources]}
-            defaultPlacementType="placement-rule"
-            bindingSubjectKind="PolicySet"
-            bindingSubjectApiGroup="policy.open-cluster-management.io"
+            defaultPlacementType={PlacementRuleKind}
+            bindingSubjectKind={PolicySetKind}
+            bindingSubjectApiGroup={PolicySetApiGroup}
         />
     )
 }
 
 const placement1Resources: IResource[] = [
     {
-        apiVersion: PlacementApiVersion,
-        kind: 'Placement',
-        metadata: {
-            name: 'my-placement-1',
-            namespace: 'my-namespace-1',
-        },
+        ...PlacementType,
+        metadata: { name: 'my-placement-1', namespace: 'my-namespace-1' },
         spec: {
             numberOfClusters: 1,
             clusterSets: ['my-cluster-set-1'],
@@ -184,25 +176,16 @@ const placement1Resources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: PlacementBindingApiVersion,
-        kind: 'PlacementBinding',
-        metadata: {
-            name: 'my-placement-1-binding',
-            namespace: 'my-namespace-1',
-        },
-        placementRef: {
-            name: 'my-placement-1',
-            kind: 'Placement',
-            apiGroup: 'cluster.open-cluster-management.io',
-        },
+        ...PlacementBindingType,
+        metadata: { name: 'my-placement-1-binding', namespace: 'my-namespace-1' },
+        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-placement-1' },
         subjects: [],
     } as IResource,
 ]
 
 const placement2Resources: IResource[] = [
     {
-        apiVersion: PlacementApiVersion,
-        kind: 'Placement',
+        ...PlacementType,
         metadata: {
             name: 'my-placement-2',
             namespace: 'my-namespace-1',
@@ -323,29 +306,17 @@ const placement2Resources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: PlacementBindingApiVersion,
-        kind: 'PlacementBinding',
-        metadata: {
-            name: 'my-placement-2-binding',
-            namespace: 'my-namespace-1',
-        },
-        placementRef: {
-            name: 'my-placement-2',
-            kind: 'Placement',
-            apiGroup: 'cluster.open-cluster-management.io',
-        },
+        ...PlacementBindingType,
+        metadata: { name: 'my-placement-2-binding', namespace: 'my-namespace-1' },
+        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-placement-2' },
         subjects: [],
     } as IResource,
 ]
 
 const placementRule1Resources: IResource[] = [
     {
-        apiVersion: 'apps.open-cluster-management.io/v1beta1',
-        kind: 'PlacementRule',
-        metadata: {
-            name: 'my-placement-rule-1',
-            namespace: 'my-namespace-1',
-        },
+        ...PlacementRuleType,
+        metadata: { name: 'my-placement-rule-1', namespace: 'my-namespace-1' },
         spec: {
             clusterSelector: {
                 matchLabels: {
@@ -356,33 +327,20 @@ const placementRule1Resources: IResource[] = [
     } as IResource,
     {
         apiVersion: PlacementBindingApiVersion,
-        kind: 'PlacementBinding',
-        metadata: {
-            name: 'my-placement-rule-1-binding',
-            namespace: 'my-namespace-1',
-        },
-        placementRef: {
-            name: 'my-placement-rule-1',
-            kind: 'Placement',
-            apiGroup: 'cluster.open-cluster-management.io',
-        },
+        kind: PlacementBindingKind,
+        metadata: { name: 'my-placement-rule-1-binding', namespace: 'my-namespace-1' },
+        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-placement-rule-1' },
         subjects: [],
     } as IResource,
 ]
 
 const placementRule2Resources: IResource[] = [
     {
-        apiVersion: 'apps.open-cluster-management.io/v1beta1',
-        kind: 'PlacementRule',
-        metadata: {
-            name: 'my-placement-rule-2',
-            namespace: 'my-namespace-1',
-        },
+        ...PlacementRuleType,
+        metadata: { name: 'my-placement-rule-2', namespace: 'my-namespace-1' },
         spec: {
             clusterSelector: {
-                matchLabels: {
-                    'local-cluster': 'true',
-                },
+                matchLabels: { 'local-cluster': 'true' },
                 matchExpressions: [
                     {
                         key: 'abc',
@@ -407,17 +365,9 @@ const placementRule2Resources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: PlacementBindingApiVersion,
-        kind: 'PlacementBinding',
-        metadata: {
-            name: 'my-placement-rule-2-binding',
-            namespace: 'my-namespace-1',
-        },
-        placementRef: {
-            name: 'my-placement-rule-2',
-            kind: 'Placement',
-            apiGroup: 'cluster.open-cluster-management.io',
-        },
+        ...PlacementBindingType,
+        metadata: { name: 'my-placement-rule-2-binding', namespace: 'my-namespace-1' },
+        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-placement-rule-2' },
         subjects: [],
     } as IResource,
 ]

@@ -1,6 +1,6 @@
 import { EditMode, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
 import { IResource } from '../common/resource'
-import { IClusterSetBinding } from './ClusterSetBinding'
+import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementSection } from './PlacementSection'
 
 export function PlacementWizard(props: {
@@ -16,7 +16,7 @@ export function PlacementWizard(props: {
     onCancel: WizardCancel
     bindingSubjectKind: string
     bindingSubjectApiGroup: string
-    defaultPlacementType: 'placement' | 'placement-rule'
+    defaultPlacementType: 'Placement' | 'PlacementRule'
 }) {
     return (
         <WizardPage
@@ -33,7 +33,7 @@ export function PlacementWizard(props: {
                     existingclusterSetBindings={props.clusterSetBindings}
                     bindingSubjectKind={props.bindingSubjectKind}
                     bindingSubjectApiGroup={props.bindingSubjectApiGroup}
-                    defaultPlacementType={props.defaultPlacementType}
+                    defaultPlacementKind={props.defaultPlacementType}
                 />
             </Step>
         </WizardPage>

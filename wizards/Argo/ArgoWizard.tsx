@@ -22,8 +22,9 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
+import { PlacementType } from '../common/resources/IPlacement'
 import { Sync } from '../common/Sync'
-import { Placement, PlacementApiVersion } from '../Placement/Placement'
+import { Placement } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
 
 interface ArgoWizardProps {
@@ -67,8 +68,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     },
                 },
                 {
-                    apiVersion: PlacementApiVersion,
-                    kind: 'Placement',
+                    ...PlacementType,
                     metadata: { name: '', namespace: '' },
                 },
             ]}

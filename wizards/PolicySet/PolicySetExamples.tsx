@@ -2,10 +2,12 @@ import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
 import { Catalog } from '../Catalog'
 import { IResource } from '../common/resource'
+import { PlacementApiGroup, PlacementKind, PlacementType } from '../common/resources/IPlacement'
+import { PlacementBindingType } from '../common/resources/IPlacementBinding'
+import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
+import { PolicySetApiGroup, PolicySetKind, PolicySetType } from '../common/resources/IPolicySet'
 import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
-import { PlacementApiVersion } from '../Placement/Placement'
-import { PlacementBindingApiVersion } from '../Placement/PlacementBinding'
 import { RouteE } from '../Routes'
 import { PolicySetWizard } from './PolicySetWizard'
 
@@ -253,61 +255,26 @@ export function EditPolicySet8() {
 }
 
 const policySetResource: IResource = {
-    apiVersion: 'policy.open-cluster-management.io/v1',
-    kind: 'PolicySet',
-    metadata: {
-        name: 'my-policy-set',
-        namespace: 'my-namespace-1',
-    },
-    spec: {
-        description: 'Policy set with a single Placement and PlacementBinding.',
-        policies: ['my-policy-1', 'my-policy-2'],
-    },
+    ...PolicySetType,
+    metadata: { name: 'my-policy-set', namespace: 'my-namespace-1' },
+    spec: { description: 'Policy set with a single Placement and PlacementBinding.', policies: ['my-policy-1', 'my-policy-2'] },
 } as IResource
 
 const singlePlacementResources: IResource[] = [
     {
-        apiVersion: PlacementApiVersion,
-        kind: 'Placement',
-        metadata: {
-            name: 'my-policy-set-placement-1',
-            namespace: 'my-namespace-1',
-        },
+        ...PlacementType,
+        metadata: { name: 'my-policy-set-placement-1', namespace: 'my-namespace-1' },
         spec: {
             numberOfClusters: 1,
             clusterSets: ['my-cluster-set-1'],
-            predicates: [
-                {
-                    requiredClusterSelector: {
-                        labelSelector: {
-                            matchLabels: {
-                                'local-cluster': 'true',
-                            },
-                        },
-                    },
-                },
-            ],
+            predicates: [{ requiredClusterSelector: { labelSelector: { matchLabels: { 'local-cluster': 'true' } } } }],
         },
     } as IResource,
     {
-        apiVersion: PlacementBindingApiVersion,
-        kind: 'PlacementBinding',
-        metadata: {
-            name: 'my-policy-set-placement-1-binding',
-            namespace: 'my-namespace-1',
-        },
-        placementRef: {
-            name: 'my-policy-set-placement-1',
-            kind: 'Placement',
-            apiGroup: 'cluster.open-cluster-management.io',
-        },
-        subjects: [
-            {
-                name: 'my-policy-set',
-                kind: 'PolicySet',
-                apiGroup: 'policy.open-cluster-management.io',
-            },
-        ],
+        ...PlacementBindingType,
+        metadata: { name: 'my-policy-set-placement-1-binding', namespace: 'my-namespace-1' },
+        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-1' },
+        subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
     } as IResource,
 ]
 
@@ -316,8 +283,7 @@ const policySetWithSinglePlacementResources: IResource[] = [policySetResource, .
 const twoPlacementResources: IResource[] = [
     ...singlePlacementResources,
     {
-        apiVersion: PlacementApiVersion,
-        kind: 'Placement',
+        ...PlacementType,
         metadata: {
             name: 'my-policy-set-placement-2',
             namespace: 'my-namespace-1',
@@ -329,53 +295,20 @@ const twoPlacementResources: IResource[] = [
                 {
                     requiredClusterSelector: {
                         labelSelector: {
-                            matchLabels: {
-                                'local-cluster': 'true',
-                                abc: '123',
-                                def: '456',
-                                ghi: '789',
-                            },
+                            matchLabels: { 'local-cluster': 'true', abc: '123', def: '456', ghi: '789' },
                             matchExpressions: [
-                                {
-                                    key: 'abc',
-                                    operator: 'In',
-                                    values: ['123', '456', '789'],
-                                },
-                                {
-                                    key: 'def',
-                                    operator: 'NotIn',
-                                    values: ['123', '456', '789'],
-                                },
-                                {
-                                    key: 'ghi',
-                                    operator: 'Exists',
-                                },
-                                {
-                                    key: 'jkl',
-                                    operator: 'DoesNotExist',
-                                },
+                                { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
+                                { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
+                                { key: 'ghi', operator: 'Exists' },
+                                { key: 'jkl', operator: 'DoesNotExist' },
                             ],
                         },
                         claimSelector: {
                             matchExpressions: [
-                                {
-                                    key: 'abc',
-                                    operator: 'In',
-                                    values: ['123', '456', '789'],
-                                },
-                                {
-                                    key: 'def',
-                                    operator: 'NotIn',
-                                    values: ['123', '456', '789'],
-                                },
-                                {
-                                    key: 'ghi',
-                                    operator: 'Exists',
-                                },
-                                {
-                                    key: 'jkl',
-                                    operator: 'DoesNotExist',
-                                },
+                                { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
+                                { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
+                                { key: 'ghi', operator: 'Exists' },
+                                { key: 'jkl', operator: 'DoesNotExist' },
                             ],
                         },
                     },
@@ -383,53 +316,20 @@ const twoPlacementResources: IResource[] = [
                 {
                     requiredClusterSelector: {
                         labelSelector: {
-                            matchLabels: {
-                                'local-cluster': 'true',
-                                abc: '123',
-                                def: '456',
-                                ghi: '789',
-                            },
+                            matchLabels: { 'local-cluster': 'true', abc: '123', def: '456', ghi: '789' },
                             matchExpressions: [
-                                {
-                                    key: 'abc',
-                                    operator: 'In',
-                                    values: ['123', '456', '789'],
-                                },
-                                {
-                                    key: 'def',
-                                    operator: 'NotIn',
-                                    values: ['123', '456', '789'],
-                                },
-                                {
-                                    key: 'ghi',
-                                    operator: 'Exists',
-                                },
-                                {
-                                    key: 'jkl',
-                                    operator: 'DoesNotExist',
-                                },
+                                { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
+                                { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
+                                { key: 'ghi', operator: 'Exists' },
+                                { key: 'jkl', operator: 'DoesNotExist' },
                             ],
                         },
                         claimSelector: {
                             matchExpressions: [
-                                {
-                                    key: 'abc',
-                                    operator: 'In',
-                                    values: ['123', '456', '789'],
-                                },
-                                {
-                                    key: 'def',
-                                    operator: 'NotIn',
-                                    values: ['123', '456', '789'],
-                                },
-                                {
-                                    key: 'ghi',
-                                    operator: 'Exists',
-                                },
-                                {
-                                    key: 'jkl',
-                                    operator: 'DoesNotExist',
-                                },
+                                { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
+                                { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
+                                { key: 'ghi', operator: 'Exists' },
+                                { key: 'jkl', operator: 'DoesNotExist' },
                             ],
                         },
                     },
@@ -438,24 +338,10 @@ const twoPlacementResources: IResource[] = [
         },
     } as IResource,
     {
-        apiVersion: PlacementBindingApiVersion,
-        kind: 'PlacementBinding',
-        metadata: {
-            name: 'my-policy-set-placement-2-binding',
-            namespace: 'my-namespace-1',
-        },
-        placementRef: {
-            name: 'my-policy-set-placement-2',
-            kind: 'Placement',
-            apiGroup: 'cluster.open-cluster-management.io',
-        },
-        subjects: [
-            {
-                name: 'my-policy-set',
-                kind: 'PolicySet',
-                apiGroup: 'policy.open-cluster-management.io',
-            },
-        ],
+        ...PlacementBindingType,
+        metadata: { name: 'my-policy-set-placement-2-binding', namespace: 'my-namespace-1' },
+        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-2' },
+        subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
     } as IResource,
 ]
 
@@ -463,39 +349,15 @@ const policySetWithTwoPlacementResources: IResource[] = [policySetResource, ...t
 
 const singlePlacementRuleResources: IResource[] = [
     {
-        apiVersion: 'apps.open-cluster-management.io/v1beta1',
-        kind: 'PlacementRule',
-        metadata: {
-            name: 'my-policy-set-placement-rule-1',
-            namespace: 'my-namespace-1',
-        },
-        spec: {
-            clusterSelector: {
-                matchLabels: {
-                    'local-cluster': 'true',
-                },
-            },
-        },
+        ...PlacementRuleType,
+        metadata: { name: 'my-policy-set-placement-rule-1', namespace: 'my-namespace-1' },
+        spec: { clusterSelector: { matchLabels: { 'local-cluster': 'true' } } },
     } as IResource,
     {
-        apiVersion: PlacementBindingApiVersion,
-        kind: 'PlacementBinding',
-        metadata: {
-            name: 'my-policy-set-placement-rule-1-binding',
-            namespace: 'my-namespace-1',
-        },
-        placementRef: {
-            name: 'my-policy-set-placement-rule-1',
-            kind: 'Placement',
-            apiGroup: 'cluster.open-cluster-management.io',
-        },
-        subjects: [
-            {
-                name: 'my-policy-set',
-                kind: 'PolicySet',
-                apiGroup: 'policy.open-cluster-management.io',
-            },
-        ],
+        ...PlacementBindingType,
+        metadata: { name: 'my-policy-set-placement-rule-1-binding', namespace: 'my-namespace-1' },
+        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-rule-1' },
+        subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
     } as IResource,
 ]
 
@@ -504,59 +366,25 @@ const policySetWithSinglePlacementRuleResources: IResource[] = [policySetResourc
 const twoPlacementRuleResources: IResource[] = [
     ...policySetWithSinglePlacementRuleResources,
     {
-        apiVersion: 'apps.open-cluster-management.io/v1beta1',
-        kind: 'PlacementRule',
-        metadata: {
-            name: 'my-policy-set-placement-rule-2',
-            namespace: 'my-namespace-1',
-        },
+        ...PlacementRuleType,
+        metadata: { name: 'my-policy-set-placement-rule-2', namespace: 'my-namespace-1' },
         spec: {
             clusterSelector: {
-                matchLabels: {
-                    'local-cluster': 'true',
-                },
+                matchLabels: { 'local-cluster': 'true' },
                 matchExpressions: [
-                    {
-                        key: 'abc',
-                        operator: 'In',
-                        values: ['123', '456', '789'],
-                    },
-                    {
-                        key: 'def',
-                        operator: 'NotIn',
-                        values: ['123', '456', '789'],
-                    },
-                    {
-                        key: 'ghi',
-                        operator: 'Exists',
-                    },
-                    {
-                        key: 'jkl',
-                        operator: 'DoesNotExist',
-                    },
+                    { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
+                    { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
+                    { key: 'ghi', operator: 'Exists' },
+                    { key: 'jkl', operator: 'DoesNotExist' },
                 ],
             },
         },
     } as IResource,
     {
-        apiVersion: PlacementBindingApiVersion,
-        kind: 'PlacementBinding',
-        metadata: {
-            name: 'my-policy-set-placement-rule-2-binding',
-            namespace: 'my-namespace-1',
-        },
-        placementRef: {
-            name: 'my-policy-set-placement-rule-2',
-            kind: 'Placement',
-            apiGroup: 'cluster.open-cluster-management.io',
-        },
-        subjects: [
-            {
-                name: 'my-policy-set',
-                kind: 'PolicySet',
-                apiGroup: 'policy.open-cluster-management.io',
-            },
-        ],
+        ...PlacementBindingType,
+        metadata: { name: 'my-policy-set-placement-rule-2-binding', namespace: 'my-namespace-1' },
+        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-rule-2' },
+        subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
     } as IResource,
 ]
 
@@ -569,45 +397,17 @@ const policySetWithTwoPlacementAndTwoPlacementRuleResources: IResource[] = [
 ]
 
 const placementBindingResource: IResource = {
-    apiVersion: PlacementBindingApiVersion,
-    kind: 'PlacementBinding',
-    metadata: {
-        name: 'my-policy-set-placement-binding',
-        namespace: 'my-namespace-1',
-    },
-    placementRef: {
-        name: 'my-placement-1',
-        kind: 'Placement',
-        apiGroup: 'cluster.open-cluster-management.io',
-    },
-    subjects: [
-        {
-            name: 'my-policy-set',
-            kind: 'PolicySet',
-            apiGroup: 'policy.open-cluster-management.io',
-        },
-    ],
+    ...PlacementBindingType,
+    metadata: { name: 'my-policy-set-placement-binding', namespace: 'my-namespace-1' },
+    placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-placement-1' },
+    subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
 } as IResource
 
 const placementRuleBindingResource: IResource = {
-    apiVersion: PlacementBindingApiVersion,
-    kind: 'PlacementBinding',
-    metadata: {
-        name: 'my-policy-set-placement-rule-binding',
-        namespace: 'my-namespace-1',
-    },
-    placementRef: {
-        name: 'my-placement-rule-1',
-        kind: 'PlacementRule',
-        apiGroup: 'apps.open-cluster-management.io',
-    },
-    subjects: [
-        {
-            name: 'my-policy-set',
-            kind: 'PolicySet',
-            apiGroup: 'policy.open-cluster-management.io',
-        },
-    ],
+    ...PlacementBindingType,
+    metadata: { name: 'my-policy-set-placement-rule-binding', namespace: 'my-namespace-1' },
+    placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: 'my-placement-rule-1' },
+    subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
 } as IResource
 
 const policySetWithPlacementBindingResources: IResource[] = [policySetResource, placementBindingResource]
