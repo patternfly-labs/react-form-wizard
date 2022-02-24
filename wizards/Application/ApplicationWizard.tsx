@@ -65,7 +65,7 @@ interface Channel {
     spec: {
         pathname: string
         type: string
-        secretRef?: string
+        secretRef?: { name: string }
     }
 }
 

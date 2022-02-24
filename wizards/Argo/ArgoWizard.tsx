@@ -1,6 +1,6 @@
 import { Button, Flex, FlexItem, SelectOption, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
-import { Fragment, ReactNode, useMemo } from 'react'
+import { Fragment, ReactNode, useMemo, useState } from 'react'
 import {
     ArrayInput,
     Checkbox,
@@ -27,6 +27,18 @@ import { Sync } from '../common/Sync'
 import { Placement } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
 
+interface Channel {
+    metadata?: {
+        name?: string
+        namespace?: string
+    }
+    spec: {
+        pathname: string
+        type: string
+        secretRef?: { name: string }
+    }
+}
+
 interface ArgoWizardProps {
     addClusterSets?: string
     ansibleCredentials: string[]
@@ -35,14 +47,46 @@ interface ArgoWizardProps {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     placements: string[]
-    subscriptionGitChannels: { name: string; namespace: string; pathname: string }[]
+    channels?: Channel[]
     timeZones: string[]
+    getGitRevisions: (
+        channelPath: string,
+        secretArgs?:
+            | {
+                  secretRef?: string | undefined
+                  namespace?: string | undefined
+              }
+            | undefined
+    ) => Promise<unknown>
+    getGitPaths: (
+        channelPath: string,
+        branch: string,
+        secretArgs?:
+            | {
+                  secretRef?: string | undefined
+                  namespace?: string | undefined
+              }
+            | undefined
+    ) => Promise<unknown>
 }
 
 export function ArgoWizard(props: ArgoWizardProps) {
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
-    const urlOptions = useMemo(() => ['url1', 'url2'], [])
+    const gitChannels = useMemo(() => {
+        if (props.channels)
+            return props.channels
+                .filter((channel) => channel?.spec?.type === 'Git' || channel?.spec?.type === 'GitHub')
+                .map((channel) => channel?.spec?.pathname)
+        return undefined
+    }, [props.channels])
+    const helmChannels = useMemo(() => {
+        if (props.channels)
+            return props.channels.filter((channel) => channel?.spec?.type === 'HelmRepo').map((channel) => channel.spec.pathname)
+        return undefined
+    }, [props.channels])
 
+    const [gitPaths, setGitPaths] = useState<string[] | undefined>(undefined)
+    const [gitRevisions, setGitRevisions] = useState<string[] | undefined>(undefined)
     return (
         <WizardPage
             title="Create application set"
@@ -140,23 +184,35 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 label="URL"
                                 labelHelp="The URL path for the Git repository."
                                 placeholder="Enter or select a Git URL"
-                                options={urlOptions}
+                                options={gitChannels}
+                                onValueChange={(value) => {
+                                    const channel = props.channels?.find((channel) => channel.spec.pathname === value)
+                                    channel && getGitBranchList(channel, props.getGitRevisions, setGitRevisions)
+                                }}
                                 required
                             />
-                            <Select
-                                path="spec.template.spec.source.targetRevision"
-                                label="Revision"
-                                labelHelp="Refer to a single commit"
-                                placeholder="Enter or select a tracking revision"
-                                options={urlOptions}
-                            />
-                            <Select
-                                path="spec.template.spec.source.path"
-                                label="Path"
-                                labelHelp="The location of the resources on the Git repository."
-                                placeholder="Enter or select a repository path"
-                                options={urlOptions}
-                            />
+                            <Hidden hidden={(data) => data.spec.template.spec.source.repoURL === ''}>
+                                <Select
+                                    path="spec.template.spec.source.targetRevision"
+                                    label="Revision"
+                                    labelHelp="Refer to a single commit"
+                                    placeholder="Enter or select a tracking revision"
+                                    options={gitRevisions}
+                                    onValueChange={(value, item) => {
+                                        const channel = props.channels?.find(
+                                            (channel) => channel?.spec?.pathname === item.spec.template.spec.source.repoURL
+                                        )
+                                        channel && getGitPathList(channel, value as string, props.getGitPaths, setGitPaths)
+                                    }}
+                                />
+                                <Select
+                                    path="spec.template.spec.source.path"
+                                    label="Path"
+                                    labelHelp="The location of the resources on the Git repository."
+                                    placeholder="Enter or select a repository path"
+                                    options={gitPaths}
+                                />
+                            </Hidden>
                         </Hidden>
                         {/* Helm repo */}
                         <Hidden hidden={(data) => data.spec.template.spec.source.chart === undefined}>
@@ -165,7 +221,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 label="URL"
                                 labelHelp="The URL path for the Helm repository."
                                 placeholder="Enter or select a Helm URL"
-                                options={urlOptions}
+                                options={helmChannels}
                                 required
                             />
                             <TextInput
@@ -344,6 +400,37 @@ export function TimeWindow(props: { timeZone: string[] }) {
             </ArrayInput>
         </Stack>
     )
+}
+
+async function getGitBranchList(
+    channel: Channel,
+    getGitBranches: (channelPath: string, secretArgs?: { secretRef?: string; namespace?: string } | undefined) => Promise<unknown>,
+    setGitBranches: (branches: any) => void
+) {
+    await getGitBranches(channel.spec.pathname, {
+        secretRef: channel.spec?.secretRef?.name,
+        namespace: channel.metadata?.namespace,
+    }).then((result) => {
+        if (result) {
+            setGitBranches(result)
+        } else setGitBranches([])
+    })
+}
+
+async function getGitPathList(
+    channel: Channel,
+    branch: string,
+    getGitPaths: (channelPath: string, branch: string, secretArgs?: { secretRef?: string; namespace?: string }) => Promise<unknown>,
+    setGitPaths: (paths: any) => void
+) {
+    await getGitPaths(channel?.spec?.pathname, branch, {
+        secretRef: channel?.spec?.secretRef?.name,
+        namespace: channel.metadata?.namespace,
+    }).then((result) => {
+        if (result) {
+            setGitPaths(result)
+        } else setGitPaths([])
+    })
 }
 
 export function ExternalLinkButton(props: { id: string; href?: string; icon?: ReactNode }) {
