@@ -27,7 +27,7 @@ import { useData } from '../../src/contexts/DataContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
-import { PlacementApiVersion, PlacementKind, PlacementType } from '../common/resources/IPlacement'
+import { IPlacement, PlacementApiVersion, PlacementKind, PlacementType } from '../common/resources/IPlacement'
 import { Sync } from '../common/Sync'
 import { Placement } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
@@ -51,7 +51,7 @@ interface ArgoWizardProps {
     namespaces: string[]
     onSubmit: WizardSubmit
     onCancel: WizardCancel
-    placements: string[]
+    placements: IPlacement[]
     channels?: Channel[]
     timeZones: string[]
     getGitRevisions: (
@@ -333,7 +333,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 </ItemSelector>
             </Step>
             <Step id="placement" label="Cluster placement">
-                <ArgoWizardPlacementSection />
+                <ArgoWizardPlacementSection placements={props.placements} />
             </Step>
         </WizardPage>
     )
@@ -569,10 +569,12 @@ function syncOptionsToPrunePropagationPolicy(array: unknown) {
     return 'background'
 }
 
-function ArgoWizardPlacementSection() {
+function ArgoWizardPlacementSection(props: { placements: IPlacement[] }) {
     const resources = useItem() as IResource[]
     const editMode = useEditMode()
     const hasPlacement = resources.find((r) => r.kind === PlacementKind) !== undefined
+    const applicationSet = resources.find((r) => r.kind === 'ApplicationSet')
+    const placements = props.placements.filter((placement) => placement.metadata?.namespace === applicationSet?.metadata?.namespace)
     const { update } = useData()
     return (
         <Section label="Cluster placement">
@@ -617,7 +619,7 @@ function ArgoWizardPlacementSection() {
                     <Select
                         path="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
                         label="Existing placement"
-                        options={['ddd']}
+                        options={placements.map((placement) => placement.metadata?.name ?? '')}
                     ></Select>
                 </ItemSelector>
             )}

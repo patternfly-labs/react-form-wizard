@@ -1,8 +1,8 @@
 import { IPlacement, PlacementType } from '../common/resources/IPlacement'
 import { IPlacementRule, PlacementRuleType } from '../common/resources/IPlacementRule'
-import { PolicyType } from './resources/IPolicy'
 import { IResource } from './resource'
 import { ClusterSetBindingType, IClusterSetBinding } from './resources/IClusterSetBinding'
+import { PolicyType } from './resources/IPolicy'
 
 export const namespaces = ['default', 'my-namespace-1', 'my-namespace-2']
 
@@ -41,6 +41,8 @@ export const placements: IPlacement[] = [
     { ...PlacementType, metadata: { name: 'my-placement-2', namespace: 'my-namespace-1' } },
     { ...PlacementType, metadata: { name: 'my-placement-3', namespace: 'my-namespace-2' } },
     { ...PlacementType, metadata: { name: 'my-placement-4', namespace: 'my-namespace-2' } },
+    { ...PlacementType, metadata: { name: 'my-placement-5', namespace: 'server-1' } },
+    { ...PlacementType, metadata: { name: 'my-placement-6', namespace: 'server-1' } },
 ]
 
 export const placementRules: IPlacementRule[] = [
