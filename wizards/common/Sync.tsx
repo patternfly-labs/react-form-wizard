@@ -21,6 +21,7 @@ export function Sync(props: {
     useEffect(() => {
         let changed = false
         const indices: Record<string, number> = {}
+        if (!value) return
         for (const resource of resources) {
             if ((props.targetKind === undefined && resource.kind !== props.kind) || resource.kind === props.targetKind) {
                 if (typeof value === 'string') {
@@ -53,6 +54,8 @@ export function Sync(props: {
                         setValue(resourceValue)
                     }
                 }
+            } else if (value) {
+                setValue('')
             }
         }
     }, [props.kind, props.path, resources, value])

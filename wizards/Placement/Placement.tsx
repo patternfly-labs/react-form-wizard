@@ -72,7 +72,7 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
                 label="Cluster sets"
                 path="spec.clusterSets"
                 placeholder="Select the cluster sets"
-                labelHelp="The cluster sets from which the clusters are selected."
+                labelHelp="Select clusters from the cluster sets bound to the namespace. Cluster can then be further selected using cluster label selectors."
                 helperText="If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
             >
                 {props.namespaceClusterSetNames.map((name) => (
@@ -115,7 +115,7 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
                 label="Limit the number of clusters selected"
                 path="spec.numberOfClusters"
                 zeroIsUndefined
-                hidden={(placement) => placement.spec?.numberOfClusterss === undefined}
+                hidden={(placement) => placement.spec?.numberOfClusters === undefined}
             />
         </Fragment>
     )
@@ -129,7 +129,7 @@ export function PlacementPredicate(props: { rootPath?: string }) {
             <KeyValue
                 label="Cluster label selectors"
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchLabels`}
-                labelHelp="A clsuter label selector allows simple selection of clusters using cluster labels."
+                labelHelp="Select clusters from the clusters in selected cluster sets using cluster labels. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
                 placeholder="Add cluster label selector"
                 hidden={(item) => get(item, `${rootPath}requiredClusterSelector.labelSelector.matchLabels`) === undefined}
             />
@@ -137,7 +137,7 @@ export function PlacementPredicate(props: { rootPath?: string }) {
                 label="Cluster label expressions"
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchExpressions`}
                 placeholder="Add label expression"
-                labelHelp="A label expression allows selection of clusters using cluster labels."
+                labelHelp="Select clusters from the clusters in selected cluster sets using cluster labels. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [''] }}
                 defaultCollapsed={editMode !== EditMode.Create}
@@ -148,7 +148,7 @@ export function PlacementPredicate(props: { rootPath?: string }) {
                 label="Cluster claim expressions"
                 path={`${rootPath}requiredClusterSelector.claimSelector.matchExpressions`}
                 placeholder="Add claim expression"
-                labelHelp="A claim expression allows selection of clusters using cluster claims in status."
+                labelHelp="Select clusters from the clusters in selected cluster sets using cluster claims status. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [''] }}
                 defaultCollapsed={editMode !== EditMode.Create}

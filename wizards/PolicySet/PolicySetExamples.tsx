@@ -98,6 +98,11 @@ export function CreatePolicySet() {
     const history = useHistory()
     return (
         <PolicySetWizard
+            breadcrumb={[
+                { label: 'Example Wizards', to: RouteE.Wizards },
+                { label: 'Policy Set Wizard Examples', to: RouteE.PolicySet },
+                { label: 'Create policy set' },
+            ]}
             title="Create policy set"
             namespaces={namespaces}
             policies={policies}

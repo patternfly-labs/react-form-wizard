@@ -1,10 +1,11 @@
-import { Button, Flex, FlexItem, SelectOption, Split, Stack } from '@patternfly/react-core'
+import { Button, Flex, FlexItem, SelectOption, Split, Stack, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useMemo } from 'react'
 import {
     ArrayInput,
     Checkbox,
     DetailsHidden,
+    EditMode,
     Hidden,
     ItemSelector,
     Multiselect,
@@ -22,7 +23,11 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
-import { PlacementKind, PlacementType } from '../common/resources/IPlacement'
+import { useData } from '../../src/contexts/DataContext'
+import { useEditMode } from '../../src/contexts/EditModeContext'
+import { useItem } from '../../src/contexts/ItemContext'
+import { IResource } from '../common/resource'
+import { PlacementApiVersion, PlacementKind, PlacementType } from '../common/resources/IPlacement'
 import { Sync } from '../common/Sync'
 import { Placement } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
@@ -79,6 +84,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 <Sync
                     kind={PlacementKind}
                     path="metadata.name"
+                    targetKind="ApplicationSet"
                     targetPath="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
                 />
                 <Sync kind="ApplicationSet" path="metadata.name" prefix="-placement" />
@@ -271,11 +277,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 </ItemSelector>
             </Step>
             <Step id="placement" label="Cluster placement">
-                <Section label="Cluster placement">
-                    <ItemSelector selectKey="kind" selectValue={PlacementKind}>
-                        <Placement namespaceClusterSetNames={[]} />
-                    </ItemSelector>
-                </Section>
+                <ArgoWizardPlacementSection />
             </Step>
         </WizardPage>
     )
@@ -478,4 +480,60 @@ function syncOptionsToPrunePropagationPolicy(array: unknown) {
     }
 
     return 'background'
+}
+
+function ArgoWizardPlacementSection() {
+    const resources = useItem() as IResource[]
+    const editMode = useEditMode()
+    const hasPlacement = resources.find((r) => r.kind === PlacementKind) !== undefined
+    const { update } = useData()
+    return (
+        <Section label="Cluster placement">
+            <DetailsHidden>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {editMode === EditMode.Create && (
+                        <span className="pf-c-form__label pf-c-form__label-text">How do you want to select clusters?</span>
+                    )}
+                    <ToggleGroup>
+                        <ToggleGroupItem
+                            text="New placement"
+                            isSelected={hasPlacement}
+                            onClick={() => {
+                                let newResources = [...resources]
+                                newResources = resources.filter((resource) => resource.kind !== PlacementKind)
+                                newResources.push({
+                                    apiVersion: PlacementApiVersion,
+                                    kind: PlacementKind,
+                                    metadata: { name: '', namespace: '' },
+                                } as IResource)
+                                update(newResources)
+                            }}
+                        />
+                        <ToggleGroupItem
+                            text="Existing placement"
+                            isSelected={!hasPlacement}
+                            onClick={() => {
+                                let newResources = [...resources]
+                                newResources = resources.filter((resource) => resource.kind !== PlacementKind)
+                                update(newResources)
+                            }}
+                        />
+                    </ToggleGroup>
+                </div>
+            </DetailsHidden>
+            {hasPlacement ? (
+                <ItemSelector selectKey="kind" selectValue={PlacementKind}>
+                    <Placement namespaceClusterSetNames={[]} />
+                </ItemSelector>
+            ) : (
+                <ItemSelector selectKey="kind" selectValue="ApplicationSet">
+                    <Select
+                        path="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
+                        label="Existing placement"
+                        options={['ddd']}
+                    ></Select>
+                </ItemSelector>
+            )}
+        </Section>
+    )
 }

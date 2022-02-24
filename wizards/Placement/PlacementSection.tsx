@@ -87,107 +87,18 @@ export function PlacementSection(props: {
             // description="Placement selects clusters from the cluster sets which have bindings to the resource namespace."
             autohide={false}
         >
-            {/* TODO - if there are existing placements... */}
             {editMode === EditMode.Create && (
-                <DetailsHidden>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <span className="pf-c-form__label pf-c-form__label-text">How do you want to select clusters?</span>
-                        <ToggleGroup aria-label="Default with single selectable">
-                            <ToggleGroupItem
-                                text="New placement"
-                                isSelected={placementCount + placementRuleCount === 1}
-                                onClick={() => {
-                                    let newResources = [...resources]
-                                    newResources = resources
-                                        .filter((resource) => resource.kind !== PlacementKind)
-                                        .filter((resource) => resource.kind !== PlacementRuleKind)
-                                        .filter((resource) => resource.kind !== PlacementBindingKind)
-                                    if (props.defaultPlacementKind === PlacementKind) {
-                                        newResources.push({
-                                            apiVersion: PlacementApiVersion,
-                                            kind: PlacementKind,
-                                            metadata: { name: '', namespace: '' },
-                                        } as IResource)
-                                    } else {
-                                        newResources.push({
-                                            ...PlacementRuleType,
-                                            metadata: { name: '', namespace: '' },
-                                        } as IResource)
-                                    }
-                                    if (props.defaultPlacementKind === PlacementKind) {
-                                        newResources.push({
-                                            ...PlacementBindingType,
-                                            metadata: { name: '', namespace: '' },
-                                            placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
-                                            subjects: [
-                                                { apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' },
-                                            ],
-                                        } as IResource)
-                                    } else {
-                                        newResources.push({
-                                            ...PlacementBindingType,
-                                            metadata: { name: '', namespace: '' },
-                                            placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: '' },
-                                            subjects: [
-                                                { apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' },
-                                            ],
-                                        } as IResource)
-                                    }
-                                    update(newResources)
-                                    setShowPlacementBindings(false)
-                                }}
-                            />
-                            <ToggleGroupItem
-                                text="Existing placement"
-                                isSelected={placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 1}
-                                onClick={() => {
-                                    let newResources = [...resources]
-                                    newResources = resources
-                                        .filter((resource) => resource.kind !== PlacementKind)
-                                        .filter((resource) => resource.kind !== PlacementRuleKind)
-                                        .filter((resource) => resource.kind !== PlacementBindingKind)
-                                    if (props.defaultPlacementKind === PlacementKind) {
-                                        newResources.push({
-                                            ...PlacementBindingType,
-                                            metadata: { name: '', namespace: '' },
-                                            placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
-                                            subjects: [
-                                                { apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' },
-                                            ],
-                                        } as IResource)
-                                    } else {
-                                        newResources.push({
-                                            ...PlacementBindingType,
-                                            metadata: { name: '', namespace: '' },
-                                            placementRef: { apiGroup: PlacementApiGroup, kind: PlacementRuleKind, name: '' },
-                                            subjects: [
-                                                { apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' },
-                                            ],
-                                        } as IResource)
-                                    }
-                                    update(newResources)
-                                    setShowPlacements(false)
-                                    setShowPlacementRules(false)
-                                }}
-                            />
-                            <ToggleGroupItem
-                                text="Do not place"
-                                isSelected={placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 0}
-                                onClick={() => {
-                                    let newResources = [...resources]
-                                    newResources = resources
-                                        .filter((resource) => resource.kind !== PlacementKind)
-                                        .filter((resource) => resource.kind !== PlacementRuleKind)
-                                        .filter((resource) => resource.kind !== PlacementBindingKind)
-                                    update(newResources)
-                                    setShowPlacements(false)
-                                    setShowPlacementRules(false)
-                                    setShowPlacementBindings(false)
-                                }}
-                            />
-                        </ToggleGroup>
-                    </div>
-                </DetailsHidden>
+                <PlacementSelector
+                    placementCount={placementCount}
+                    placementRuleCount={placementRuleCount}
+                    placementBindingCount={placementBindingCount}
+                    bindingSubjectKind={props.bindingSubjectKind}
+                    bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                    defaultPlacementKind={props.defaultPlacementKind}
+                    setShowPlacements={setShowPlacements}
+                    setShowPlacementRules={setShowPlacementRules}
+                    setShowPlacementBindings={setShowPlacementBindings}
+                />
             )}
             {/* <TextInput label={`${showPlacements} - ${showPlacementRules} - ${showPlacementBindings}`} path="hh" /> */}
             {showPlacements && (
@@ -221,5 +132,121 @@ export function PlacementSection(props: {
                 />
             )}
         </Section>
+    )
+}
+
+export function PlacementSelector(props: {
+    placementCount: number
+    placementRuleCount: number
+    placementBindingCount: number
+    bindingSubjectKind: string
+    bindingSubjectApiGroup: string
+    defaultPlacementKind: 'Placement' | 'PlacementRule'
+    setShowPlacements?: (show: boolean) => void
+    setShowPlacementRules?: (show: boolean) => void
+    setShowPlacementBindings?: (show: boolean) => void
+}) {
+    const resources = useItem() as IResource[]
+    const {
+        placementCount,
+        placementRuleCount,
+        placementBindingCount,
+        setShowPlacements,
+        setShowPlacementRules,
+        setShowPlacementBindings,
+    } = props
+    const { update } = useData()
+    return (
+        <DetailsHidden>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <span className="pf-c-form__label pf-c-form__label-text">How do you want to select clusters?</span>
+                <ToggleGroup aria-label="Default with single selectable">
+                    <ToggleGroupItem
+                        text="New placement"
+                        isSelected={placementCount + placementRuleCount === 1}
+                        onClick={() => {
+                            let newResources = [...resources]
+                            newResources = resources
+                                .filter((resource) => resource.kind !== PlacementKind)
+                                .filter((resource) => resource.kind !== PlacementRuleKind)
+                                .filter((resource) => resource.kind !== PlacementBindingKind)
+                            if (props.defaultPlacementKind === PlacementKind) {
+                                newResources.push({
+                                    apiVersion: PlacementApiVersion,
+                                    kind: PlacementKind,
+                                    metadata: { name: '', namespace: '' },
+                                } as IResource)
+                            } else {
+                                newResources.push({
+                                    ...PlacementRuleType,
+                                    metadata: { name: '', namespace: '' },
+                                } as IResource)
+                            }
+                            if (props.defaultPlacementKind === PlacementKind) {
+                                newResources.push({
+                                    ...PlacementBindingType,
+                                    metadata: { name: '', namespace: '' },
+                                    placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
+                                    subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
+                                } as IResource)
+                            } else {
+                                newResources.push({
+                                    ...PlacementBindingType,
+                                    metadata: { name: '', namespace: '' },
+                                    placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: '' },
+                                    subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
+                                } as IResource)
+                            }
+                            update(newResources)
+                            setShowPlacementBindings?.(false)
+                        }}
+                    />
+                    <ToggleGroupItem
+                        text="Existing placement"
+                        isSelected={placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 1}
+                        onClick={() => {
+                            let newResources = [...resources]
+                            newResources = resources
+                                .filter((resource) => resource.kind !== PlacementKind)
+                                .filter((resource) => resource.kind !== PlacementRuleKind)
+                                .filter((resource) => resource.kind !== PlacementBindingKind)
+                            if (props.defaultPlacementKind === PlacementKind) {
+                                newResources.push({
+                                    ...PlacementBindingType,
+                                    metadata: { name: '', namespace: '' },
+                                    placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
+                                    subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
+                                } as IResource)
+                            } else {
+                                newResources.push({
+                                    ...PlacementBindingType,
+                                    metadata: { name: '', namespace: '' },
+                                    placementRef: { apiGroup: PlacementApiGroup, kind: PlacementRuleKind, name: '' },
+                                    subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
+                                } as IResource)
+                            }
+                            update(newResources)
+                            setShowPlacements?.(false)
+                            setShowPlacementRules?.(false)
+                        }}
+                    />
+                    <ToggleGroupItem
+                        text="Do not place"
+                        isSelected={placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 0}
+                        onClick={() => {
+                            let newResources = [...resources]
+                            newResources = resources
+                                .filter((resource) => resource.kind !== PlacementKind)
+                                .filter((resource) => resource.kind !== PlacementRuleKind)
+                                .filter((resource) => resource.kind !== PlacementBindingKind)
+                            update(newResources)
+                            setShowPlacements?.(false)
+                            setShowPlacementRules?.(false)
+                            setShowPlacementBindings?.(false)
+                        }}
+                    />
+                </ToggleGroup>
+            </div>
+        </DetailsHidden>
     )
 }

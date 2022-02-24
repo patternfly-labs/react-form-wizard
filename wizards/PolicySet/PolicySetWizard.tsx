@@ -23,6 +23,7 @@ import { isValidKubernetesName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
 
 export interface PolicySetWizardProps {
+    breadcrumb?: { label: string; to?: string }[]
     title: string
     namespaces: string[]
     policies: IResource[]
@@ -39,6 +40,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
     return (
         <WizardPage
             title={props.title}
+            breadcrumb={props.breadcrumb}
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
             editMode={props.editMode}
