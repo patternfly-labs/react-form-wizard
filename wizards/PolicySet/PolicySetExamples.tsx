@@ -262,7 +262,7 @@ export function EditPolicySet8() {
 const policySetResource: IResource = {
     ...PolicySetType,
     metadata: { name: 'my-policy-set', namespace: 'my-namespace-1' },
-    spec: { description: 'Policy set with a single Placement and PlacementBinding.', policies: ['my-policy-1', 'my-policy-2'] },
+    spec: { policies: ['my-policy-1', 'my-policy-2'] },
 } as IResource
 
 const singlePlacementResources: IResource[] = [
@@ -289,10 +289,7 @@ const twoPlacementResources: IResource[] = [
     ...singlePlacementResources,
     {
         ...PlacementType,
-        metadata: {
-            name: 'my-policy-set-placement-2',
-            namespace: 'my-namespace-1',
-        },
+        metadata: { name: 'my-policy-set-placement-2', namespace: 'my-namespace-1' },
         spec: {
             numberOfClusters: 1,
             clusterSets: ['policy-test-cluster-set'],
@@ -300,20 +297,11 @@ const twoPlacementResources: IResource[] = [
                 {
                     requiredClusterSelector: {
                         labelSelector: {
-                            matchLabels: { 'local-cluster': 'true', abc: '123', def: '456', ghi: '789' },
                             matchExpressions: [
-                                { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
-                                { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
-                                { key: 'ghi', operator: 'Exists' },
-                                { key: 'jkl', operator: 'DoesNotExist' },
-                            ],
-                        },
-                        claimSelector: {
-                            matchExpressions: [
-                                { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
-                                { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
-                                { key: 'ghi', operator: 'Exists' },
-                                { key: 'jkl', operator: 'DoesNotExist' },
+                                { key: 'cloud', operator: 'In', values: ['Amazon'] },
+                                { key: 'vendor', operator: 'In', values: ['OpenShift'] },
+                                { key: 'region', operator: 'In', values: ['us-east-1', 'us-east-2', 'us-west-1', 'us-west-2'] },
+                                { key: 'environment', operator: 'NotIn', values: ['Production'] },
                             ],
                         },
                     },
@@ -321,20 +309,11 @@ const twoPlacementResources: IResource[] = [
                 {
                     requiredClusterSelector: {
                         labelSelector: {
-                            matchLabels: { 'local-cluster': 'true', abc: '123', def: '456', ghi: '789' },
                             matchExpressions: [
-                                { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
-                                { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
-                                { key: 'ghi', operator: 'Exists' },
-                                { key: 'jkl', operator: 'DoesNotExist' },
-                            ],
-                        },
-                        claimSelector: {
-                            matchExpressions: [
-                                { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
-                                { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
-                                { key: 'ghi', operator: 'Exists' },
-                                { key: 'jkl', operator: 'DoesNotExist' },
+                                { key: 'cloud', operator: 'In', values: ['Google'] },
+                                { key: 'vendor', operator: 'In', values: ['OpenShift'] },
+                                { key: 'region', operator: 'In', values: ['us-east1', 'us-east4', 'us-west1', 'us-west2'] },
+                                { key: 'environment', operator: 'NotIn', values: ['Production'] },
                             ],
                         },
                     },
