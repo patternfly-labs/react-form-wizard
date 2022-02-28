@@ -1,3 +1,5 @@
+import { Button } from '@patternfly/react-core'
+import { CheckIcon, CopyIcon } from '@patternfly/react-icons'
 import { useEffect, useState } from 'react'
 import YAML from 'yaml'
 
@@ -44,10 +46,11 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
             setErrorLine(-1)
         }
     }, [props.data, hasFocus, props.isYamlArray])
+    const [copied, setCopied] = useState(false)
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, maxHeight: '100%' }}>
-            {/* <div
+            <div
                 style={{
                     display: 'flex',
                     borderBottom: 'thin solid #ffffff30',
@@ -57,10 +60,18 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                     alignItems: 'center',
                 }}
             >
-                <span style={{ padding: '4px 12px' }}>
-                    <CopyIcon />
-                </span>
-            </div> */}
+                <Button
+                    variant="plain"
+                    onClick={() => {
+                        void navigator.clipboard.writeText(yaml)
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                    }}
+                    tabIndex={-1}
+                >
+                    {copied ? <CheckIcon color="var(--pf-global--success-color--100)" /> : <CopyIcon color="white" />}
+                </Button>
+            </div>
             <div style={{ display: 'flex', flexGrow: 1, overflow: 'auto' }}>
                 <pre
                     style={{ display: 'flex', flexGrow: 1, justifySelf: 'stretch', position: 'relative', padding: 24 }}
