@@ -16,7 +16,18 @@ import {
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import Handlebars, { HelperOptions } from 'handlebars'
-import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import {
+    Children,
+    Fragment,
+    isValidElement,
+    ReactElement,
+    ReactNode,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useState,
+} from 'react'
 import { EditMode } from '.'
 import { YamlEditor, YamlToObject } from './components/YamlEditor'
 import { DataContext, useData } from './contexts/DataContext'
@@ -81,6 +92,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     const displayMode = DisplayMode.Wizard
     const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const [template2] = useState(() => (props.yamlToDataTemplate ? Handlebars.compile(props.yamlToDataTemplate) : undefined))
+    const isYamlArray = useMemo(() => Array.isArray(props.defaultData), [props.defaultData])
 
     return (
         <EditModeContext.Provider value={props.editMode === undefined ? EditMode.Create : props.editMode}>
@@ -99,6 +111,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                         template={template}
                                                         template2={template2}
                                                         templateString={props.template}
+                                                        isYamlArray={isYamlArray}
                                                     />
                                                 }
                                             >
@@ -119,6 +132,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                                 onCancel={props.onCancel}
                                                                 hasButtons={props.hasButtons}
                                                                 template={template}
+                                                                isYamlArray={isYamlArray}
                                                             >
                                                                 {props.children}
                                                             </WizardInternal>
@@ -144,6 +158,7 @@ function WizardInternal(props: {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     hasButtons?: boolean
+    isYamlArray: boolean
 }) {
     const steps = getSteps(props.children)
     if (props.hasButtons !== false) {
@@ -210,6 +225,7 @@ function WizardInternal(props: {
                                 onCancel={props.onCancel}
                                 hasButtons={props.hasButtons}
                                 template={props.template}
+                                isYamlArray={props.isYamlArray}
                             />
                         </HasInputsProvider>
                     )
@@ -227,6 +243,7 @@ function WizardInternal(props: {
                                     onSubmit={props.onSubmit}
                                     onCancel={props.onCancel}
                                     hasButtons={props.hasButtons}
+                                    isYamlArray={props.isYamlArray}
                                 />
                             </ValidationProvider>
                         </ShowValidationProvider>
@@ -247,6 +264,7 @@ export function WizardActiveStep(props: {
     onCancel: WizardCancel
     template?: HandlebarsTemplateDelegate
     hasButtons?: boolean
+    isYamlArray: boolean
 }) {
     const [submitting, setSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState('')
@@ -315,7 +333,7 @@ export function WizardActiveStep(props: {
                             onClick={() => {
                                 setShowValidation(true)
                                 if (props.template) {
-                                    void onSubmit2(YamlToObject(props.template(item)))
+                                    void onSubmit2(YamlToObject(props.template(item), props.isYamlArray))
                                 } else {
                                     void onSubmit2(item)
                                 }
@@ -399,49 +417,50 @@ function WizardPageDrawer(props: {
     template?: HandlebarsTemplateDelegate
     template2?: HandlebarsTemplateDelegate
     templateString?: string
+    isYamlArray: boolean
 }) {
     const [activeKey, setActiveKey] = useState<number | string>(0)
     const { update } = useData()
     const devMode = process.env.NODE_ENV === 'development'
     return (
-        <Fragment>
-            <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
-                {props.template && devMode ? (
-                    <div style={{ height: '100%' }}>
-                        <Tabs
-                            activeKey={activeKey}
-                            onSelect={(_event, tabIndex) => setActiveKey(tabIndex)}
-                            isBox
-                            variant="light300"
-                            isFilled
-                            style={{ backgroundColor: 'white' }}
-                        >
-                            <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
-                                <YamlEditor
-                                    data={props.template ? YamlToObject(props.template(props.data)) : props.data}
-                                    setData={(data: any) => {
-                                        let newData = data
-                                        if (props.template2) newData = YamlToObject(props.template2(data))
-                                        update(newData)
-                                    }}
-                                />
-                            </Tab>
-                            <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
-                                <YamlEditor data={props.data} />
-                            </Tab>
-                        </Tabs>
-                    </div>
-                ) : (
-                    <YamlEditor
-                        data={props.template ? YamlToObject(props.template(props.data)) : props.data}
-                        setData={(data: any) => {
-                            let newData = data
-                            if (props.template2) newData = YamlToObject(props.template2(data))
-                            update(newData)
-                        }}
-                    />
-                )}
-            </DrawerPanelContent>
-        </Fragment>
+        <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
+            {props.template && devMode ? (
+                <div style={{ height: '100%' }}>
+                    <Tabs
+                        activeKey={activeKey}
+                        onSelect={(_event, tabIndex) => setActiveKey(tabIndex)}
+                        isBox
+                        variant="light300"
+                        isFilled
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
+                            <YamlEditor
+                                data={props.template ? YamlToObject(props.template(props.data), props.isYamlArray) : props.data}
+                                setData={(data: any) => {
+                                    let newData = data
+                                    if (props.template2) newData = YamlToObject(props.template2(data), props.isYamlArray)
+                                    update(newData)
+                                }}
+                                isYamlArray={props.isYamlArray}
+                            />
+                        </Tab>
+                        <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
+                            <YamlEditor data={props.data} isYamlArray={props.isYamlArray} />
+                        </Tab>
+                    </Tabs>
+                </div>
+            ) : (
+                <YamlEditor
+                    data={props.template ? YamlToObject(props.template(props.data), props.isYamlArray) : props.data}
+                    setData={(data: any) => {
+                        let newData = data
+                        if (props.template2) newData = YamlToObject(props.template2(data), props.isYamlArray)
+                        update(newData)
+                    }}
+                    isYamlArray={props.isYamlArray}
+                />
+            )}
+        </DrawerPanelContent>
     )
 }

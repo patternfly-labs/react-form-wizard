@@ -38,7 +38,6 @@ describe('edit policy set', () => {
                     namespace: 'my-namespace-1',
                 },
                 spec: {
-                    description: 'Policy set with a single Placement and PlacementBinding.',
                     policies: ['my-policy-1', 'my-policy-2'],
                 },
             },
