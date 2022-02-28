@@ -51,7 +51,11 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                         metadata: { name: '', namespace: '' },
                         spec: { description: '', policies: [] },
                     },
-                    { ...PlacementRuleType, metadata: { name: '', namespace: '' } },
+                    {
+                        ...PlacementRuleType,
+                        metadata: { name: '', namespace: '' },
+                        spec: { clusterSelector: { matchExpressions: [] } },
+                    },
                     {
                         ...PlacementBindingType,
                         metadata: { name: '', namespace: '' },

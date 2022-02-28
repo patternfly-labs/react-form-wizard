@@ -180,6 +180,7 @@ export function PlacementSelector(props: {
                                 newResources.push({
                                     ...PlacementRuleType,
                                     metadata: { name: '', namespace: '' },
+                                    spec: { clusterSelector: { matchExpressions: [] } },
                                 } as IResource)
                             }
                             if (props.defaultPlacementKind === PlacementKind) {
