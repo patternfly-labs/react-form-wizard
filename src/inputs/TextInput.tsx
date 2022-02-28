@@ -10,7 +10,6 @@ import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
 export type TextInputProps = InputCommonProps<string> & {
-    label: string
     placeholder?: string
     secret?: boolean
     disablePaste?: boolean
@@ -27,7 +26,7 @@ export function TextInput(props: TextInputProps) {
         return <TextDetail id={id} path={props.path} label={props.label} />
     }
 
-    const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`
+    const placeholder = props.placeholder ?? props.label !== undefined ? `Enter the ${lowercaseFirst(props.label ?? '')}` : ''
 
     return (
         <InputLabel {...props} id={id}>

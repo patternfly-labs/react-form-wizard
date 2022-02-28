@@ -14,6 +14,7 @@ import {
     Select,
     Step,
     StringsInput,
+    StringsMapInput,
     TextInput,
     WizardCancel,
     WizardPage,
@@ -186,7 +187,7 @@ export function PolicyWizard(props: {
             <Step label="Security groups" id="security-groups">
                 <ItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <Section label="Security groups">
-                        <StringsInput
+                        <StringsMapInput
                             id="categories"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
                             label="Categories"
@@ -195,7 +196,7 @@ export function PolicyWizard(props: {
                             }}
                             unmap={(values: string[]) => values.join(', ')}
                         />
-                        <StringsInput
+                        <StringsMapInput
                             id="standards"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/standards`}
                             label="Standards"
@@ -204,7 +205,7 @@ export function PolicyWizard(props: {
                             }}
                             unmap={(values: string[]) => values.join(', ')}
                         />
-                        <StringsInput
+                        <StringsMapInput
                             id="controls"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/controls`}
                             label="Controls"

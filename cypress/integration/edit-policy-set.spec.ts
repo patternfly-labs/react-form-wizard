@@ -33,13 +33,8 @@ describe('edit policy set', () => {
         const expected = [
             {
                 ...PolicySetType,
-                metadata: {
-                    name: 'my-policy-set',
-                    namespace: 'my-namespace-1',
-                },
-                spec: {
-                    policies: ['my-policy-1', 'my-policy-2'],
-                },
+                metadata: { name: 'my-policy-set', namespace: 'my-namespace-1' },
+                spec: { policies: ['my-policy-1', 'my-policy-2'] },
             },
             {
                 ...PlacementType,

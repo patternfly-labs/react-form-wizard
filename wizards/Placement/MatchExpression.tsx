@@ -26,6 +26,7 @@ export function MatchExpression() {
                     path="values"
                     hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
                     placeholder="Add value"
+                    required
                 />
             </FlexItem>
         </Flex>

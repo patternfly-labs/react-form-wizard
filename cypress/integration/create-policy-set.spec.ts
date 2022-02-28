@@ -29,7 +29,7 @@ describe('create policy set', () => {
         cy.get('#add-button').click()
         cy.get('#label-expressions').within(() => {
             cy.get('#key').type('local-cluster')
-            cy.get('#values').type('true')
+            cy.get('#values-1').type('true')
         })
         cy.contains('Next').click()
     })
