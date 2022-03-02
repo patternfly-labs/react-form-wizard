@@ -1,7 +1,8 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { useEffect, useState } from 'react'
-import { DetailsHidden, EditMode, Section } from '../../src'
+import { Fragment, useEffect, useMemo, useState } from 'react'
+import { DetailsHidden, EditMode, ItemSelector, Section, Select } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
+import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useSetHasInputs } from '../../src/contexts/HasInputsProvider'
 import { useItem } from '../../src/contexts/ItemContext'
@@ -10,9 +11,10 @@ import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementApiGroup, PlacementApiVersion, PlacementKind } from '../common/resources/IPlacement'
 import { PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
-import { Placements } from './Placement'
+import { Sync } from '../common/Sync'
+import { Placement, Placements } from './Placement'
 import { PlacementBindings } from './PlacementBinding'
-import { PlacementRules } from './PlacementRule'
+import { PlacementRule, PlacementRules } from './PlacementRule'
 
 export function PlacementSection(props: {
     bindingSubjectKind: string
@@ -25,27 +27,29 @@ export function PlacementSection(props: {
     const { update } = useData()
     const resources = useItem() as IResource[]
     const editMode = useEditMode()
-
-    const [showPlacements, setShowPlacements] = useState(props.defaultPlacementKind === PlacementKind)
-    const [showPlacementRules, setShowPlacementRules] = useState(props.defaultPlacementKind === PlacementRuleKind)
-    const [showPlacementBindings, setShowPlacementBindings] = useState(false)
+    const displayMode = useDisplayMode()
 
     const [placementCount, setPlacementCount] = useState(0)
     const [placementRuleCount, setPlacementRuleCount] = useState(0)
     const [placementBindingCount, setPlacementBindingCount] = useState(0)
-
     useEffect(() => {
         setPlacementCount(resources?.filter((resource) => resource.kind === PlacementKind).length)
         setPlacementRuleCount(resources?.filter((resource) => resource.kind === PlacementRuleKind).length)
         setPlacementBindingCount(resources?.filter((resource) => resource.kind === PlacementBindingKind).length)
     }, [resources, setPlacementCount, setPlacementRuleCount, setPlacementBindingCount])
 
+    const [isAdvanced, setIsAdvanced] = useState(false)
     useEffect(() => {
-        if (placementCount > 0) setShowPlacements(true)
-        if (placementRuleCount > 0) setShowPlacementRules(true)
-        if (placementCount + placementRuleCount > 1) setShowPlacementBindings(true)
-        if (placementCount + placementRuleCount === 0 && placementBindingCount > 0) setShowPlacementBindings(true)
-    }, [placementCount, placementRuleCount, setShowPlacements, setShowPlacementRules, setShowPlacementBindings, placementBindingCount])
+        let isAdvanced = false
+        if (placementCount + placementRuleCount > 1) isAdvanced = true
+        if (placementBindingCount > 1) isAdvanced = true
+        if (isAdvanced) {
+            setIsAdvanced(isAdvanced)
+        } else if (editMode === EditMode.Create) {
+            // Only in create mode switch back to simple mode
+            setIsAdvanced(false)
+        }
+    }, [placementCount, placementRuleCount, placementBindingCount, setIsAdvanced, editMode])
 
     useEffect(() => {
         const placementCount = resources?.filter((resource) => resource.kind === PlacementKind).length
@@ -68,18 +72,27 @@ export function PlacementSection(props: {
             } as IResource)
             update()
         }
-    }, [
-        placementCount,
-        placementRuleCount,
-        placementBindingCount,
-        resources,
-        props.bindingSubjectApiGroup,
-        props.bindingSubjectKind,
-        update,
-    ])
+    }, [props.bindingSubjectApiGroup, props.bindingSubjectKind, resources, update])
+
+    const namespaceClusterSetNames = useMemo(() => {
+        if (!resources.find) return []
+        const source = resources?.find((resource) => resource.kind === props.bindingSubjectKind)
+        if (!source) return []
+        const namespace = source.metadata?.namespace
+        if (!namespace) return []
+        return (
+            props.existingclusterSetBindings
+                ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === namespace)
+                .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
+        )
+    }, [props.bindingSubjectKind, props.existingclusterSetBindings, resources])
 
     const setHasInputs = useSetHasInputs()
-    useEffect(() => setHasInputs(), [setHasInputs])
+    useEffect(() => {
+        if (displayMode !== DisplayMode.Details) {
+            setHasInputs()
+        }
+    }, [displayMode, setHasInputs])
 
     return (
         <Section
@@ -87,49 +100,93 @@ export function PlacementSection(props: {
             // description="Placement selects clusters from the cluster sets which have bindings to the resource namespace."
             autohide={false}
         >
-            {editMode === EditMode.Create && (
-                <PlacementSelector
-                    placementCount={placementCount}
-                    placementRuleCount={placementRuleCount}
-                    placementBindingCount={placementBindingCount}
-                    bindingSubjectKind={props.bindingSubjectKind}
-                    bindingSubjectApiGroup={props.bindingSubjectApiGroup}
-                    defaultPlacementKind={props.defaultPlacementKind}
-                    setShowPlacements={setShowPlacements}
-                    setShowPlacementRules={setShowPlacementRules}
-                    setShowPlacementBindings={setShowPlacementBindings}
-                />
-            )}
-            {/* <TextInput label={`${showPlacements} - ${showPlacementRules} - ${showPlacementBindings}`} path="hh" /> */}
-            {showPlacements && (
-                <Placements
-                    clusterSetBindings={props.existingclusterSetBindings}
-                    bindingKind={props.bindingSubjectKind}
-                    placementCount={placementCount}
-                    showPlacementRules={showPlacementRules}
-                    showPlacementBindings={showPlacementBindings}
-                />
-            )}
-            {showPlacementRules && (
-                <PlacementRules
-                    showPlacements={showPlacements}
-                    placementRuleCount={placementRuleCount}
-                    showPlacementBindings={showPlacementBindings}
-                />
-            )}
-            {showPlacementBindings && (
-                <PlacementBindings
-                    showPlacements={showPlacements}
-                    showPlacementRules={showPlacementRules}
-                    showPlacementBindings={showPlacementBindings}
-                    placementCount={placementCount}
-                    placementRuleCount={placementRuleCount}
-                    placementBindingCount={placementBindingCount}
-                    bindingSubjectKind={props.bindingSubjectKind}
-                    bindingSubjectApiGroup={props.bindingSubjectApiGroup}
-                    existingPlacements={props.existingPlacements}
-                    existingPlacementRules={props.existingPlacementRules}
-                />
+            {isAdvanced ? (
+                <Fragment>
+                    {(placementCount || (props.defaultPlacementKind === 'Placement' && placementRuleCount === 0)) && (
+                        <Placements clusterSetBindings={props.existingclusterSetBindings} bindingKind={props.bindingSubjectKind} />
+                    )}
+                    {(placementRuleCount || (props.defaultPlacementKind === 'PlacementRule' && placementCount === 0)) && <PlacementRules />}
+                    <PlacementBindings
+                        placementCount={placementCount}
+                        placementRuleCount={placementRuleCount}
+                        placementBindingCount={placementBindingCount}
+                        bindingSubjectKind={props.bindingSubjectKind}
+                        bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                        existingPlacements={props.existingPlacements}
+                        existingPlacementRules={props.existingPlacementRules}
+                    />
+                </Fragment>
+            ) : (
+                <Fragment>
+                    {editMode === EditMode.Create && (
+                        <PlacementSelector
+                            placementCount={placementCount}
+                            placementRuleCount={placementRuleCount}
+                            placementBindingCount={placementBindingCount}
+                            bindingSubjectKind={props.bindingSubjectKind}
+                            bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                            defaultPlacementKind={props.defaultPlacementKind}
+                        />
+                    )}
+                    {placementCount === 1 && (
+                        <Fragment>
+                            {editMode === EditMode.Create && (
+                                <Fragment>
+                                    <Sync kind={PlacementKind} path="metadata.name" targetKind={PlacementBindingKind} />
+                                    <Sync
+                                        kind={PlacementKind}
+                                        path="metadata.name"
+                                        targetKind={PlacementBindingKind}
+                                        targetPath="placementRef.name"
+                                    />
+                                </Fragment>
+                            )}
+                            <Sync kind={PlacementKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
+
+                            <ItemSelector selectKey="kind" selectValue={PlacementKind}>
+                                <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
+                            </ItemSelector>
+                        </Fragment>
+                    )}
+                    {placementRuleCount === 1 && (
+                        <Fragment>
+                            {editMode === EditMode.Create && (
+                                <Fragment>
+                                    <Sync kind={PlacementRuleKind} path="metadata.name" targetKind={PlacementBindingKind} />
+                                    <Sync
+                                        kind={PlacementRuleKind}
+                                        path="metadata.name"
+                                        targetKind={PlacementBindingKind}
+                                        targetPath="placementRef.name"
+                                    />
+                                </Fragment>
+                            )}
+                            <Sync kind={PlacementRuleKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
+
+                            <ItemSelector selectKey="kind" selectValue={PlacementRuleKind}>
+                                <PlacementRule />
+                            </ItemSelector>
+                        </Fragment>
+                    )}
+                    {placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 1 && (
+                        <ItemSelector selectKey="kind" selectValue={PlacementBindingKind}>
+                            <Select
+                                path="placementRef.name"
+                                label="Placement"
+                                required
+                                hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
+                                options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
+                            />
+                            <Select
+                                path="placementRef.name"
+                                label="Placement rule"
+                                required
+                                hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
+                                options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
+                            />
+                        </ItemSelector>
+                    )}
+                </Fragment>
             )}
         </Section>
     )
@@ -142,19 +199,9 @@ export function PlacementSelector(props: {
     bindingSubjectKind: string
     bindingSubjectApiGroup: string
     defaultPlacementKind: 'Placement' | 'PlacementRule'
-    setShowPlacements?: (show: boolean) => void
-    setShowPlacementRules?: (show: boolean) => void
-    setShowPlacementBindings?: (show: boolean) => void
 }) {
     const resources = useItem() as IResource[]
-    const {
-        placementCount,
-        placementRuleCount,
-        placementBindingCount,
-        setShowPlacements,
-        setShowPlacementRules,
-        setShowPlacementBindings,
-    } = props
+    const { placementCount, placementRuleCount, placementBindingCount } = props
     const { update } = useData()
     return (
         <DetailsHidden>
@@ -199,7 +246,6 @@ export function PlacementSelector(props: {
                                 } as IResource)
                             }
                             update(newResources)
-                            setShowPlacementBindings?.(false)
                         }}
                     />
                     <ToggleGroupItem
@@ -227,11 +273,9 @@ export function PlacementSelector(props: {
                                 } as IResource)
                             }
                             update(newResources)
-                            setShowPlacements?.(false)
-                            setShowPlacementRules?.(false)
                         }}
                     />
-                    <ToggleGroupItem
+                    {/* <ToggleGroupItem
                         text="Do not place"
                         isSelected={placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 0}
                         onClick={() => {
@@ -245,7 +289,7 @@ export function PlacementSelector(props: {
                             setShowPlacementRules?.(false)
                             setShowPlacementBindings?.(false)
                         }}
-                    />
+                    /> */}
                 </ToggleGroup>
             </div>
         </DetailsHidden>

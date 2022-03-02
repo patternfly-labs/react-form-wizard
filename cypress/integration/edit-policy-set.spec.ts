@@ -40,9 +40,21 @@ describe('edit policy set', () => {
                 ...PlacementType,
                 metadata: { name: 'my-policy-set-placement-1', namespace: 'my-namespace-1' },
                 spec: {
-                    numberOfClusters: 1,
                     clusterSets: ['my-cluster-set-1'],
-                    predicates: [{ requiredClusterSelector: { labelSelector: { matchLabels: { 'local-cluster': 'true' } } } }],
+                    predicates: [
+                        {
+                            requiredClusterSelector: {
+                                labelSelector: {
+                                    matchExpressions: [
+                                        { key: 'cloud', operator: 'In', values: ['Microsoft'] },
+                                        { key: 'vendor', operator: 'In', values: ['OpenShift'] },
+                                        { key: 'region', operator: 'In', values: ['east', 'west'] },
+                                        { key: 'environment', operator: 'NotIn', values: ['Production'] },
+                                    ],
+                                },
+                            },
+                        },
+                    ],
                 },
             },
             {

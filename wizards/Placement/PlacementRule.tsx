@@ -1,26 +1,12 @@
 import get from 'get-value'
 import { Fragment } from 'react'
-import { ArrayInput, EditMode, ItemSelector, KeyValue } from '../../src'
+import { ArrayInput, EditMode, KeyValue } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
-import { PlacementBindingKind } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
-import { Sync } from '../common/Sync'
 import { MatchExpression, MatchExpressionCollapsed } from './MatchExpression'
 
-export function PlacementRules(props: { showPlacements: boolean; placementRuleCount: number; showPlacementBindings: boolean }) {
+export function PlacementRules() {
     const editMode = useEditMode()
-    if (!props.showPlacements && !props.showPlacementBindings && props.placementRuleCount === 1) {
-        return (
-            <Fragment>
-                <Sync kind={PlacementRuleKind} path="metadata.name" targetKind={PlacementBindingKind} />
-                <Sync kind={PlacementRuleKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
-                <Sync kind={PlacementRuleKind} path="metadata.name" targetKind={PlacementBindingKind} targetPath="placementRef.name" />
-                <ItemSelector selectKey="kind" selectValue={PlacementRuleKind}>
-                    <PlacementRule />
-                </ItemSelector>
-            </Fragment>
-        )
-    }
     return (
         <ArrayInput
             id="placement-rules"
@@ -45,7 +31,7 @@ export function PlacementRules(props: { showPlacements: boolean; placementRuleCo
     )
 }
 
-function PlacementRule() {
+export function PlacementRule() {
     const editMode = useEditMode()
     return (
         <Fragment>

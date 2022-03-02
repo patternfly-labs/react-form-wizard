@@ -1,13 +1,10 @@
-import { ArrayInput, ItemSelector, Select, TextInput } from '../../src'
+import { ArrayInput, Select, TextInput } from '../../src'
 import { IResource } from '../common/resource'
 import { PlacementApiGroup, PlacementKind } from '../common/resources/IPlacement'
 import { PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 
 export function PlacementBindings(props: {
-    showPlacements: boolean
-    showPlacementRules: boolean
-    showPlacementBindings: boolean
     placementCount: number
     placementRuleCount: number
     placementBindingCount: number
@@ -16,26 +13,6 @@ export function PlacementBindings(props: {
     existingPlacements: IResource[]
     existingPlacementRules: IResource[]
 }) {
-    if (!props.showPlacements && props.placementBindingCount === 1) {
-        return (
-            <ItemSelector selectKey="kind" selectValue={PlacementBindingKind}>
-                <Select
-                    path="placementRef.name"
-                    label="Placement"
-                    required
-                    hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
-                    options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
-                />
-                <Select
-                    path="placementRef.name"
-                    label="Placement rule"
-                    required
-                    hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
-                    options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
-                />
-            </ItemSelector>
-        )
-    }
     return (
         <ArrayInput
             id="placement-bindings"

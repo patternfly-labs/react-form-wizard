@@ -1,24 +1,16 @@
 import { SelectOption } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useMemo } from 'react'
-import { ArrayInput, EditMode, Hidden, ItemSelector, KeyValue, NumberInput } from '../../src'
+import { ArrayInput, EditMode, Hidden, KeyValue, NumberInput } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { Multiselect } from '../../src/inputs/Multiselect'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementKind, PlacementType, Predicate } from '../common/resources/IPlacement'
-import { PlacementBindingKind } from '../common/resources/IPlacementBinding'
-import { Sync } from '../common/Sync'
 import { MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
-export function Placements(props: {
-    clusterSetBindings: IClusterSetBinding[]
-    bindingKind: string
-    placementCount: number
-    showPlacementRules: boolean
-    showPlacementBindings: boolean
-}) {
+export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string }) {
     const editMode = useEditMode()
     const resources = useItem() as IResource[]
     const namespaceClusterSetNames = useMemo(() => {
@@ -34,16 +26,6 @@ export function Placements(props: {
         )
     }, [props.bindingKind, props.clusterSetBindings, resources])
 
-    if (!props.showPlacementRules && !props.showPlacementBindings && props.placementCount === 1) {
-        return (
-            <Fragment>
-                <Sync kind={PlacementKind} path="metadata.name" targetKind={PlacementBindingKind} targetPath="placementRef.name" />
-                <ItemSelector selectKey="kind" selectValue={PlacementKind}>
-                    <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
-                </ItemSelector>
-            </Fragment>
-        )
-    }
     return (
         <ArrayInput
             id="placements"

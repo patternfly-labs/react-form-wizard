@@ -71,18 +71,18 @@ export function PolicySetExamples() {
                     labels: ['Placement', 'Placement Rule', 'Placement Binding', 'Placement Rule Binding'],
                     onClick: () => history.push(RouteE.EditPolicySet5),
                 },
-                {
-                    title: 'Edit policy set with placement binding',
-                    featureGroups: [{ title: 'Features', features: ['Placement binding'] }],
-                    labels: ['Placement Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet6),
-                },
-                {
-                    title: 'Edit policy set with placement rule binding',
-                    featureGroups: [{ title: 'Features', features: ['Placement rule binding'] }],
-                    labels: ['Placement Rule Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet7),
-                },
+                // {
+                //     title: 'Edit policy set with placement binding',
+                //     featureGroups: [{ title: 'Features', features: ['Placement binding'] }],
+                //     labels: ['Placement Binding'],
+                //     onClick: () => history.push(RouteE.EditPolicySet6),
+                // },
+                // {
+                //     title: 'Edit policy set with placement rule binding',
+                //     featureGroups: [{ title: 'Features', features: ['Placement rule binding'] }],
+                //     labels: ['Placement Rule Binding'],
+                //     onClick: () => history.push(RouteE.EditPolicySet7),
+                // },
                 {
                     title: 'Edit policy set with both placement bindings',
                     featureGroups: [{ title: 'Features', features: ['Placement binding', 'Placement rule binding'] }],
@@ -270,9 +270,21 @@ const singlePlacementResources: IResource[] = [
         ...PlacementType,
         metadata: { name: 'my-policy-set-placement-1', namespace: 'my-namespace-1' },
         spec: {
-            numberOfClusters: 1,
             clusterSets: ['my-cluster-set-1'],
-            predicates: [{ requiredClusterSelector: { labelSelector: { matchLabels: { 'local-cluster': 'true' } } } }],
+            predicates: [
+                {
+                    requiredClusterSelector: {
+                        labelSelector: {
+                            matchExpressions: [
+                                { key: 'cloud', operator: 'In', values: ['Microsoft'] },
+                                { key: 'vendor', operator: 'In', values: ['OpenShift'] },
+                                { key: 'region', operator: 'In', values: ['east', 'west'] },
+                                { key: 'environment', operator: 'NotIn', values: ['Production'] },
+                            ],
+                        },
+                    },
+                },
+            ],
         },
     } as IResource,
     {
@@ -335,7 +347,16 @@ const singlePlacementRuleResources: IResource[] = [
     {
         ...PlacementRuleType,
         metadata: { name: 'my-policy-set-placement-rule-1', namespace: 'my-namespace-1' },
-        spec: { clusterSelector: { matchLabels: { 'local-cluster': 'true' } } },
+        spec: {
+            clusterSelector: {
+                matchExpressions: [
+                    { key: 'cloud', operator: 'In', values: ['Amazon'] },
+                    { key: 'vendor', operator: 'In', values: ['OpenShift'] },
+                    { key: 'region', operator: 'In', values: ['us-east-1', 'us-east-2', 'us-west-1', 'us-west-2'] },
+                    { key: 'environment', operator: 'NotIn', values: ['Production'] },
+                ],
+            },
+        },
     } as IResource,
     {
         ...PlacementBindingType,
@@ -354,12 +375,11 @@ const twoPlacementRuleResources: IResource[] = [
         metadata: { name: 'my-policy-set-placement-rule-2', namespace: 'my-namespace-1' },
         spec: {
             clusterSelector: {
-                matchLabels: { 'local-cluster': 'true' },
                 matchExpressions: [
-                    { key: 'abc', operator: 'In', values: ['123', '456', '789'] },
-                    { key: 'def', operator: 'NotIn', values: ['123', '456', '789'] },
-                    { key: 'ghi', operator: 'Exists' },
-                    { key: 'jkl', operator: 'DoesNotExist' },
+                    { key: 'cloud', operator: 'In', values: ['Google'] },
+                    { key: 'vendor', operator: 'In', values: ['OpenShift'] },
+                    { key: 'region', operator: 'In', values: ['us-east1', 'us-east4', 'us-west1', 'us-west2'] },
+                    { key: 'environment', operator: 'NotIn', values: ['Production'] },
                 ],
             },
         },

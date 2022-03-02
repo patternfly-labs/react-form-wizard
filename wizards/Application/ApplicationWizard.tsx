@@ -340,7 +340,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </Hidden>
 
                         <Hidden hidden={(data) => data.repositoryType === undefined}>
-                            <Placement placement={props.placements} />
+                            <Placement placements={props.placements} />
                             <DeploymentWindow timeZone={props.timeZones} />
                         </Hidden>
                     </ArrayInput>
@@ -461,13 +461,13 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                 </Section>
             </Step>
             <Step id="placement" label="Placement" hidden={(item) => item.deployType !== 'ArgoCD'}>
-                <Placement placement={props.placements} />
+                <Placement placements={props.placements} />
             </Step>
         </WizardPage>
     )
 }
 
-export function Placement(props: { placement: string[] }) {
+export function Placement(props: { placements: string[] }) {
     return (
         <Fragment>
             <Section label="Cluster placement" description="Applications are deployed to clusters based on placements">
@@ -493,7 +493,7 @@ export function Placement(props: { placement: string[] }) {
                         path="placement.select"
                         label="Placement"
                         placeholder="Select an existing placement"
-                        options={props.placement}
+                        options={props.placements}
                         required
                     />
                 </Checkbox>
