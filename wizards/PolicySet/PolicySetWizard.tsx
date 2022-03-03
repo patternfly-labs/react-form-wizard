@@ -29,6 +29,7 @@ export interface PolicySetWizardProps {
     policies: IResource[]
     placements: IResource[]
     placementRules: IResource[]
+    clusters: IResource[]
     clusterSetBindings: IClusterSetBinding[]
     editMode?: EditMode
     resources?: IResource[]
@@ -107,6 +108,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                     existingPlacements={props.placements}
                     existingPlacementRules={props.placementRules}
                     defaultPlacementKind={PlacementRuleKind}
+                    clusters={props.clusters}
                 />
             </Step>
         </WizardPage>

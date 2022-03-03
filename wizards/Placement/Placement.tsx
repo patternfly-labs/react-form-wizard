@@ -8,9 +8,10 @@ import { Multiselect } from '../../src/inputs/Multiselect'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementKind, PlacementType, Predicate } from '../common/resources/IPlacement'
+import { useLabelValuesMap } from '../common/useLabelValuesMap'
 import { MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
-export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string }) {
+export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string; clusters: IResource[] }) {
     const editMode = useEditMode()
     const resources = useItem() as IResource[]
     const namespaceClusterSetNames = useMemo(() => {
@@ -40,12 +41,12 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
             newValue={{ ...PlacementType, metadata: { name: '', namespace: '' }, spec: {} }}
             defaultCollapsed={editMode === EditMode.Edit}
         >
-            <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
+            <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} />
         </ArrayInput>
     )
 }
 
-export function Placement(props: { namespaceClusterSetNames: string[] }) {
+export function Placement(props: { namespaceClusterSetNames: string[]; clusters: IResource[] }) {
     const editMode = useEditMode()
     return (
         <Fragment>
@@ -54,7 +55,7 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
                 label="Cluster sets"
                 path="spec.clusterSets"
                 placeholder="Select the cluster sets"
-                labelHelp="Select clusters from the cluster sets bound to the namespace. Cluster can then be further selected using cluster label selectors."
+                labelHelp="Select clusters from the cluster sets bound to the namespace. Cluster can then be further selected using cluster labels."
                 helperText="If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
             >
                 {props.namespaceClusterSetNames.map((name) => (
@@ -70,7 +71,7 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
                     return true
                 }}
             >
-                <PlacementPredicate rootPath="spec.predicates.0." />
+                <PlacementPredicate rootPath="spec.predicates.0." clusters={props.clusters} />
             </Hidden>
 
             <ArrayInput
@@ -91,7 +92,7 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
                     return false
                 }}
             >
-                <PlacementPredicate />
+                <PlacementPredicate clusters={props.clusters} />
             </ArrayInput>
             <NumberInput
                 label="Limit the number of clusters selected"
@@ -103,9 +104,23 @@ export function Placement(props: { namespaceClusterSetNames: string[] }) {
     )
 }
 
-export function PlacementPredicate(props: { rootPath?: string }) {
+export function PlacementPredicate(props: { rootPath?: string; clusters: IResource[] }) {
     const rootPath = props.rootPath ?? ''
     const editMode = useEditMode()
+    const labelValuesMap = useLabelValuesMap(props.clusters)
+    const item = useItem()
+    const labelSelectorMatchLabels = useMemo(
+        () => get(item, `${rootPath}requiredClusterSelector.labelSelector.matchLabels`),
+        [item, rootPath]
+    )
+    const claimSelectorMatchLabels = useMemo(
+        () => get(item, `${rootPath}requiredClusterSelector.claimSelector.matchLabels`),
+        [item, rootPath]
+    )
+    const inputLabel = useMemo(() => {
+        if (labelSelectorMatchLabels || claimSelectorMatchLabels) return 'Label selectors'
+        return 'Label expressions'
+    }, [claimSelectorMatchLabels, labelSelectorMatchLabels])
     return (
         <Fragment>
             <KeyValue
@@ -113,18 +128,18 @@ export function PlacementPredicate(props: { rootPath?: string }) {
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchLabels`}
                 labelHelp="Select clusters from the clusters in selected cluster sets using cluster labels. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
                 placeholder="Add cluster label selector"
-                hidden={(item) => get(item, `${rootPath}requiredClusterSelector.labelSelector.matchLabels`) === undefined}
+                hidden={() => labelSelectorMatchLabels === undefined}
             />
             <ArrayInput
-                label="Cluster label expressions"
+                label={inputLabel}
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchExpressions`}
                 placeholder="Add label expression"
                 labelHelp="Select clusters from the clusters in selected cluster sets using cluster labels. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
                 collapsedContent={<MatchExpressionCollapsed />}
-                newValue={{ key: '', operator: 'In', values: [''] }}
+                newValue={{ key: '', operator: 'In', values: [] }}
                 defaultCollapsed={editMode !== EditMode.Create}
             >
-                <MatchExpression />
+                <MatchExpression labelValuesMap={labelValuesMap} />
             </ArrayInput>
             <ArrayInput
                 label="Cluster claim expressions"
@@ -132,11 +147,11 @@ export function PlacementPredicate(props: { rootPath?: string }) {
                 placeholder="Add claim expression"
                 labelHelp="Select clusters from the clusters in selected cluster sets using cluster claims status. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
                 collapsedContent={<MatchExpressionCollapsed />}
-                newValue={{ key: '', operator: 'In', values: [''] }}
+                newValue={{ key: '', operator: 'In', values: [] }}
                 defaultCollapsed={editMode !== EditMode.Create}
                 hidden={(item) => get(item, `${rootPath}requiredClusterSelector.claimSelector.matchExpressions`) === undefined}
             >
-                <MatchExpression />
+                <MatchExpression labelValuesMap={labelValuesMap} />
             </ArrayInput>
         </Fragment>
     )

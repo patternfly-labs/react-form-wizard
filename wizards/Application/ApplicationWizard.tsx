@@ -470,7 +470,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
 export function Placement(props: { placements: string[] }) {
     return (
         <Fragment>
-            <Section label="Cluster placement" description="Applications are deployed to clusters based on placements">
+            <Section label="Placement" description="Applications are deployed to clusters based on placements">
                 <Checkbox
                     path="placement.useLabels"
                     label="New placement"

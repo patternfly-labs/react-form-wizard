@@ -28,8 +28,15 @@ describe('create policy set', () => {
     it('placement', () => {
         cy.get('#add-button').click()
         cy.get('#label-expressions').within(() => {
-            cy.get('#key').type('local-cluster')
-            cy.get('#values-1').type('true')
+            cy.get('#key').click().get('#region').click()
+            cy.get('#values')
+                .click()
+                .get('.pf-c-check')
+                .contains('us-east-1')
+                .parent()
+                .within(() => {
+                    cy.get('[type="checkbox"]').check()
+                })
         })
         cy.contains('Next').click()
     })
@@ -44,7 +51,7 @@ describe('create policy set', () => {
             {
                 ...PlacementRuleType,
                 metadata: { name: 'my-policy-set-placement', namespace: 'my-namespace-1' },
-                spec: { clusterSelector: { matchExpressions: [{ key: 'local-cluster', operator: 'In', values: ['true'] }] } },
+                spec: { clusterSelector: { matchExpressions: [{ key: 'region', operator: 'In', values: ['us-east-1'] }] } },
             },
             {
                 ...PlacementBindingType,

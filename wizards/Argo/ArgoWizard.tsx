@@ -27,6 +27,7 @@ import { useData } from '../../src/contexts/DataContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
+import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { IPlacement, PlacementApiVersion, PlacementKind, PlacementType } from '../common/resources/IPlacement'
 import { Sync } from '../common/Sync'
 import { Placement } from '../Placement/Placement'
@@ -46,6 +47,8 @@ interface Channel {
 
 interface ArgoWizardProps {
     addClusterSets?: string
+    clusters: IResource[]
+    clusterSetBindings: IClusterSetBinding[]
     ansibleCredentials: string[]
     argoServers: string[]
     namespaces: string[]
@@ -332,8 +335,12 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     </Section>
                 </ItemSelector>
             </Step>
-            <Step id="placement" label="Cluster placement">
-                <ArgoWizardPlacementSection placements={props.placements} />
+            <Step id="placement" label="Placement">
+                <ArgoWizardPlacementSection
+                    placements={props.placements}
+                    clusters={props.clusters}
+                    clusterSetBindings={props.clusterSetBindings}
+                />
             </Step>
         </WizardPage>
     )
@@ -569,15 +576,20 @@ function syncOptionsToPrunePropagationPolicy(array: unknown) {
     return 'background'
 }
 
-function ArgoWizardPlacementSection(props: { placements: IPlacement[] }) {
+function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSetBindings: IClusterSetBinding[]; clusters: IResource[] }) {
     const resources = useItem() as IResource[]
     const editMode = useEditMode()
     const hasPlacement = resources.find((r) => r.kind === PlacementKind) !== undefined
     const applicationSet = resources.find((r) => r.kind === 'ApplicationSet')
     const placements = props.placements.filter((placement) => placement.metadata?.namespace === applicationSet?.metadata?.namespace)
+    const namespaceClusterSetNames =
+        props.clusterSetBindings
+            ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === applicationSet?.metadata?.namespace)
+            .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
+
     const { update } = useData()
     return (
-        <Section label="Cluster placement">
+        <Section label="Placement">
             <DetailsHidden>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {editMode === EditMode.Create && (
@@ -612,7 +624,7 @@ function ArgoWizardPlacementSection(props: { placements: IPlacement[] }) {
             </DetailsHidden>
             {hasPlacement ? (
                 <ItemSelector selectKey="kind" selectValue={PlacementKind}>
-                    <Placement namespaceClusterSetNames={[]} />
+                    <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} />
                 </ItemSelector>
             ) : (
                 <ItemSelector selectKey="kind" selectValue="ApplicationSet">

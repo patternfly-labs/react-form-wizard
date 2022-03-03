@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useHistory } from 'react-router'
-import { placements as testPlacements } from '../common/test-data'
+import { clusters, clusterSetBindings, placements as testPlacements } from '../common/test-data'
 import { onCancel, onSubmit } from '../common/utils'
 import { ArgoWizard } from './ArgoWizard'
 export function ArgoExample() {
@@ -36,6 +36,8 @@ export function ArgoExample() {
             getGitPaths={() => {
                 return new Promise((resolve) => resolve(['path-1', 'path-2']))
             }}
+            clusters={clusters}
+            clusterSetBindings={clusterSetBindings}
         />
     )
 }

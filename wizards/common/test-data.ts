@@ -34,6 +34,11 @@ export const clusterSetBindings: IClusterSetBinding[] = [
         metadata: { name: 'my-cluster-set-4-binding', namespace: 'my-namespace-2' },
         spec: { clusterSet: 'my-cluster-set-4' },
     },
+    {
+        ...ClusterSetBindingType,
+        metadata: { name: 'my-cluster-set-5-binding', namespace: 'server-1' },
+        spec: { clusterSet: 'my-cluster-set-5' },
+    },
 ]
 
 export const placements: IPlacement[] = [
@@ -50,4 +55,51 @@ export const placementRules: IPlacementRule[] = [
     { ...PlacementRuleType, metadata: { name: 'my-placement-rule-2', namespace: 'my-namespace-1' } },
     { ...PlacementRuleType, metadata: { name: 'my-placement-rule-3', namespace: 'my-namespace-2' } },
     { ...PlacementRuleType, metadata: { name: 'my-placement-rule-4', namespace: 'my-namespace-2' } },
+]
+
+const ClusterType = {
+    apiVersion: 'TODO',
+    kind: 'ManagedCluster',
+}
+export const clusters: IResource[] = [
+    {
+        ...ClusterType,
+        metadata: {
+            name: 'my-cluster-1',
+            namespace: 'my-namespace-1',
+            labels: { name: 'my-cluster-1', region: 'east', cloud: 'Microsoft', vendor: 'Openshift', environment: 'Production' },
+        },
+    },
+    {
+        ...ClusterType,
+        metadata: {
+            name: 'my-cluster-1',
+            namespace: 'my-namespace-1',
+            labels: { name: 'my-cluster-1', region: 'us-east-1', cloud: 'Google', vendor: 'Openshift', environment: 'Production' },
+        },
+    },
+    {
+        ...ClusterType,
+        metadata: {
+            name: 'my-cluster-2',
+            namespace: 'my-namespace-1',
+            labels: { name: 'my-cluster-2', region: 'us-east-2', cloud: 'Amazon', vendor: 'Openshift', environment: 'Development' },
+        },
+    },
+    {
+        ...ClusterType,
+        metadata: {
+            name: 'my-cluster-3',
+            namespace: 'my-namespace-2',
+            labels: { name: 'my-cluster-3', region: 'us-west1', cloud: 'Google', vendor: 'Openshift', environment: 'Development' },
+        },
+    },
+    {
+        ...ClusterType,
+        metadata: {
+            name: 'my-cluster-4',
+            namespace: 'my-namespace-2',
+            labels: { name: 'my-cluster-4', region: 'us-west2', cloud: 'Google', vendor: 'Openshift', environment: 'Test' },
+        },
+    },
 ]

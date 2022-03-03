@@ -23,6 +23,7 @@ export function PlacementSection(props: {
     existingPlacementRules: IResource[]
     existingclusterSetBindings: IClusterSetBinding[]
     defaultPlacementKind: 'Placement' | 'PlacementRule'
+    clusters: IResource[]
 }) {
     const { update } = useData()
     const resources = useItem() as IResource[]
@@ -94,99 +95,105 @@ export function PlacementSection(props: {
         }
     }, [displayMode, setHasInputs])
 
+    if (isAdvanced) {
+        return (
+            <Fragment>
+                {(placementCount || (props.defaultPlacementKind === 'Placement' && placementRuleCount === 0)) && (
+                    <Placements
+                        clusterSetBindings={props.existingclusterSetBindings}
+                        bindingKind={props.bindingSubjectKind}
+                        clusters={props.clusters}
+                    />
+                )}
+                {(placementRuleCount || (props.defaultPlacementKind === 'PlacementRule' && placementCount === 0)) && (
+                    <PlacementRules clusters={props.clusters} />
+                )}
+                <PlacementBindings
+                    placementCount={placementCount}
+                    placementRuleCount={placementRuleCount}
+                    placementBindingCount={placementBindingCount}
+                    bindingSubjectKind={props.bindingSubjectKind}
+                    bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                    existingPlacements={props.existingPlacements}
+                    existingPlacementRules={props.existingPlacementRules}
+                />
+            </Fragment>
+        )
+    }
+
     return (
         <Section
-            label="Cluster placement"
+            label="Placement"
             // description="Placement selects clusters from the cluster sets which have bindings to the resource namespace."
             autohide={false}
         >
-            {isAdvanced ? (
-                <Fragment>
-                    {(placementCount || (props.defaultPlacementKind === 'Placement' && placementRuleCount === 0)) && (
-                        <Placements clusterSetBindings={props.existingclusterSetBindings} bindingKind={props.bindingSubjectKind} />
-                    )}
-                    {(placementRuleCount || (props.defaultPlacementKind === 'PlacementRule' && placementCount === 0)) && <PlacementRules />}
-                    <PlacementBindings
-                        placementCount={placementCount}
-                        placementRuleCount={placementRuleCount}
-                        placementBindingCount={placementBindingCount}
-                        bindingSubjectKind={props.bindingSubjectKind}
-                        bindingSubjectApiGroup={props.bindingSubjectApiGroup}
-                        existingPlacements={props.existingPlacements}
-                        existingPlacementRules={props.existingPlacementRules}
-                    />
-                </Fragment>
-            ) : (
+            {editMode === EditMode.Create && (
+                <PlacementSelector
+                    placementCount={placementCount}
+                    placementRuleCount={placementRuleCount}
+                    placementBindingCount={placementBindingCount}
+                    bindingSubjectKind={props.bindingSubjectKind}
+                    bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                    defaultPlacementKind={props.defaultPlacementKind}
+                />
+            )}
+            {placementCount === 1 && (
                 <Fragment>
                     {editMode === EditMode.Create && (
-                        <PlacementSelector
-                            placementCount={placementCount}
-                            placementRuleCount={placementRuleCount}
-                            placementBindingCount={placementBindingCount}
-                            bindingSubjectKind={props.bindingSubjectKind}
-                            bindingSubjectApiGroup={props.bindingSubjectApiGroup}
-                            defaultPlacementKind={props.defaultPlacementKind}
-                        />
-                    )}
-                    {placementCount === 1 && (
                         <Fragment>
-                            {editMode === EditMode.Create && (
-                                <Fragment>
-                                    <Sync kind={PlacementKind} path="metadata.name" targetKind={PlacementBindingKind} />
-                                    <Sync
-                                        kind={PlacementKind}
-                                        path="metadata.name"
-                                        targetKind={PlacementBindingKind}
-                                        targetPath="placementRef.name"
-                                    />
-                                </Fragment>
-                            )}
-                            <Sync kind={PlacementKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
-
-                            <ItemSelector selectKey="kind" selectValue={PlacementKind}>
-                                <Placement namespaceClusterSetNames={namespaceClusterSetNames} />
-                            </ItemSelector>
+                            <Sync kind={PlacementKind} path="metadata.name" targetKind={PlacementBindingKind} />
+                            <Sync
+                                kind={PlacementKind}
+                                path="metadata.name"
+                                targetKind={PlacementBindingKind}
+                                targetPath="placementRef.name"
+                            />
                         </Fragment>
                     )}
-                    {placementRuleCount === 1 && (
-                        <Fragment>
-                            {editMode === EditMode.Create && (
-                                <Fragment>
-                                    <Sync kind={PlacementRuleKind} path="metadata.name" targetKind={PlacementBindingKind} />
-                                    <Sync
-                                        kind={PlacementRuleKind}
-                                        path="metadata.name"
-                                        targetKind={PlacementBindingKind}
-                                        targetPath="placementRef.name"
-                                    />
-                                </Fragment>
-                            )}
-                            <Sync kind={PlacementRuleKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
+                    <Sync kind={PlacementKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
 
-                            <ItemSelector selectKey="kind" selectValue={PlacementRuleKind}>
-                                <PlacementRule />
-                            </ItemSelector>
-                        </Fragment>
-                    )}
-                    {placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 1 && (
-                        <ItemSelector selectKey="kind" selectValue={PlacementBindingKind}>
-                            <Select
-                                path="placementRef.name"
-                                label="Placement"
-                                required
-                                hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
-                                options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
-                            />
-                            <Select
-                                path="placementRef.name"
-                                label="Placement rule"
-                                required
-                                hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
-                                options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
-                            />
-                        </ItemSelector>
-                    )}
+                    <ItemSelector selectKey="kind" selectValue={PlacementKind}>
+                        <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} />
+                    </ItemSelector>
                 </Fragment>
+            )}
+            {placementRuleCount === 1 && (
+                <Fragment>
+                    {editMode === EditMode.Create && (
+                        <Fragment>
+                            <Sync kind={PlacementRuleKind} path="metadata.name" targetKind={PlacementBindingKind} />
+                            <Sync
+                                kind={PlacementRuleKind}
+                                path="metadata.name"
+                                targetKind={PlacementBindingKind}
+                                targetPath="placementRef.name"
+                            />
+                        </Fragment>
+                    )}
+                    <Sync kind={PlacementRuleKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
+
+                    <ItemSelector selectKey="kind" selectValue={PlacementRuleKind}>
+                        <PlacementRule clusters={props.clusters} />
+                    </ItemSelector>
+                </Fragment>
+            )}
+            {placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 1 && (
+                <ItemSelector selectKey="kind" selectValue={PlacementBindingKind}>
+                    <Select
+                        path="placementRef.name"
+                        label="Placement"
+                        required
+                        hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
+                        options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
+                    />
+                    <Select
+                        path="placementRef.name"
+                        label="Placement rule"
+                        required
+                        hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
+                        options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
+                    />
+                </ItemSelector>
             )}
         </Section>
     )

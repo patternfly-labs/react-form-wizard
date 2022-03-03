@@ -1,14 +1,14 @@
-import { Flex, FlexItem } from '@patternfly/react-core'
+import { Flex, SelectOption } from '@patternfly/react-core'
 import { Fragment } from 'react'
-import { Select, StringsInput, TextInput } from '../../src'
+import { Multiselect, Select } from '../../src'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
-import { useItem } from '../../src/contexts/ItemContext'
+import { ItemContext, useItem } from '../../src/contexts/ItemContext'
 import { IExpression } from '../common/resources/IMatchExpression'
 
-export function MatchExpression() {
+export function MatchExpression(props: { labelValuesMap: Record<string, string[]> }) {
     return (
         <Flex style={{ rowGap: 16 }}>
-            <TextInput label="Label" path="key" required disablePaste />
+            <Select label="Label" path="key" options={Object.keys(props.labelValuesMap)} required />
             <Select
                 label="Operator"
                 path="operator"
@@ -20,15 +20,24 @@ export function MatchExpression() {
                 ]}
                 required
             />
-            <FlexItem>
-                <StringsInput
-                    label="Values"
-                    path="values"
-                    hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
-                    placeholder="Add value"
-                    required
-                />
-            </FlexItem>
+            <ItemContext.Consumer>
+                {(item: IExpression) => {
+                    const selectedLabel = item.key ?? ''
+                    const values = props.labelValuesMap[selectedLabel] ?? []
+                    return (
+                        <Multiselect
+                            label="Values"
+                            path="values"
+                            required
+                            hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
+                        >
+                            {values.map((value) => {
+                                return <SelectOption key={value} value={value} id={value} />
+                            })}
+                        </Multiselect>
+                    )
+                }}
+            </ItemContext.Consumer>
         </Flex>
     )
 }

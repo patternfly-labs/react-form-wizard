@@ -37,6 +37,7 @@ export function PolicyWizard(props: {
     policies: IResource[]
     placements: IResource[]
     placementRules: IResource[]
+    clusters: IResource[]
     clusterSetBindings: IClusterSetBinding[]
     editMode?: EditMode
     resources?: IResource[]
@@ -173,7 +174,7 @@ export function PolicyWizard(props: {
                 </ItemSelector>
             </Step>
 
-            <Step label="Cluster placement" id="placement">
+            <Step label="Placement" id="placement">
                 <PlacementSection
                     existingPlacements={props.placements}
                     existingPlacementRules={props.placementRules}
@@ -181,6 +182,7 @@ export function PolicyWizard(props: {
                     bindingSubjectKind={PolicyKind}
                     bindingSubjectApiGroup={PolicyApiGroup}
                     defaultPlacementKind={PlacementRuleKind}
+                    clusters={props.clusters}
                 />
             </Step>
 

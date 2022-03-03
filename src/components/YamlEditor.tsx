@@ -73,86 +73,96 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                 </Button>
             </div>
             <div style={{ display: 'flex', flexGrow: 1, overflow: 'auto' }}>
-                <pre
-                    style={{ display: 'flex', flexGrow: 1, justifySelf: 'stretch', position: 'relative', padding: 24 }}
-                    onFocus={() => setHasFocus(true)}
-                    onBlur={() => setHasFocus(false)}
-                >
-                    <small>
-                        {yaml.split('\n').map((line, index) => {
-                            const backgroundColor = index === errorLine ? '#F203' : undefined
-                            if (line === '---') {
-                                return (
-                                    <div key={index} style={{ color: color.divider, backgroundColor }}>
-                                        {line}
-                                    </div>
-                                )
-                            }
-                            const parts = line.split(':')
-                            if (parts[0] === '') return <div key={index}>&nbsp;</div>
-                            if (parts.length === 1) {
+                <div style={{ width: '100%' }}>
+                    <pre
+                        style={{
+                            display: 'flex',
+                            flexGrow: 1,
+                            justifySelf: 'stretch',
+                            alignSelf: 'stretch',
+                            position: 'relative',
+                            padding: 24,
+                            minHeight: '100%',
+                        }}
+                        onFocus={() => setHasFocus(true)}
+                        onBlur={() => setHasFocus(false)}
+                    >
+                        <small>
+                            {yaml.split('\n').map((line, index) => {
+                                const backgroundColor = index === errorLine ? '#F203' : undefined
+                                if (line === '---') {
+                                    return (
+                                        <div key={index} style={{ color: color.divider, backgroundColor }}>
+                                            {line}
+                                        </div>
+                                    )
+                                }
+                                const parts = line.split(':')
+                                if (parts[0] === '') return <div key={index}>&nbsp;</div>
+                                if (parts.length === 1) {
+                                    return (
+                                        <div key={index} style={{ color: color.variable, backgroundColor }}>
+                                            {parts[0]}
+                                        </div>
+                                    )
+                                }
                                 return (
                                     <div key={index} style={{ color: color.variable, backgroundColor }}>
                                         {parts[0]}
+                                        <span style={{ color: color.colon }}>:</span>
+                                        <span style={{ color: color.value }}>{parts.slice(1).join(':')}</span>
                                     </div>
                                 )
-                            }
-                            return (
-                                <div key={index} style={{ color: color.variable, backgroundColor }}>
-                                    {parts[0]}
-                                    <span style={{ color: color.colon }}>:</span>
-                                    <span style={{ color: color.value }}>{parts.slice(1).join(':')}</span>
-                                </div>
-                            )
-                        })}
-                        <textarea
-                            id="yaml-editor"
-                            style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                height: '100%',
-                                width: '100%',
-                                padding: 24,
-                                border: 0,
-                                backgroundColor: 'transparent',
-                                whiteSpace: 'pre',
-                                overflowWrap: 'normal',
-                                overflowX: 'hidden',
-                                overflowY: 'hidden',
-                                color: 'transparent',
-                                caretColor: 'white',
-                                resize: 'none',
-                            }}
-                            value={yaml}
-                            onChange={(e) => {
-                                if (!e.target.value) {
-                                    setYaml('')
-                                    props.setData?.({})
-                                } else {
-                                    setYaml(e.target.value)
-                                    try {
-                                        const data = YamlToObject(e.target.value, props.isYamlArray)
-                                        props.setData?.(data)
-                                        setError('')
-                                        setErrorLine(-1)
-                                    } catch (err: any) {
-                                        let message: string = err.message ?? 'Unkown error'
-                                        const index = message.indexOf('at line')
-                                        if (index !== -1) {
-                                            let lineString = message.substring(index).split(' ')[2]
-                                            lineString = lineString.slice(0, lineString.length - 1)
-                                            const line = Number(lineString)
-                                            if (Number.isInteger(line)) setErrorLine(line - 1)
-                                            message = message.substring(0, index)
+                            })}
+                            <textarea
+                                id="yaml-editor"
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    height: '100%',
+                                    width: '100%',
+                                    padding: 24,
+                                    border: 0,
+                                    backgroundColor: 'transparent',
+                                    whiteSpace: 'pre',
+                                    overflowWrap: 'normal',
+                                    overflowX: 'hidden',
+                                    overflowY: 'hidden',
+                                    color: 'transparent',
+                                    caretColor: 'white',
+                                    resize: 'none',
+                                }}
+                                value={yaml}
+                                onChange={(e) => {
+                                    if (!e.target.value) {
+                                        setYaml('')
+                                        props.setData?.({})
+                                    } else {
+                                        setYaml(e.target.value)
+                                        try {
+                                            const data = YamlToObject(e.target.value, props.isYamlArray)
+                                            props.setData?.(data)
+                                            setError('')
+                                            setErrorLine(-1)
+                                        } catch (err: any) {
+                                            let message: string = err.message ?? 'Unkown error'
+                                            const index = message.indexOf('at line')
+                                            if (index !== -1) {
+                                                let lineString = message.substring(index).split(' ')[2]
+                                                lineString = lineString.slice(0, lineString.length - 1)
+                                                const line = Number(lineString)
+                                                if (Number.isInteger(line)) setErrorLine(line - 1)
+                                                message = message.substring(0, index)
+                                            }
+                                            setError(message)
                                         }
-                                        setError(message)
                                     }
-                                }
-                            }}
-                        />
-                    </small>
-                </pre>
+                                }}
+                            />
+                        </small>
+                    </pre>
+                </div>
             </div>
         </div>
     )

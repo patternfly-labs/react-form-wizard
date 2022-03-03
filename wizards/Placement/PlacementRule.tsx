@@ -1,11 +1,14 @@
 import get from 'get-value'
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 import { ArrayInput, EditMode, KeyValue } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
+import { useItem } from '../../src/contexts/ItemContext'
+import { IResource } from '../common/resource'
 import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
+import { useLabelValuesMap } from '../common/useLabelValuesMap'
 import { MatchExpression, MatchExpressionCollapsed } from './MatchExpression'
 
-export function PlacementRules() {
+export function PlacementRules(props: { clusters: IResource[] }) {
     const editMode = useEditMode()
     return (
         <ArrayInput
@@ -26,13 +29,24 @@ export function PlacementRules() {
             }}
             defaultCollapsed={editMode !== EditMode.Create}
         >
-            <PlacementRule />
+            <PlacementRule clusters={props.clusters} />
         </ArrayInput>
     )
 }
 
-export function PlacementRule() {
+export function PlacementRule(props: { clusters: IResource[] }) {
     const editMode = useEditMode()
+    const labelValuesMap = useLabelValuesMap(props.clusters)
+    const item = useItem()
+    const labelSelectorMatchLabels = useMemo(() => get(item, `spec.clusterSelector.matchLabels`), [item])
+    const inputLabel = useMemo(() => {
+        if (labelSelectorMatchLabels) return 'Label expressions'
+        return 'Label selectors'
+    }, [labelSelectorMatchLabels])
+    const addLabel = useMemo(() => {
+        if (labelSelectorMatchLabels) return 'Add label expressions'
+        return 'Add selector'
+    }, [labelSelectorMatchLabels])
     return (
         <Fragment>
             {/* <TextInput
@@ -51,14 +65,14 @@ export function PlacementRule() {
             />
             <ArrayInput
                 id="label-expressions"
-                label="Cluster label expression"
+                label={inputLabel}
                 path="spec.clusterSelector.matchExpressions"
-                placeholder="Add cluster label expression"
+                placeholder={addLabel}
                 collapsedContent={<MatchExpressionCollapsed />}
-                newValue={{ key: '', operator: 'In', values: [''] }}
+                newValue={{ key: '', operator: 'In', values: [] }}
                 defaultCollapsed={editMode !== EditMode.Create}
             >
-                <MatchExpression />
+                <MatchExpression labelValuesMap={labelValuesMap} />
             </ArrayInput>
         </Fragment>
     )

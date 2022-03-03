@@ -6,7 +6,7 @@ import { PlacementApiGroup, PlacementKind, PlacementType } from '../common/resou
 import { PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { PolicySetApiGroup, PolicySetKind, PolicySetType } from '../common/resources/IPolicySet'
-import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
+import { clusters, clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { RouteE } from '../Routes'
 import { PolicySetWizard } from './PolicySetWizard'
@@ -83,12 +83,12 @@ export function PolicySetExamples() {
                 //     labels: ['Placement Rule Binding'],
                 //     onClick: () => history.push(RouteE.EditPolicySet7),
                 // },
-                {
-                    title: 'Edit policy set with both placement bindings',
-                    featureGroups: [{ title: 'Features', features: ['Placement binding', 'Placement rule binding'] }],
-                    labels: ['Placement Binding', 'Placement Rule Binding'],
-                    onClick: () => history.push(RouteE.EditPolicySet8),
-                },
+                // {
+                //     title: 'Edit policy set with both placement bindings',
+                //     featureGroups: [{ title: 'Features', features: ['Placement binding', 'Placement rule binding'] }],
+                //     labels: ['Placement Binding', 'Placement Rule Binding'],
+                //     onClick: () => history.push(RouteE.EditPolicySet8),
+                // },
             ]}
         />
     )
@@ -111,6 +111,7 @@ export function CreatePolicySet() {
             clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
+            clusters={clusters}
         />
     )
 }
@@ -129,6 +130,7 @@ export function EditPolicySet1() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={policySetWithSinglePlacementResources}
+            clusters={clusters}
         />
     )
 }
@@ -147,6 +149,7 @@ export function EditPolicySet2() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={policySetWithTwoPlacementResources}
+            clusters={clusters}
         />
     )
 }
@@ -165,6 +168,7 @@ export function EditPolicySet3() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={policySetWithSinglePlacementRuleResources}
+            clusters={clusters}
         />
     )
 }
@@ -183,6 +187,7 @@ export function EditPolicySet4() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={policySetWithTwoPlacementRuleResources}
+            clusters={clusters}
         />
     )
 }
@@ -201,6 +206,7 @@ export function EditPolicySet5() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={policySetWithTwoPlacementAndTwoPlacementRuleResources}
+            clusters={clusters}
         />
     )
 }
@@ -219,6 +225,7 @@ export function EditPolicySet6() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={policySetWithPlacementBindingResources}
+            clusters={clusters}
         />
     )
 }
@@ -237,6 +244,7 @@ export function EditPolicySet7() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={policySetWithPlacementRuleBindingResources}
+            clusters={clusters}
         />
     )
 }
@@ -255,6 +263,7 @@ export function EditPolicySet8() {
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
             resources={policySetWithBindingsResources}
+            clusters={clusters}
         />
     )
 }

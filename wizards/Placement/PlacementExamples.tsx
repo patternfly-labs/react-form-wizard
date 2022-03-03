@@ -6,7 +6,7 @@ import { PlacementApiGroup, PlacementKind, PlacementType } from '../common/resou
 import { PlacementBindingApiVersion, PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { PolicySetApiGroup, PolicySetKind } from '../common/resources/IPolicySet'
-import { clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
+import { clusters, clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { RouteE } from '../Routes'
 import { PlacementWizard } from './PlacementWizard'
@@ -68,6 +68,7 @@ export function CreatePlacement() {
             bindingSubjectKind={PolicySetKind}
             bindingSubjectApiGroup={PolicySetApiGroup}
             resources={[]}
+            clusters={clusters}
         />
     )
 }
@@ -88,6 +89,7 @@ export function CreatePlacementRule() {
             bindingSubjectKind={PolicySetKind}
             bindingSubjectApiGroup={PolicySetApiGroup}
             resources={[{ ...PlacementRuleType, metadata: { name: '', namespace: '' } }]}
+            clusters={clusters}
         />
     )
 }
@@ -109,6 +111,7 @@ export function EditPlacement() {
             defaultPlacementType={PlacementKind}
             bindingSubjectKind={PolicySetKind}
             bindingSubjectApiGroup={PolicySetApiGroup}
+            clusters={clusters}
         />
     )
 }
@@ -130,6 +133,7 @@ export function EditPlacementRule() {
             defaultPlacementType={PlacementRuleKind}
             bindingSubjectKind={PolicySetKind}
             bindingSubjectApiGroup={PolicySetApiGroup}
+            clusters={clusters}
         />
     )
 }
@@ -151,6 +155,7 @@ export function EditPlacements() {
             defaultPlacementType={PlacementRuleKind}
             bindingSubjectKind={PolicySetKind}
             bindingSubjectApiGroup={PolicySetApiGroup}
+            clusters={clusters}
         />
     )
 }
