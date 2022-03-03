@@ -29,14 +29,7 @@ describe('create policy set', () => {
         cy.get('#add-button').click()
         cy.get('#label-expressions').within(() => {
             cy.get('#key').click().get('#region').click()
-            cy.get('#values')
-                .click()
-                .get('.pf-c-check')
-                .contains('us-east-1')
-                .parent()
-                .within(() => {
-                    cy.get('[type="checkbox"]').check()
-                })
+            cy.get('#values').multiselect('us-east-1')
         })
         cy.contains('Next').click()
     })

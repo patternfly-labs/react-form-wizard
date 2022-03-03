@@ -23,3 +23,12 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('multiselect', { prevSubject: 'element' }, (subject: JQuery<HTMLElement>, text: string) => {
+    cy.wrap(subject)
+        .click()
+        .get('.pf-c-check')
+        .contains(text)
+        .parent()
+        .within(() => cy.get('[type="checkbox"]').check())
+})
