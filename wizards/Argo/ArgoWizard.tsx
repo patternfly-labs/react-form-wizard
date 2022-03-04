@@ -585,7 +585,7 @@ function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSe
     const namespaceClusterSetNames =
         props.clusterSetBindings
             ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === applicationSet?.metadata?.namespace)
-            .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
+            .map((clusterSetBinding) => clusterSetBinding.spec?.clusterSet ?? '') ?? []
 
     const { update } = useData()
     return (
@@ -624,7 +624,7 @@ function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSe
             </DetailsHidden>
             {hasPlacement ? (
                 <ItemSelector selectKey="kind" selectValue={PlacementKind}>
-                    <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} />
+                    <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} hideName />
                 </ItemSelector>
             ) : (
                 <ItemSelector selectKey="kind" selectValue="ApplicationSet">

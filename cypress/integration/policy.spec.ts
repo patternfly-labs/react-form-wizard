@@ -38,24 +38,27 @@ describe('policy wizard', () => {
 
     it('security groups', () => {
         cy.get('#categories').within(() => {
-            cy.get('#categories-1').type('category-1')
+            cy.get('#add-button').click()
+            cy.get('#categories-2').type('category-1')
 
             cy.get('#add-button').click()
-            cy.get('#categories-2').type('category-2')
+            cy.get('#categories-3').type('category-2')
         })
 
         cy.get('#standards').within(() => {
-            cy.get('#standards-1').type('standard-1')
+            cy.get('#add-button').click()
+            cy.get('#standards-2').type('standard-1')
 
             cy.get('#add-button').click()
-            cy.get('#standards-2').type('standard-2')
+            cy.get('#standards-3').type('standard-2')
         })
 
         cy.get('#controls').within(() => {
-            cy.get('#controls-1').type('control-1')
+            cy.get('#add-button').click()
+            cy.get('#controls-2').type('control-1')
 
             cy.get('#add-button').click()
-            cy.get('#controls-2').type('control-2')
+            cy.get('#controls-3').type('control-2')
         })
 
         cy.contains('Next').click()

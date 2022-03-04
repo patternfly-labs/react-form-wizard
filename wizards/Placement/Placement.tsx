@@ -1,14 +1,15 @@
 import { SelectOption } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useMemo } from 'react'
-import { ArrayInput, EditMode, Hidden, KeyValue, NumberInput } from '../../src'
+import { ArrayInput, EditMode, Hidden, KeyValue, NumberInput, TextInput } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { Multiselect } from '../../src/inputs/Multiselect'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
-import { PlacementKind, PlacementType, Predicate } from '../common/resources/IPlacement'
+import { IPlacement, PlacementKind, PlacementType, Predicate } from '../common/resources/IPlacement'
 import { useLabelValuesMap } from '../common/useLabelValuesMap'
+import { isValidKubernetesName } from '../common/validation'
 import { MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
 export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string; clusters: IResource[] }) {
@@ -23,7 +24,7 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
         return (
             props.clusterSetBindings
                 ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === namespace)
-                .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
+                .map((clusterSetBinding) => clusterSetBinding.spec?.clusterSet ?? '') ?? []
         )
     }, [props.bindingKind, props.clusterSetBindings, resources])
 
@@ -46,10 +47,24 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
     )
 }
 
-export function Placement(props: { namespaceClusterSetNames: string[]; clusters: IResource[] }) {
+export function Placement(props: { namespaceClusterSetNames: string[]; clusters: IResource[]; hideName?: boolean }) {
     const editMode = useEditMode()
+    const placement = useItem() as IPlacement
+
     return (
         <Fragment>
+            {!props.hideName && (
+                <TextInput
+                    id="name"
+                    path="metadata.name"
+                    label="Name"
+                    required
+                    readonly={placement.metadata?.uid !== undefined}
+                    helperText="The name of the placement should match the placement name in a placement binding so that it is bound to a policy or policy set. The placement name must be unique to the namespace."
+                    validation={isValidKubernetesName}
+                />
+            )}
+
             {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
             <Multiselect
                 label="Cluster sets"
@@ -79,11 +94,7 @@ export function Placement(props: { namespaceClusterSetNames: string[]; clusters:
                 path="spec.predicates"
                 placeholder="Add cluster selector"
                 collapsedContent={<PredicateSummary />}
-                helperText="
-            A cluster selector further selects clusters from the clusters in the cluster sets which have bindings to the namespace.
-            Clusters matching any cluster selector will be selected.
-            Clusters must match all cluster selector criteria to be selected by that cluster selector.
-            "
+                helperText="A cluster selector further selects clusters from the clusters in the cluster sets which have bindings to the namespace. Clusters matching any cluster selector will be selected."
                 defaultCollapsed
                 hidden={(placement) => {
                     if (editMode === EditMode.Edit) return false
@@ -108,30 +119,17 @@ export function PlacementPredicate(props: { rootPath?: string; clusters: IResour
     const rootPath = props.rootPath ?? ''
     const editMode = useEditMode()
     const labelValuesMap = useLabelValuesMap(props.clusters)
-    const item = useItem()
-    const labelSelectorMatchLabels = useMemo(
-        () => get(item, `${rootPath}requiredClusterSelector.labelSelector.matchLabels`),
-        [item, rootPath]
-    )
-    const claimSelectorMatchLabels = useMemo(
-        () => get(item, `${rootPath}requiredClusterSelector.claimSelector.matchLabels`),
-        [item, rootPath]
-    )
-    const inputLabel = useMemo(() => {
-        if (labelSelectorMatchLabels || claimSelectorMatchLabels) return 'Label selectors'
-        return 'Label expressions'
-    }, [claimSelectorMatchLabels, labelSelectorMatchLabels])
     return (
         <Fragment>
             <KeyValue
-                label="Cluster label selectors"
+                label="Label selectors"
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchLabels`}
                 labelHelp="Select clusters from the clusters in selected cluster sets using cluster labels. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
                 placeholder="Add cluster label selector"
-                hidden={() => labelSelectorMatchLabels === undefined}
+                hidden={(item) => get(item, `${rootPath}requiredClusterSelector.labelSelector.matchLabels`) === undefined}
             />
             <ArrayInput
-                label={inputLabel}
+                label="Label expressions"
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchExpressions`}
                 placeholder="Add label expression"
                 labelHelp="Select clusters from the clusters in selected cluster sets using cluster labels. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
@@ -176,7 +174,7 @@ export function PredicateSummary() {
         <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
             {labelSelectors.length > 0 && (
                 <div style={{ display: 'flex', gap: 4, flexDirection: 'column' }}>
-                    <div className="pf-c-form__label pf-c-form__label-text">Cluster label selectors</div>
+                    <div className="pf-c-form__label pf-c-form__label-text">Label selectors</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {labelSelectors.map((labelSelector) => (
                             <span key={labelSelector}>{labelSelector}</span>
@@ -186,7 +184,7 @@ export function PredicateSummary() {
             )}
             {labelSelectorExpressions.length > 0 && (
                 <div style={{ display: 'flex', gap: 4, flexDirection: 'column' }}>
-                    <div className="pf-c-form__label pf-c-form__label-text">Cluster label expressions</div>
+                    <div className="pf-c-form__label pf-c-form__label-text">Label expressions</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {labelSelectorExpressions.map((expression, index) => (
                             <MatchExpressionSummary key={index} expression={expression} />

@@ -5,5 +5,6 @@ export interface IResource {
         name?: string
         namespace?: string
         labels?: Record<string, string>
+        uid?: string
     }
 }

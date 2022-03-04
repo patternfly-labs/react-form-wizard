@@ -25,12 +25,7 @@ export function PolicySetExamples() {
                 {
                     id: 'placements',
                     label: 'Placement Types',
-                    filters: [
-                        { value: 'Placement' },
-                        { value: 'Placement Binding' },
-                        { value: 'Placement Rule' },
-                        { value: 'Placement Rule Binding' },
-                    ],
+                    filters: [{ value: 'Placement' }, { value: 'Placement Rule' }],
                 },
             ]}
             cards={[
@@ -38,37 +33,37 @@ export function PolicySetExamples() {
                     title: 'Create policy set',
                     descriptions: ['Create a new policy set.'],
                     // featureGroups: [{ title: 'Features', features: ['Create a new policy set.'] }],
-                    labels: ['Placement'],
+                    labels: ['PlacementRule'],
                     onClick: () => history.push(RouteE.CreatePolicySet),
                 },
                 {
                     title: 'Edit policy set with single placement',
                     featureGroups: [{ title: 'Features', features: ['Single placement'] }],
-                    labels: ['Placement', 'Placement Binding'],
+                    labels: ['Placement'],
                     onClick: () => history.push(RouteE.EditPolicySet1),
                 },
                 {
                     title: 'Edit policy set with two placements',
                     featureGroups: [{ title: 'Features', features: ['Two placements'] }],
-                    labels: ['Placement', 'Placement Binding'],
+                    labels: ['Placement'],
                     onClick: () => history.push(RouteE.EditPolicySet2),
                 },
                 {
                     title: 'Edit policy set with single placement rule',
                     featureGroups: [{ title: 'Features', features: ['Single placement rule'] }],
-                    labels: ['Placement Rule', 'Placement Rule Binding'],
+                    labels: ['Placement Rule'],
                     onClick: () => history.push(RouteE.EditPolicySet3),
                 },
                 {
                     title: 'Edit policy set with two placement rules',
                     featureGroups: [{ title: 'Features', features: ['Two placements rules'] }],
-                    labels: ['Placement Rule', 'Placement Rule Binding'],
+                    labels: ['Placement Rule'],
                     onClick: () => history.push(RouteE.EditPolicySet4),
                 },
                 {
                     title: 'Edit policy set with both placement types',
                     featureGroups: [{ title: 'Features', features: ['Two placements', 'Two placement rules'] }],
-                    labels: ['Placement', 'Placement Rule', 'Placement Binding', 'Placement Rule Binding'],
+                    labels: ['Placement', 'Placement Rule'],
                     onClick: () => history.push(RouteE.EditPolicySet5),
                 },
                 // {
@@ -270,14 +265,14 @@ export function EditPolicySet8() {
 
 const policySetResource: IResource = {
     ...PolicySetType,
-    metadata: { name: 'my-policy-set', namespace: 'my-namespace-1' },
+    metadata: { name: 'my-policy-set', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
     spec: { policies: ['my-policy-1', 'my-policy-2'] },
 } as IResource
 
 const singlePlacementResources: IResource[] = [
     {
         ...PlacementType,
-        metadata: { name: 'my-policy-set-placement-1', namespace: 'my-namespace-1' },
+        metadata: { name: 'my-policy-set-placement-1', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
         spec: {
             clusterSets: ['my-cluster-set-1'],
             predicates: [
@@ -298,7 +293,7 @@ const singlePlacementResources: IResource[] = [
     } as IResource,
     {
         ...PlacementBindingType,
-        metadata: { name: 'my-policy-set-placement-1-binding', namespace: 'my-namespace-1' },
+        metadata: { name: 'my-policy-set-placement-1-binding', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
         placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-1' },
         subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
     } as IResource,
@@ -310,7 +305,7 @@ const twoPlacementResources: IResource[] = [
     ...singlePlacementResources,
     {
         ...PlacementType,
-        metadata: { name: 'my-policy-set-placement-2', namespace: 'my-namespace-1' },
+        metadata: { name: 'my-policy-set-placement-2', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
         spec: {
             numberOfClusters: 1,
             clusterSets: ['policy-test-cluster-set'],
@@ -344,7 +339,7 @@ const twoPlacementResources: IResource[] = [
     } as IResource,
     {
         ...PlacementBindingType,
-        metadata: { name: 'my-policy-set-placement-2-binding', namespace: 'my-namespace-1' },
+        metadata: { name: 'my-policy-set-placement-2-binding', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
         placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-2' },
         subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
     } as IResource,
@@ -355,7 +350,7 @@ const policySetWithTwoPlacementResources: IResource[] = [policySetResource, ...t
 const singlePlacementRuleResources: IResource[] = [
     {
         ...PlacementRuleType,
-        metadata: { name: 'my-policy-set-placement-rule-1', namespace: 'my-namespace-1' },
+        metadata: { name: 'my-policy-set-placement-rule-1', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
         spec: {
             clusterSelector: {
                 matchExpressions: [
@@ -369,8 +364,12 @@ const singlePlacementRuleResources: IResource[] = [
     } as IResource,
     {
         ...PlacementBindingType,
-        metadata: { name: 'my-policy-set-placement-rule-1-binding', namespace: 'my-namespace-1' },
-        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-rule-1' },
+        metadata: {
+            name: 'my-policy-set-placement-rule-1-binding',
+            namespace: 'my-namespace-1',
+            uid: '00000000-0000-0000-0000-000000000000',
+        },
+        placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: 'my-policy-set-placement-rule-1' },
         subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
     } as IResource,
 ]
@@ -381,7 +380,7 @@ const twoPlacementRuleResources: IResource[] = [
     ...policySetWithSinglePlacementRuleResources,
     {
         ...PlacementRuleType,
-        metadata: { name: 'my-policy-set-placement-rule-2', namespace: 'my-namespace-1' },
+        metadata: { name: 'my-policy-set-placement-rule-2', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
         spec: {
             clusterSelector: {
                 matchExpressions: [
@@ -395,8 +394,12 @@ const twoPlacementRuleResources: IResource[] = [
     } as IResource,
     {
         ...PlacementBindingType,
-        metadata: { name: 'my-policy-set-placement-rule-2-binding', namespace: 'my-namespace-1' },
-        placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-rule-2' },
+        metadata: {
+            name: 'my-policy-set-placement-rule-2-binding',
+            namespace: 'my-namespace-1',
+            uid: '00000000-0000-0000-0000-000000000000',
+        },
+        placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: 'my-policy-set-placement-rule-2' },
         subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
     } as IResource,
 ]
@@ -411,14 +414,14 @@ const policySetWithTwoPlacementAndTwoPlacementRuleResources: IResource[] = [
 
 const placementBindingResource: IResource = {
     ...PlacementBindingType,
-    metadata: { name: 'my-policy-set-placement-binding', namespace: 'my-namespace-1' },
+    metadata: { name: 'my-policy-set-placement-binding', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
     placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-placement-1' },
     subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
 } as IResource
 
 const placementRuleBindingResource: IResource = {
     ...PlacementBindingType,
-    metadata: { name: 'my-policy-set-placement-rule-binding', namespace: 'my-namespace-1' },
+    metadata: { name: 'my-policy-set-placement-rule-binding', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
     placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: 'my-placement-rule-1' },
     subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
 } as IResource

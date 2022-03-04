@@ -1,8 +1,13 @@
+import { Fragment } from 'react'
 import { ArrayInput, Select, TextInput } from '../../src'
+import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
 import { PlacementApiGroup, PlacementKind } from '../common/resources/IPlacement'
-import { PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
+import { IPlacementBinding, IPlacementSubject, PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind } from '../common/resources/IPlacementRule'
+import { PolicyApiGroup } from '../common/resources/IPolicy'
+import { PolicySetApiGroup } from '../common/resources/IPolicySet'
+import { isValidKubernetesName } from '../common/validation'
 
 export function PlacementBindings(props: {
     placementCount: number
@@ -25,45 +30,31 @@ export function PlacementBindings(props: {
             collapsedPlaceholder="Expand to enter binding"
             defaultCollapsed
             isSection
-            // hidden={() => {
-            //     if (editMode === EditMode.Create) return true
-            //     return !props.hasPlacement && !props.hasPlacementRules && !props.hasPlacementBindings
-            // }}
             newValue={{
                 ...PlacementBindingType,
                 metadata: {},
+                // TODO default? - Placement vs PlacementRule
                 placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
                 subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
             }}
-            // dropdownItems={
-            //     props.hasPlacementRules
-            //         ? [
-            //               {
-            //                   label: 'Add placement binding',
-            //                   action: () => ({
-            //                       apiVersion: 'policy.open-cluster-management.io/v1',
-            //                       kind: 'PlacementBinding',
-            //                       metadata: {},
-            //                       placementRef: { apiGroup: 'cluster.open-cluster-management.io', kind: PlacemenKind },
-            //                       subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
-            //                   }),
-            //               },
-            //               {
-            //                   label: 'Add placement rule binding',
-            //                   action: () => ({
-            //                       apiVersion: 'policy.open-cluster-management.io/v1',
-            //                       kind: 'PlacementBinding',
-            //                       metadata: {},
-            //                       placementRef: { apiGroup: 'apps.open-cluster-management.io', kind: 'PlacementRule' },
-            //                       subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }],
-            //                   }),
-            //               },
-            //           ]
-            //         : undefined
-            // }
         >
-            <TextInput path="metadata.name" label="Binding name" required />
-            {/* <TextInput path="placementRef.name" label="Placement name" required readonly={true} /> */}
+            <PlacementBinding bindingSubjectKind={props.bindingSubjectKind} bindingSubjectApiGroup={props.bindingSubjectApiGroup} />
+        </ArrayInput>
+    )
+}
+
+function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApiGroup?: string }) {
+    const placementBinding: IPlacementBinding = useItem()
+    return (
+        <Fragment>
+            <TextInput
+                path="metadata.name"
+                label="Binding name"
+                readonly={placementBinding.metadata?.uid !== undefined}
+                required
+                helperText="The placement binding name must be unique to the namespace."
+                validation={isValidKubernetesName}
+            />
             <Select
                 path="placementRef.kind"
                 label="Placement kind"
@@ -71,22 +62,38 @@ export function PlacementBindings(props: {
                 required
                 options={['Placement', PlacementRuleKind]}
             />
-            <Select
+            <TextInput
                 path="placementRef.name"
-                label="Placement"
-                helperText="The placement used to select clusters."
+                label="Placement name"
                 required
                 hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
-                options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
+                helperText="The placement name should match the name of a placement in this namespace.."
+                validation={isValidKubernetesName}
             />
-            <Select
+            <TextInput
                 path="placementRef.name"
-                label="Placement rule"
-                helperText="The placement rule used to select clusters for placement."
+                label="Placement rule name"
                 required
                 hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
-                options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
+                helperText="The placement rule name should match the name of a placement rule in this namespace."
+                validation={isValidKubernetesName}
             />
+            {/* <Select
+        path="placementRef.name"
+        label="Placement"
+        helperText="The placement used to select clusters."
+        required
+        hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
+        options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
+    />
+    <Select
+        path="placementRef.name"
+        label="Placement rule"
+        helperText="The placement rule used to select clusters for placement."
+        required
+        hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
+        options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
+    /> */}
             <ArrayInput
                 path="subjects"
                 label="Subjects"
@@ -96,9 +103,39 @@ export function PlacementBindings(props: {
                 collapsedPlaceholder="Expand to enter subject"
                 newValue={{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }}
             >
-                <Select path="kind" label="Subject kind" required options={['PolicySet', 'Policy']} />
-                <TextInput path="name" label="Subject name" required />
+                <Subject />
             </ArrayInput>
-        </ArrayInput>
+        </Fragment>
+    )
+}
+
+function Subject() {
+    const subject = useItem() as IPlacementSubject
+    return (
+        <Fragment>
+            <Select
+                path="kind"
+                label="Subject kind"
+                required
+                options={['PolicySet', 'Policy']}
+                onValueChange={(value) => {
+                    switch (value) {
+                        case 'PolicySet':
+                            subject.apiGroup = PolicySetApiGroup
+                            break
+                        case 'Policy':
+                            subject.apiGroup = PolicyApiGroup
+                            break
+                    }
+                }}
+            />
+            <TextInput
+                path="name"
+                label="Subject name"
+                required
+                helperText="The subject name should match the name of a policy or policy set in this namespace."
+                validation={isValidKubernetesName}
+            />
+        </Fragment>
     )
 }

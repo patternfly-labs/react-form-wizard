@@ -126,7 +126,7 @@ function PoliciesSection(props: { policies: IResource[] }) {
         return props.policies.filter((policy) => policy.metadata?.namespace === namespace)
     }, [props.policies, resources])
     return (
-        <Section label="Policies" description="Select the policies you want to add to this set">
+        <Section label="Policies">
             <ItemSelector selectKey="kind" selectValue={PolicySetKind}>
                 <TableSelect
                     id="policies"
@@ -139,7 +139,8 @@ function PoliciesSection(props: { policies: IResource[] }) {
                     items={namespacedPolicies}
                     itemToValue={(policy: IResource) => policy.metadata?.name}
                     valueMatchesItem={(value: unknown, policy: IResource) => value === policy.metadata?.name}
-                    emptyMessage="No policies available for selection. Set the namespace to be able to select policies in that namespace."
+                    emptyTitle="No policies available for selection."
+                    emptyMessage="Select a namespace to be able to select policies in that namespace."
                 />
             </ItemSelector>
         </Section>

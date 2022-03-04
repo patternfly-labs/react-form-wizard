@@ -1,11 +1,11 @@
-import get from 'get-value'
-import { Fragment, useMemo } from 'react'
-import { ArrayInput, EditMode, KeyValue } from '../../src'
+import { Fragment } from 'react'
+import { ArrayInput, EditMode, KeyValue, TextInput } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
-import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
+import { IPlacementRule, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { useLabelValuesMap } from '../common/useLabelValuesMap'
+import { isValidKubernetesName } from '../common/validation'
 import { MatchExpression, MatchExpressionCollapsed } from './MatchExpression'
 
 export function PlacementRules(props: { clusters: IResource[] }) {
@@ -34,43 +34,42 @@ export function PlacementRules(props: { clusters: IResource[] }) {
     )
 }
 
-export function PlacementRule(props: { clusters: IResource[] }) {
+export function PlacementRule(props: { clusters: IResource[]; hideName?: boolean }) {
     const editMode = useEditMode()
     const labelValuesMap = useLabelValuesMap(props.clusters)
-    const item = useItem()
-    const labelSelectorMatchLabels = useMemo(() => get(item, `spec.clusterSelector.matchLabels`), [item])
-    const inputLabel = useMemo(() => {
-        if (labelSelectorMatchLabels) return 'Label expressions'
-        return 'Label selectors'
-    }, [labelSelectorMatchLabels])
-    const addLabel = useMemo(() => {
-        if (labelSelectorMatchLabels) return 'Add label expressions'
-        return 'Add selector'
-    }, [labelSelectorMatchLabels])
+    const placementRule = useItem() as IPlacementRule
+    const inputLabel = 'Label expressions'
+    const addLabel = 'Add label expression'
     return (
         <Fragment>
-            {/* <TextInput
-                id="name"
-                path="metadata.name"
-                label="Name"
-                required
-                helperText="The name of the placement rule should match the rule name in a placement binding so that it is bound to a policy."
-            /> */}
+            {!props.hideName && (
+                <TextInput
+                    id="name"
+                    path="metadata.name"
+                    label="Name"
+                    required
+                    readonly={placementRule.metadata?.uid !== undefined}
+                    helperText="The name of the placement rule should match the placement rule name in a placement binding so that it is bound to a policy or policy set. The placement rule name must be unique to the namespace."
+                    validation={isValidKubernetesName}
+                />
+            )}
             <KeyValue
-                label="Cluster label selector"
+                label="Label selectors"
                 path={`spec.clusterSelector.matchLabels`}
-                labelHelp="A cluster label selector allows simple selection of clusters using cluster labels."
+                labelHelp="A label selector allows selection of clusters using cluster labels. A cluster must match all label selectors and label expressions to be selected."
                 placeholder="Add cluster label selector"
-                hidden={(item) => get(item, `spec.clusterSelector.matchLabels`) === undefined}
+                hidden={() => placementRule.spec?.clusterSelector?.matchLabels === undefined}
             />
             <ArrayInput
                 id="label-expressions"
                 label={inputLabel}
                 path="spec.clusterSelector.matchExpressions"
+                labelHelp="A label expressions allow selection of clusters using cluster labels. A cluster must match all label selectors and label expressions to be selected."
                 placeholder={addLabel}
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [] }}
                 defaultCollapsed={editMode !== EditMode.Create}
+                helperText="A placement with out any label selectors or label expressions will select all clusters."
             >
                 <MatchExpression labelValuesMap={labelValuesMap} />
             </ArrayInput>

@@ -8,9 +8,9 @@ import { useSetHasInputs } from '../../src/contexts/HasInputsProvider'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
-import { PlacementApiGroup, PlacementApiVersion, PlacementKind } from '../common/resources/IPlacement'
+import { IPlacement, PlacementApiGroup, PlacementApiVersion, PlacementKind } from '../common/resources/IPlacement'
 import { PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
-import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
+import { IPlacementRule, PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { Sync } from '../common/Sync'
 import { Placement, Placements } from './Placement'
 import { PlacementBindings } from './PlacementBinding'
@@ -42,15 +42,26 @@ export function PlacementSection(props: {
     const [isAdvanced, setIsAdvanced] = useState(false)
     useEffect(() => {
         let isAdvanced = false
+        const placements: IPlacement[] = resources?.filter((resource) => resource.kind === PlacementKind)
+        const placementCount = placements.length
+        const placementRules: IPlacementRule[] = resources?.filter((resource) => resource.kind === PlacementRuleKind)
+        const placementRuleCount = placementRules.length
+        const placementBindingCount = resources?.filter((resource) => resource.kind === PlacementBindingKind).length
+
         if (placementCount + placementRuleCount > 1) isAdvanced = true
         if (placementBindingCount > 1) isAdvanced = true
+
+        for (const placement of placements) {
+            if (placement?.spec?.predicates && placement.spec.predicates.length > 1) isAdvanced = true
+        }
+
         if (isAdvanced) {
             setIsAdvanced(isAdvanced)
         } else if (editMode === EditMode.Create) {
             // Only in create mode switch back to simple mode
             setIsAdvanced(false)
         }
-    }, [placementCount, placementRuleCount, placementBindingCount, setIsAdvanced, editMode])
+    }, [setIsAdvanced, editMode, resources])
 
     useEffect(() => {
         const placementCount = resources?.filter((resource) => resource.kind === PlacementKind).length
@@ -84,7 +95,7 @@ export function PlacementSection(props: {
         return (
             props.existingclusterSetBindings
                 ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === namespace)
-                .map((clusterSetBinding) => clusterSetBinding.spec.clusterSet) ?? []
+                .map((clusterSetBinding) => clusterSetBinding.spec?.clusterSet ?? '') ?? []
         )
     }, [props.bindingSubjectKind, props.existingclusterSetBindings, resources])
 
@@ -173,7 +184,7 @@ export function PlacementSection(props: {
                     <Sync kind={PlacementRuleKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
 
                     <ItemSelector selectKey="kind" selectValue={PlacementRuleKind}>
-                        <PlacementRule clusters={props.clusters} />
+                        <PlacementRule clusters={props.clusters} hideName />
                     </ItemSelector>
                 </Fragment>
             )}

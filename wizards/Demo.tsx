@@ -94,7 +94,7 @@ const wizards: IWizard[] = [
         name: 'Ansible automation',
         route: RouteE.Ansible,
         description: 'Multi-Cluster Engine uses ansible to run ansible jobs during cluster provisioning and upgrade.',
-        labels: ['MCE'],
+        labels: ['Multi-Cluster Engine'],
         state: StateE.beta,
     },
     {
@@ -102,7 +102,7 @@ const wizards: IWizard[] = [
         name: 'Application',
         route: RouteE.Application,
         description: 'Advanced Cluster Management configures applications for deployment to clusters managed by ACM.',
-        labels: ['ACM'],
+        labels: ['Advanced Cluster Management'],
         state: StateE.alpha,
     },
     {
@@ -110,8 +110,8 @@ const wizards: IWizard[] = [
         name: 'ArgoCD',
         route: RouteE.ArgoCD,
         description: 'Advanced Cluster Management configures applications for deployment to clusters managed by ACM.',
-        labels: ['ACM'],
-        state: StateE.alpha,
+        labels: ['Advanced Cluster Management'],
+        state: StateE.beta,
     },
     {
         shortName: 'Cluster',
@@ -120,7 +120,7 @@ const wizards: IWizard[] = [
         state: StateE.prototype,
         description:
             'Multi-Cluster Engine creates clusters on cloud providers. This is an early prototype of a possible cluster wizard flow.',
-        labels: ['MCE'],
+        labels: ['Multi-Cluster Engine'],
     },
     {
         shortName: 'Credentials',
@@ -128,7 +128,7 @@ const wizards: IWizard[] = [
         route: RouteE.Credentials,
         description:
             'Multi-Cluster Engine uses credentials to provision clusters on cloud providers. Credentials are also used for integrations such as automation using Ansible.',
-        labels: ['MCE'],
+        labels: ['Multi-Cluster Engine'],
         state: StateE.alpha,
     },
     {
@@ -137,7 +137,7 @@ const wizards: IWizard[] = [
         route: RouteE.Placement,
         description:
             'Advanced Cluster Management has placement custom resources to control the placement of various resources on managed clusters. This is an early prototype of common wizard functionality for handling placement.',
-        labels: ['ACM'],
+        labels: ['Advanced Cluster Management'],
         state: StateE.prototype,
     },
     {
@@ -146,16 +146,15 @@ const wizards: IWizard[] = [
         route: RouteE.Policy,
         description:
             'Advanced Cluster Management uses policies to generate reports and validate a cluster compliance based on specified security standards, categories, and controls.',
-        labels: ['ACM'],
-        state: StateE.alpha,
+        labels: ['Advanced Cluster Management'],
+        state: StateE.beta,
     },
     {
         shortName: 'Policy Set',
         name: 'Policy Set',
         route: RouteE.PolicySet,
         description: 'Advanced Cluster Management groups policies in policy sets.',
-        labels: ['ACM'],
-        state: StateE.beta,
+        labels: ['Advanced Cluster Management'],
     },
     {
         shortName: 'ROSA',
@@ -285,7 +284,7 @@ function ExampleWizards() {
                 {
                     id: 'labels',
                     label: 'Products',
-                    filters: [{ value: 'ACM' }, { value: 'MCE' }],
+                    filters: [{ value: 'Advanced Cluster Management' }, { value: 'Multi-Cluster Engine' }],
                 },
             ]}
             cards={wizards.map((wizard) => ({

@@ -33,12 +33,12 @@ describe('edit policy set', () => {
         const expected = [
             {
                 ...PolicySetType,
-                metadata: { name: 'my-policy-set', namespace: 'my-namespace-1' },
+                metadata: { name: 'my-policy-set', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
                 spec: { policies: ['my-policy-1', 'my-policy-2'] },
             },
             {
                 ...PlacementType,
-                metadata: { name: 'my-policy-set-placement-1', namespace: 'my-namespace-1' },
+                metadata: { name: 'my-policy-set-placement-1', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
                 spec: {
                     clusterSets: ['my-cluster-set-1'],
                     predicates: [
@@ -59,7 +59,11 @@ describe('edit policy set', () => {
             },
             {
                 ...PlacementBindingType,
-                metadata: { name: 'my-policy-set-placement-1-binding', namespace: 'my-namespace-1' },
+                metadata: {
+                    name: 'my-policy-set-placement-1-binding',
+                    namespace: 'my-namespace-1',
+                    uid: '00000000-0000-0000-0000-000000000000',
+                },
                 placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: 'my-policy-set-placement-1' },
                 subjects: [{ apiGroup: PolicySetApiGroup, kind: PolicySetKind, name: 'my-policy-set' }],
             },

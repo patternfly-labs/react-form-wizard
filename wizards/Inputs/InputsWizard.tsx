@@ -156,6 +156,7 @@ export function InputsWizard() {
                         items={new Array(100).fill(0).map((_, i) => ({ name: `Item ${i + 1}` }))}
                         itemToValue={(item: unknown) => (item as any).name}
                         valueMatchesItem={(value: unknown, item: { name: string }) => value === item.name}
+                        emptyTitle="Nothing available for selection."
                         emptyMessage="Nothing available for selection."
                     />
                 </Section>

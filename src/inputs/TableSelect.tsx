@@ -7,10 +7,13 @@ import {
     DropdownPosition,
     DropdownToggle,
     DropdownToggleCheckbox,
+    EmptyState,
+    EmptyStateBody,
     List,
     ListItem,
     Pagination,
     PaginationVariant,
+    Title,
 } from '@patternfly/react-core'
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
@@ -30,6 +33,7 @@ export type TableSelectProps<T> = InputCommonProps<string> & {
     items: T[]
     itemToValue?: (item: T) => unknown
     valueMatchesItem?: (value: unknown, item: T) => boolean
+    emptyTitle: string
     emptyMessage: string
     summaryList?: boolean
 }
@@ -130,7 +134,14 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
     }
 
     if (props.items.length === 0) {
-        return <div>{props.emptyMessage}</div>
+        return (
+            <EmptyState>
+                <Title headingLevel="h4" size="lg">
+                    {props.emptyTitle}
+                </Title>
+                <EmptyStateBody>{props.emptyMessage}</EmptyStateBody>
+            </EmptyState>
+        )
     }
 
     return (
