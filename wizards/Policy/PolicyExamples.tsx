@@ -50,7 +50,7 @@ export function PolicyExamples() {
             filterGroups={[
                 {
                     id: 'security-groups',
-                    label: 'Security Groups',
+                    label: 'Policy annotations',
                     filters: [
                         { value: 'Access Control' },
                         { value: 'Security Assessment and Authorization' },

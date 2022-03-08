@@ -55,7 +55,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                     display: 'flex',
                     borderBottom: 'thin solid #ffffff30',
                     justifyContent: 'end',
-                    backgroundColor: '#ffffff18',
+                    backgroundColor: color.background,
                     color: 'white',
                     alignItems: 'center',
                 }}
@@ -159,6 +159,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                                         }
                                     }
                                 }}
+                                spellCheck="false"
                             />
                         </small>
                     </pre>

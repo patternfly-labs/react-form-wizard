@@ -1,4 +1,4 @@
-import { Button, Text, Title } from '@patternfly/react-core'
+import { Button, Stack, Text, Title } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useContext } from 'react'
 import set from 'set-value'
@@ -8,6 +8,7 @@ import {
     EditMode,
     Hidden,
     ItemSelector,
+    NumberInput,
     Radio,
     RadioGroup,
     Section,
@@ -20,7 +21,8 @@ import {
     WizardPage,
     WizardSubmit,
 } from '../../src'
-import { ItemContext } from '../../src/contexts/ItemContext'
+import { useEditMode } from '../../src/contexts/EditModeContext'
+import { ItemContext, useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementBindingKind } from '../common/resources/IPlacementBinding'
@@ -29,7 +31,7 @@ import { PolicyApiGroup, PolicyKind, PolicyType } from '../common/resources/IPol
 import { Sync } from '../common/Sync'
 import { isValidKubernetesName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
-import { Specifications } from './templates'
+import { Specifications } from './specifications'
 
 export function PolicyWizard(props: {
     title: string
@@ -44,55 +46,6 @@ export function PolicyWizard(props: {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
 }) {
-    // const clusterSelectors = useMemo(
-    //     () =>
-    //         ['cloud: "Amazon"', 'namespace-1', 'namespace-2'].map((selector) => ({
-    //             id: selector,
-    //             label: selector,
-    //             value: selector,
-    //         })),
-    //     []
-    // )
-    // const specifications = useMemo(
-    //     () => Specifications.map((specification) => ({ id: specification.name, label: specification.description, value: specification })),
-    //     []
-    // )
-    // const standards = useMemo(
-    //     () =>
-    //         ['NIST', 'NIST-CSF', 'PCI', 'FISMA', 'HIPAA', 'NIST SP 800-53'].map((standard) => ({
-    //             label: standard,
-    //         })),
-    //     []
-    // )
-    // const categories = useMemo(
-    //     () =>
-    //         [
-    //             'PR.PT Protective Technology',
-    //             'PR.DS Data Security',
-    //             'PR.IP Information Protection Processes and Procedures',
-    //             'PR.AC Identity Management and Access Control',
-    //             'DE.CM Security Continuous Monitoring',
-    //             'AC Access Control',
-    //         ].map((category) => ({ label: category })),
-    //     []
-    // )
-    // const controls = useMemo(
-    //     () =>
-    //         [
-    //             'PR.PT-1 Audit Logging',
-    //             'PR.PT-3 Least Functionality',
-    //             'PR.DS-1 Data-at-rest',
-    //             'PR.DS-2 Data-in-transit',
-    //             'PR.AC-4 Access Control',
-    //             'PR.AC-5 Network Integrity',
-    //             'PR.IP-1 Baseline Configuration',
-    //             'DE.CM-7 Monitoring for Unauthorized Activity',
-    //             'DE.CM-8 Vulnerability Scans',
-    //             'AC-3 Access Enforcement',
-    //         ].map((control) => ({ label: control })),
-    //     []
-    // )
-
     return (
         <WizardPage
             title={props.title}
@@ -105,7 +58,7 @@ export function PolicyWizard(props: {
                     {
                         ...PolicyType,
                         metadata: { name: '', namespace: '' },
-                        spec: { remediationAction: 'inform', disabled: false },
+                        spec: { disabled: false },
                     },
                 ]
             }
@@ -145,7 +98,7 @@ export function PolicyWizard(props: {
                             }
                             disabledInEditMode
                         />
-                        <RadioGroup path="spec.remediationAction" label="Remediation" required>
+                        <RadioGroup path="spec.remediationAction" label="Remediation">
                             <Radio
                                 id="inform"
                                 label="Inform"
@@ -186,9 +139,9 @@ export function PolicyWizard(props: {
                 />
             </Step>
 
-            <Step label="Security groups" id="security-groups">
+            <Step label="Policy annotations" id="security-groups">
                 <ItemSelector selectKey="kind" selectValue={PolicyKind}>
-                    <Section label="Security groups">
+                    <Section label="Policy annotations">
                         <StringsMapInput
                             id="categories"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
@@ -225,6 +178,8 @@ export function PolicyWizard(props: {
 
 export function PolicyWizardTemplates() {
     const policy = useContext(ItemContext)
+    const editMode = useEditMode()
+
     return (
         <Section label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
             <ArrayInput
@@ -232,7 +187,7 @@ export function PolicyWizardTemplates() {
                 path="spec.policy-templates"
                 label="Policy templates"
                 placeholder="Add policy template"
-                required
+                // required
                 dropdownItems={Specifications.map((specification) => {
                     return {
                         label: specification.description,
@@ -243,7 +198,7 @@ export function PolicyWizardTemplates() {
                                     `metadata.annotations.policy\\.open-cluster-management\\.io/${group}`,
                                     ''
                                 )
-                                const addValue: string = get(specification, `replacements.${group}`, '')
+                                const addValue: string = get(specification, `${group}`, '')
                                 const newValue: string = existingValue
                                     .split(',')
                                     .concat(addValue.split(','))
@@ -256,7 +211,7 @@ export function PolicyWizardTemplates() {
                                 })
                             }
 
-                            const copy = JSON.parse(JSON.stringify(specification.replacements.policyTemplates)) as any[]
+                            const copy = JSON.parse(JSON.stringify(specification.policyTemplates)) as any[]
 
                             const policyName = get(policy, 'metadata.name')
                             if (policyName) {
@@ -273,13 +228,12 @@ export function PolicyWizardTemplates() {
                     }
                 })}
                 collapsedContent="objectDefinition.metadata.name"
-                defaultCollapsed
+                defaultCollapsed={editMode !== EditMode.Create}
             >
                 {/* CertificatePolicy */}
                 <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'CertificatePolicy'}>
                     <div>
                         <Title headingLevel="h6">Certificate Policy</Title>
-                        {/* <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text> */}
                     </div>
 
                     <TextInput
@@ -295,7 +249,6 @@ export function PolicyWizardTemplates() {
                 <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'IamPolicy'}>
                     <div>
                         <Title headingLevel="h6">IAM Policy</Title>
-                        {/* <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text> */}
                     </div>
 
                     <TextInput
@@ -304,8 +257,7 @@ export function PolicyWizardTemplates() {
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
-                    {/* TODO NumberInput */}
-                    <TextInput path="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
+                    <NumberInput path="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
                 </Hidden>
 
                 {/* ConfigurationPolicy */}
@@ -325,61 +277,10 @@ export function PolicyWizardTemplates() {
                     <ArrayInput
                         path="objectDefinition.spec.object-templates"
                         label="Configuration objects"
-                        placeholder="Add configuration object"
+                        // placeholder="Add configuration object"
                         collapsedContent="objectDefinition.metadata.name"
                     >
-                        {/* Namespace */}
-                        <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'Namespace'}>
-                            <TextInput path="objectDefinition.metadata.name" label="Namespace" required />
-                        </Hidden>
-
-                        {/* LimitRange */}
-                        <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'LimitRange'}>
-                            <TextInput
-                                path="objectDefinition.metadata.name"
-                                label="Name"
-                                required
-                                helperText="Name needs to be unique to the namespace on each of the managed clusters."
-                            />
-                            <ArrayInput
-                                path="objectDefinition.spec.limits"
-                                label="Limits"
-                                placeholder="Add limit"
-                                collapsedContent={'default.memory'}
-                            >
-                                <TextInput
-                                    path="default.memory"
-                                    label="Memory limit"
-                                    placeholder="Enter memory limit"
-                                    required
-                                    helperText="Examples: 512Mi, 2Gi"
-                                />
-                                <TextInput
-                                    path="defaultRequest.memory"
-                                    label="Memory request"
-                                    placeholder="Enter memory request"
-                                    required
-                                    helperText="Examples: 512Mi, 2Gi"
-                                />
-                            </ArrayInput>
-                        </Hidden>
-
-                        {/* SecurityContextConstraints */}
-                        <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'SecurityContextConstraints'}>
-                            <TextInput
-                                path="objectDefinition.metadata.name"
-                                label="Name"
-                                required
-                                helperText="Name needs to be unique to the namespace on each of the managed clusters."
-                            />
-                            <Checkbox path="objectDefinition.allowHostDirVolumePlugin" label="Allow host dir volume plugin" />
-                            <Checkbox path="objectDefinition.allowHostIPC" label="Allow host IPC" />
-                            <Checkbox path="objectDefinition.allowHostNetwork" label="Allow host network" />
-                            <Checkbox path="objectDefinition.allowHostPID" label="Allow host PID" />
-                            <Checkbox path="objectDefinition.allowHostPorts" label="Allow host ports" />
-                            <Checkbox path="objectDefinition.allowPrivilegeEscalation" label="Allow privilege escalation" />
-                            <Checkbox path="objectDefinition.allowPrivilegedContainer" label="Allow privileged container" />
-                        </Hidden>
+                        <ObjectTemplate />
                     </ArrayInput>
                 </Hidden>
 
@@ -398,6 +299,21 @@ export function PolicyWizardTemplates() {
                     />
                 </Hidden>
 
+                <RadioGroup path="objectDefinition.spec.remediationAction" label="Remediation">
+                    <Radio
+                        id="inform"
+                        label="Inform"
+                        value="inform"
+                        description="Reports the violation, which requires manual remediation."
+                    />
+                    <Radio
+                        id="enforce"
+                        label="Enforce"
+                        value="enforce"
+                        description="Automatically runs remediation action that is defined in the source, if this feature is supported."
+                    />
+                </RadioGroup>
+
                 <Select
                     path="objectDefinition.spec.severity"
                     label="Severity"
@@ -408,4 +324,110 @@ export function PolicyWizardTemplates() {
             </ArrayInput>
         </Section>
     )
+}
+
+function ObjectTemplate() {
+    const template: any = useItem()
+    return (
+        <Fragment>
+            <Hidden hidden={(template: any) => template?.complianceType === undefined}>
+                <Stack>
+                    <Text component="small">
+                        {template?.complianceType === 'musthave'
+                            ? 'Must have'
+                            : template?.complianceType === 'mustonlyhave'
+                            ? 'Must only have'
+                            : template?.complianceType === 'mustnothave'
+                            ? 'Must not have'
+                            : template?.complianceType}
+                    </Text>
+                    <Hidden hidden={(template: any) => template?.objectDefinition?.kind === undefined}>
+                        <Title headingLevel="h6">{pascalCaseToSentenceCase(template?.objectDefinition?.kind)}</Title>
+                    </Hidden>
+                </Stack>
+            </Hidden>
+
+            <Hidden hidden={(template: any) => template?.complianceType !== undefined || template?.objectDefinition?.kind === undefined}>
+                <Title headingLevel="h6">{template?.objectDefinition?.kind}</Title>
+            </Hidden>
+
+            <TextInput
+                path="objectDefinition.metadata.name"
+                label="Name"
+                required
+                hidden={(template: any) => template?.objectDefinition?.metadata?.name === undefined}
+            />
+
+            <TextInput
+                path="objectDefinition.metadata.namespace"
+                label="Namespace"
+                required
+                hidden={(template: any) => template?.objectDefinition?.metadata?.namespace === undefined}
+            />
+
+            {/* LimitRange */}
+            <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'LimitRange'}>
+                <ArrayInput path="objectDefinition.spec.limits" label="Limits" placeholder="Add limit" collapsedContent={'default.memory'}>
+                    <TextInput
+                        path="default.memory"
+                        label="Memory limit"
+                        placeholder="Enter memory limit"
+                        required
+                        helperText="Examples: 512Mi, 2Gi"
+                    />
+                    <TextInput
+                        path="defaultRequest.memory"
+                        label="Memory request"
+                        placeholder="Enter memory request"
+                        required
+                        helperText="Examples: 512Mi, 2Gi"
+                    />
+                </ArrayInput>
+            </Hidden>
+
+            {/* SecurityContextConstraints */}
+            <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'SecurityContextConstraints'}>
+                <Checkbox path="objectDefinition.allowHostDirVolumePlugin" label="Allow host dir volume plugin" />
+                <Checkbox path="objectDefinition.allowHostIPC" label="Allow host IPC" />
+                <Checkbox path="objectDefinition.allowHostNetwork" label="Allow host network" />
+                <Checkbox path="objectDefinition.allowHostPID" label="Allow host PID" />
+                <Checkbox path="objectDefinition.allowHostPorts" label="Allow host ports" />
+                <Checkbox path="objectDefinition.allowPrivilegeEscalation" label="Allow privilege escalation" />
+                <Checkbox path="objectDefinition.allowPrivilegedContainer" label="Allow privileged container" />
+            </Hidden>
+
+            {/* ScanSettingBinding */}
+            <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ScanSettingBinding'}>
+                <ArrayInput id="profiles" label="Profiles" path="objectDefinition.profiles" collapsedContent="name">
+                    <TextInput path="kind" label="Kind" required />
+                    <TextInput path="name" label="Name" required />
+                </ArrayInput>
+            </Hidden>
+
+            {/* Role */}
+            <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'Role'}>
+                <ArrayInput id="rules" label="Rules" path="objectDefinition.rules" collapsedContent="name" placeholder="Add rule">
+                    <StringsInput label="API Groups" path="apiGroups" />
+                    <StringsInput label="Resources" path="resources" />
+                    <StringsInput label="Verbs" path="verbs" />
+                </ArrayInput>
+            </Hidden>
+
+            {/* ComplianceCheckResult */}
+            {/* <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ComplianceCheckResult'}>
+                <TextInput
+                    path={`objectDefinition.metadata.labels.compliance\\.openshift\\.io/check-status`}
+                    label="Check status"
+                    required
+                />
+                <TextInput path={`objectDefinition.metadata.labels.compliance\\.openshift\\.io/suite`} label="Suite" required />
+            </Hidden> */}
+        </Fragment>
+    )
+}
+
+function pascalCaseToSentenceCase(text: string) {
+    const result = text.replace(/([A-Z])/g, ' $1')
+    const finalResult = result.charAt(0).toUpperCase() + result.slice(1)
+    return finalResult
 }

@@ -16,8 +16,8 @@ describe('policy wizard', () => {
 
     it('templates', () => {
         cy.get('#templates').within(() => {
-            cy.contains('Add policy template').click()
-            cy.contains('Must have namespace').click()
+            // cy.contains('Add policy template').click()
+            // cy.contains('Namespace must exist').click()
             //TODO
         })
 
@@ -36,7 +36,7 @@ describe('policy wizard', () => {
         cy.contains('Next').click()
     })
 
-    it('security groups', () => {
+    it('policy annotations', () => {
         cy.get('#categories').within(() => {
             cy.get('#add-button').click()
             cy.get('#categories-2').type('category-1')
