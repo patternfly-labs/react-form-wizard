@@ -42,7 +42,7 @@ export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
     children: ReactNode
     filter?: (item: any) => boolean
     dropdownItems?: { label: string; action: () => object }[]
-    placeholder: string
+    placeholder?: string
     collapsedContent: ReactNode
     collapsedPlaceholder?: ReactNode
     sortable?: boolean
@@ -209,24 +209,26 @@ export function ArrayInput(props: ArrayInputProps) {
                     )
                 })
             )}
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingTop: values.length ? 8 : 4 }}>
-                {/* <div style={{ flexGrow: 1 }} /> */}
-                {!props.dropdownItems ? (
-                    <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={() => addItem(props.newValue ?? {})}>
-                        <PlusIcon /> &nbsp; {props.placeholder}
-                    </Button>
-                ) : (
-                    <Dropdown2 placeholder={props.placeholder}>
-                        {props.dropdownItems.map((item, index) => {
-                            return (
-                                <DropdownItem key={index} onClick={() => addItem(item.action())}>
-                                    {item.label}
-                                </DropdownItem>
-                            )
-                        })}
-                    </Dropdown2>
-                )}
-            </div>
+            {props.placeholder && (
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingTop: values.length ? 8 : 4 }}>
+                    {/* <div style={{ flexGrow: 1 }} /> */}
+                    {!props.dropdownItems ? (
+                        <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={() => addItem(props.newValue ?? {})}>
+                            <PlusIcon /> &nbsp; {props.placeholder}
+                        </Button>
+                    ) : (
+                        <Dropdown2 placeholder={props.placeholder}>
+                            {props.dropdownItems.map((item, index) => {
+                                return (
+                                    <DropdownItem key={index} onClick={() => addItem(item.action())}>
+                                        {item.label}
+                                    </DropdownItem>
+                                )
+                            })}
+                        </Dropdown2>
+                    )}
+                </div>
+            )}
         </div>
     )
 }
