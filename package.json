@@ -12,8 +12,8 @@
     ],
     "scripts": {
         "build": "rimraf lib && tsc && npm run build:copy:src && npm run build:copy:wizards",
-        "build:copy:src": "cpy --parents 'src/**/*.svg' 'src/**/*.css' lib",
-        "build:copy:wizards": "cpy --parents  'wizards/**/*.svg' 'wizards/**/*.yaml' 'wizards/**/*.hbs' lib",
+        "build:copy:src": "cpy 'src/**/*.svg' 'src/**/*.css' lib/src",
+        "build:copy:wizards": "cpy 'wizards/**/*.svg' 'wizards/**/*.yaml' 'wizards/**/*.hbs' lib/wizards",
         "start": "TS_NODE_PROJECT=webpack.tsconfig.json webpack serve --mode development --open",
         "start:quiet": "TS_NODE_PROJECT=webpack.tsconfig.json webpack serve --mode development",
         "pages": "TS_NODE_PROJECT=webpack.tsconfig.json webpack --mode production",
