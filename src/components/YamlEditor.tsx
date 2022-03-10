@@ -1,6 +1,7 @@
 import { Button } from '@patternfly/react-core'
 import { CheckIcon, CopyIcon } from '@patternfly/react-icons'
-import { useEffect, useState } from 'react'
+import useResizeObserver from '@react-hook/resize-observer'
+import { useEffect, useRef, useState } from 'react'
 import YAML from 'yaml'
 
 const color = {
@@ -47,9 +48,16 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
         }
     }, [props.data, hasFocus, props.isYamlArray])
     const [copied, setCopied] = useState(false)
+    const ref = useRef<HTMLDivElement>(null)
+    const [width, setWidth] = useState(10)
+    useResizeObserver(ref, (entry) => setWidth(entry.contentRect.width - 20))
+
+    const smallRef = useRef<HTMLDivElement>(null)
+    const [textWidth, setTextWidth] = useState(10)
+    useResizeObserver(smallRef, (entry) => setTextWidth(entry.contentRect.width + 48))
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, maxHeight: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, maxHeight: '100%' }} ref={ref}>
             <div
                 style={{
                     display: 'flex',
@@ -87,7 +95,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                         onFocus={() => setHasFocus(true)}
                         onBlur={() => setHasFocus(false)}
                     >
-                        <small>
+                        <small ref={smallRef}>
                             {yaml.split('\n').map((line, index) => {
                                 const backgroundColor = index === errorLine ? '#F203' : undefined
                                 if (line === '---') {
@@ -121,7 +129,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                                     top: 0,
                                     left: 0,
                                     height: '100%',
-                                    width: '100%',
+                                    width: Math.max(textWidth, width),
                                     padding: 24,
                                     border: 0,
                                     backgroundColor: 'transparent',
