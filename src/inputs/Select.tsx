@@ -4,6 +4,7 @@ import {
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
+    InputGroup,
     Select as PfSelect,
     SelectOption,
     SelectOptionObject,
@@ -11,6 +12,7 @@ import {
 } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
+import { SpinnerButton } from '../components/SpinnerButton'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import { InputLabel } from './InputLabel'
@@ -46,7 +48,7 @@ type SelectCommonProps<T> = InputCommonProps<T> & {
 
 interface SingleSelectProps<T> extends SelectCommonProps<T> {
     variant: 'single'
-    options: (Option<T> | string | number)[] | undefined
+    options?: (Option<T> | string | number)[]
 }
 
 export function Select<T>(props: Omit<SingleSelectProps<T>, 'variant'>) {
@@ -216,55 +218,57 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             </DescriptionListGroup>
         )
     }
+    const activePlacemeholder = Array.isArray(selections) ? (
+        selections.length === 0 ? (
+            placeholder
+        ) : (
+            <ChipGroup style={{ marginTop: -8, marginBottom: -8 }} numChips={9999}>
+                {selections.map((selection) => (
+                    <Chip isReadOnly key={selection.id}>
+                        {selection.label}
+                    </Chip>
+                ))}
+            </ChipGroup>
+        )
+    ) : (
+        placeholder
+    )
     // TODO: implement loading state for when options are undefined
     // currently disabling select field when undefined
     return (
         <div id={id}>
             <InputLabel {...props}>
-                <PfSelect
-                    isDisabled={disabled || !selectOptions}
-                    variant={variant}
-                    isOpen={open}
-                    onToggle={setOpen}
-                    selections={selections}
-                    onSelect={onSelect}
-                    onClear={props.required ? undefined : onClear}
-                    isCreatable={isCreatable}
-                    onCreateOption={(value) => props.onCreate?.(value)}
-                    validated={validated}
-                    hasInlineFilter
-                    onFilter={onFilter}
-                    footer={props.footer}
-                    placeholderText={
-                        Array.isArray(selections) ? (
-                            selections.length === 0 ? (
-                                placeholder
-                            ) : (
-                                <ChipGroup style={{ marginTop: -8, marginBottom: -8 }} numChips={9999}>
-                                    {selections.map((selection) => (
-                                        <Chip isReadOnly key={selection.id}>
-                                            {selection.label}
-                                        </Chip>
-                                    ))}
-                                </ChipGroup>
-                            )
-                        ) : (
-                            placeholder
-                        )
-                    }
-                >
-                    {selectOptions?.map((option) => (
-                        <SelectOption
-                            key={option.id}
-                            id={option.id}
-                            value={option}
-                            description={option.description}
-                            isDisabled={option.disabled}
-                        >
-                            {option.toString()}
-                        </SelectOption>
-                    ))}
-                </PfSelect>
+                <InputGroup>
+                    {!selectOptions && <SpinnerButton />}
+                    <PfSelect
+                        isDisabled={disabled || !selectOptions}
+                        variant={variant}
+                        isOpen={open}
+                        onToggle={setOpen}
+                        selections={selections}
+                        onSelect={onSelect}
+                        onClear={props.required ? undefined : onClear}
+                        isCreatable={isCreatable}
+                        onCreateOption={(value) => props.onCreate?.(value)}
+                        validated={validated}
+                        hasInlineFilter
+                        onFilter={onFilter}
+                        footer={props.footer}
+                        placeholderText={selectOptions && activePlacemeholder}
+                    >
+                        {selectOptions?.map((option) => (
+                            <SelectOption
+                                key={option.id}
+                                id={option.id}
+                                value={option}
+                                description={option.description}
+                                isDisabled={option.disabled}
+                            >
+                                {option.toString()}
+                            </SelectOption>
+                        ))}
+                    </PfSelect>
+                </InputGroup>
             </InputLabel>
         </div>
     )

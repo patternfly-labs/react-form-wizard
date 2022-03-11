@@ -11,6 +11,8 @@ export enum RouteE {
     EditPlacement = '?route=edit-placement',
     EditPlacementRule = '?route=edit-placement-rule',
     EditPlacements = '?route=edit-placements',
+    PolicyAutomation = '?route=policy-automation',
+    CreatePolicyAutomation = '?route=create-policy-automation',
     Policy = '?route=policy',
     PolicySet = '?route=policy-set',
     CreatePolicy = '?route=create-policy',

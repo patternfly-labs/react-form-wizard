@@ -56,6 +56,7 @@ import {
     EditPolicyScc,
     PolicyExamples,
 } from './Policy/PolicyExamples'
+import { CreatePolicyAutomation, PolicyAutomationExamples } from './PolicyAutomation/PolicyAutomationExamples'
 import {
     CreatePolicySet,
     EditPolicySet1,
@@ -150,6 +151,14 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
+        shortName: 'Policy Automation',
+        name: 'Policy Automation',
+        route: RouteE.PolicyAutomation,
+        description: 'Advanced Cluster Management uses policy automation to automate Ansible jobs with policies.',
+        labels: ['Advanced Cluster Management'],
+        state: StateE.beta,
+    },
+    {
         shortName: 'Policy Set',
         name: 'Policy Set',
         route: RouteE.PolicySet,
@@ -196,6 +205,10 @@ export function DemoRouter(): JSX.Element {
             return <ClusterForm />
         case RouteE.Credentials:
             return <CredentialsExample />
+        case RouteE.PolicyAutomation:
+            return <PolicyAutomationExamples />
+        case RouteE.CreatePolicyAutomation:
+            return <CreatePolicyAutomation />
         case RouteE.Policy:
             return <PolicyExamples />
         case RouteE.CreatePolicy:

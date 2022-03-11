@@ -57,8 +57,8 @@ export function useValue(
             newValue = props.inputValueToPathValue(newValue, pathValue)
         }
         set(item, path, newValue, { preservePaths: false })
-        update()
         onValueChange?.(newValue, item)
+        update()
     }
     let value = pathValue
     if (props.pathValueToInputValue) {
