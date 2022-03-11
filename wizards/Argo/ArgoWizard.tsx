@@ -76,6 +76,7 @@ interface ArgoWizardProps {
               }
             | undefined
     ) => Promise<unknown>
+    resources?: IResource[]
 }
 
 export function ArgoWizard(props: ArgoWizardProps) {
@@ -97,33 +98,36 @@ export function ArgoWizard(props: ArgoWizardProps) {
     const [gitRevisions, setGitRevisions] = useState<string[] | undefined>(undefined)
     return (
         <WizardPage
-            title="Create application set"
-            defaultData={[
-                {
-                    apiVersion: 'argoproj.io/v1alpha1',
-                    kind: 'ApplicationSet',
-                    metadata: { name: '', namespace: '' },
-                    spec: {
-                        generators: [
-                            {
-                                clusterDecisionResource: {
-                                    configMapRef: 'acm-placement',
-                                    labelSelector: { matchLabels: { 'cluster.open-cluster-management.io/placement': '-placement' } },
-                                    requeueAfterSeconds: 180,
+            title={props.resources ? 'Edit application set' : 'Create application set'}
+            defaultData={
+                props.resources ?? [
+                    {
+                        apiVersion: 'argoproj.io/v1alpha1',
+                        kind: 'ApplicationSet',
+                        metadata: { name: '', namespace: '' },
+                        spec: {
+                            generators: [
+                                {
+                                    clusterDecisionResource: {
+                                        configMapRef: 'acm-placement',
+                                        labelSelector: { matchLabels: { 'cluster.open-cluster-management.io/placement': '-placement' } },
+                                        requeueAfterSeconds: 180,
+                                    },
                                 },
+                            ],
+                            template: {
+                                metadata: { name: '-{{name}}' },
+                                spec: { project: 'default', source: {}, destination: { namespace: '', server: '{{server}}' } },
                             },
-                        ],
-                        template: {
-                            metadata: { name: '-{{name}}' },
-                            spec: { project: 'default', source: {}, destination: { namespace: '', server: '{{server}}' } },
                         },
                     },
-                },
-                {
-                    ...PlacementType,
-                    metadata: { name: '', namespace: '' },
-                },
-            ]}
+                    {
+                        ...PlacementType,
+                        metadata: { name: '', namespace: '' },
+                    },
+                ]
+            }
+            editMode={props.resources ? EditMode.Edit : EditMode.Create}
             onCancel={props.onCancel}
             onSubmit={props.onSubmit}
         >
