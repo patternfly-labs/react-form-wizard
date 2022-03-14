@@ -32,7 +32,7 @@ export function CreatePolicyAutomation() {
         <PolicyAutomationWizard
             breadcrumb={[
                 { label: 'Example Wizards', to: RouteE.Wizards },
-                { label: 'Policy AutomationExamples', to: RouteE.PolicySet },
+                { label: 'Policy AutomationExamples', to: RouteE.PolicyAutomation },
                 { label: 'Create policy automation' },
             ]}
             title="Create policy automation"
@@ -61,6 +61,7 @@ export function CreatePolicyAutomation() {
                     },
                 },
             ]}
+            createCredentialsCallback={() => window.open('http://google.com', '_blank')}
             resource={
                 {
                     ...PolicyAutomationType,

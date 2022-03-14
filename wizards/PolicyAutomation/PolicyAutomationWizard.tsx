@@ -1,4 +1,4 @@
-import { Alert } from '@patternfly/react-core'
+import { Alert, Button, ButtonVariant } from '@patternfly/react-core'
 import { useMemo, useState } from 'react'
 import { DetailsHidden, EditMode, KeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
 import { IResource } from '../common/resource'
@@ -10,6 +10,7 @@ export function PolicyAutomationWizard(props: {
     breadcrumb?: { label: string; to?: string }[]
     policy: IResource
     credentials: IResource[]
+    createCredentialsCallback: () => void
     editMode?: EditMode
     resource: IResource
     onSubmit: WizardSubmit
@@ -85,6 +86,18 @@ export function PolicyAutomationWizard(props: {
                                     })
                             }
                         }}
+                        footer={
+                            <>
+                                <Button
+                                    id={'create-credential'}
+                                    isInline
+                                    variant={ButtonVariant.link}
+                                    onClick={props.createCredentialsCallback}
+                                >
+                                    {'Create credential'}
+                                </Button>
+                            </>
+                        }
                         required
                     />
                     <Select
