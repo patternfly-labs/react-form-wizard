@@ -36,7 +36,6 @@ export function PolicyAutomationWizard(props: {
             breadcrumb={props.breadcrumb}
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
-            hasButtons={ansibleCredentialNames.length === 0 ? false : true}
             editMode={props.editMode}
             defaultData={
                 props.resource ?? {
