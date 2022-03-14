@@ -13,6 +13,7 @@ export enum RouteE {
     EditPlacements = '?route=edit-placements',
     PolicyAutomation = '?route=policy-automation',
     CreatePolicyAutomation = '?route=create-policy-automation',
+    EditPolicyAutomation = '?route=edit-policy-automation',
     Policy = '?route=policy',
     PolicySet = '?route=policy-set',
     CreatePolicy = '?route=create-policy',

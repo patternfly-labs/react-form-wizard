@@ -56,7 +56,7 @@ import {
     EditPolicyScc,
     PolicyExamples,
 } from './Policy/PolicyExamples'
-import { CreatePolicyAutomation, PolicyAutomationExamples } from './PolicyAutomation/PolicyAutomationExamples'
+import { CreatePolicyAutomation, EditPolicyAutomation, PolicyAutomationExamples } from './PolicyAutomation/PolicyAutomationExamples'
 import {
     CreatePolicySet,
     EditPolicySet1,
@@ -209,6 +209,8 @@ export function DemoRouter(): JSX.Element {
             return <PolicyAutomationExamples />
         case RouteE.CreatePolicyAutomation:
             return <CreatePolicyAutomation />
+        case RouteE.EditPolicyAutomation:
+            return <EditPolicyAutomation />
         case RouteE.Policy:
             return <PolicyExamples />
         case RouteE.CreatePolicy:

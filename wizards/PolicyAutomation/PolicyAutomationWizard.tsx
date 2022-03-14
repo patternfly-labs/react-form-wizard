@@ -1,5 +1,5 @@
 import { Alert, Button, ButtonVariant } from '@patternfly/react-core'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { DetailsHidden, EditMode, KeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
 import { IResource } from '../common/resource'
 import { ICredential } from '../common/resources/ICredential'
@@ -12,7 +12,7 @@ export function PolicyAutomationWizard(props: {
     credentials: IResource[]
     createCredentialsCallback: () => void
     editMode?: EditMode
-    resource: IResource
+    resource: IPolicyAutomation
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     getAnsibleJobsCallback: (credential: ICredential) => Promise<string[]>
@@ -30,6 +30,25 @@ export function PolicyAutomationWizard(props: {
     )
     const [jobNames, setJobNames] = useState<string[]>()
     const [alert, setAlert] = useState<{ title: string; message: string }>()
+
+    useEffect(() => {
+        if (props.editMode === EditMode.Edit) {
+            const credential = ansibleCredentials.find(
+                (credential) => credential.metadata?.name === props.resource.spec.automationDef.secret
+            )
+            props
+                .getAnsibleJobsCallback(credential ?? {})
+                .then((jobNames) => setJobNames(jobNames))
+                .catch((err) => {
+                    if (err instanceof Error) {
+                        setAlert({ title: 'Failed to get job names from ansible', message: err.message })
+                    } else {
+                        setAlert({ title: 'Failed to get job names from ansible', message: 'Unknown error' })
+                    }
+                })
+        }
+    }, [ansibleCredentials, props])
+
     return (
         <WizardPage
             title={props.title}
