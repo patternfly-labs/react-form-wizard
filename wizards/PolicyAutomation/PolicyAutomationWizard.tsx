@@ -120,7 +120,7 @@ export function PolicyAutomationWizard(props: {
                         required
                     />
                     <Select
-                        id="secret"
+                        id="job"
                         label="Ansible job"
                         path="spec.automationDef.name"
                         options={jobNames}
