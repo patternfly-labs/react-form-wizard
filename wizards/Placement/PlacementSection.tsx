@@ -86,6 +86,19 @@ export function PlacementSection(props: {
         }
     }, [props.bindingSubjectApiGroup, props.bindingSubjectKind, resources, update])
 
+    const { namespacedPlacements = props.existingPlacements, namespacedPlacementRules = props.existingPlacementRules } = useMemo(() => {
+        if (!resources.find) return {}
+        const source = resources?.find((resource) => resource.kind === props.bindingSubjectKind)
+        if (!source) return {}
+        const namespace = source.metadata?.namespace
+        if (!namespace) return {}
+        const namespacedPlacements = props.existingPlacements.filter((placement) => placement.metadata?.namespace === namespace)
+        const namespacedPlacementRules = props.existingPlacementRules.filter(
+            (placementRule) => placementRule.metadata?.namespace === namespace
+        )
+        return { namespacedPlacements, namespacedPlacementRules }
+    }, [props.existingPlacements, props.existingPlacementRules, props.bindingSubjectKind, resources])
+
     const namespaceClusterSetNames = useMemo(() => {
         if (!resources.find) return []
         const source = resources?.find((resource) => resource.kind === props.bindingSubjectKind)
@@ -125,8 +138,8 @@ export function PlacementSection(props: {
                     placementBindingCount={placementBindingCount}
                     bindingSubjectKind={props.bindingSubjectKind}
                     bindingSubjectApiGroup={props.bindingSubjectApiGroup}
-                    existingPlacements={props.existingPlacements}
-                    existingPlacementRules={props.existingPlacementRules}
+                    existingPlacements={namespacedPlacements}
+                    existingPlacementRules={namespacedPlacementRules}
                 />
             </Fragment>
         )
@@ -195,14 +208,14 @@ export function PlacementSection(props: {
                         label="Placement"
                         required
                         hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
-                        options={props.existingPlacements.map((placement) => placement.metadata?.name ?? '')}
+                        options={namespacedPlacements.map((placement) => placement.metadata?.name ?? '')}
                     />
                     <Select
                         path="placementRef.name"
                         label="Placement rule"
                         required
                         hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
-                        options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
+                        options={namespacedPlacementRules.map((placement) => placement.metadata?.name ?? '')}
                     />
                 </ItemSelector>
             )}
