@@ -183,7 +183,7 @@ export function Catalog(props: {
         return (
             <Masonry size={470}>
                 {searchedCards.map((card) => (
-                    <Card id={card.id} key={card.id ?? card.title} onClick={card.onClick} isFlat isLarge isSelectableRaised>
+                    <Card id={card.id} key={card.id ?? card.title} onClick={card.onClick} isFlat isLarge isSelectable>
                         <CardHeader>
                             <Split hasGutter style={{ width: '100%' }}>
                                 <SplitItem isFilled>
@@ -259,6 +259,9 @@ export function Catalog(props: {
                     </DrawerContent>
                 </Drawer>
             </PageSection>
+            {/* <PageSection variant="light" sticky="bottom">
+                <Button>Back</Button>
+            </PageSection> */}
         </Page>
     )
 }

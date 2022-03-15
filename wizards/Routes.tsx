@@ -1,6 +1,8 @@
 export enum RouteE {
     Home = '.',
     ArgoCD = '?route=argo-cd',
+    CreateArgoCD = '?route=argo-cd-create',
+    EditArgoCD = '?route=argo-cd-edit',
     Ansible = '?route=ansible',
     Application = '?route=application',
     Cluster = '?route=cluster',

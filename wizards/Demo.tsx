@@ -23,7 +23,7 @@ import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
-import { ArgoExample } from './Argo/ArgoExample'
+import { ApplicationSetExamples, CreateApplicationSet, EditApplicationSet } from './Argo/ArgoExamples'
 import { Catalog } from './Catalog'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { CredentialsExample } from './Credentials/CredentialsExample'
@@ -198,7 +198,11 @@ export function DemoRouter(): JSX.Element {
         case RouteE.Application:
             return <ApplicationExample />
         case RouteE.ArgoCD:
-            return <ArgoExample />
+            return <ApplicationSetExamples />
+        case RouteE.CreateArgoCD:
+            return <CreateApplicationSet />
+        case RouteE.EditArgoCD:
+            return <EditApplicationSet />
         case RouteE.App:
             return <AppExample />
         case RouteE.Cluster:

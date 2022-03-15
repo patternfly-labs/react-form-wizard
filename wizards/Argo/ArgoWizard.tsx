@@ -1,6 +1,6 @@
 import { Button, Flex, FlexItem, SelectOption, Split, Stack, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
-import { Fragment, ReactNode, useMemo, useState } from 'react'
+import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
     ArrayInput,
     Checkbox,
@@ -80,7 +80,10 @@ interface ArgoWizardProps {
 }
 
 export function ArgoWizard(props: ArgoWizardProps) {
+    const { resources } = props
+
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
+
     const gitChannels = useMemo(() => {
         if (props.channels)
             return props.channels
@@ -88,6 +91,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 .map((channel) => channel?.spec?.pathname)
         return undefined
     }, [props.channels])
+
     const helmChannels = useMemo(() => {
         if (props.channels)
             return props.channels.filter((channel) => channel?.spec?.type === 'HelmRepo').map((channel) => channel.spec.pathname)
@@ -96,6 +100,18 @@ export function ArgoWizard(props: ArgoWizardProps) {
 
     const [gitPaths, setGitPaths] = useState<string[] | undefined>(undefined)
     const [gitRevisions, setGitRevisions] = useState<string[] | undefined>(undefined)
+
+    useEffect(() => {
+        const applicationSet: any = resources?.find((resource) => resource.kind === 'ApplicationSet')
+        if (applicationSet) {
+            const channel = props.channels?.find((channel) => channel?.spec?.pathname === applicationSet.spec.template.spec.source.repoURL)
+            if (channel) {
+                void getGitBranchList(channel, props.getGitRevisions, setGitRevisions)
+                void getGitPathList(channel, applicationSet.spec.template.spec.source.targetRevision, props.getGitPaths, setGitPaths)
+            }
+        }
+    }, [props.channels, props.getGitPaths, props.getGitRevisions, resources])
+
     return (
         <WizardPage
             title={props.resources ? 'Edit application set' : 'Create application set'}
