@@ -299,7 +299,7 @@ export function PlacementSelector(props: {
                                 newResources.push({
                                     ...PlacementBindingType,
                                     metadata: { name: '', namespace: '' },
-                                    placementRef: { apiGroup: PlacementApiGroup, kind: PlacementRuleKind, name: '' },
+                                    placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: '' },
                                     subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
                                 } as IResource)
                             }
