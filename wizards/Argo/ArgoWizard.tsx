@@ -84,13 +84,15 @@ export function ArgoWizard(props: ArgoWizardProps) {
 
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
 
-    const gitChannels = useMemo(() => {
-        if (props.channels)
-            return props.channels
-                .filter((channel) => channel?.spec?.type === 'Git' || channel?.spec?.type === 'GitHub')
-                .map((channel) => channel?.spec?.pathname)
-        return undefined
-    }, [props.channels])
+    const sourceGitChannels = useMemo(
+        () =>
+            props.channels
+                ?.filter((channel) => channel?.spec?.type === 'Git' || channel?.spec?.type === 'GitHub')
+                .map((channel) => channel?.spec?.pathname),
+        [props.channels]
+    )
+    const [createdChannels, setCreatedChannels] = useState<string[]>(['test'])
+    const gitChannels = useMemo(() => [...(sourceGitChannels ?? []), ...createdChannels], [createdChannels, sourceGitChannels])
 
     const helmChannels = useMemo(() => {
         if (props.channels)
@@ -219,6 +221,16 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                     channel && getGitBranchList(channel, props.getGitRevisions, setGitRevisions)
                                 }}
                                 required
+                                isCreatable
+                                onCreate={(value: string) =>
+                                    setCreatedChannels((channels) => {
+                                        if (!channels.includes(value)) {
+                                            channels.push(value)
+                                        }
+                                        return [...channels]
+                                    })
+                                }
+                                // TODO valid URL
                             />
                             <Hidden hidden={(data) => data.spec.template.spec.source.repoURL === ''}>
                                 <Select
