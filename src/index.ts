@@ -1,5 +1,6 @@
 export * from './contexts/EditMode'
 export * from './inputs/ArrayInput'
+export * from './inputs/AsyncSelect'
 export * from './inputs/Checkbox'
 export * from './inputs/Hidden'
 export * from './inputs/ItemSelector'

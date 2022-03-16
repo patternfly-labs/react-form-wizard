@@ -58,11 +58,13 @@ export function CreateApplicationSet() {
             placements={placements}
             channels={channels}
             timeZones={timeZones}
-            getGitRevisions={() => {
-                return new Promise((resolve) => resolve(['branch-1', 'branch-2']))
+            getGitRevisions={async () => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                return Promise.resolve(['branch-1', 'branch-2'])
             }}
-            getGitPaths={() => {
-                return new Promise((resolve) => resolve(['path-1', 'path-2']))
+            getGitPaths={async () => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                return Promise.resolve(['path-1', 'path-2'])
             }}
             clusters={clusters}
             clusterSetBindings={clusterSetBindings}
@@ -97,11 +99,13 @@ export function EditApplicationSet() {
             placements={placements}
             channels={channels}
             timeZones={timeZones}
-            getGitRevisions={() => {
-                return new Promise((resolve) => resolve(['branch-1', 'branch-2']))
+            getGitRevisions={async () => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                return Promise.resolve(['branch-1', 'branch-2'])
             }}
-            getGitPaths={() => {
-                return new Promise((resolve) => resolve(['path-1', 'path-2']))
+            getGitPaths={async () => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                return Promise.resolve(['path-1', 'path-2'])
             }}
             clusters={clusters}
             clusterSetBindings={clusterSetBindings}
