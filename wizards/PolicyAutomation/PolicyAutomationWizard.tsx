@@ -18,10 +18,7 @@ export function PolicyAutomationWizard(props: {
     getAnsibleJobsCallback: (credential: ICredential) => Promise<string[]>
 }) {
     const ansibleCredentials = useMemo(
-        () =>
-            props.credentials
-                .filter((credential) => credential.metadata?.namespace === props.policy.metadata?.namespace)
-                .filter((credential) => credential.metadata?.labels?.['cluster.open-cluster-management.io/type'] === 'ans'),
+        () => props.credentials.filter((credential) => credential.metadata?.labels?.['cluster.open-cluster-management.io/type'] === 'ans'),
         [props.credentials, props.policy.metadata?.namespace]
     )
     const ansibleCredentialNames = useMemo(
