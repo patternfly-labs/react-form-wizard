@@ -60,6 +60,7 @@ export function AsyncSelect(props: AsyncSelectProps) {
     )
 
     const sync = useCallback(() => {
+        if (mode === DisplayMode.Details) return
         if (asyncCallback) {
             setLoading((loading) => {
                 if (loading) return loading
@@ -73,7 +74,7 @@ export function AsyncSelect(props: AsyncSelectProps) {
                 return false
             })
         }
-    }, [asyncCallback])
+    }, [asyncCallback, mode])
 
     useEffect(sync, [sync])
 
