@@ -130,20 +130,15 @@ export function ArgoWizard(props: ArgoWizardProps) {
     )
     const [createdChannels, setCreatedChannels] = useState<string[]>(['test'])
     const gitArgoAppSetRepoURLs = props.applicationSets
-        ?.map((argoApplication) => {
-            if (!argoApplication.spec.template?.spec?.source.chart) {
-                argoApplication.spec.template?.spec?.source.repoURL
-            }
+        ?.filter((appset) => !appset.spec.template?.spec?.source.chart)
+        .map((argoApplication) => {
+            argoApplication.spec.template?.spec?.source.repoURL
         })
         .filter((a) => a)
 
     const helmArgoAppSetRepoURLs = props.applicationSets
-        ?.map((argoApplication) => {
-            if (argoApplication.spec.template?.spec?.source.chart) {
-                argoApplication.spec.template?.spec?.source.repoURL
-            }
-        })
-        .filter((a) => a)
+        ?.filter((appset) => appset.spec.template?.spec?.source.chart)
+        .map((appset) => appset.spec.template?.spec?.source.repoURL)
     const gitChannels = useMemo(
         () => [...(sourceGitChannels ?? []), ...createdChannels, ...(gitArgoAppSetRepoURLs ?? [])].filter(onlyUnique),
         [createdChannels, sourceGitChannels, gitArgoAppSetRepoURLs]
