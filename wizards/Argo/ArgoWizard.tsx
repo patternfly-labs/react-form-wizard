@@ -45,7 +45,41 @@ interface Channel {
     }
 }
 
+interface ApplicationSet {
+    metadata: {
+        name?: string
+        namespace?: string
+    }
+    spec: {
+        generators?: {}[]
+        template?: {
+            metadata?: {
+                name?: string
+                namespace?: string
+            }
+            spec?: {
+                destination?: {
+                    namespace: string
+                    server: string
+                }
+                project: string
+                source: {
+                    path?: string
+                    repoURL: string
+                    targetRevision?: string
+                    chart?: string
+                }
+                syncPolicy?: any
+            }
+        }
+    }
+    transformed?: {
+        clusterCount?: string
+    }
+}
+
 interface ArgoWizardProps {
+    applicationSets?: ApplicationSet[]
     addClusterSets?: string
     clusters: IResource[]
     clusterSetBindings: IClusterSetBinding[]
@@ -80,6 +114,9 @@ interface ArgoWizardProps {
 }
 
 export function ArgoWizard(props: ArgoWizardProps) {
+    function onlyUnique(value: any, index: any, self: string | any[]) {
+        return self.indexOf(value) === index
+    }
     const { resources } = props
 
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
@@ -92,13 +129,36 @@ export function ArgoWizard(props: ArgoWizardProps) {
         [props.channels]
     )
     const [createdChannels, setCreatedChannels] = useState<string[]>(['test'])
-    const gitChannels = useMemo(() => [...(sourceGitChannels ?? []), ...createdChannels], [createdChannels, sourceGitChannels])
+    const gitArgoAppSetRepoURLs = props.applicationSets
+        ?.map((argoApplication) => {
+            if (!argoApplication.spec.template?.spec?.source.chart) {
+                argoApplication.spec.template?.spec?.source.repoURL
+            }
+        })
+        .filter((a) => a)
 
-    const helmChannels = useMemo(() => {
+    const helmArgoAppSetRepoURLs = props.applicationSets
+        ?.map((argoApplication) => {
+            if (argoApplication.spec.template?.spec?.source.chart) {
+                argoApplication.spec.template?.spec?.source.repoURL
+            }
+        })
+        .filter((a) => a)
+    const gitChannels = useMemo(
+        () => [...(sourceGitChannels ?? []), ...createdChannels, ...(gitArgoAppSetRepoURLs ?? [])].filter(onlyUnique),
+        [createdChannels, sourceGitChannels, gitArgoAppSetRepoURLs]
+    )
+
+    const sourceHelmChannels = useMemo(() => {
         if (props.channels)
             return props.channels.filter((channel) => channel?.spec?.type === 'HelmRepo').map((channel) => channel.spec.pathname)
         return undefined
     }, [props.channels])
+
+    const helmChannels = useMemo(
+        () => [...(sourceHelmChannels ?? []), ...createdChannels, ...(helmArgoAppSetRepoURLs ?? [])].filter(onlyUnique),
+        [createdChannels, sourceHelmChannels, helmArgoAppSetRepoURLs]
+    )
 
     const [gitPaths, setGitPaths] = useState<string[] | undefined>(undefined)
     const [gitRevisions, setGitRevisions] = useState<string[] | undefined>(undefined)
@@ -264,6 +324,16 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 placeholder="Enter or select a Helm URL"
                                 options={helmChannels}
                                 required
+                                isCreatable
+                                onCreate={(value: string) =>
+                                    setCreatedChannels((channels) => {
+                                        if (!channels.includes(value)) {
+                                            channels.push(value)
+                                        }
+                                        return [...channels]
+                                    })
+                                }
+                                // TODO valid URL
                             />
                             <TextInput
                                 path="spec.template.spec.source.chart"
