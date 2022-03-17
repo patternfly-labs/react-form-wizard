@@ -52,7 +52,12 @@ interface ApplicationSet {
         namespace?: string
     }
     spec: {
-        generators?: {}[]
+        generators?: {
+            clusterDecisionResource?: {
+                configMapRef?: string
+                requeueAfterSeconds?: number
+            }
+        }[]
         template?: {
             metadata?: {
                 name?: string
@@ -130,14 +135,14 @@ export function ArgoWizard(props: ArgoWizardProps) {
         [props.channels]
     )
     const [createdChannels, setCreatedChannels] = useState<string[]>(['test'])
-    let gitArgoAppSetRepoURLs: any = []
-    let helmArgoAppSetRepoURLs: any = []
+    const gitArgoAppSetRepoURLs: string[] = []
+    const helmArgoAppSetRepoURLs: string[] = []
     if (props.applicationSets) {
         props.applicationSets.forEach((appset) => {
             if (appset.spec.template?.spec?.source.chart) {
                 helmArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL)
             } else {
-                gitArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL)
+                gitArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL as string)
             }
         })
     }
