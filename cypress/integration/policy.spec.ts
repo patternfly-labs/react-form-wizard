@@ -37,20 +37,20 @@ describe('policy wizard', () => {
     })
 
     it('policy annotations', () => {
-        cy.get('#categories').within(() => {
-            cy.get('#add-button').click()
-            cy.get('#categories-2').type('category-1')
-
-            cy.get('#add-button').click()
-            cy.get('#categories-3').type('category-2')
-        })
-
         cy.get('#standards').within(() => {
             cy.get('#add-button').click()
             cy.get('#standards-2').type('standard-1')
 
             cy.get('#add-button').click()
             cy.get('#standards-3').type('standard-2')
+        })
+
+        cy.get('#categories').within(() => {
+            cy.get('#add-button').click()
+            cy.get('#categories-2').type('category-1')
+
+            cy.get('#add-button').click()
+            cy.get('#categories-3').type('category-2')
         })
 
         cy.get('#controls').within(() => {
