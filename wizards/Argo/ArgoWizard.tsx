@@ -46,7 +46,46 @@ interface Channel {
     }
 }
 
+interface ApplicationSet {
+    metadata: {
+        name?: string
+        namespace?: string
+    }
+    spec: {
+        generators?: {
+            clusterDecisionResource?: {
+                configMapRef?: string
+                requeueAfterSeconds?: number
+            }
+        }[]
+        template?: {
+            metadata?: {
+                name?: string
+                namespace?: string
+            }
+            spec?: {
+                destination?: {
+                    namespace: string
+                    server: string
+                }
+                project: string
+                source: {
+                    path?: string
+                    repoURL: string
+                    targetRevision?: string
+                    chart?: string
+                }
+                syncPolicy?: any
+            }
+        }
+    }
+    transformed?: {
+        clusterCount?: string
+    }
+}
+
 interface ArgoWizardProps {
+    applicationSets?: ApplicationSet[]
     addClusterSets?: string
     clusters: IResource[]
     clusterSetBindings: IClusterSetBinding[]
@@ -81,6 +120,9 @@ interface ArgoWizardProps {
 }
 
 export function ArgoWizard(props: ArgoWizardProps) {
+    function onlyUnique(value: any, index: any, self: string | any[]) {
+        return self.indexOf(value) === index
+    }
     const { resources } = props
 
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
@@ -93,13 +135,32 @@ export function ArgoWizard(props: ArgoWizardProps) {
         [props.channels]
     )
     const [createdChannels, setCreatedChannels] = useState<string[]>(['test'])
-    const gitChannels = useMemo(() => [...(sourceGitChannels ?? []), ...createdChannels], [createdChannels, sourceGitChannels])
+    const gitArgoAppSetRepoURLs: string[] = []
+    const helmArgoAppSetRepoURLs: string[] = []
+    if (props.applicationSets) {
+        props.applicationSets.forEach((appset) => {
+            if (appset.spec.template?.spec?.source.chart) {
+                helmArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL)
+            } else {
+                gitArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL as string)
+            }
+        })
+    }
+    const gitChannels = useMemo(
+        () => [...(sourceGitChannels ?? []), ...createdChannels, ...(gitArgoAppSetRepoURLs ?? [])].filter(onlyUnique),
+        [createdChannels, sourceGitChannels, gitArgoAppSetRepoURLs]
+    )
 
-    const helmChannels = useMemo(() => {
+    const sourceHelmChannels = useMemo(() => {
         if (props.channels)
             return props.channels.filter((channel) => channel?.spec?.type === 'HelmRepo').map((channel) => channel.spec.pathname)
         return undefined
     }, [props.channels])
+
+    const helmChannels = useMemo(
+        () => [...(sourceHelmChannels ?? []), ...createdChannels, ...(helmArgoAppSetRepoURLs ?? [])].filter(onlyUnique),
+        [createdChannels, sourceHelmChannels, helmArgoAppSetRepoURLs]
+    )
 
     const [gitRevisionsAsyncCallback, setGitRevisionsAsyncCallback] = useState<() => Promise<string[]>>()
     const [gitPathsAsyncCallback, setGitPathsAsyncCallback] = useState<() => Promise<string[]>>()
@@ -274,6 +335,16 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 placeholder="Enter or select a Helm URL"
                                 options={helmChannels}
                                 required
+                                isCreatable
+                                onCreate={(value: string) =>
+                                    setCreatedChannels((channels) => {
+                                        if (!channels.includes(value)) {
+                                            channels.push(value)
+                                        }
+                                        return [...channels]
+                                    })
+                                }
+                                // TODO valid URL
                             />
                             <TextInput
                                 path="spec.template.spec.source.chart"
