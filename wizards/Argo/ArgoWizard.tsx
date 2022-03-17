@@ -3,6 +3,7 @@ import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
     ArrayInput,
+    AsyncSelect,
     Checkbox,
     DetailsHidden,
     EditMode,
@@ -155,16 +156,18 @@ export function ArgoWizard(props: ArgoWizardProps) {
         [createdChannels, sourceHelmChannels, helmArgoAppSetRepoURLs]
     )
 
-    const [gitPaths, setGitPaths] = useState<string[] | undefined>(undefined)
-    const [gitRevisions, setGitRevisions] = useState<string[] | undefined>(undefined)
+    const [gitRevisionsAsyncCallback, setGitRevisionsAsyncCallback] = useState<() => Promise<string[]>>()
+    const [gitPathsAsyncCallback, setGitPathsAsyncCallback] = useState<() => Promise<string[]>>()
 
     useEffect(() => {
         const applicationSet: any = resources?.find((resource) => resource.kind === 'ApplicationSet')
         if (applicationSet) {
             const channel = props.channels?.find((channel) => channel?.spec?.pathname === applicationSet.spec.template.spec.source.repoURL)
             if (channel) {
-                void getGitBranchList(channel, props.getGitRevisions, setGitRevisions)
-                void getGitPathList(channel, applicationSet.spec.template.spec.source.targetRevision, props.getGitPaths, setGitPaths)
+                setGitRevisionsAsyncCallback(() => () => getGitBranchList(channel, props.getGitRevisions))
+                setGitPathsAsyncCallback(
+                    () => () => getGitPathList(channel, applicationSet.spec.template.spec.source.targetRevision, props.getGitPaths)
+                )
             }
         }
     }, [props.channels, props.getGitPaths, props.getGitRevisions, resources])
@@ -273,7 +276,9 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 options={gitChannels}
                                 onValueChange={(value) => {
                                     const channel = props.channels?.find((channel) => channel.spec.pathname === value)
-                                    channel && getGitBranchList(channel, props.getGitRevisions, setGitRevisions)
+                                    if (channel) {
+                                        setGitRevisionsAsyncCallback(() => () => getGitBranchList(channel, props.getGitRevisions))
+                                    }
                                 }}
                                 required
                                 isCreatable
@@ -288,25 +293,30 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 // TODO valid URL
                             />
                             <Hidden hidden={(data) => data.spec.template.spec.source.repoURL === ''}>
-                                <Select
+                                <AsyncSelect
                                     path="spec.template.spec.source.targetRevision"
                                     label="Revision"
                                     labelHelp="Refer to a single commit"
                                     placeholder="Enter or select a tracking revision"
-                                    options={gitRevisions}
+                                    asyncCallback={gitRevisionsAsyncCallback}
                                     onValueChange={(value, item) => {
                                         const channel = props.channels?.find(
                                             (channel) => channel?.spec?.pathname === item.spec.template.spec.source.repoURL
                                         )
-                                        channel && getGitPathList(channel, value as string, props.getGitPaths, setGitPaths)
+                                        if (channel) {
+                                            setGitPathsAsyncCallback(
+                                                () => () => getGitPathList(channel, value as string, props.getGitPaths)
+                                            )
+                                        }
                                     }}
                                 />
-                                <Select
+                                <AsyncSelect
                                     path="spec.template.spec.source.path"
                                     label="Path"
                                     labelHelp="The location of the resources on the Git repository."
                                     placeholder="Enter or select a repository path"
-                                    options={gitPaths}
+                                    isCreatable
+                                    asyncCallback={gitPathsAsyncCallback}
                                 />
                             </Hidden>
                         </Hidden>
@@ -510,33 +520,23 @@ export function TimeWindow(props: { timeZone: string[] }) {
 
 async function getGitBranchList(
     channel: Channel,
-    getGitBranches: (channelPath: string, secretArgs?: { secretRef?: string; namespace?: string } | undefined) => Promise<unknown>,
-    setGitBranches: (branches: any) => void
+    getGitBranches: (channelPath: string, secretArgs?: { secretRef?: string; namespace?: string } | undefined) => Promise<unknown>
 ) {
-    await getGitBranches(channel.spec.pathname, {
+    return getGitBranches(channel.spec.pathname, {
         secretRef: channel.spec?.secretRef?.name,
         namespace: channel.metadata?.namespace,
-    }).then((result) => {
-        if (result) {
-            setGitBranches(result)
-        } else setGitBranches([])
-    })
+    }) as Promise<string[]>
 }
 
 async function getGitPathList(
     channel: Channel,
     branch: string,
-    getGitPaths: (channelPath: string, branch: string, secretArgs?: { secretRef?: string; namespace?: string }) => Promise<unknown>,
-    setGitPaths: (paths: any) => void
-) {
-    await getGitPaths(channel?.spec?.pathname, branch, {
+    getGitPaths: (channelPath: string, branch: string, secretArgs?: { secretRef?: string; namespace?: string }) => Promise<unknown>
+): Promise<string[]> {
+    return getGitPaths(channel?.spec?.pathname, branch, {
         secretRef: channel?.spec?.secretRef?.name,
         namespace: channel.metadata?.namespace,
-    }).then((result) => {
-        if (result) {
-            setGitPaths(result)
-        } else setGitPaths([])
-    })
+    }) as Promise<string[]>
 }
 
 export function ExternalLinkButton(props: { id: string; href?: string; icon?: ReactNode }) {
