@@ -29,8 +29,8 @@ export function AsyncSelect(props: AsyncSelectProps) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
     const [open, setOpen] = useState(false)
-    const [loading, setLoading] = useState(true)
     const [options, setOptions] = useState<string[]>([])
+    const [loading, setLoading] = useState(false)
 
     const onSelect = useCallback(
         (_, selectedString: string | SelectOptionObject) => {
@@ -59,21 +59,23 @@ export function AsyncSelect(props: AsyncSelectProps) {
         [options]
     )
 
-    useEffect(() => {
-        setLoading(true)
+    const sync = useCallback(() => {
+        if (asyncCallback) {
+            setLoading((loading) => {
+                if (loading) return loading
+                if (asyncCallback) {
+                    asyncCallback()
+                        .then((options) => setOptions(options))
+                        .catch(() => null)
+                        .finally(() => setLoading(false))
+                    return true
+                }
+                return false
+            })
+        }
     }, [asyncCallback])
 
-    useEffect(() => {
-        if (loading) {
-            setOptions([])
-            asyncCallback?.()
-                .then((options) => setOptions(options))
-                .catch(() => {
-                    // do nothing
-                })
-                .finally(() => setLoading(false))
-        }
-    }, [asyncCallback, loading])
+    useEffect(sync, [sync])
 
     if (hidden) return <Fragment />
 
@@ -113,13 +115,7 @@ export function AsyncSelect(props: AsyncSelectProps) {
                     {/* {props.children} */}
                 </PfSelect>
                 {props.asyncCallback && loading && <SpinnerButton />}
-                {props.asyncCallback && !loading && (
-                    <SyncButton
-                        onClick={() => {
-                            setLoading(true)
-                        }}
-                    />
-                )}
+                {props.asyncCallback && !loading && <SyncButton onClick={sync} />}
             </InputGroup>
         </InputLabel>
     )
