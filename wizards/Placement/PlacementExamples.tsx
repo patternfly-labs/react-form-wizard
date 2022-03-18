@@ -48,6 +48,7 @@ export function PlacementExamples() {
                     onClick: () => history.push(RouteE.EditPlacements),
                 },
             ]}
+            onBack={() => history.push(RouteE.Wizards)}
         />
     )
 }

@@ -85,6 +85,7 @@ export function PolicySetExamples() {
                 //     onClick: () => history.push(RouteE.EditPolicySet8),
                 // },
             ]}
+            onBack={() => history.push(RouteE.Wizards)}
         />
     )
 }

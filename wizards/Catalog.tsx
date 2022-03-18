@@ -2,6 +2,7 @@
 import {
     Breadcrumb,
     BreadcrumbItem,
+    Button,
     Card,
     CardBody,
     CardHeader,
@@ -88,6 +89,7 @@ export function Catalog(props: {
     breadcrumbs?: ICatalogBreadcrumb[]
     filterGroups?: ICatalogFilterGroup[]
     cards?: ICatalogCard[]
+    onBack?: () => void
 }) {
     const breadcrumbs = useMemo(() => {
         if (!props.breadcrumbs) return <Fragment />
@@ -182,57 +184,63 @@ export function Catalog(props: {
         if (!searchedCards) return <Fragment />
         return (
             <Masonry size={470}>
-                {searchedCards.map((card) => (
-                    <Card id={card.id} key={card.id ?? card.title} onClick={card.onClick} isFlat isLarge isSelectable>
-                        <CardHeader>
-                            <Split hasGutter style={{ width: '100%' }}>
-                                <SplitItem isFilled>
-                                    <CardTitle>{card.title}</CardTitle>
-                                </SplitItem>
-                                {card.badge && (
-                                    <SplitItem>
-                                        <Label isCompact color="orange">
-                                            {card.badge}
-                                        </Label>
-                                    </SplitItem>
-                                )}
-                            </Split>
-                        </CardHeader>
-                        <CardBody>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-                                {Array.isArray(card.descriptions) &&
-                                    card.descriptions.map((description, index) => (
-                                        <Text component="p" key={index}>
-                                            {description}
-                                        </Text>
-                                    ))}
-                                {Array.isArray(card.featureGroups) &&
-                                    card.featureGroups.map((featureGroup, index) => (
-                                        <Stack key={index}>
-                                            <Title headingLevel="h6" style={{ paddingBottom: 8 }}>
-                                                {featureGroup.title}
-                                            </Title>
-                                            <List isPlain>
-                                                {featureGroup.features?.map((feature, index) => (
-                                                    <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
-                                                        {feature}
-                                                    </ListItem>
-                                                ))}
-                                            </List>
-                                        </Stack>
-                                    ))}
+                {searchedCards.map((card) => {
+                    const hasBody = card.descriptions || card.featureGroups || card.labels
 
-                                {card.labels && (
-                                    <LabelGroup numLabels={999}>
-                                        {card.labels.map((label) => (
-                                            <Label key={label}>{label}</Label>
-                                        ))}
-                                    </LabelGroup>
-                                )}
-                            </div>
-                        </CardBody>
-                    </Card>
-                ))}
+                    return (
+                        <Card id={card.id} key={card.id ?? card.title} onClick={card.onClick} isFlat isLarge isSelectable>
+                            <CardHeader>
+                                <Split hasGutter style={{ width: '100%' }}>
+                                    <SplitItem isFilled>
+                                        <CardTitle>{card.title}</CardTitle>
+                                    </SplitItem>
+                                    {card.badge && (
+                                        <SplitItem>
+                                            <Label isCompact color="orange">
+                                                {card.badge}
+                                            </Label>
+                                        </SplitItem>
+                                    )}
+                                </Split>
+                            </CardHeader>
+                            {hasBody && (
+                                <CardBody>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+                                        {Array.isArray(card.descriptions) &&
+                                            card.descriptions.map((description, index) => (
+                                                <Text component="p" key={index}>
+                                                    {description}
+                                                </Text>
+                                            ))}
+                                        {Array.isArray(card.featureGroups) &&
+                                            card.featureGroups.map((featureGroup, index) => (
+                                                <Stack key={index}>
+                                                    <Title headingLevel="h6" style={{ paddingBottom: 8 }}>
+                                                        {featureGroup.title}
+                                                    </Title>
+                                                    <List isPlain>
+                                                        {featureGroup.features?.map((feature, index) => (
+                                                            <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
+                                                                {feature}
+                                                            </ListItem>
+                                                        ))}
+                                                    </List>
+                                                </Stack>
+                                            ))}
+
+                                        {card.labels && (
+                                            <LabelGroup numLabels={999}>
+                                                {card.labels.map((label) => (
+                                                    <Label key={label}>{label}</Label>
+                                                ))}
+                                            </LabelGroup>
+                                        )}
+                                    </div>
+                                </CardBody>
+                            )}
+                        </Card>
+                    )
+                })}
             </Masonry>
         )
     }, [searchedCards])
@@ -259,9 +267,11 @@ export function Catalog(props: {
                     </DrawerContent>
                 </Drawer>
             </PageSection>
-            {/* <PageSection variant="light" sticky="bottom">
-                <Button>Back</Button>
-            </PageSection> */}
+            {props.onBack && (
+                <PageSection variant="light" sticky="bottom" isFilled={false}>
+                    <Button onClick={props.onBack}>Back</Button>
+                </PageSection>
+            )}
         </Page>
     )
 }

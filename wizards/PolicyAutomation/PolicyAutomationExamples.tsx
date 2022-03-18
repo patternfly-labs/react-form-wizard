@@ -28,6 +28,7 @@ export function PolicyAutomationExamples() {
                     onClick: () => history.push(RouteE.EditPolicyAutomation),
                 },
             ]}
+            onBack={() => history.push(RouteE.Wizards)}
         />
     )
 }

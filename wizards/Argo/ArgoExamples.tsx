@@ -15,7 +15,7 @@ export function ApplicationSetExamples() {
     const history = useHistory()
     return (
         <Catalog
-            title="Policy Set Wizard Examples"
+            title="Application Set Wizard Examples"
             breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Application Set Wizard Examples' }]}
             cards={[
                 {
@@ -27,6 +27,7 @@ export function ApplicationSetExamples() {
                     onClick: () => history.push(RouteE.EditArgoCD),
                 },
             ]}
+            onBack={() => history.push(RouteE.Wizards)}
         />
     )
 }
@@ -49,6 +50,11 @@ export function CreateApplicationSet() {
     const timeZones = useMemo(() => ['EST'], [])
     return (
         <ArgoWizard
+            breadcrumb={[
+                { label: 'Example Wizards', to: RouteE.Wizards },
+                { label: 'Application Set Wizard Examples', to: RouteE.ArgoCD },
+                { label: 'Create Application Set' },
+            ]}
             addClusterSets="https://github.com/patternfly-labs/react-form-wizard"
             ansibleCredentials={ansibleCredentials}
             argoServers={servers}
@@ -90,6 +96,11 @@ export function EditApplicationSet() {
     const timeZones = useMemo(() => ['EST'], [])
     return (
         <ArgoWizard
+            breadcrumb={[
+                { label: 'Example Wizards', to: RouteE.Wizards },
+                { label: 'Application Set Wizard Examples', to: RouteE.ArgoCD },
+                { label: 'Edit Application Set' },
+            ]}
             addClusterSets="https://github.com/patternfly-labs/react-form-wizard"
             ansibleCredentials={ansibleCredentials}
             argoServers={servers}

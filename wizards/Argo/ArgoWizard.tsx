@@ -85,6 +85,7 @@ interface ApplicationSet {
 }
 
 interface ArgoWizardProps {
+    breadcrumb?: { label: string; to?: string }[]
     applicationSets?: ApplicationSet[]
     addClusterSets?: string
     clusters: IResource[]
@@ -187,6 +188,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
 
     return (
         <WizardPage
+            breadcrumb={props.breadcrumb}
             title={props.resources ? 'Edit application set' : 'Create application set'}
             defaultData={
                 props.resources ?? [

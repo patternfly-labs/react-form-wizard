@@ -159,6 +159,7 @@ export function PolicyExamples() {
                     onClick: () => history.push(RouteE.EditPolicyImageManifestVuln),
                 },
             ]}
+            onBack={() => history.push(RouteE.Wizards)}
         />
     )
 }
