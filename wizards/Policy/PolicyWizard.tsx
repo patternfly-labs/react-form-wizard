@@ -1,10 +1,12 @@
-import { Stack, Text, Title } from '@patternfly/react-core'
+import { Alert, Button, Stack, Text, Title } from '@patternfly/react-core'
+import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useContext } from 'react'
 import set from 'set-value'
 import {
     ArrayInput,
     Checkbox,
+    DetailsHidden,
     EditMode,
     Hidden,
     ItemSelector,
@@ -43,6 +45,7 @@ export function PolicyWizard(props: {
     clusterSetBindings: IClusterSetBinding[]
     editMode?: EditMode
     resources?: IResource[]
+    gitSource?: string
     onSubmit: WizardSubmit
     onCancel: WizardCancel
 }) {
@@ -75,6 +78,26 @@ export function PolicyWizard(props: {
                 <Sync kind={PolicyKind} path="metadata.namespace" />
                 <ItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <Section label="Details" prompt="Enter the details for the policy">
+                        {props.gitSource && (
+                            <DetailsHidden>
+                                <Alert title="This policy is managed externally" variant="warning" isInline>
+                                    <Fragment>
+                                        <p>Any changes made here may be overridden by the content of an upstream repository.</p>
+                                        <Button
+                                            icon={<ExternalLinkAltIcon />}
+                                            isInline
+                                            variant="link"
+                                            component="a"
+                                            href={props.gitSource}
+                                            target="_blank"
+                                        >
+                                            {props.gitSource}
+                                        </Button>
+                                    </Fragment>
+                                </Alert>
+                            </DetailsHidden>
+                        )}
+
                         <TextInput
                             id="name"
                             path="metadata.name"
@@ -93,20 +116,6 @@ export function PolicyWizard(props: {
                             required
                             disabledInEditMode
                         />
-                        <RadioGroup path="spec.remediationAction" label="Remediation">
-                            <Radio
-                                id="inform"
-                                label="Inform"
-                                value="inform"
-                                description="Reports the violation, which requires manual remediation."
-                            />
-                            <Radio
-                                id="enforce"
-                                label="Enforce"
-                                value="enforce"
-                                description="Automatically runs remediation action that is defined in the source, if this feature is supported."
-                            />
-                        </RadioGroup>
                         <Checkbox
                             path="spec.disabled"
                             label="Disable policy"
@@ -177,6 +186,15 @@ export function PolicyWizardTemplates() {
 
     return (
         <Section label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
+            <RadioGroup path="spec.remediationAction" label="Remediation">
+                <Radio id="inform" label="Inform" value="inform" description="Reports the violation, which requires manual remediation." />
+                <Radio
+                    id="enforce"
+                    label="Enforce"
+                    value="enforce"
+                    description="Automatically runs remediation action that is defined in the source, if this feature is supported."
+                />
+            </RadioGroup>
             <ArrayInput
                 id="templates"
                 path="spec.policy-templates"
