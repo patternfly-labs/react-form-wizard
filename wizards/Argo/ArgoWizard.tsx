@@ -136,21 +136,17 @@ export function ArgoWizard(props: ArgoWizardProps) {
         [props.channels]
     )
     const [createdChannels, setCreatedChannels] = useState<string[]>(['test'])
-    const gitArgoAppSetRepoURLs: string[] = []
-    const helmArgoAppSetRepoURLs: string[] = []
-    if (props.applicationSets) {
-        props.applicationSets.forEach((appset) => {
-            if (appset.spec.template?.spec?.source.chart) {
-                helmArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL)
-            } else {
-                gitArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL as string)
-            }
-        })
-    }
-    const gitChannels = useMemo(
-        () => [...(sourceGitChannels ?? []), ...createdChannels, ...(gitArgoAppSetRepoURLs ?? [])].filter(onlyUnique),
-        [createdChannels, sourceGitChannels, gitArgoAppSetRepoURLs]
-    )
+    const gitChannels = useMemo(() => {
+        const gitArgoAppSetRepoURLs: string[] = []
+        if (props.applicationSets) {
+            props.applicationSets.forEach((appset) => {
+                if (!appset.spec.template?.spec?.source.chart) {
+                    gitArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL as string)
+                }
+            })
+        }
+        return [...(sourceGitChannels ?? []), ...createdChannels, ...(gitArgoAppSetRepoURLs ?? [])].filter(onlyUnique)
+    }, [createdChannels, props.applicationSets, sourceGitChannels])
 
     const sourceHelmChannels = useMemo(() => {
         if (props.channels)
@@ -161,10 +157,17 @@ export function ArgoWizard(props: ArgoWizardProps) {
         return undefined
     }, [props.channels])
 
-    const helmChannels = useMemo(
-        () => [...(sourceHelmChannels ?? []), ...createdChannels, ...(helmArgoAppSetRepoURLs ?? [])].filter(onlyUnique),
-        [createdChannels, sourceHelmChannels, helmArgoAppSetRepoURLs]
-    )
+    const helmChannels = useMemo(() => {
+        const helmArgoAppSetRepoURLs: string[] = []
+        if (props.applicationSets) {
+            props.applicationSets.forEach((appset) => {
+                if (appset.spec.template?.spec?.source.chart) {
+                    helmArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL)
+                }
+            })
+        }
+        return [...(sourceHelmChannels ?? []), ...createdChannels, ...(helmArgoAppSetRepoURLs ?? [])].filter(onlyUnique)
+    }, [createdChannels, props.applicationSets, sourceHelmChannels])
 
     const [gitRevisionsAsyncCallback, setGitRevisionsAsyncCallback] = useState<() => Promise<string[]>>()
     const [gitPathsAsyncCallback, setGitPathsAsyncCallback] = useState<() => Promise<string[]>>()

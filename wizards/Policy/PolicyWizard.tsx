@@ -1,4 +1,4 @@
-import { Button, Stack, Text, Title } from '@patternfly/react-core'
+import { Stack, Text, Title } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, useContext } from 'react'
 import set from 'set-value'
@@ -91,11 +91,6 @@ export function PolicyWizard(props: {
                             helperText="The namespace on the hub cluster where the policy resources will be created."
                             options={props.namespaces}
                             required
-                            footer={
-                                <Button variant="link" isInline>
-                                    Create new namespace
-                                </Button>
-                            }
                             disabledInEditMode
                         />
                         <RadioGroup path="spec.remediationAction" label="Remediation">
@@ -143,18 +138,18 @@ export function PolicyWizard(props: {
                 <ItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <Section label="Policy annotations">
                         <StringsMapInput
-                            id="categories"
-                            path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
-                            label="Categories"
+                            id="standards"
+                            path={`metadata.annotations.policy\\.open-cluster-management\\.io/standards`}
+                            label="Standards"
                             map={(value: string | undefined) => {
                                 return value !== undefined ? value.split(',').map((v) => v.trim()) : []
                             }}
                             unmap={(values: string[]) => values.join(', ')}
                         />
                         <StringsMapInput
-                            id="standards"
-                            path={`metadata.annotations.policy\\.open-cluster-management\\.io/standards`}
-                            label="Standards"
+                            id="categories"
+                            path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
+                            label="Categories"
                             map={(value: string | undefined) => {
                                 return value !== undefined ? value.split(',').map((v) => v.trim()) : []
                             }}
