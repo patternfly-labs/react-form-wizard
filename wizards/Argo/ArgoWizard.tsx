@@ -131,6 +131,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
         () =>
             props.channels
                 ?.filter((channel) => channel?.spec?.type === 'Git' || channel?.spec?.type === 'GitHub')
+                .filter((channel) => !channel?.spec?.secretRef) // filter out private ones
                 .map((channel) => channel?.spec?.pathname),
         [props.channels]
     )
@@ -153,7 +154,10 @@ export function ArgoWizard(props: ArgoWizardProps) {
 
     const sourceHelmChannels = useMemo(() => {
         if (props.channels)
-            return props.channels.filter((channel) => channel?.spec?.type === 'HelmRepo').map((channel) => channel.spec.pathname)
+            return props.channels
+                .filter((channel) => channel?.spec?.type === 'HelmRepo')
+                ?.filter((channel) => !channel?.spec?.secretRef) // filter out private ones
+                .map((channel) => channel.spec.pathname)
         return undefined
     }, [props.channels])
 
