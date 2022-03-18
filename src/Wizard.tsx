@@ -10,9 +10,6 @@ import {
     PageSectionTypes,
     Split,
     SplitItem,
-    Tab,
-    Tabs,
-    TabTitleText,
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import Handlebars, { HelperOptions } from 'handlebars'
@@ -29,8 +26,8 @@ import {
     useState,
 } from 'react'
 import { EditMode } from '.'
-import { YamlEditor, YamlToObject } from './components/YamlEditor'
-import { DataContext, useData } from './contexts/DataContext'
+import { YamlToObject } from './components/YamlEditor'
+import { DataContext } from './contexts/DataContext'
 import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
 import { EditModeContext } from './contexts/EditModeContext'
 import { HasInputsProvider } from './contexts/HasInputsProvider'
@@ -61,6 +58,7 @@ export interface WizardProps {
     onCancel: WizardCancel
     hasButtons?: boolean
     editMode?: EditMode
+    yamlEditor?: () => ReactNode
 }
 
 export type WizardSubmit = (data: unknown) => Promise<void>
@@ -91,7 +89,6 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     }, [props.showYaml])
     const displayMode = DisplayMode.Wizard
     const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
-    const [template2] = useState(() => (props.yamlToDataTemplate ? Handlebars.compile(props.yamlToDataTemplate) : undefined))
     const isYamlArray = useMemo(() => Array.isArray(props.defaultData), [props.defaultData])
 
     return (
@@ -104,17 +101,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                 <ShowValidationProvider>
                                     <ValidationProvider>
                                         <Drawer isExpanded={drawerExpanded} isInline>
-                                            <DrawerContent
-                                                panelContent={
-                                                    <WizardPageDrawer
-                                                        data={data}
-                                                        template={template}
-                                                        template2={template2}
-                                                        templateString={props.template}
-                                                        isYamlArray={isYamlArray}
-                                                    />
-                                                }
-                                            >
+                                            <DrawerContent panelContent={<WizardPageDrawer yamlEditor={props.yamlEditor} />}>
                                                 <DrawerContentBody>
                                                     <PageSection
                                                         variant="light"
@@ -412,55 +399,11 @@ function StepNavItem(props: {
     )
 }
 
-function WizardPageDrawer(props: {
-    data: unknown
-    template?: HandlebarsTemplateDelegate
-    template2?: HandlebarsTemplateDelegate
-    templateString?: string
-    isYamlArray: boolean
-}) {
-    const [activeKey, setActiveKey] = useState<number | string>(0)
-    const { update } = useData()
-    const devMode = process.env.NODE_ENV === 'development'
+function WizardPageDrawer(props: { yamlEditor?: () => ReactNode }) {
+    const [yamlEditor] = useState(props.yamlEditor ?? undefined)
     return (
         <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
-            {props.template && devMode ? (
-                <div style={{ height: '100%' }}>
-                    <Tabs
-                        activeKey={activeKey}
-                        onSelect={(_event, tabIndex) => setActiveKey(tabIndex)}
-                        isBox
-                        variant="light300"
-                        isFilled
-                        style={{ backgroundColor: 'white' }}
-                    >
-                        <Tab eventKey={0} title={<TabTitleText>Yaml</TabTitleText>}>
-                            <YamlEditor
-                                data={props.template ? YamlToObject(props.template(props.data), props.isYamlArray) : props.data}
-                                setData={(data: any) => {
-                                    let newData = data
-                                    if (props.template2) newData = YamlToObject(props.template2(data), props.isYamlArray)
-                                    update(newData)
-                                }}
-                                isYamlArray={props.isYamlArray}
-                            />
-                        </Tab>
-                        <Tab eventKey={2} title={<TabTitleText>Data</TabTitleText>}>
-                            <YamlEditor data={props.data} isYamlArray={props.isYamlArray} />
-                        </Tab>
-                    </Tabs>
-                </div>
-            ) : (
-                <YamlEditor
-                    data={props.template ? YamlToObject(props.template(props.data), props.isYamlArray) : props.data}
-                    setData={(data: any) => {
-                        let newData = data
-                        if (props.template2) newData = YamlToObject(props.template2(data), props.isYamlArray)
-                        update(newData)
-                    }}
-                    isYamlArray={props.isYamlArray}
-                />
-            )}
+            {yamlEditor}
         </DrawerPanelContent>
     )
 }

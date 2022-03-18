@@ -19,7 +19,7 @@ export function PolicyAutomationWizard(props: {
 }) {
     const ansibleCredentials = useMemo(
         () => props.credentials.filter((credential) => credential.metadata?.labels?.['cluster.open-cluster-management.io/type'] === 'ans'),
-        [props.credentials, props.policy.metadata?.namespace]
+        [props.credentials]
     )
     const ansibleCredentialNames = useMemo(
         () => ansibleCredentials.map((credential) => credential.metadata?.name ?? ''),

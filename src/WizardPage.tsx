@@ -1,13 +1,21 @@
 import { Breadcrumb, BreadcrumbItem, Flex, Page, PageSection, Switch, Text, Title } from '@patternfly/react-core'
-import { useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
+import { WizardYamlEditor } from './components/YamlEditor'
 import { Wizard, WizardProps } from './Wizard'
 
 export type WizardPageProps = {
     breadcrumb?: { label: string; to?: string }[]
     yaml?: boolean
+    yamlEditor?: () => ReactNode
 } & WizardProps
 
+function getWizardYamlEditor() {
+    return <WizardYamlEditor />
+}
+
 export function WizardPage(props: WizardPageProps) {
+    let { yamlEditor } = props
+    if (!yamlEditor) yamlEditor = getWizardYamlEditor
     const [drawerExpanded, setDrawerExpanded] = useState(props.yaml !== false && localStorage.getItem('yaml') === 'true')
     const toggleDrawerExpanded = useCallback(() => {
         setDrawerExpanded((drawerExpanded) => {
@@ -42,7 +50,7 @@ export function WizardPage(props: WizardPageProps) {
             }
             groupProps={{ sticky: 'top' }}
         >
-            <Wizard {...props} showHeader={false} showYaml={drawerExpanded}>
+            <Wizard {...props} showHeader={false} showYaml={drawerExpanded} yamlEditor={yamlEditor}>
                 {props.children}
             </Wizard>
         </Page>

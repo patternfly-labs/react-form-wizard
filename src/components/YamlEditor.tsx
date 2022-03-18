@@ -3,6 +3,8 @@ import { CheckIcon, CopyIcon } from '@patternfly/react-icons'
 import useResizeObserver from '@react-hook/resize-observer'
 import { useEffect, useRef, useState } from 'react'
 import YAML from 'yaml'
+import { useData } from '../contexts/DataContext'
+import { useItem } from '../contexts/ItemContext'
 
 const color = {
     background: 'rgb(21, 21, 21)',
@@ -175,4 +177,10 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
             </div>
         </div>
     )
+}
+
+export function WizardYamlEditor() {
+    const data = useItem() // Wizard framework sets this context
+    const { update } = useData() // Wizard framework sets this context
+    return <YamlEditor data={data} setData={update} isYamlArray={Array.isArray(data)} />
 }
