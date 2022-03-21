@@ -66,7 +66,13 @@ export function AsyncSelect(props: AsyncSelectProps) {
                 if (loading) return loading
                 if (asyncCallback) {
                     asyncCallback()
-                        .then((options) => setOptions(options))
+                        .then((options) => {
+                            if (Array.isArray(options) && options.every((option) => typeof option === 'string')) {
+                                setOptions(options)
+                            } else {
+                                setOptions([])
+                            }
+                        })
                         .catch(() => null)
                         .finally(() => setLoading(false))
                     return true

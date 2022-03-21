@@ -55,7 +55,7 @@ export function CreateApplicationSet() {
                 { label: 'Application Set Wizard Examples', to: RouteE.ArgoCD },
                 { label: 'Create Application Set' },
             ]}
-            addClusterSets="https://github.com/patternfly-labs/react-form-wizard"
+            createClusterSetCallback={() => null}
             ansibleCredentials={ansibleCredentials}
             argoServers={servers}
             namespaces={namespaces}
@@ -101,7 +101,7 @@ export function EditApplicationSet() {
                 { label: 'Application Set Wizard Examples', to: RouteE.ArgoCD },
                 { label: 'Edit Application Set' },
             ]}
-            addClusterSets="https://github.com/patternfly-labs/react-form-wizard"
+            createClusterSetCallback={() => null}
             ansibleCredentials={ansibleCredentials}
             argoServers={servers}
             namespaces={namespaces}

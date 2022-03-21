@@ -61,4 +61,6 @@ export const Specifications: {
     getPolicySpecification('No privileged pods', policypsp),
     getPolicySpecification('Restricted Security Context Constraints', policyscc),
     getPolicySpecification('Detect image vulnerabilities', policyimagemanifestvuln),
-]
+].sort((a, b) => {
+    return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+})

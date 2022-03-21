@@ -1,4 +1,5 @@
-import { SelectOption } from '@patternfly/react-core'
+import { Button, SelectOption } from '@patternfly/react-core'
+import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useMemo } from 'react'
 import { ArrayInput, EditMode, Hidden, KeyValue, NumberInput, TextInput } from '../../src'
@@ -12,7 +13,12 @@ import { useLabelValuesMap } from '../common/useLabelValuesMap'
 import { isValidKubernetesName } from '../common/validation'
 import { MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
-export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bindingKind: string; clusters: IResource[] }) {
+export function Placements(props: {
+    clusterSetBindings: IClusterSetBinding[]
+    bindingKind: string
+    clusters: IResource[]
+    createClusterSetCallback?: () => void
+}) {
     const editMode = useEditMode()
     const resources = useItem() as IResource[]
     const namespaceClusterSetNames = useMemo(() => {
@@ -42,12 +48,21 @@ export function Placements(props: { clusterSetBindings: IClusterSetBinding[]; bi
             newValue={{ ...PlacementType, metadata: { name: '', namespace: '' }, spec: {} }}
             defaultCollapsed={editMode === EditMode.Edit}
         >
-            <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} />
+            <Placement
+                namespaceClusterSetNames={namespaceClusterSetNames}
+                clusters={props.clusters}
+                createClusterSetCallback={props.createClusterSetCallback}
+            />
         </ArrayInput>
     )
 }
 
-export function Placement(props: { namespaceClusterSetNames: string[]; clusters: IResource[]; hideName?: boolean }) {
+export function Placement(props: {
+    namespaceClusterSetNames: string[]
+    clusters: IResource[]
+    hideName?: boolean
+    createClusterSetCallback?: () => void
+}) {
     const editMode = useEditMode()
     const placement = useItem() as IPlacement
 
@@ -72,6 +87,13 @@ export function Placement(props: { namespaceClusterSetNames: string[]; clusters:
                 placeholder="Select the cluster sets"
                 labelHelp="Select clusters from the cluster sets bound to the namespace. Cluster can then be further selected using cluster labels."
                 helperText="If no cluster sets are selected, all clusters will be selected from the cluster sets bound to the namespace."
+                footer={
+                    props.createClusterSetCallback ? (
+                        <Button icon={<ExternalLinkAltIcon />} isInline variant="link" onClick={props.createClusterSetCallback}>
+                            Create cluster set
+                        </Button>
+                    ) : undefined
+                }
             >
                 {props.namespaceClusterSetNames.map((name) => (
                     <SelectOption key={name} value={name} />
