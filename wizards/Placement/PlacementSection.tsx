@@ -24,6 +24,7 @@ export function PlacementSection(props: {
     existingclusterSetBindings: IClusterSetBinding[]
     defaultPlacementKind: 'Placement' | 'PlacementRule'
     clusters: IResource[]
+    createClusterSetCallback?: () => void
 }) {
     const { update } = useData()
     const resources = useItem() as IResource[]

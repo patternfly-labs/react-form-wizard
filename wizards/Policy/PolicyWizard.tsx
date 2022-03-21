@@ -10,6 +10,7 @@ import {
     EditMode,
     Hidden,
     ItemSelector,
+    KeyValue,
     NumberInput,
     Radio,
     RadioGroup,
@@ -376,6 +377,24 @@ function ObjectTemplate() {
                 label="Namespace"
                 required
                 hidden={(template: any) => template?.objectDefinition?.metadata?.namespace === undefined}
+            />
+
+            <KeyValue
+                path="objectDefinition.metadata.labels"
+                label="Labels"
+                hidden={(template: any) => template?.objectDefinition?.metadata?.labels === undefined}
+            />
+
+            <KeyValue
+                path="objectDefinition.metadata.annotations"
+                label="Annotations"
+                hidden={(template: any) => template?.objectDefinition?.metadata?.annotations === undefined}
+            />
+
+            <TextInput
+                path="objectDefinition.status.phase"
+                label="Phase"
+                hidden={(template: any) => template?.objectDefinition?.status?.phase === undefined}
             />
 
             {/* LimitRange */}

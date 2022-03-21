@@ -1,5 +1,5 @@
 import { Button, Flex, FlexItem, SelectOption, Split, Stack, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
+import { GitAltIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
     ArrayInput,
@@ -87,7 +87,7 @@ interface ApplicationSet {
 interface ArgoWizardProps {
     breadcrumb?: { label: string; to?: string }[]
     applicationSets?: ApplicationSet[]
-    addClusterSets?: string
+    createClusterSetCallback?: () => void
     clusters: IResource[]
     clusterSetBindings: IClusterSetBinding[]
     ansibleCredentials: string[]
@@ -208,7 +208,17 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             ],
                             template: {
                                 metadata: { name: '-{{name}}' },
-                                spec: { project: 'default', source: {}, destination: { namespace: '', server: '{{server}}' } },
+                                spec: {
+                                    project: 'default',
+                                    source: {},
+                                    destination: { namespace: '', server: '{{server}}' },
+                                    syncPolicy: {
+                                        automated: {
+                                            selfHeal: true,
+                                        },
+                                        syncOptions: ['CreateNamespace=true'],
+                                    },
+                                },
                             },
                         },
                     },
@@ -256,9 +266,6 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             options={props.argoServers}
                             required
                         />
-                        <DetailsHidden>
-                            <ExternalLinkButton id="addClusterSets" icon={<PlusIcon />} href={props.addClusterSets} />
-                        </DetailsHidden>
                         <Select
                             path="spec.generators.0.clusterDecisionResource.requeueAfterSeconds"
                             label="Requeue time"
@@ -462,6 +469,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     placements={props.placements}
                     clusters={props.clusters}
                     clusterSetBindings={props.clusterSetBindings}
+                    createClusterSetCallback={props.createClusterSetCallback}
                 />
             </Step>
         </WizardPage>
@@ -688,7 +696,12 @@ function syncOptionsToPrunePropagationPolicy(array: unknown) {
     return 'background'
 }
 
-function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSetBindings: IClusterSetBinding[]; clusters: IResource[] }) {
+function ArgoWizardPlacementSection(props: {
+    placements: IPlacement[]
+    clusterSetBindings: IClusterSetBinding[]
+    clusters: IResource[]
+    createClusterSetCallback?: () => void
+}) {
     const resources = useItem() as IResource[]
     const editMode = useEditMode()
     const hasPlacement = resources.find((r) => r.kind === PlacementKind) !== undefined
@@ -736,7 +749,12 @@ function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSe
             </DetailsHidden>
             {hasPlacement ? (
                 <ItemSelector selectKey="kind" selectValue={PlacementKind}>
-                    <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} hideName />
+                    <Placement
+                        namespaceClusterSetNames={namespaceClusterSetNames}
+                        clusters={props.clusters}
+                        hideName
+                        createClusterSetCallback={props.createClusterSetCallback}
+                    />
                 </ItemSelector>
             ) : (
                 <ItemSelector selectKey="kind" selectValue="ApplicationSet">
@@ -744,7 +762,7 @@ function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSe
                         path="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
                         label="Existing placement"
                         options={placements.map((placement) => placement.metadata?.name ?? '')}
-                    ></Select>
+                    />
                 </ItemSelector>
             )}
         </Section>
