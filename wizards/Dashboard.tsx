@@ -1,7 +1,7 @@
 import { Card, CardBody, CardTitle, Page, PageSection, Stack, Text, Title } from '@patternfly/react-core'
 import { ReactNode } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Masonry } from './Demo'
+import { Masonry } from './common/Masonry'
 import { RouteE } from './Routes'
 
 export function DashboardCard(props: { title: string; children?: ReactNode; route: RouteE }) {

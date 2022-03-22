@@ -32,7 +32,7 @@ import {
 import { CheckIcon } from '@patternfly/react-icons'
 import Fuse from 'fuse.js'
 import { Fragment, useCallback, useMemo, useState } from 'react'
-import { Masonry } from './Demo'
+import { Masonry } from './common/Masonry'
 
 interface ICatalogBreadcrumb {
     id?: string

@@ -1,7 +1,4 @@
 import {
-    Grid,
-    GridItem,
-    gridSpans,
     Masthead,
     MastheadBrand,
     MastheadContent,
@@ -13,12 +10,9 @@ import {
     Page,
     PageSidebar,
     PageToggleButton,
-    Stack,
     Title,
 } from '@patternfly/react-core'
 import { BarsIcon, GithubIcon } from '@patternfly/react-icons'
-import useResizeObserver from '@react-hook/resize-observer'
-import { Children, ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
@@ -388,57 +382,5 @@ function DemoSidebar() {
                 </Nav>
             }
         />
-    )
-}
-
-export function Masonry(props: { size: number; children?: ReactNode }) {
-    const target = useRef(null)
-    const [columns, setColumns] = useState(2)
-    useResizeObserver(target, (entry) => {
-        setColumns(Math.max(Math.floor(entry.contentRect.width / props.size), 1))
-    })
-    const [span, setSpan] = useState<gridSpans>(2)
-    useLayoutEffect(() => {
-        switch (columns) {
-            case 1:
-                setSpan(12)
-                break
-            case 2:
-                setSpan(6)
-                break
-            case 3:
-                setSpan(4)
-                break
-            case 4:
-                setSpan(3)
-                break
-            case 5:
-                setSpan(2)
-                break
-            case 6:
-                setSpan(2)
-                break
-            default:
-                setSpan(1)
-                break
-        }
-    }, [columns])
-
-    const realColumns = 12 / span
-
-    return (
-        <div ref={target}>
-            <Grid hasGutter style={{ maxWidth: realColumns * props.size }}>
-                {new Array(realColumns).fill(0).map((_, index) => (
-                    <GridItem span={span} key={index}>
-                        <Stack hasGutter>
-                            {Children.toArray(props.children)
-                                .filter((_, i) => (i - index) % realColumns === 0)
-                                .map((child) => child)}
-                        </Stack>
-                    </GridItem>
-                ))}
-            </Grid>
-        </div>
     )
 }
