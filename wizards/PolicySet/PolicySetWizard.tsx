@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment, ReactNode, useMemo } from 'react'
 import {
     EditMode,
     ItemSelector,
@@ -35,6 +35,7 @@ export interface PolicySetWizardProps {
     resources?: IResource[]
     onSubmit: WizardSubmit
     onCancel: WizardCancel
+    yamlEditor?: () => ReactNode
 }
 
 export function PolicySetWizard(props: PolicySetWizardProps) {
@@ -65,6 +66,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                     } as IResource,
                 ]
             }
+            yamlEditor={props.yamlEditor}
         >
             <Step label="Details" id="details-step">
                 {props.editMode !== EditMode.Edit && (
