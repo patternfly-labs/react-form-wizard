@@ -327,6 +327,49 @@ export function ArrayInputItem(props: {
                                         />
                                     }
                                 >
+                                    <Split>
+                                        <SplitItem isFilled>
+                                            {typeof props.collapsedContent === 'string' ? (
+                                                <TextDetail
+                                                    id={props.collapsedContent}
+                                                    path={props.collapsedContent}
+                                                    placeholder={props.collapsedPlaceholder ?? 'Expand to edit'}
+                                                />
+                                            ) : (
+                                                props.collapsedContent
+                                            )}
+                                        </SplitItem>
+                                        <SplitItem>
+                                            {props.sortable && (
+                                                <Fragment>
+                                                    <Button
+                                                        variant="plain"
+                                                        aria-label="Move item up"
+                                                        isDisabled={index === 0}
+                                                        onClick={() => moveUp(index)}
+                                                    >
+                                                        <ArrowUpIcon />
+                                                    </Button>
+                                                    <Button
+                                                        variant="plain"
+                                                        aria-label="Move item down"
+                                                        isDisabled={index === props.count - 1}
+                                                        onClick={() => moveDown(index)}
+                                                    >
+                                                        <ArrowDownIcon />
+                                                    </Button>
+                                                </Fragment>
+                                            )}
+                                            <Button
+                                                variant="plain"
+                                                aria-label="Remove item"
+                                                onClick={() => removeItem(props.value)}
+                                                style={{ marginTop: -6 }}
+                                            >
+                                                <TrashIcon />
+                                            </Button>
+                                        </SplitItem>
+                                    </Split>
                                     {props.children}
                                 </FieldGroup>
                             </ItemContext.Provider>

@@ -188,7 +188,16 @@ export function Catalog(props: {
                     const hasBody = card.descriptions || card.featureGroups || card.labels
 
                     return (
-                        <Card id={card.id} key={card.id ?? card.title} onClick={card.onClick} isFlat isLarge isSelectable>
+                        <Card
+                            id={card.id}
+                            key={card.id ?? card.title}
+                            onClick={card.onClick}
+                            isFlat
+                            isLarge
+                            isSelectable
+                            isRounded
+                            style={{ transition: 'box-shadow 0.25s', cursor: 'pointer' }}
+                        >
                             <CardHeader>
                                 <Split hasGutter style={{ width: '100%' }}>
                                     <SplitItem isFilled>

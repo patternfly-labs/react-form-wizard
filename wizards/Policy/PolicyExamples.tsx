@@ -210,7 +210,7 @@ export function EditPolicy(props: { yaml: string }) {
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
-            resources={YamlToObject(props.yaml)}
+            resources={YamlToObject(props.yaml, true)}
             gitSource="http://example.com"
             clusters={clusters}
         />
