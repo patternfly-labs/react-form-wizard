@@ -15,7 +15,7 @@ export function ItemSelector(props: { selectKey: string; selectValue: string; ch
     const newItem = wizardSelectorItem(props, item)
     if (newItem === undefined) {
         if (props.empty) return <Fragment>{props.empty}</Fragment>
-        return <Fragment>Item not found!</Fragment>
+        return <Fragment></Fragment>
     }
 
     return <ItemContext.Provider value={newItem}>{props.children}</ItemContext.Provider>

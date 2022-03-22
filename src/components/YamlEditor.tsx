@@ -16,14 +16,19 @@ const color = {
 
 export function YamlToObject(yaml: string, isYamlArray?: boolean) {
     if (isYamlArray === true) {
-        return YAML.parseAllDocuments(yaml, { prettyErrors: true }).map((doc) => doc.toJSON())
-    } else if (isYamlArray === false) {
-        return YAML.parse(yaml, { prettyErrors: true })
-    }
-    try {
-        return YAML.parse(yaml, { prettyErrors: true })
-    } catch {
-        return YAML.parseAllDocuments(yaml, { prettyErrors: true }).map((doc) => doc.toJSON())
+        try {
+            return YAML.parseAllDocuments(yaml, { prettyErrors: true })
+                .map((doc) => doc.toJSON())
+                .filter((doc) => !!doc)
+        } catch {
+            return []
+        }
+    } else {
+        try {
+            return YAML.parse(yaml, { prettyErrors: true })
+        } catch {
+            return {}
+        }
     }
 }
 
@@ -147,7 +152,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                                 onChange={(e) => {
                                     if (!e.target.value) {
                                         setYaml('')
-                                        props.setData?.({})
+                                        props.setData?.(props.isYamlArray ? [] : {})
                                     } else {
                                         setYaml(e.target.value)
                                         try {
@@ -182,5 +187,6 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
 export function WizardYamlEditor() {
     const data = useItem() // Wizard framework sets this context
     const { update } = useData() // Wizard framework sets this context
-    return <YamlEditor data={data} setData={update} isYamlArray={Array.isArray(data)} />
+    const [isYamlArray] = useState(() => Array.isArray(data))
+    return <YamlEditor data={data} setData={update} isYamlArray={isYamlArray} />
 }
