@@ -69,7 +69,7 @@ export function PlacementRule(props: { clusters: IResource[]; hideName?: boolean
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [] }}
                 defaultCollapsed={editMode !== EditMode.Create}
-                helperText="A placement with out any label selectors or label expressions will select all clusters."
+                helperText="A placement without any label selectors or label expressions will select all clusters."
             >
                 <MatchExpression labelValuesMap={labelValuesMap} />
             </ArrayInput>
