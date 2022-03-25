@@ -25,7 +25,7 @@ export function PlacementRules(props: { clusters: IResource[] }) {
             newValue={{
                 ...PlacementRuleType,
                 metadata: {},
-                spec: { clusterConditions: { status: 'True', type: 'ManagedClusterConditionAvailable' } },
+                spec: { clusterConditions: [{ status: 'True', type: 'ManagedClusterConditionAvailable' }] },
             }}
             defaultCollapsed={editMode !== EditMode.Create}
         >
