@@ -1,5 +1,5 @@
 import { Alert, Button, ButtonVariant } from '@patternfly/react-core'
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { DetailsHidden, EditMode, KeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
 import { IResource } from '../common/resource'
 import { ICredential } from '../common/resources/ICredential'
@@ -12,6 +12,7 @@ export function PolicyAutomationWizard(props: {
     credentials: IResource[]
     createCredentialsCallback: () => void
     editMode?: EditMode
+    yamlEditor?: () => ReactNode
     resource: IPolicyAutomation
     onSubmit: WizardSubmit
     onCancel: WizardCancel
@@ -53,6 +54,7 @@ export function PolicyAutomationWizard(props: {
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
             editMode={props.editMode}
+            yamlEditor={props.yamlEditor}
             defaultData={
                 props.resource ?? {
                     ...PolicyAutomationType,
