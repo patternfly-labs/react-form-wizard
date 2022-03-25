@@ -1,8 +1,9 @@
 import { Button, Flex, FlexItem, SelectOption, Split, Stack, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
+import { GitAltIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
     ArrayInput,
+    AsyncSelect,
     Checkbox,
     DetailsHidden,
     EditMode,
@@ -46,8 +47,48 @@ interface Channel {
     }
 }
 
+interface ApplicationSet {
+    metadata: {
+        name?: string
+        namespace?: string
+    }
+    spec: {
+        generators?: {
+            clusterDecisionResource?: {
+                configMapRef?: string
+                requeueAfterSeconds?: number
+            }
+        }[]
+        template?: {
+            metadata?: {
+                name?: string
+                namespace?: string
+            }
+            spec?: {
+                destination?: {
+                    namespace: string
+                    server: string
+                }
+                project: string
+                source: {
+                    path?: string
+                    repoURL: string
+                    targetRevision?: string
+                    chart?: string
+                }
+                syncPolicy?: any
+            }
+        }
+    }
+    transformed?: {
+        clusterCount?: string
+    }
+}
+
 interface ArgoWizardProps {
-    addClusterSets?: string
+    breadcrumb?: { label: string; to?: string }[]
+    applicationSets?: ApplicationSet[]
+    createClusterSetCallback?: () => void
     clusters: IResource[]
     clusterSetBindings: IClusterSetBinding[]
     ansibleCredentials: string[]
@@ -81,40 +122,74 @@ interface ArgoWizardProps {
 }
 
 export function ArgoWizard(props: ArgoWizardProps) {
+    function onlyUnique(value: any, index: any, self: string | any[]) {
+        return self.indexOf(value) === index
+    }
     const { resources } = props
 
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
 
+    const sourceGitChannels = useMemo(
+        () =>
+            props.channels
+                ?.filter((channel) => channel?.spec?.type === 'Git' || channel?.spec?.type === 'GitHub')
+                .filter((channel) => !channel?.spec?.secretRef) // filter out private ones
+                .map((channel) => channel?.spec?.pathname),
+        [props.channels]
+    )
+    const [createdChannels, setCreatedChannels] = useState<string[]>(['test'])
     const gitChannels = useMemo(() => {
+        const gitArgoAppSetRepoURLs: string[] = []
+        if (props.applicationSets) {
+            props.applicationSets.forEach((appset) => {
+                if (!appset.spec.template?.spec?.source.chart) {
+                    gitArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL as string)
+                }
+            })
+        }
+        return [...(sourceGitChannels ?? []), ...createdChannels, ...(gitArgoAppSetRepoURLs ?? [])].filter(onlyUnique)
+    }, [createdChannels, props.applicationSets, sourceGitChannels])
+
+    const sourceHelmChannels = useMemo(() => {
         if (props.channels)
             return props.channels
-                .filter((channel) => channel?.spec?.type === 'Git' || channel?.spec?.type === 'GitHub')
-                .map((channel) => channel?.spec?.pathname)
+                .filter((channel) => channel?.spec?.type === 'HelmRepo')
+                ?.filter((channel) => !channel?.spec?.secretRef) // filter out private ones
+                .map((channel) => channel.spec.pathname)
         return undefined
     }, [props.channels])
 
     const helmChannels = useMemo(() => {
-        if (props.channels)
-            return props.channels.filter((channel) => channel?.spec?.type === 'HelmRepo').map((channel) => channel.spec.pathname)
-        return undefined
-    }, [props.channels])
+        const helmArgoAppSetRepoURLs: string[] = []
+        if (props.applicationSets) {
+            props.applicationSets.forEach((appset) => {
+                if (appset.spec.template?.spec?.source.chart) {
+                    helmArgoAppSetRepoURLs.push(appset.spec.template?.spec?.source.repoURL)
+                }
+            })
+        }
+        return [...(sourceHelmChannels ?? []), ...createdChannels, ...(helmArgoAppSetRepoURLs ?? [])].filter(onlyUnique)
+    }, [createdChannels, props.applicationSets, sourceHelmChannels])
 
-    const [gitPaths, setGitPaths] = useState<string[] | undefined>(undefined)
-    const [gitRevisions, setGitRevisions] = useState<string[] | undefined>(undefined)
+    const [gitRevisionsAsyncCallback, setGitRevisionsAsyncCallback] = useState<() => Promise<string[]>>()
+    const [gitPathsAsyncCallback, setGitPathsAsyncCallback] = useState<() => Promise<string[]>>()
 
     useEffect(() => {
         const applicationSet: any = resources?.find((resource) => resource.kind === 'ApplicationSet')
         if (applicationSet) {
             const channel = props.channels?.find((channel) => channel?.spec?.pathname === applicationSet.spec.template.spec.source.repoURL)
             if (channel) {
-                void getGitBranchList(channel, props.getGitRevisions, setGitRevisions)
-                void getGitPathList(channel, applicationSet.spec.template.spec.source.targetRevision, props.getGitPaths, setGitPaths)
+                setGitRevisionsAsyncCallback(() => () => getGitBranchList(channel, props.getGitRevisions))
+                setGitPathsAsyncCallback(
+                    () => () => getGitPathList(channel, applicationSet.spec.template.spec.source.targetRevision, props.getGitPaths)
+                )
             }
         }
     }, [props.channels, props.getGitPaths, props.getGitRevisions, resources])
 
     return (
         <WizardPage
+            breadcrumb={props.breadcrumb}
             title={props.resources ? 'Edit application set' : 'Create application set'}
             defaultData={
                 props.resources ?? [
@@ -134,7 +209,17 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             ],
                             template: {
                                 metadata: { name: '-{{name}}' },
-                                spec: { project: 'default', source: {}, destination: { namespace: '', server: '{{server}}' } },
+                                spec: {
+                                    project: 'default',
+                                    source: {},
+                                    destination: { namespace: '', server: '{{server}}' },
+                                    syncPolicy: {
+                                        automated: {
+                                            selfHeal: true,
+                                        },
+                                        syncOptions: ['CreateNamespace=true'],
+                                    },
+                                },
                             },
                         },
                     },
@@ -182,9 +267,6 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             options={props.argoServers}
                             required
                         />
-                        <DetailsHidden>
-                            <ExternalLinkButton id="addClusterSets" icon={<PlusIcon />} href={props.addClusterSets} />
-                        </DetailsHidden>
                         <Select
                             path="spec.generators.0.clusterDecisionResource.requeueAfterSeconds"
                             label="Requeue time"
@@ -217,31 +299,48 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 options={gitChannels}
                                 onValueChange={(value) => {
                                     const channel = props.channels?.find((channel) => channel.spec.pathname === value)
-                                    channel && getGitBranchList(channel, props.getGitRevisions, setGitRevisions)
+                                    if (channel) {
+                                        setGitRevisionsAsyncCallback(() => () => getGitBranchList(channel, props.getGitRevisions))
+                                    }
                                 }}
                                 validation={validateWebURL}
                                 required
+                                isCreatable
+                                onCreate={(value: string) =>
+                                    setCreatedChannels((channels) => {
+                                        if (!channels.includes(value)) {
+                                            channels.push(value)
+                                        }
+                                        return [...channels]
+                                    })
+                                }
+                                // TODO valid URL
                             />
                             <Hidden hidden={(data) => data.spec.template.spec.source.repoURL === ''}>
-                                <Select
+                                <AsyncSelect
                                     path="spec.template.spec.source.targetRevision"
                                     label="Revision"
                                     labelHelp="Refer to a single commit"
                                     placeholder="Enter or select a tracking revision"
-                                    options={gitRevisions}
+                                    asyncCallback={gitRevisionsAsyncCallback}
                                     onValueChange={(value, item) => {
                                         const channel = props.channels?.find(
                                             (channel) => channel?.spec?.pathname === item.spec.template.spec.source.repoURL
                                         )
-                                        channel && getGitPathList(channel, value as string, props.getGitPaths, setGitPaths)
+                                        if (channel) {
+                                            setGitPathsAsyncCallback(
+                                                () => () => getGitPathList(channel, value as string, props.getGitPaths)
+                                            )
+                                        }
                                     }}
                                 />
-                                <Select
+                                <AsyncSelect
                                     path="spec.template.spec.source.path"
                                     label="Path"
                                     labelHelp="The location of the resources on the Git repository."
                                     placeholder="Enter or select a repository path"
-                                    options={gitPaths}
+                                    isCreatable
+                                    asyncCallback={gitPathsAsyncCallback}
                                 />
                             </Hidden>
                         </Hidden>
@@ -254,6 +353,16 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 placeholder="Enter or select a Helm URL"
                                 options={helmChannels}
                                 required
+                                isCreatable
+                                onCreate={(value: string) =>
+                                    setCreatedChannels((channels) => {
+                                        if (!channels.includes(value)) {
+                                            channels.push(value)
+                                        }
+                                        return [...channels]
+                                    })
+                                }
+                                // TODO valid URL
                             />
                             <TextInput
                                 path="spec.template.spec.source.chart"
@@ -362,6 +471,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     placements={props.placements}
                     clusters={props.clusters}
                     clusterSetBindings={props.clusterSetBindings}
+                    createClusterSetCallback={props.createClusterSetCallback}
                 />
             </Step>
         </WizardPage>
@@ -435,33 +545,23 @@ export function TimeWindow(props: { timeZone: string[] }) {
 
 async function getGitBranchList(
     channel: Channel,
-    getGitBranches: (channelPath: string, secretArgs?: { secretRef?: string; namespace?: string } | undefined) => Promise<unknown>,
-    setGitBranches: (branches: any) => void
+    getGitBranches: (channelPath: string, secretArgs?: { secretRef?: string; namespace?: string } | undefined) => Promise<unknown>
 ) {
-    await getGitBranches(channel.spec.pathname, {
+    return getGitBranches(channel.spec.pathname, {
         secretRef: channel.spec?.secretRef?.name,
         namespace: channel.metadata?.namespace,
-    }).then((result) => {
-        if (result) {
-            setGitBranches(result)
-        } else setGitBranches([])
-    })
+    }) as Promise<string[]>
 }
 
 async function getGitPathList(
     channel: Channel,
     branch: string,
-    getGitPaths: (channelPath: string, branch: string, secretArgs?: { secretRef?: string; namespace?: string }) => Promise<unknown>,
-    setGitPaths: (paths: any) => void
-) {
-    await getGitPaths(channel?.spec?.pathname, branch, {
+    getGitPaths: (channelPath: string, branch: string, secretArgs?: { secretRef?: string; namespace?: string }) => Promise<unknown>
+): Promise<string[]> {
+    return getGitPaths(channel?.spec?.pathname, branch, {
         secretRef: channel?.spec?.secretRef?.name,
         namespace: channel.metadata?.namespace,
-    }).then((result) => {
-        if (result) {
-            setGitPaths(result)
-        } else setGitPaths([])
-    })
+    }) as Promise<string[]>
 }
 
 export function ExternalLinkButton(props: { id: string; href?: string; icon?: ReactNode }) {
@@ -598,7 +698,12 @@ function syncOptionsToPrunePropagationPolicy(array: unknown) {
     return 'background'
 }
 
-function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSetBindings: IClusterSetBinding[]; clusters: IResource[] }) {
+function ArgoWizardPlacementSection(props: {
+    placements: IPlacement[]
+    clusterSetBindings: IClusterSetBinding[]
+    clusters: IResource[]
+    createClusterSetCallback?: () => void
+}) {
     const resources = useItem() as IResource[]
     const editMode = useEditMode()
     const hasPlacement = resources.find((r) => r.kind === PlacementKind) !== undefined
@@ -646,7 +751,12 @@ function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSe
             </DetailsHidden>
             {hasPlacement ? (
                 <ItemSelector selectKey="kind" selectValue={PlacementKind}>
-                    <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} hideName />
+                    <Placement
+                        namespaceClusterSetNames={namespaceClusterSetNames}
+                        clusters={props.clusters}
+                        hideName
+                        createClusterSetCallback={props.createClusterSetCallback}
+                    />
                 </ItemSelector>
             ) : (
                 <ItemSelector selectKey="kind" selectValue="ApplicationSet">
@@ -654,7 +764,7 @@ function ArgoWizardPlacementSection(props: { placements: IPlacement[]; clusterSe
                         path="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
                         label="Existing placement"
                         options={placements.map((placement) => placement.metadata?.name ?? '')}
-                    ></Select>
+                    />
                 </ItemSelector>
             )}
         </Section>
