@@ -50,9 +50,11 @@ export function WizardPage(props: WizardPageProps) {
             }
             groupProps={{ sticky: 'top' }}
         >
-            <Wizard {...props} showHeader={false} showYaml={drawerExpanded} yamlEditor={yamlEditor}>
-                {props.children}
-            </Wizard>
+            <PageSection type="wizard">
+                <Wizard {...props} showHeader={false} showYaml={drawerExpanded} yamlEditor={yamlEditor}>
+                    {props.children}
+                </Wizard>
+            </PageSection>
         </Page>
     )
 }

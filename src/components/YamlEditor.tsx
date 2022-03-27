@@ -98,6 +98,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                             position: 'relative',
                             padding: 24,
                             minHeight: '100%',
+                            background: 'unset',
                         }}
                         onFocus={() => setHasFocus(true)}
                         onBlur={() => setHasFocus(false)}
