@@ -31,6 +31,7 @@ import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { IPlacement, PlacementApiVersion, PlacementKind, PlacementType } from '../common/resources/IPlacement'
 import { Sync } from '../common/Sync'
+import { validateWebURL } from '../common/validation'
 import { Placement } from '../Placement/Placement'
 import HelmIcon from './logos/HelmIcon.svg'
 
@@ -304,6 +305,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                         setGitRevisionsAsyncCallback(() => () => getGitBranchList(channel, props.getGitRevisions))
                                     }
                                 }}
+                                validation={validateWebURL}
                                 required
                                 isCreatable
                                 onCreate={(value: string) =>

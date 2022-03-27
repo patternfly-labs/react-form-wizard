@@ -213,7 +213,8 @@ export function validateBareMetalOSImageURL(value: string, t: TFunction) {
     return undefined
 }
 
-export function validateWebURL(url: string, t: TFunction) {
+export function validateWebURL(url: string, t?: TFunction) {
+    t = t ? t : (value) => value
     if (
         validator.isURL(url, {
             require_protocol: true,
@@ -223,8 +224,7 @@ export function validateWebURL(url: string, t: TFunction) {
         })
     )
         return undefined
-
-    return t('validate.ansible.url.not.valid')
+    return `${t('The URL is not valid.')}`
 }
 
 export function validateImageContentSources(value: string, t: TFunction) {
