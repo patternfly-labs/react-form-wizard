@@ -1,7 +1,7 @@
 import { Alert, Button, Stack, Text, Title } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import get from 'get-value'
-import { Fragment, useContext } from 'react'
+import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
 import {
     ArrayInput,
@@ -46,6 +46,7 @@ export function PolicyWizard(props: {
     clusterSetBindings: IClusterSetBinding[]
     editMode?: EditMode
     resources?: IResource[]
+    yamlEditor?: () => ReactNode
     gitSource?: string
     onSubmit: WizardSubmit
     onCancel: WizardCancel
@@ -54,6 +55,7 @@ export function PolicyWizard(props: {
         <WizardPage
             title={props.title}
             description="A policy generates reports and validates cluster compliance based on specified security standards, categories, and controls."
+            yamlEditor={props.yamlEditor}
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
             editMode={props.editMode}

@@ -118,6 +118,7 @@ interface ArgoWizardProps {
             | undefined
     ) => Promise<unknown>
     resources?: IResource[]
+    yamlEditor?: () => ReactNode
 }
 
 export function ArgoWizard(props: ArgoWizardProps) {
@@ -190,6 +191,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
         <WizardPage
             breadcrumb={props.breadcrumb}
             title={props.resources ? 'Edit application set' : 'Create application set'}
+            yamlEditor={props.yamlEditor}
             defaultData={
                 props.resources ?? [
                     {
