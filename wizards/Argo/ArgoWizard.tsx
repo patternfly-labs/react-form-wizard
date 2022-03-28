@@ -313,6 +313,13 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                         if (!channels.includes(value)) {
                                             channels.push(value)
                                         }
+                                        setGitRevisionsAsyncCallback(
+                                            () => () =>
+                                                getGitBranchList(
+                                                    { metadata: { name: '', namespace: '' }, spec: { pathname: value, type: 'git' } },
+                                                    props.getGitRevisions
+                                                )
+                                        )
                                         return [...channels]
                                     })
                                 }
@@ -361,6 +368,13 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                         if (!channels.includes(value)) {
                                             channels.push(value)
                                         }
+                                        setGitRevisionsAsyncCallback(
+                                            () => () =>
+                                                getGitBranchList(
+                                                    { metadata: { name: '', namespace: '' }, spec: { pathname: value, type: 'git' } },
+                                                    props.getGitRevisions
+                                                )
+                                        )
                                         return [...channels]
                                     })
                                 }
