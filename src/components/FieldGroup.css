@@ -11,3 +11,7 @@
     padding-top: 16px;
     padding-bottom: 16px;
 }
+
+.input-field-group .pf-c-form__field-group {
+    margin: 0px;
+}

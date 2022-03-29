@@ -154,27 +154,30 @@ export function PolicyWizard(props: {
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/standards`}
                             label="Standards"
                             map={(value: string | undefined) => {
-                                return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                                return value !== undefined ? value.split(',').map((v) => v.trimStart()) : []
                             }}
                             unmap={(values: string[]) => values.join(', ')}
+                            labelHelp="The name or names of security standards the policy is related to. For example, National Institute of Standards and Technology (NIST) and Payment Card Industry (PCI)."
                         />
                         <StringsMapInput
                             id="categories"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/categories`}
                             label="Categories"
                             map={(value: string | undefined) => {
-                                return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                                return value !== undefined ? value.split(',').map((v) => v.trimStart()) : []
                             }}
                             unmap={(values: string[]) => values.join(', ')}
+                            labelHelp="A security control category represent specific requirements for one or more standards. For example, a System and Information Integrity category might indicate that your policy contains a data transfer protocol to protect personal information, as required by the HIPAA and PCI standards."
                         />
                         <StringsMapInput
                             id="controls"
                             path={`metadata.annotations.policy\\.open-cluster-management\\.io/controls`}
                             label="Controls"
                             map={(value: string | undefined) => {
-                                return value !== undefined ? value.split(',').map((v) => v.trim()) : []
+                                return value !== undefined ? value.split(',').map((v) => v.trimStart()) : []
                             }}
                             unmap={(values: string[]) => values.join(', ')}
+                            labelHelp="The name of the security control that is being checked. For example, the certificate policy controller."
                         />
                     </Section>
                 </ItemSelector>
@@ -189,7 +192,11 @@ export function PolicyWizardTemplates() {
 
     return (
         <Section label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
-            <RadioGroup path="spec.remediationAction" label="Remediation">
+            <RadioGroup
+                path="spec.remediationAction"
+                label="Remediation"
+                labelHelp="Optional. Specifies the remediation of your policy. The parameter values are enforce and inform. If specified, the spec.remediationAction value that is defined overrides the remediationAction parameter defined in the child policy, from the policy-templates section. For example, if spec.remediationAction value section is set to enforce, then the remediationAction in the policy-templates section is set to enforce during runtime. Important: Some policies might not support the enforce feature."
+            >
                 <Radio id="inform" label="Inform" value="inform" description="Reports the violation, which requires manual remediation." />
                 <Radio
                     id="enforce"
