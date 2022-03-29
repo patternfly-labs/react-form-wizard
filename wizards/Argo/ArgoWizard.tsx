@@ -301,9 +301,16 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 options={gitChannels}
                                 onValueChange={(value) => {
                                     const channel = props.channels?.find((channel) => channel.spec.pathname === value)
-                                    if (channel) {
-                                        setGitRevisionsAsyncCallback(() => () => getGitBranchList(channel, props.getGitRevisions))
-                                    }
+                                    setGitRevisionsAsyncCallback(
+                                        () => () =>
+                                            getGitBranchList(
+                                                {
+                                                    metadata: { name: channel?.metadata?.name, namespace: channel?.metadata?.namespace },
+                                                    spec: { pathname: value as string, type: 'git' },
+                                                },
+                                                props.getGitRevisions
+                                            )
+                                    )
                                 }}
                                 validation={validateWebURL}
                                 required
