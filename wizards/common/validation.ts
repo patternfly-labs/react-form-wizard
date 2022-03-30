@@ -1,6 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 import validator from 'validator'
 import YAML from 'yaml'
+import { IResource } from './resource'
 
 type TFunction = (t: string) => string
 
@@ -297,5 +298,18 @@ export function validateNoProxy(value: string, t: TFunction) {
 
         return t('validate.ansible.url.not.valid')
     }
+    return undefined
+}
+
+export function validatePolicyName(value: string, resource: unknown, t?: TFunction) {
+    t = t ? t : (value) => value
+    const error = isValidKubernetesName(value)
+    if (error) return error
+    const policy = resource as IResource
+    const namespace = policy.metadata?.namespace ?? ''
+    const combinedNameLength = value.length + namespace.length + 1
+
+    if (combinedNameLength > 64)
+        return t('The combined length of namespace and policy name (namespaceName.policyName) should not exceed 63 characters')
     return undefined
 }

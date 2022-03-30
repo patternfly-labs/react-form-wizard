@@ -32,7 +32,7 @@ import { PlacementBindingKind } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 import { PolicyApiGroup, PolicyKind, PolicyType } from '../common/resources/IPolicy'
 import { Sync } from '../common/Sync'
-import { isValidKubernetesName } from '../common/validation'
+import { validatePolicyName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
 import { Specifications } from './specifications'
 
@@ -106,7 +106,7 @@ export function PolicyWizard(props: {
                             path="metadata.name"
                             label="Name"
                             required
-                            validation={isValidKubernetesName}
+                            validation={validatePolicyName}
                             disabledInEditMode
                         />
                         <Select
@@ -127,13 +127,11 @@ export function PolicyWizard(props: {
                     </Section>
                 </ItemSelector>
             </Step>
-
             <Step label="Policy templates" id="templates">
                 <ItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <PolicyWizardTemplates />
                 </ItemSelector>
             </Step>
-
             <Step label="Placement" id="placement">
                 <PlacementSection
                     existingPlacements={props.placements}
@@ -145,7 +143,6 @@ export function PolicyWizard(props: {
                     clusters={props.clusters}
                 />
             </Step>
-
             <Step label="Policy annotations" id="security-groups">
                 <ItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <Section label="Policy annotations">
