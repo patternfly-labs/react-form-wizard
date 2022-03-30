@@ -6,8 +6,6 @@ import {
     DrawerContent,
     DrawerContentBody,
     DrawerPanelContent,
-    PageSection,
-    PageSectionTypes,
     Split,
     SplitItem,
 } from '@patternfly/react-core'
@@ -103,16 +101,8 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                         <Drawer isExpanded={drawerExpanded} isInline>
                                             <DrawerContent panelContent={<WizardPageDrawer yamlEditor={props.yamlEditor} />}>
                                                 <DrawerContentBody>
-                                                    <PageSection
-                                                        variant="light"
-                                                        style={{ height: '100%' }}
-                                                        type={
-                                                            displayMode === DisplayMode.Wizard
-                                                                ? PageSectionTypes.wizard
-                                                                : PageSectionTypes.default
-                                                        }
-                                                        isWidthLimited
-                                                    >
+                                                    <section className="pf-c-page__main-wizard" style={{ height: '100%' }}>
+                                                        {/* <PageSection variant="light" style={{ height: '100%' }} type="wizard" isWidthLimited> */}
                                                         <ItemContext.Provider value={data}>
                                                             <WizardInternal
                                                                 onSubmit={props.onSubmit}
@@ -124,7 +114,8 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                                 {props.children}
                                                             </WizardInternal>
                                                         </ItemContext.Provider>
-                                                    </PageSection>
+                                                        {/* </PageSection> */}
+                                                    </section>
                                                 </DrawerContentBody>
                                             </DrawerContent>
                                         </Drawer>
