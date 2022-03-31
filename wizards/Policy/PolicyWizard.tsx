@@ -32,7 +32,7 @@ import { PlacementBindingKind } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 import { PolicyApiGroup, PolicyKind, PolicyType } from '../common/resources/IPolicy'
 import { Sync } from '../common/Sync'
-import { validatePolicyName } from '../common/validation'
+import { isValidKubernetesName, validatePolicyName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
 import { Specifications } from './specifications'
 
@@ -260,6 +260,7 @@ export function PolicyWizardTemplates() {
                         path="objectDefinition.metadata.name"
                         label="Name"
                         required
+                        validation={isValidKubernetesName}
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
                     <TextInput path="objectDefinition.spec.minimumDuration" label="Minimum duration" required />

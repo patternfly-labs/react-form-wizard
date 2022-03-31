@@ -19,7 +19,7 @@ export type InputCommonProps<ValueT = any> = {
     /* JSON dot notation path to the input value in the active item context */
     path: string
     hidden?: (item: any) => boolean
-    validation?: (value: ValueT, item: unknown) => string | undefined
+    validation?: (value: ValueT, item?: unknown) => string | undefined
     required?: boolean
     readonly?: boolean
     disabled?: boolean
