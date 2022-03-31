@@ -61,7 +61,6 @@ export function AsyncSelect(props: AsyncSelectProps) {
 
     const sync = useCallback(() => {
         if (mode === DisplayMode.Details) return
-        setValue(null)
         if (asyncCallback) {
             setLoading((loading) => {
                 if (loading) return loading
@@ -74,10 +73,7 @@ export function AsyncSelect(props: AsyncSelectProps) {
                                 setOptions([])
                             }
                         })
-                        .catch(() => {
-                            setOptions([])
-                            return null
-                        })
+                        .catch(() => null)
                         .finally(() => setLoading(false))
                     return true
                 }
