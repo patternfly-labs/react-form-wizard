@@ -140,9 +140,21 @@ export function PolicyAutomationWizard(props: {
                         options={[
                             { label: 'Once', value: 'once' },
                             { label: 'Disabled', value: 'disabled' },
+                            { label: 'Manual', value: 'manual' }, // value is actually disabled but will be handled in onValueChange
                         ]}
                         hidden={(item) => !item.spec.automationDef.name}
                         required
+                        onValueChange={(value, item) => {
+                            // Manual mode sets mode to disabled & includes the addition of annotation: 'policy.open-cluster-management.io/rerun': true
+                            if (value === 'manual' && !item.metadata.annotations) {
+                                item.spec.mode = 'disabled'
+                                item.metadata.annotations = {
+                                    'policy.open-cluster-management.io/rerun': true,
+                                }
+                            } else if (value !== 'manual' && item.metadata.annotations) {
+                                delete item.metadata.annotations
+                            }
+                        }}
                     />
                 </Section>
             </Step>
