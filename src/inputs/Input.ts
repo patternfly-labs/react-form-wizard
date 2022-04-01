@@ -19,7 +19,7 @@ export type InputCommonProps<ValueT = any> = {
     /* JSON dot notation path to the input value in the active item context */
     path: string
     hidden?: (item: any) => boolean
-    validation?: (value: ValueT) => string | undefined
+    validation?: (value: ValueT, item?: unknown) => string | undefined
     required?: boolean
     readonly?: boolean
     disabled?: boolean
@@ -70,14 +70,14 @@ export function useValue(
 export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' | 'label' | 'required' | 'validation'>) {
     const [value] = useValue(props, '')
     const showValidation = useShowValidation()
-
+    const item = useContext(ItemContext)
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
     if (props.required && !value) {
         if (props.label) error = `${props.label} is required`
         else error = 'Required'
     } else if (props.validation) {
-        error = props.validation(value)
+        error = props.validation(value, item)
     }
     if (showValidation) {
         validated = error ? 'error' : undefined

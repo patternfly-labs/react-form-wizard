@@ -1,12 +1,14 @@
 /* Copyright Contributors to the Open Cluster Management project */
 import validator from 'validator'
 import YAML from 'yaml'
+import { IResource } from './resource'
 
 type TFunction = (t: string) => string
 
 const lowercaseAlphaNumericCharacters = 'abcdefghijklmnopqrstuvwxyz1234567890'
 
-export function isValidKubernetesName(value: string, t?: TFunction) {
+export function isValidKubernetesName(value: string, _item: unknown, t?: TFunction) {
+    // eslint-disable-next-line no-console
     t = t ? t : (value) => value
     if (!value) return undefined
     if (value.length > 63) return `${t('This value can contain at most 63 characters')}`
@@ -213,7 +215,7 @@ export function validateBareMetalOSImageURL(value: string, t: TFunction) {
     return undefined
 }
 
-export function validateWebURL(url: string, t?: TFunction) {
+export function validateWebURL(url: string, _item: unknown, t?: TFunction) {
     t = t ? t : (value) => value
     if (
         validator.isURL(url, {
@@ -297,5 +299,18 @@ export function validateNoProxy(value: string, t: TFunction) {
 
         return t('validate.ansible.url.not.valid')
     }
+    return undefined
+}
+
+export function validatePolicyName(value: string, resource: unknown, t?: TFunction) {
+    t = t ? t : (value) => value
+    const error = isValidKubernetesName(value, t)
+    if (error) return error
+    const policy = resource as IResource
+    const namespace = policy.metadata?.namespace ?? ''
+    const combinedNameLength = value.length + namespace.length + 1
+
+    if (combinedNameLength > 64)
+        return t('The combined length of namespace and policy name (namespaceName.policyName) should not exceed 63 characters')
     return undefined
 }
