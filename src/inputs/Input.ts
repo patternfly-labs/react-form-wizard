@@ -1,5 +1,5 @@
 import get from 'get-value'
-import { useContext, useLayoutEffect } from 'react'
+import { useCallback, useContext, useLayoutEffect } from 'react'
 import set from 'set-value'
 import { EditMode } from '..'
 import { useData } from '../contexts/DataContext'
@@ -52,14 +52,17 @@ export function useValue(
     const { update } = useData()
     const path = usePath(props)
     const pathValue = get(item, path) ?? defaultValue
-    const setValue = (newValue: any) => {
-        if (props.inputValueToPathValue) {
-            newValue = props.inputValueToPathValue(newValue, pathValue)
-        }
-        set(item, path, newValue, { preservePaths: false })
-        onValueChange?.(newValue, item)
-        update()
-    }
+    const setValue = useCallback(
+        (newValue: any) => {
+            if (props.inputValueToPathValue) {
+                newValue = props.inputValueToPathValue(newValue, pathValue)
+            }
+            set(item, path, newValue, { preservePaths: false })
+            onValueChange?.(newValue, item)
+            update()
+        },
+        [item, onValueChange, path, pathValue, props, update]
+    )
     let value = pathValue
     if (props.pathValueToInputValue) {
         value = props.pathValueToInputValue(pathValue)

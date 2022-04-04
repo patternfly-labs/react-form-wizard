@@ -2,15 +2,16 @@ import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, 
 import { Children, createContext, Fragment, isValidElement, ReactElement, ReactNode, useContext } from 'react'
 import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
+import { useRandomID } from '../contexts/useRandomID'
 import { InputCommonProps, useInput } from './Input'
 import { InputLabel } from './InputLabel'
 
 export interface IRadioGroupContextState {
-    groupID?: string
     value?: any
     setValue?: (value: any) => void
     readonly?: boolean
     disabled?: boolean
+    radioGroup?: string
 }
 
 export const RadioGroupContext = createContext<IRadioGroupContextState>({})
@@ -20,12 +21,13 @@ type RadioGroupProps = InputCommonProps & { children?: ReactNode }
 export function RadioGroup(props: RadioGroupProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
+    const radioGroup = useRandomID()
     const state: IRadioGroupContextState = {
-        groupID: id,
         value,
         setValue,
         readonly: props.readonly,
         disabled: props.disabled,
+        radioGroup,
     }
 
     if (hidden) return <Fragment />
@@ -83,7 +85,7 @@ export function Radio(props: { id: string; label: string; value: string | number
                 onChange={() => radioGroupContext.setValue?.(props.value)}
                 isDisabled={radioGroupContext.disabled}
                 readOnly={radioGroupContext.readonly}
-                name={radioGroupContext.groupID ?? ''}
+                name={radioGroupContext.radioGroup ?? ''}
             />
             {radioGroupContext.value === props.value && <Indented paddingBottom={16}>{props.children}</Indented>}
         </Fragment>

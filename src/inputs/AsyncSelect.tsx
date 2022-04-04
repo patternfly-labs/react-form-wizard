@@ -80,7 +80,7 @@ export function AsyncSelect(props: AsyncSelectProps) {
                 return false
             })
         }
-    }, [asyncCallback, setValue, mode])
+    }, [asyncCallback, mode])
 
     useEffect(sync, [sync])
 
