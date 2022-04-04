@@ -59,7 +59,7 @@ export const InternalFormFieldGroup: React.FunctionComponent<InternalFormFieldGr
         )
     }
     return (
-        <div className={css(styles.formFieldGroup, isExpanded && isExpandable && styles.modifiers.expanded, className)} {...props}>
+        <div className={css(className, styles.formFieldGroup, isExpanded && isExpandable && styles.modifiers.expanded)} {...props}>
             {isExpandable && (
                 <FormFieldGroupToggle
                     onToggle={onToggle}
