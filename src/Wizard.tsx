@@ -11,6 +11,7 @@ import {
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import Handlebars, { HelperOptions } from 'handlebars'
+import { klona } from 'klona/json'
 import {
     Children,
     Fragment,
@@ -77,8 +78,8 @@ function getSteps(children: ReactNode | ReactNode[]) {
 }
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
-    const [data, setData] = useState(props.defaultData ? JSON.parse(JSON.stringify(props.defaultData)) : {})
-    const update = useCallback((newData) => setData((data: unknown) => JSON.parse(JSON.stringify(newData ?? data))), [])
+    const [data, setData] = useState(props.defaultData ? klona(props.defaultData) : {})
+    const update = useCallback((newData) => setData((data: unknown) => klona(newData ?? data)), [])
     const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false)
     useEffect(() => {
         if (props.showYaml !== undefined) {

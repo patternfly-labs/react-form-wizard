@@ -1,6 +1,7 @@
 import { Alert, Button, Stack, Text, Title } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import get from 'get-value'
+import { klona } from 'klona/json'
 import { Fragment, ReactNode, useContext } from 'react'
 import set from 'set-value'
 import {
@@ -231,7 +232,7 @@ export function PolicyWizardTemplates() {
                                 })
                             }
 
-                            const copy = JSON.parse(JSON.stringify(specification.policyTemplates)) as any[]
+                            const copy = klona(specification.policyTemplates)
 
                             const policyName = get(policy, 'metadata.name')
                             if (policyName) {
