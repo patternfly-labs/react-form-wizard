@@ -14,7 +14,7 @@ import {
 } from '@patternfly/react-core'
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
-import { Children, Fragment, ReactNode, useCallback, useContext, useState } from 'react'
+import { Fragment, ReactNode, useCallback, useContext, useState } from 'react'
 import { TextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
 import { Indented } from '../components/Indented'
@@ -54,6 +54,8 @@ export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
 
 export function ArrayInput(props: ArrayInputProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props as InputCommonProps)
+    const [open, setOpen] = useState(false)
+    const onToggle = useCallback(() => setOpen((open: boolean) => !open), [])
 
     const path = props.path
 
@@ -217,15 +219,47 @@ export function ArrayInput(props: ArrayInputProps) {
                             <PlusIcon /> &nbsp; {props.placeholder}
                         </Button>
                     ) : (
-                        <Dropdown2 placeholder={props.placeholder}>
-                            {props.dropdownItems.map((item, index) => {
+                        <Dropdown
+                            isPlain
+                            dropdownItems={props.dropdownItems.map((item, index) => {
                                 return (
-                                    <DropdownItem key={index} onClick={() => addItem(item.action())}>
+                                    <DropdownItem
+                                        key={index}
+                                        onClick={() => {
+                                            addItem(item.action())
+                                            setOpen(false)
+                                        }}
+                                    >
                                         {item.label}
                                     </DropdownItem>
                                 )
                             })}
-                        </Dropdown2>
+                            toggle={
+                                <DropdownToggle
+                                    id="toggle-id"
+                                    onToggle={onToggle}
+                                    toggleIndicator={CaretDownIcon}
+                                    style={{ paddingTop: 0 }}
+                                >
+                                    <span className="pf-c-button pf-m-link pf-m-small" style={{ padding: 0 }}>
+                                        <PlusIcon />
+                                        &nbsp; &nbsp;
+                                        {props.placeholder}
+                                    </span>
+                                </DropdownToggle>
+                            }
+                            isOpen={open}
+                        />
+
+                        // <Dropdown2 placeholder={props.placeholder}>
+                        //     {props.dropdownItems.map((item, index) => {
+                        //         return (
+                        //             <DropdownItem key={index} onClick={() => addItem(item.action())}>
+                        //                 {item.label}
+                        //             </DropdownItem>
+                        //         )
+                        //     })}
+                        // </Dropdown2>
                     )}
                 </div>
             )}
@@ -378,26 +412,5 @@ export function ArrayInputItem(props: {
                 )}
             </ShowValidationContext.Consumer>
         </ValidationProvider>
-    )
-}
-
-function Dropdown2(props: { children?: ReactNode; placeholder: string }) {
-    const [open, setOpen] = useState(false)
-    const onToggle = useCallback(() => setOpen((open: boolean) => !open), [])
-    return (
-        <Dropdown
-            isPlain
-            dropdownItems={Children.toArray(props.children)}
-            toggle={
-                <DropdownToggle id="toggle-id" onToggle={onToggle} toggleIndicator={CaretDownIcon} style={{ paddingTop: 0 }}>
-                    <span className="pf-c-button pf-m-link pf-m-small" style={{ padding: 0 }}>
-                        <PlusIcon />
-                        &nbsp; &nbsp;
-                        {props.placeholder}
-                    </span>
-                </DropdownToggle>
-            }
-            isOpen={open}
-        />
     )
 }
