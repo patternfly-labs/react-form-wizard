@@ -228,6 +228,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     {
                         ...PlacementType,
                         metadata: { name: '', namespace: '' },
+                        spec: {},
                     },
                 ]
             }
@@ -756,6 +757,7 @@ function ArgoWizardPlacementSection(props: {
                                     apiVersion: PlacementApiVersion,
                                     kind: PlacementKind,
                                     metadata: { name: '', namespace: '' },
+                                    spec: {},
                                 } as IResource)
                                 update(newResources)
                             }}
