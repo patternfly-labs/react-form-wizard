@@ -254,6 +254,7 @@ export function PlacementSelector(props: {
                                     apiVersion: PlacementApiVersion,
                                     kind: PlacementKind,
                                     metadata: { name: '', namespace: '' },
+                                    spec: {},
                                 } as IResource)
                             } else {
                                 newResources.push({
