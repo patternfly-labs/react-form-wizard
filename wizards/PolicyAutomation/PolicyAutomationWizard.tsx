@@ -1,6 +1,6 @@
 import { Alert, Button, ButtonVariant } from '@patternfly/react-core'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import { DetailsHidden, EditMode, KeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
+import { Checkbox, DetailsHidden, EditMode, KeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
 import { IResource } from '../common/resource'
 import { ICredential } from '../common/resources/ICredential'
 import { IPolicyAutomation, PolicyAutomationType } from '../common/resources/IPolicyAutomation'
@@ -140,21 +140,19 @@ export function PolicyAutomationWizard(props: {
                         options={[
                             { label: 'Once', value: 'once' },
                             { label: 'Disabled', value: 'disabled' },
-                            { label: 'Manual', value: 'manual' }, // value is actually disabled but will be handled in onValueChange
                         ]}
                         hidden={(item) => !item.spec.automationDef.name}
                         required
                         onValueChange={(value, item) => {
-                            // Manual mode sets mode to disabled & includes the addition of annotation: 'policy.open-cluster-management.io/rerun': true
-                            if (value === 'manual' && !item.metadata.annotations) {
-                                item.spec.mode = 'disabled'
-                                item.metadata.annotations = {
-                                    'policy.open-cluster-management.io/rerun': true,
-                                }
-                            } else if (value !== 'manual' && item.metadata.annotations) {
-                                delete item.metadata.annotations
+                            if (value !== 'disabled' && item.metadata?.annotations?.['policy.open-cluster-management.io/rerun'] === true) {
+                                item.metadata.annotations['policy.open-cluster-management.io/rerun'] = false
                             }
                         }}
+                    />
+                    <Checkbox
+                        hidden={(item) => item.spec.mode !== 'disabled'}
+                        path="metadata.annotations.policy\.open-cluster-management\.io/rerun"
+                        label="Manual run: Set this automation to run once. After the automation runs, it is set to disabled."
                     />
                 </Section>
             </Step>
