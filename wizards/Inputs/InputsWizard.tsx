@@ -60,6 +60,7 @@ export function InputsWizard() {
                     <RadioGroup id="group-1" path="radios.group1.value" label="Radio">
                         <Radio id="radio-1" label="Radio 1" value="radio-1" />
                         <Radio id="radio-2" label="Radio 2" value="radio-2" />
+                        <Radio id="radio-3" label="Undefined" value={undefined} />
                     </RadioGroup>
                     <RadioGroup id="group-2" path="radios.group2.value" label="Radio with sub-inputs">
                         <Radio id="radio-1" label="Radio 1" value="radio-1">
