@@ -202,6 +202,12 @@ export function PolicyWizardTemplates() {
                     value="enforce"
                     description="Automatically runs remediation action that is defined in the source, if this feature is supported."
                 />
+                <Radio
+                    id="policyTemplateRemediation"
+                    label="Use policy template remediation"
+                    value={undefined}
+                    description="Remediation action will be determined by what is set in the policy template definitions."
+                />
             </RadioGroup>
             <ArrayInput
                 id="templates"
