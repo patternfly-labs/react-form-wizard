@@ -73,7 +73,13 @@ export function RadioGroup(props: RadioGroupProps) {
     )
 }
 
-export function Radio(props: { id: string; label: string; value: string | number | boolean; description?: string; children?: ReactNode }) {
+export function Radio(props: {
+    id: string
+    label: string
+    value: string | number | boolean | undefined
+    description?: string
+    children?: ReactNode
+}) {
     const radioGroupContext = useContext(RadioGroupContext)
     return (
         <Fragment>
@@ -81,7 +87,7 @@ export function Radio(props: { id: string; label: string; value: string | number
                 id={props.id}
                 label={props.label}
                 description={props.description}
-                isChecked={radioGroupContext.value === props.value}
+                isChecked={radioGroupContext.value === props.value || (props.value === undefined && !radioGroupContext.value)}
                 onChange={() => radioGroupContext.setValue?.(props.value)}
                 isDisabled={radioGroupContext.disabled}
                 readOnly={radioGroupContext.readonly}
