@@ -90,6 +90,7 @@ interface ArgoWizardProps {
     applicationSets?: ApplicationSet[]
     createClusterSetCallback?: () => void
     clusters: IResource[]
+    clusterSets: IResource[]
     clusterSetBindings: IClusterSetBinding[]
     ansibleCredentials: string[]
     argoServers: string[]
@@ -494,6 +495,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 <ArgoWizardPlacementSection
                     placements={props.placements}
                     clusters={props.clusters}
+                    clusterSets={props.clusterSets}
                     clusterSetBindings={props.clusterSetBindings}
                     createClusterSetCallback={props.createClusterSetCallback}
                 />
@@ -724,6 +726,7 @@ function syncOptionsToPrunePropagationPolicy(array: unknown) {
 
 function ArgoWizardPlacementSection(props: {
     placements: IPlacement[]
+    clusterSets: IResource[]
     clusterSetBindings: IClusterSetBinding[]
     clusters: IResource[]
     createClusterSetCallback?: () => void
@@ -736,6 +739,13 @@ function ArgoWizardPlacementSection(props: {
     const namespaceClusterSetNames =
         props.clusterSetBindings
             ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === applicationSet?.metadata?.namespace)
+            .filter((clusterSetBinding) =>
+                props.clusterSets?.find(
+                    (clusterSet) =>
+                        clusterSet.metadata?.name === clusterSetBinding.spec?.clusterSet &&
+                        clusterSet.metadata?.namespace === applicationSet?.metadata?.namespace
+                )
+            )
             .map((clusterSetBinding) => clusterSetBinding.spec?.clusterSet ?? '') ?? []
 
     const { update } = useData()

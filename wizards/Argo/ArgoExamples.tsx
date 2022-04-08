@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useHistory } from 'react-router'
 import { Catalog } from '../Catalog'
 import { IResource } from '../common/resource'
-import { clusters, clusterSetBindings, placements as testPlacements } from '../common/test-data'
+import { clusters, clusterSetBindings, clusterSets, placements as testPlacements } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { RouteE } from '../Routes'
 import { ArgoWizard } from './ArgoWizard'
@@ -73,6 +73,7 @@ export function CreateApplicationSet() {
                 return Promise.resolve(['path-1', 'path-2'])
             }}
             clusters={clusters}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
         />
     )
@@ -119,6 +120,7 @@ export function EditApplicationSet() {
                 return Promise.resolve(['path-1', 'path-2'])
             }}
             clusters={clusters}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             resources={[
                 {

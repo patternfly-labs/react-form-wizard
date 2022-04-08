@@ -6,7 +6,7 @@ import { PlacementApiGroup, PlacementKind, PlacementType } from '../common/resou
 import { PlacementBindingApiVersion, PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { PolicySetApiGroup, PolicySetKind } from '../common/resources/IPolicySet'
-import { clusters, clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
+import { clusters, clusterSetBindings, clusterSets, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { RouteE } from '../Routes'
 import { PlacementWizard } from './PlacementWizard'
@@ -62,6 +62,7 @@ export function CreatePlacement() {
             policies={policies}
             placements={placements}
             placementRules={placementRules}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
@@ -83,6 +84,7 @@ export function CreatePlacementRule() {
             policies={policies}
             placements={placements}
             placementRules={placementRules}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
@@ -101,6 +103,7 @@ export function EditPlacement() {
         <PlacementWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -123,6 +126,7 @@ export function EditPlacementRule() {
         <PlacementWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -145,6 +149,7 @@ export function EditPlacements() {
         <PlacementWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
