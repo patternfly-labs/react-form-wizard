@@ -14,6 +14,7 @@ import { isValidKubernetesName } from '../common/validation'
 import { MatchExpression, MatchExpressionCollapsed, MatchExpressionSummary } from './MatchExpression'
 
 export function Placements(props: {
+    clusterSets: IResource[]
     clusterSetBindings: IClusterSetBinding[]
     bindingKind: string
     clusters: IResource[]
@@ -30,9 +31,15 @@ export function Placements(props: {
         return (
             props.clusterSetBindings
                 ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === namespace)
+                .filter((clusterSetBinding) =>
+                    props.clusterSets?.find(
+                        (clusterSet) =>
+                            clusterSet.metadata?.name === clusterSetBinding.spec?.clusterSet && clusterSet.metadata?.namespace === namespace
+                    )
+                )
                 .map((clusterSetBinding) => clusterSetBinding.spec?.clusterSet ?? '') ?? []
         )
-    }, [props.bindingKind, props.clusterSetBindings, resources])
+    }, [props.bindingKind, props.clusterSetBindings, props.clusterSets, resources])
 
     return (
         <ArrayInput

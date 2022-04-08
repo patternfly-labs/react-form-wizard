@@ -10,6 +10,7 @@ export function PlacementWizard(props: {
     placements: IResource[]
     placementRules: IResource[]
     clusters: IResource[]
+    clusterSets: IResource[]
     clusterSetBindings: IClusterSetBinding[]
     editMode?: EditMode
     resources?: IResource[]
@@ -31,7 +32,8 @@ export function PlacementWizard(props: {
                 <PlacementSection
                     existingPlacements={props.placements}
                     existingPlacementRules={props.placementRules}
-                    existingclusterSetBindings={props.clusterSetBindings}
+                    existingClusterSets={props.clusterSets}
+                    existingClusterSetBindings={props.clusterSetBindings}
                     bindingSubjectKind={props.bindingSubjectKind}
                     bindingSubjectApiGroup={props.bindingSubjectApiGroup}
                     defaultPlacementKind={props.defaultPlacementType}

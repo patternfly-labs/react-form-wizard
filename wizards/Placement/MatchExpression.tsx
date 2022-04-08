@@ -1,5 +1,6 @@
 import { Flex, SelectOption } from '@patternfly/react-core'
 import { Fragment } from 'react'
+import set from 'set-value'
 import { Multiselect, Select } from '../../src'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { ItemContext, useItem } from '../../src/contexts/ItemContext'
@@ -8,7 +9,13 @@ import { IExpression } from '../common/resources/IMatchExpression'
 export function MatchExpression(props: { labelValuesMap: Record<string, string[]> }) {
     return (
         <Flex style={{ rowGap: 16 }}>
-            <Select label="Label" path="key" options={Object.keys(props.labelValuesMap)} required />
+            <Select
+                label="Label"
+                path="key"
+                options={Object.keys(props.labelValuesMap)}
+                required
+                onValueChange={(_value, item) => set(item as object, 'values', [])}
+            />
             <Select
                 label="Operator"
                 path="operator"

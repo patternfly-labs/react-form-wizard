@@ -6,7 +6,7 @@ import { PlacementApiGroup, PlacementKind, PlacementType } from '../common/resou
 import { PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { PolicySetApiGroup, PolicySetKind, PolicySetType } from '../common/resources/IPolicySet'
-import { clusters, clusterSetBindings, namespaces, placementRules, placements, policies } from '../common/test-data'
+import { clusters, clusterSetBindings, clusterSets, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
 import { RouteE } from '../Routes'
 import { PolicySetWizard } from './PolicySetWizard'
@@ -104,6 +104,7 @@ export function CreatePolicySet() {
             policies={policies}
             placements={placements}
             placementRules={placementRules}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
@@ -118,6 +119,7 @@ export function EditPolicySet1() {
         <PolicySetWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -137,6 +139,7 @@ export function EditPolicySet2() {
         <PolicySetWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -156,6 +159,7 @@ export function EditPolicySet3() {
         <PolicySetWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -175,6 +179,7 @@ export function EditPolicySet4() {
         <PolicySetWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -194,6 +199,7 @@ export function EditPolicySet5() {
         <PolicySetWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -213,6 +219,7 @@ export function EditPolicySet6() {
         <PolicySetWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -232,6 +239,7 @@ export function EditPolicySet7() {
         <PolicySetWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
@@ -251,6 +259,7 @@ export function EditPolicySet8() {
         <PolicySetWizard
             namespaces={namespaces}
             policies={policies}
+            clusterSets={clusterSets}
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}

@@ -21,7 +21,8 @@ export function PlacementSection(props: {
     bindingSubjectApiGroup: string
     existingPlacements: IResource[]
     existingPlacementRules: IResource[]
-    existingclusterSetBindings: IClusterSetBinding[]
+    existingClusterSets: IResource[]
+    existingClusterSetBindings: IClusterSetBinding[]
     defaultPlacementKind: 'Placement' | 'PlacementRule'
     clusters: IResource[]
     createClusterSetCallback?: () => void
@@ -50,18 +51,14 @@ export function PlacementSection(props: {
         const placementBindingCount = resources?.filter((resource) => resource.kind === PlacementBindingKind).length
 
         if (placementCount + placementRuleCount > 1) isAdvanced = true
+        // if (placementCount + placementRuleCount === 0) isAdvanced = true
         if (placementBindingCount > 1) isAdvanced = true
 
         for (const placement of placements) {
             if (placement?.spec?.predicates && placement.spec.predicates.length > 1) isAdvanced = true
         }
 
-        if (isAdvanced) {
-            setIsAdvanced(isAdvanced)
-        } else if (editMode === EditMode.Create) {
-            // Only in create mode switch back to simple mode
-            setIsAdvanced(false)
-        }
+        setIsAdvanced(isAdvanced)
     }, [setIsAdvanced, editMode, resources])
 
     useEffect(() => {
@@ -107,11 +104,17 @@ export function PlacementSection(props: {
         const namespace = source.metadata?.namespace
         if (!namespace) return []
         return (
-            props.existingclusterSetBindings
+            props.existingClusterSetBindings
                 ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === namespace)
+                .filter((clusterSetBinding) =>
+                    props.existingClusterSets?.find(
+                        (clusterSet) =>
+                            clusterSet.metadata?.name === clusterSetBinding.spec?.clusterSet && clusterSet.metadata?.namespace === namespace
+                    )
+                )
                 .map((clusterSetBinding) => clusterSetBinding.spec?.clusterSet ?? '') ?? []
         )
-    }, [props.bindingSubjectKind, props.existingclusterSetBindings, resources])
+    }, [props.bindingSubjectKind, props.existingClusterSetBindings, props.existingClusterSets, resources])
 
     const setHasInputs = useSetHasInputs()
     useEffect(() => {
@@ -125,7 +128,8 @@ export function PlacementSection(props: {
             <Fragment>
                 {(placementCount || (props.defaultPlacementKind === 'Placement' && placementRuleCount === 0)) && (
                     <Placements
-                        clusterSetBindings={props.existingclusterSetBindings}
+                        clusterSets={props.existingClusterSets}
+                        clusterSetBindings={props.existingClusterSetBindings}
                         bindingKind={props.bindingSubjectKind}
                         clusters={props.clusters}
                     />
@@ -152,16 +156,14 @@ export function PlacementSection(props: {
             // description="Placement selects clusters from the cluster sets which have bindings to the resource namespace."
             autohide={false}
         >
-            {editMode === EditMode.Create && (
-                <PlacementSelector
-                    placementCount={placementCount}
-                    placementRuleCount={placementRuleCount}
-                    placementBindingCount={placementBindingCount}
-                    bindingSubjectKind={props.bindingSubjectKind}
-                    bindingSubjectApiGroup={props.bindingSubjectApiGroup}
-                    defaultPlacementKind={props.defaultPlacementKind}
-                />
-            )}
+            <PlacementSelector
+                placementCount={placementCount}
+                placementRuleCount={placementRuleCount}
+                placementBindingCount={placementBindingCount}
+                bindingSubjectKind={props.bindingSubjectKind}
+                bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                defaultPlacementKind={props.defaultPlacementKind}
+            />
             {placementCount === 1 && (
                 <Fragment>
                     {editMode === EditMode.Create && (

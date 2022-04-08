@@ -13,6 +13,29 @@ export const policies: IResource[] = [
     { ...PolicyType, metadata: { name: 'my-policy-4', namespace: 'my-namespace-2' } },
 ]
 
+export const clusterSets: IResource[] = [
+    {
+        ...ClusterSetBindingType,
+        metadata: { name: 'my-cluster-set-1', namespace: 'my-namespace-1' },
+    },
+    {
+        ...ClusterSetBindingType,
+        metadata: { name: 'my-cluster-set-2', namespace: 'my-namespace-1' },
+    },
+    {
+        ...ClusterSetBindingType,
+        metadata: { name: 'my-cluster-set-3', namespace: 'my-namespace-2' },
+    },
+    {
+        ...ClusterSetBindingType,
+        metadata: { name: 'my-cluster-set-4', namespace: 'my-namespace-2' },
+    },
+    {
+        ...ClusterSetBindingType,
+        metadata: { name: 'my-cluster-set-5', namespace: 'server-1' },
+    },
+]
+
 export const clusterSetBindings: IClusterSetBinding[] = [
     {
         ...ClusterSetBindingType,
