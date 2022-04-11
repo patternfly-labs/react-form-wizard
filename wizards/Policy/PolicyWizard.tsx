@@ -284,6 +284,7 @@ export function PolicyWizardTemplates() {
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
+                        validation={isValidKubernetesName}
                     />
                     <NumberInput path="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
                 </Hidden>
@@ -300,6 +301,7 @@ export function PolicyWizardTemplates() {
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
+                        validation={isValidKubernetesName}
                     />
 
                     <ArrayInput
@@ -384,6 +386,7 @@ function ObjectTemplate() {
                 label="Name"
                 required
                 hidden={(template: any) => template?.objectDefinition?.metadata?.name === undefined}
+                validation={isValidKubernetesName}
             />
 
             <TextInput
