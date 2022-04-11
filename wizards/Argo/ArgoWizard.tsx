@@ -289,6 +289,25 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             label="Repository type"
                             inputValueToPathValue={repositoryTypeToSource}
                             pathValueToInputValue={sourceToRepositoryType}
+                            onValueChange={(_, item: ApplicationSet) => {
+                                if (item.spec.template?.spec?.source.path !== undefined) {
+                                    item.spec.template.spec.syncPolicy = {
+                                        automated: {
+                                            selfHeal: true,
+                                            prune: true,
+                                        },
+                                        syncOptions: ['CreateNamespace=true', 'PruneLast=true'],
+                                    }
+                                }
+                                if (item.spec.template?.spec?.source.chart !== undefined) {
+                                    item.spec.template.spec.syncPolicy = {
+                                        automated: {
+                                            selfHeal: true,
+                                        },
+                                        syncOptions: ['CreateNamespace=true'],
+                                    }
+                                }
+                            }}
                         >
                             <Tile id="git" value="Git" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
                             <Tile id="helm" value="Helm" label="Helm" icon={<HelmIcon />} description="Use a Helm repository" />
