@@ -740,11 +740,7 @@ function ArgoWizardPlacementSection(props: {
         props.clusterSetBindings
             ?.filter((clusterSetBinding) => clusterSetBinding.metadata?.namespace === applicationSet?.metadata?.namespace)
             .filter((clusterSetBinding) =>
-                props.clusterSets?.find(
-                    (clusterSet) =>
-                        clusterSet.metadata?.name === clusterSetBinding.spec?.clusterSet &&
-                        clusterSet.metadata?.namespace === applicationSet?.metadata?.namespace
-                )
+                props.clusterSets?.find((clusterSet) => clusterSet.metadata?.name === clusterSetBinding.spec?.clusterSet)
             )
             .map((clusterSetBinding) => clusterSetBinding.spec?.clusterSet ?? '') ?? []
 
