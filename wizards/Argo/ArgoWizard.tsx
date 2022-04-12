@@ -422,27 +422,25 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         label="Sync policy"
                         description="Settings used to configure application syncing when there are differences between the desired state and the live cluster state."
                     >
-                        {/* Git only sync policies */}
-                        <Hidden hidden={(data) => data.spec.template.spec.source.path === undefined}>
-                            <Checkbox
-                                label="Delete resources that are no longer defined in Git"
-                                path="spec.template.spec.syncPolicy.automated.prune"
-                            />
-                            <Checkbox
-                                id="prune-last"
-                                label="Delete resources that are no longer defined in Git at the end of a sync operation"
-                                path="spec.template.spec.syncPolicy.syncOptions"
-                                inputValueToPathValue={booleanToSyncOptions('PruneLast')}
-                                pathValueToInputValue={syncOptionsToBoolean('PruneLast')}
-                            />
-                            <Checkbox
-                                id="replace"
-                                label="Replace resources instead of applying changes from Git"
-                                path="spec.template.spec.syncPolicy.syncOptions"
-                                inputValueToPathValue={booleanToSyncOptions('Replace')}
-                                pathValueToInputValue={syncOptionsToBoolean('Replace')}
-                            />
-                        </Hidden>
+                        <Checkbox
+                            label="Delete resources that are no longer defined in Git"
+                            path="spec.template.spec.syncPolicy.automated.prune"
+                        />
+                        <Checkbox
+                            id="prune-last"
+                            label="Delete resources that are no longer defined in Git at the end of a sync operation"
+                            path="spec.template.spec.syncPolicy.syncOptions"
+                            inputValueToPathValue={booleanToSyncOptions('PruneLast')}
+                            pathValueToInputValue={syncOptionsToBoolean('PruneLast')}
+                        />
+                        <Checkbox
+                            id="replace"
+                            label="Replace resources instead of applying changes from Git"
+                            path="spec.template.spec.syncPolicy.syncOptions"
+                            inputValueToPathValue={booleanToSyncOptions('Replace')}
+                            pathValueToInputValue={syncOptionsToBoolean('Replace')}
+                        />
+
                         <Checkbox
                             path="spec.template.spec.syncPolicy.automated.allowEmpty"
                             label="Allow applications to have empty resources"
