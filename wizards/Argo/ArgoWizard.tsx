@@ -290,21 +290,13 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             inputValueToPathValue={repositoryTypeToSource}
                             pathValueToInputValue={sourceToRepositoryType}
                             onValueChange={(_, item: ApplicationSet) => {
-                                if (item.spec.template?.spec?.source.path !== undefined) {
+                                if (item.spec.template?.spec) {
                                     item.spec.template.spec.syncPolicy = {
                                         automated: {
                                             selfHeal: true,
                                             prune: true,
                                         },
                                         syncOptions: ['CreateNamespace=true', 'PruneLast=true'],
-                                    }
-                                }
-                                if (item.spec.template?.spec?.source.chart !== undefined) {
-                                    item.spec.template.spec.syncPolicy = {
-                                        automated: {
-                                            selfHeal: true,
-                                        },
-                                        syncOptions: ['CreateNamespace=true'],
                                     }
                                 }
                             }}
