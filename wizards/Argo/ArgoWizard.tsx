@@ -345,7 +345,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                         const channel = props.channels?.find(
                                             (channel) => channel?.spec?.pathname === item.spec.template.spec.source.repoURL
                                         )
-                                        let path = createdChannels.find((channel) => channel === item.spec.template.spec.source.repoURL)
+                                        const path = createdChannels.find((channel) => channel === item.spec.template.spec.source.repoURL)
                                         setGitPathsAsyncCallback(
                                             () => () =>
                                                 getGitPathList(
