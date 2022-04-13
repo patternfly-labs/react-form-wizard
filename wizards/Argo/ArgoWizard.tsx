@@ -345,11 +345,21 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                         const channel = props.channels?.find(
                                             (channel) => channel?.spec?.pathname === item.spec.template.spec.source.repoURL
                                         )
-                                        if (channel) {
-                                            setGitPathsAsyncCallback(
-                                                () => () => getGitPathList(channel, value as string, props.getGitPaths)
-                                            )
-                                        }
+                                        let path = createdChannels.find((channel) => channel === item.spec.template.spec.source.repoURL)
+                                        setGitPathsAsyncCallback(
+                                            () => () =>
+                                                getGitPathList(
+                                                    {
+                                                        metadata: {
+                                                            name: channel?.metadata?.name || '',
+                                                            namespace: channel?.metadata?.namespace || '',
+                                                        },
+                                                        spec: { pathname: channel?.spec.pathname || path || '', type: 'git' },
+                                                    },
+                                                    value as string,
+                                                    props.getGitPaths
+                                                )
+                                        )
                                     }}
                                 />
                                 <AsyncSelect
