@@ -12,6 +12,16 @@ export type CheckboxProps = InputCommonProps & {
     title?: string
 }
 
+// isChecked prop needs to be a boolean. If value is a string need to get the boolean
+function getIsChecked(value: any) {
+    if (value === 'true') {
+        return true
+    } else if (value === 'false') {
+        return false
+    }
+    return value
+}
+
 export function Checkbox(props: CheckboxProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
@@ -37,7 +47,7 @@ export function Checkbox(props: CheckboxProps) {
             <Stack>
                 <InputLabel {...props} id={id} label={props.title} helperText={undefined}>
                     <Split>
-                        <PFCheckbox id={id} isChecked={value} onChange={setValue} label={props.label} value={value} />
+                        <PFCheckbox id={id} isChecked={getIsChecked(value)} onChange={setValue} label={props.label} value={value} />
                         <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
                     </Split>
                 </InputLabel>
