@@ -32,7 +32,7 @@ export function PolicyAutomationWizard(props: {
     useEffect(() => {
         if (props.editMode === EditMode.Edit) {
             const credential = ansibleCredentials.find(
-                (credential) => credential.metadata?.name === props.resource.spec.automationDef.secret
+                (credential) => credential.metadata?.name === props.resource.spec?.automationDef?.secret
             )
             props
                 .getAnsibleJobsCallback(credential ?? {})
@@ -123,7 +123,7 @@ export function PolicyAutomationWizard(props: {
                         label="Ansible job"
                         path="spec.automationDef.name"
                         options={jobNames}
-                        hidden={(item) => !item.spec.automationDef.secret}
+                        hidden={(item) => !item.spec?.automationDef?.secret}
                         required
                     />
                     <KeyValue
@@ -131,7 +131,7 @@ export function PolicyAutomationWizard(props: {
                         path="spec.automationDef.extra_vars"
                         label="Extra variables"
                         placeholder="Add variable"
-                        hidden={(item) => !item.spec.automationDef.name}
+                        hidden={(item) => !item.spec?.automationDef?.name}
                     />
                     <Select
                         id="mode"
@@ -141,11 +141,14 @@ export function PolicyAutomationWizard(props: {
                             { label: 'Once', value: 'once' },
                             { label: 'Disabled', value: 'disabled' },
                         ]}
-                        hidden={(item) => !item.spec.automationDef.name}
+                        hidden={(item) => !item.spec?.automationDef?.name}
                         required
                         onValueChange={(value, item) => {
-                            if (value !== 'disabled' && item.metadata?.annotations?.['policy.open-cluster-management.io/rerun'] === true) {
-                                item.metadata.annotations['policy.open-cluster-management.io/rerun'] = false
+                            if (
+                                value !== 'disabled' &&
+                                item.metadata?.annotations?.['policy.open-cluster-management.io/rerun'] === 'true'
+                            ) {
+                                item.metadata.annotations['policy.open-cluster-management.io/rerun'] = 'false'
                             }
                         }}
                     />
@@ -153,6 +156,14 @@ export function PolicyAutomationWizard(props: {
                         hidden={(item) => item.spec.mode !== 'disabled'}
                         path="metadata.annotations.policy\.open-cluster-management\.io/rerun"
                         label="Manual run: Set this automation to run once. After the automation runs, it is set to disabled."
+                        inputValueToPathValue={(inputValue) => {
+                            // inputValue is either true or false - this fn returns the string of the current boolean.
+                            if (inputValue) {
+                                return 'true'
+                            } else {
+                                return 'false'
+                            }
+                        }}
                     />
                 </Section>
             </Step>
