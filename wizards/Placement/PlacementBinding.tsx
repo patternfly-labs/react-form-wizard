@@ -7,7 +7,7 @@ import { IPlacementBinding, IPlacementSubject, PlacementBindingKind, PlacementBi
 import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 import { PolicyApiGroup } from '../common/resources/IPolicy'
 import { PolicySetApiGroup } from '../common/resources/IPolicySet'
-import { isValidKubernetesName } from '../common/validation'
+import { isValidKubernetesResourceName } from '../common/validation'
 
 export function PlacementBindings(props: {
     placementCount: number
@@ -53,7 +53,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
                 readonly={placementBinding.metadata?.uid !== undefined}
                 required
                 helperText="The placement binding name must be unique to the namespace."
-                validation={isValidKubernetesName}
+                validation={isValidKubernetesResourceName}
             />
             <Select
                 path="placementRef.kind"
@@ -68,7 +68,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
                 required
                 hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
                 helperText="The placement name should match the name of a placement in this namespace.."
-                validation={isValidKubernetesName}
+                validation={isValidKubernetesResourceName}
             />
             <TextInput
                 path="placementRef.name"
@@ -76,7 +76,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
                 required
                 hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
                 helperText="The placement rule name should match the name of a placement rule in this namespace."
-                validation={isValidKubernetesName}
+                validation={isValidKubernetesResourceName}
             />
             {/* <Select
         path="placementRef.name"
@@ -134,7 +134,7 @@ function Subject() {
                 label="Subject name"
                 required
                 helperText="The subject name should match the name of a policy or policy set in this namespace."
-                validation={isValidKubernetesName}
+                validation={isValidKubernetesResourceName}
             />
         </Fragment>
     )

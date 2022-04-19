@@ -1,6 +1,6 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
 import { Section, Select, Step, TextArea, TextInput, Tile, Tiles, WizardCancel, WizardPage, WizardSubmit } from '../../src'
-import { isValidKubernetesName } from '../common/validation'
+import { isValidKubernetesResourceName } from '../common/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
 import GCPIcon from './icons/GCPIcon'
@@ -101,7 +101,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
 
             <Step label="Basic Information" id="basic-information">
                 <Section label="Details" prompt="Enter the details for the credentials">
-                    <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesName} />
+                    <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesResourceName} />
                     <Select
                         id="namespace"
                         path="metadata.namespace"

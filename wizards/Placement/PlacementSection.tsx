@@ -26,6 +26,7 @@ export function PlacementSection(props: {
     defaultPlacementKind: 'Placement' | 'PlacementRule'
     clusters: IResource[]
     createClusterSetCallback?: () => void
+    allowNoPlacement?: boolean
 }) {
     const { update } = useData()
     const resources = useItem() as IResource[]
@@ -190,6 +191,7 @@ export function PlacementSection(props: {
                     bindingSubjectKind={props.bindingSubjectKind}
                     bindingSubjectApiGroup={props.bindingSubjectApiGroup}
                     defaultPlacementKind={props.defaultPlacementKind}
+                    allowNoPlacement={props.allowNoPlacement}
                 />
             )}
             {placementCount === 1 && (
@@ -261,6 +263,7 @@ export function PlacementSelector(props: {
     bindingSubjectKind: string
     bindingSubjectApiGroup: string
     defaultPlacementKind: 'Placement' | 'PlacementRule'
+    allowNoPlacement?: boolean
 }) {
     const resources = useItem() as IResource[]
     const { placementCount, placementRuleCount, placementBindingCount } = props
@@ -338,23 +341,29 @@ export function PlacementSelector(props: {
                             update(newResources)
                         }}
                     />
-                    {/* <ToggleGroupItem
-                        text="Do not place"
-                        isSelected={placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 0}
-                        onClick={() => {
-                            let newResources = [...resources]
-                            newResources = resources
-                                .filter((resource) => resource.kind !== PlacementKind)
-                                .filter((resource) => resource.kind !== PlacementRuleKind)
-                                .filter((resource) => resource.kind !== PlacementBindingKind)
-                            update(newResources)
-                            setShowPlacements?.(false)
-                            setShowPlacementRules?.(false)
-                            setShowPlacementBindings?.(false)
-                        }}
-                    /> */}
+                    {props.allowNoPlacement === true ? (
+                        <ToggleGroupItem
+                            text="No placement"
+                            isSelected={placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 0}
+                            onClick={() => {
+                                let newResources = [...resources]
+                                newResources = resources
+                                    .filter((resource) => resource.kind !== PlacementKind)
+                                    .filter((resource) => resource.kind !== PlacementRuleKind)
+                                    .filter((resource) => resource.kind !== PlacementBindingKind)
+                                update(newResources)
+                            }}
+                        />
+                    ) : (
+                        <Fragment />
+                    )}
                 </ToggleGroup>
             </div>
+            {props.allowNoPlacement === true && placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 0 && (
+                <p className="pf-c-form__helper-text">
+                    Do not add a placement if you want to place this policy using policy set placement.
+                </p>
+            )}
         </DetailsHidden>
     )
 }
