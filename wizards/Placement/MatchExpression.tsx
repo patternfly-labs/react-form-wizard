@@ -1,7 +1,7 @@
-import { Flex, SelectOption } from '@patternfly/react-core'
+import { Flex } from '@patternfly/react-core'
 import { Fragment } from 'react'
 import set from 'set-value'
-import { Multiselect, Select } from '../../src'
+import { MultiSelect, Select, SingleSelect } from '../../src'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { ItemContext, useItem } from '../../src/contexts/ItemContext'
 import { IExpression } from '../common/resources/IMatchExpression'
@@ -9,10 +9,11 @@ import { IExpression } from '../common/resources/IMatchExpression'
 export function MatchExpression(props: { labelValuesMap: Record<string, string[]> }) {
     return (
         <Flex style={{ rowGap: 16 }}>
-            <Select
+            <SingleSelect
                 label="Label"
                 path="key"
                 options={Object.keys(props.labelValuesMap)}
+                isCreatable
                 required
                 onValueChange={(_value, item) => set(item as object, 'values', [])}
             />
@@ -32,16 +33,14 @@ export function MatchExpression(props: { labelValuesMap: Record<string, string[]
                     const selectedLabel = item.key ?? ''
                     const values = props.labelValuesMap[selectedLabel] ?? []
                     return (
-                        <Multiselect
+                        <MultiSelect
                             label="Values"
                             path="values"
+                            isCreatable
                             required
                             hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
-                        >
-                            {values.map((value) => {
-                                return <SelectOption key={value} value={value} id={value} />
-                            })}
-                        </Multiselect>
+                            options={values}
+                        />
                     )
                 }}
             </ItemContext.Consumer>

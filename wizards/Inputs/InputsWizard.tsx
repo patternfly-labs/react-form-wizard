@@ -3,10 +3,12 @@ import {
     ArrayInput,
     Checkbox,
     KeyValue,
+    MultiSelect,
     Radio,
     RadioGroup,
     Section,
     Select,
+    SingleSelect,
     Step,
     StringsInput,
     TableSelect,
@@ -42,6 +44,18 @@ export function InputsWizard() {
                 <Section label="Select">
                     <Select label="Select" path="select.value" options={['Option 1', 'Option 2']} />
                     <Select label="Select required" path="select.required" options={['Option 1', 'Option 2']} required />
+                </Section>
+                <Section label="MultiSelect">
+                    <MultiSelect label="MultiSelect" path="multiSelect.value" isCreatable options={['Option 1', 'Option 2']} />
+                </Section>
+                <Section label="SingleSelect">
+                    <SingleSelect
+                        label="SingleSelect"
+                        path="singleSelect.value"
+                        isCreatable
+                        options={['Option 1', 'Option 2']}
+                        helperText="isCreatable"
+                    />
                 </Section>
             </Step>
 

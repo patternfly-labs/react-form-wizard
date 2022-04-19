@@ -1,4 +1,4 @@
-import { Button, Flex, FlexItem, SelectOption, Split, Stack } from '@patternfly/react-core'
+import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
 import Handlebars from 'handlebars'
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
@@ -7,7 +7,7 @@ import {
     Checkbox,
     Hidden,
     KeyValue,
-    Multiselect,
+    MultiSelect,
     Radio,
     RadioGroup,
     Section,
@@ -547,16 +547,13 @@ export function DeploymentWindow(props: { timeZone: string[] }) {
 export function TimeWindow(props: { timeZone: string[] }) {
     return (
         <Stack hasGutter style={{ paddingBottom: 16 }}>
-            <Multiselect
+            <MultiSelect
                 label="Time window configuration"
                 placeholder="Select at least one day to create a time window."
                 path="timewindow.daysofweek"
                 required
-            >
-                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((value) => (
-                    <SelectOption key={value} value={value} />
-                ))}
-            </Multiselect>
+                options={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}
+            />
             <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
             <ArrayInput
                 path="timeWindows"
