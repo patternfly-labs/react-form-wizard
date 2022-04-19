@@ -5,10 +5,11 @@ import {
     DescriptionListGroup,
     DescriptionListTerm,
     Select as PfSelect,
+    SelectOption,
     SelectOptionObject,
     SelectVariant,
 } from '@patternfly/react-core'
-import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useState } from 'react'
+import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import { InputLabel } from './InputLabel'
@@ -19,11 +20,10 @@ type MultiSelectStringsProps = InputCommonProps<string[]> & {
     footer?: ReactNode
     label: string
     isCreatable?: boolean
-    onCreate?: (value: string) => void
-    children: ReactElement[]
+    options: string[]
 }
 
-export function Multiselect(props: MultiSelectStringsProps) {
+export function MultiSelect(props: MultiSelectStringsProps) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
     const [open, setOpen] = useState(false)
@@ -49,18 +49,35 @@ export function Multiselect(props: MultiSelectStringsProps) {
         setValue([])
     }, [setValue])
 
+    const selections = useMemo(() => value as string[], [value])
+
+    const options = useMemo(() => {
+        const map: Record<string, true> = {}
+        for (const option of props.options) {
+            map[option] = true
+        }
+        if (Array.isArray(selections)) {
+            for (const option of selections) {
+                map[option] = true
+            }
+        }
+        return Object.keys(map).sort()
+    }, [props.options, selections])
+
     const onFilter = useCallback(
         (_, filterValue: string) =>
-            Children.toArray(props.children).filter((child) => {
-                if (!isValidElement(child)) return false
-                const value = child.props.value
-                if (typeof value !== 'string') return false
-                return value.includes(filterValue)
-            }) as ReactElement[],
-        [props.children]
+            options
+                .filter((option) => {
+                    if (typeof option !== 'string') return false
+                    return option.includes(filterValue)
+                })
+                .map((option) => (
+                    <SelectOption key={option} value={option}>
+                        {option}
+                    </SelectOption>
+                )),
+        [options]
     )
-
-    const selections = value as string[]
 
     if (hidden) return <Fragment />
 
@@ -95,10 +112,10 @@ export function Multiselect(props: MultiSelectStringsProps) {
                     selections={selections}
                     onSelect={onSelect}
                     onClear={props.required ? undefined : onClear}
-                    onCreateOption={(value) => props.onCreate?.(value)}
+                    isCreatable={props.isCreatable}
                     validated={validated}
                     onFilter={onFilter}
-                    hasInlineFilter={Children.toArray(props.children).length > 10}
+                    hasInlineFilter={props.isCreatable || options.length > 10}
                     footer={props.footer}
                     placeholderText={
                         Array.isArray(selections) ? (
@@ -118,7 +135,11 @@ export function Multiselect(props: MultiSelectStringsProps) {
                         )
                     }
                 >
-                    {props.children}
+                    {options.map((option) => (
+                        <SelectOption id={option} key={option} value={option}>
+                            {option}
+                        </SelectOption>
+                    ))}
                 </PfSelect>
             </InputLabel>
         </div>

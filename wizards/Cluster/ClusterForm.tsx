@@ -1,12 +1,11 @@
 /* Copyright Contributors to the Open Cluster Management project */
 // eslint-disable-next-line no-use-before-define
-import { SelectOption } from '@patternfly/react-core'
 import { useHistory } from 'react-router-dom'
 import {
     ArrayInput,
     Checkbox,
     KeyValue,
-    Multiselect,
+    MultiSelect,
     Section,
     Select,
     Step,
@@ -152,11 +151,7 @@ export function ControlPlaneStep() {
             prompt="Enter the control plane details"
             description="Three control plane nodes will be created to control this cluster unless single node is enabled, in which case there will only be one control plane node."
         >
-            <Multiselect path="zones" label="Zones">
-                {awsRegions['us-east-1'].map((value) => (
-                    <SelectOption key={value} value={value} />
-                ))}
-            </Multiselect>
+            <MultiSelect path="zones" label="Zones" options={awsRegions['us-east-1']} />
             <Select
                 path="instanceType"
                 label="Instance type"

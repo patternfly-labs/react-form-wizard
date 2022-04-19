@@ -1,11 +1,11 @@
-import { Button, SelectOption } from '@patternfly/react-core'
+import { Button } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useMemo } from 'react'
 import { ArrayInput, EditMode, Hidden, KeyValue, NumberInput, TextInput } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
-import { Multiselect } from '../../src/inputs/Multiselect'
+import { MultiSelect } from '../../src/inputs/MultiSelect'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { IPlacement, PlacementKind, PlacementType, Predicate } from '../common/resources/IPlacement'
@@ -85,7 +85,7 @@ export function Placement(props: {
             )}
 
             {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
-            <Multiselect
+            <MultiSelect
                 label="Cluster sets"
                 path="spec.clusterSets"
                 placeholder="Select the cluster sets"
@@ -98,11 +98,8 @@ export function Placement(props: {
                         </Button>
                     ) : undefined
                 }
-            >
-                {props.namespaceClusterSetNames.map((name) => (
-                    <SelectOption key={name} value={name} />
-                ))}
-            </Multiselect>
+                options={props.namespaceClusterSetNames}
+            />
 
             <Hidden
                 hidden={(placement) => {
