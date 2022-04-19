@@ -41,6 +41,7 @@ export function PlacementSection(props: {
         setPlacementBindingCount(resources?.filter((resource) => resource.kind === PlacementBindingKind).length)
     }, [resources, setPlacementCount, setPlacementRuleCount, setPlacementBindingCount])
 
+    const [showPlacementSelector, setShowPlacementSelector] = useState(false)
     const [isAdvanced, setIsAdvanced] = useState(false)
     useEffect(() => {
         let isAdvanced = false
@@ -58,8 +59,33 @@ export function PlacementSection(props: {
             if (placement?.spec?.predicates && placement.spec.predicates.length > 1) isAdvanced = true
         }
 
-        setIsAdvanced(isAdvanced)
-    }, [setIsAdvanced, editMode, resources])
+        if (isAdvanced) {
+            setIsAdvanced(isAdvanced)
+        } else {
+            if (editMode === EditMode.Create) {
+                // Only in create mode switch back to simple mode
+                setIsAdvanced(false)
+            } else {
+                if (placementCount + placementRuleCount + placementBindingCount === 0) {
+                    setIsAdvanced(false)
+                }
+            }
+        }
+
+        if (editMode === EditMode.Create) {
+            setShowPlacementSelector(true)
+        } else {
+            if (
+                placements.filter((placement) => placement.metadata?.uid).length === 0 &&
+                placementRules.filter((placementRule) => placementRule.metadata?.uid).length === 0
+            ) {
+                // Show placement selector if there are no existing resources
+                setShowPlacementSelector(true)
+            } else {
+                setShowPlacementSelector(false)
+            }
+        }
+    }, [setIsAdvanced, setShowPlacementSelector, editMode, resources])
 
     useEffect(() => {
         const placementCount = resources?.filter((resource) => resource.kind === PlacementKind).length
@@ -156,14 +182,16 @@ export function PlacementSection(props: {
             // description="Placement selects clusters from the cluster sets which have bindings to the resource namespace."
             autohide={false}
         >
-            <PlacementSelector
-                placementCount={placementCount}
-                placementRuleCount={placementRuleCount}
-                placementBindingCount={placementBindingCount}
-                bindingSubjectKind={props.bindingSubjectKind}
-                bindingSubjectApiGroup={props.bindingSubjectApiGroup}
-                defaultPlacementKind={props.defaultPlacementKind}
-            />
+            {showPlacementSelector && (
+                <PlacementSelector
+                    placementCount={placementCount}
+                    placementRuleCount={placementRuleCount}
+                    placementBindingCount={placementBindingCount}
+                    bindingSubjectKind={props.bindingSubjectKind}
+                    bindingSubjectApiGroup={props.bindingSubjectApiGroup}
+                    defaultPlacementKind={props.defaultPlacementKind}
+                />
+            )}
             {placementCount === 1 && (
                 <Fragment>
                     {editMode === EditMode.Create && (
