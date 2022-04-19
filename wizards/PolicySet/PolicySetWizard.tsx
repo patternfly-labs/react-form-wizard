@@ -19,7 +19,7 @@ import { PlacementBindingKind, PlacementBindingType } from '../common/resources/
 import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { PolicySetApiGroup, PolicySetKind, PolicySetType } from '../common/resources/IPolicySet'
 import { Sync } from '../common/Sync'
-import { isValidKubernetesName } from '../common/validation'
+import { isValidKubernetesResourceName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
 
 export interface PolicySetWizardProps {
@@ -85,7 +85,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                             path="metadata.name"
                             id="name"
                             required
-                            validation={isValidKubernetesName}
+                            validation={isValidKubernetesResourceName}
                             disabledInEditMode
                         />
                         <TextArea label="Description" path="spec.description" />

@@ -6,9 +6,25 @@ import { IResource } from './resource'
 type TFunction = (t: string) => string
 
 const lowercaseAlphaNumericCharacters = 'abcdefghijklmnopqrstuvwxyz1234567890'
+const lowercaseAlphabeticCharacters = 'abcdefghijklmnopqrstuvwxyz'
 
-export function isValidKubernetesName(value: string, _item: unknown, t?: TFunction) {
-    // eslint-disable-next-line no-console
+/* https://kubernetes.io/docs/concepts/overview/working-with-objects/names */
+
+export function isValidKubernetesResourceName(value: string, _item: unknown, t?: TFunction) {
+    t = t ? t : (value) => value
+    if (!value) return undefined
+    if (value.length > 253) return `${t('This value can contain at most 253 characters')}`
+    for (const char of value) {
+        if (!lowercaseAlphaNumericCharacters.includes(char) && char !== '-' && char !== '.')
+            return `${t("This value can only contain lowercase alphanumeric characters or '-' or '.'")}`
+    }
+    if (!lowercaseAlphaNumericCharacters.includes(value[0])) return `${t('This value must start with an alphanumeric character')}`
+    if (!lowercaseAlphaNumericCharacters.includes(value[value.length - 1]))
+        return `${t('This value must end with an alphanumeric character')}`
+    return undefined
+}
+
+export function isValidKubernetesResourceNameRFC1123(value: string, _item: unknown, t?: TFunction) {
     t = t ? t : (value) => value
     if (!value) return undefined
     if (value.length > 63) return `${t('This value can contain at most 63 characters')}`
@@ -17,6 +33,20 @@ export function isValidKubernetesName(value: string, _item: unknown, t?: TFuncti
             return `${t("This value can only contain lowercase alphanumeric characters or '-'")}`
     }
     if (!lowercaseAlphaNumericCharacters.includes(value[0])) return `${t('This value must start with an alphanumeric character')}`
+    if (!lowercaseAlphaNumericCharacters.includes(value[value.length - 1]))
+        return `${t('This value must end with an alphanumeric character')}`
+    return undefined
+}
+
+export function isValidKubernetesResourceNameRFC1135(value: string, _item: unknown, t?: TFunction) {
+    t = t ? t : (value) => value
+    if (!value) return undefined
+    if (value.length > 63) return `${t('This value can contain at most 63 characters')}`
+    for (const char of value) {
+        if (!lowercaseAlphaNumericCharacters.includes(char) && char !== '-')
+            return `${t("This value can only contain lowercase alphanumeric characters or '-'")}`
+    }
+    if (!lowercaseAlphabeticCharacters.includes(value[0])) return `${t('This value must start with an alphanumeric character')}`
     if (!lowercaseAlphaNumericCharacters.includes(value[value.length - 1]))
         return `${t('This value must end with an alphanumeric character')}`
     return undefined
@@ -304,13 +334,13 @@ export function validateNoProxy(value: string, t: TFunction) {
 
 export function validatePolicyName(value: string, resource: unknown, t?: TFunction) {
     t = t ? t : (value) => value
-    const error = isValidKubernetesName(value, t)
+    const error = isValidKubernetesResourceName(value, t)
     if (error) return error
     const policy = resource as IResource
     const namespace = policy.metadata?.namespace ?? ''
     const combinedNameLength = value.length + namespace.length + 1
 
-    if (combinedNameLength > 63)
-        return t('The combined length of namespace and policy name (namespaceName.policyName) should not exceed 63 characters')
+    if (combinedNameLength > 253)
+        return t('The combined length of namespace and policy name (namespaceName.policyName) should not exceed 253 characters')
     return undefined
 }

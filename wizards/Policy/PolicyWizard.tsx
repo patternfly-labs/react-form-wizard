@@ -2,7 +2,7 @@ import { Alert, Button, Stack, Text, Title } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { klona } from 'klona/json'
-import { Fragment, ReactNode, useContext } from 'react'
+import { Fragment, ReactNode, useContext, useMemo } from 'react'
 import set from 'set-value'
 import {
     ArrayInput,
@@ -33,7 +33,7 @@ import { PlacementBindingKind } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 import { PolicyApiGroup, PolicyKind, PolicyType } from '../common/resources/IPolicy'
 import { Sync } from '../common/Sync'
-import { isValidKubernetesName, validatePolicyName } from '../common/validation'
+import { isValidKubernetesResourceName, validatePolicyName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
 import { Specifications } from './specifications'
 
@@ -135,6 +135,7 @@ export function PolicyWizard(props: {
                 </ItemSelector>
             </Step>
             <Step label="Placement" id="placement">
+                <PolicyPolicySets />
                 <PlacementSection
                     existingPlacements={props.placements}
                     existingPlacementRules={props.placementRules}
@@ -144,6 +145,7 @@ export function PolicyWizard(props: {
                     bindingSubjectApiGroup={PolicyApiGroup}
                     defaultPlacementKind={PlacementRuleKind}
                     clusters={props.clusters}
+                    allowNoPlacement
                 />
             </Step>
             <Step label="Policy annotations" id="security-groups">
@@ -240,11 +242,11 @@ export function PolicyWizardTemplates() {
                                 })
                             }
 
-                            const copy = klona(specification.policyTemplates)
+                            const newPolicyTemplates = klona(specification.policyTemplates)
 
                             const policyName = get(policy, 'metadata.name')
                             if (policyName) {
-                                copy.forEach((t) => {
+                                newPolicyTemplates.forEach((t) => {
                                     const name: string = get(t, 'objectDefinition.metadata.name')
                                     if (name) {
                                         set(t, 'objectDefinition.metadata.name', name.replace('{{name}}', policyName))
@@ -252,7 +254,28 @@ export function PolicyWizardTemplates() {
                                 })
                             }
 
-                            return copy
+                            // make each policy template name unique in policy
+                            if (policy) {
+                                const existingTemplates = get(policy, 'spec.policy-templates')
+                                if (Array.isArray(existingTemplates)) {
+                                    for (const newPolicyTemplate of newPolicyTemplates) {
+                                        const name: string = get(newPolicyTemplate, 'objectDefinition.metadata.name')
+                                        if (!name) continue
+                                        let counter = 1
+                                        let newName = name
+                                        while (
+                                            existingTemplates.find((existingTemplate) => {
+                                                return get(existingTemplate, 'objectDefinition.metadata.name') === newName
+                                            })
+                                        ) {
+                                            newName = name + '-' + (counter++).toString()
+                                        }
+                                        set(newPolicyTemplate, 'objectDefinition.metadata.name', newName)
+                                    }
+                                }
+                            }
+
+                            return newPolicyTemplates
                         },
                     }
                 })}
@@ -269,7 +292,7 @@ export function PolicyWizardTemplates() {
                         path="objectDefinition.metadata.name"
                         label="Name"
                         required
-                        validation={isValidKubernetesName}
+                        validation={isValidKubernetesResourceName}
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
                     <TextInput path="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
@@ -286,7 +309,7 @@ export function PolicyWizardTemplates() {
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
-                        validation={isValidKubernetesName}
+                        validation={isValidKubernetesResourceName}
                     />
                     <NumberInput path="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
                 </Hidden>
@@ -303,7 +326,7 @@ export function PolicyWizardTemplates() {
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
-                        validation={isValidKubernetesName}
+                        validation={isValidKubernetesResourceName}
                     />
 
                     <ArrayInput
@@ -388,7 +411,7 @@ function ObjectTemplate() {
                 label="Name"
                 required
                 hidden={(template: any) => template?.objectDefinition?.metadata?.name === undefined}
-                validation={isValidKubernetesName}
+                validation={isValidKubernetesResourceName}
             />
 
             <TextInput
@@ -481,4 +504,52 @@ function pascalCaseToSentenceCase(text: string) {
     const result = text.replace(/([A-Z])/g, ' $1')
     const finalResult = result.charAt(0).toUpperCase() + result.slice(1)
     return finalResult
+}
+
+function PolicyPolicySets() {
+    const resources = useItem() as IResource[]
+
+    const policy = useMemo(() => resources?.find((resource) => resource.kind === PolicyKind), [resources])
+
+    const placements = useMemo(() => {
+        if (!policy) return undefined
+        const placements: {
+            placement?: string
+            placementBinding?: string
+            policySet?: string
+        }[] = get(policy, 'status.placement')
+        if (!Array.isArray(placements)) return undefined
+        return placements
+    }, [policy])
+
+    const policySets = useMemo(() => {
+        if (!Array.isArray(placements)) return undefined
+        return placements.map((placement) => placement.policySet)
+    }, [placements])
+
+    return (
+        <Fragment>
+            {policySets?.length && (
+                <Alert
+                    title={
+                        policySets?.length === 1
+                            ? 'Policy placement is managed by a policy set.'
+                            : 'Policy placement is managed by policy sets.'
+                    }
+                    isInline
+                    variant="warning"
+                >
+                    <p>
+                        {policySets?.length === 1
+                            ? 'This policy is placed by the policy set: '
+                            : 'This policy is placed by the policy sets: '}
+                        <b>{policySets.join(', ')}</b>
+                    </p>
+                    <p className="pf-c-form__helper-text">
+                        Only add placement to this policy if you want it to be placed in addition to the policy set placement.
+                    </p>
+                </Alert>
+            )}
+        </Fragment>
+    )
 }

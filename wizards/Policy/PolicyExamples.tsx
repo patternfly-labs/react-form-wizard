@@ -208,7 +208,7 @@ export function EditPolicy(props: { yaml: string }) {
             clusterSetBindings={clusterSetBindings}
             placements={placements}
             placementRules={placementRules}
-            title="Edit policy set"
+            title="Edit policy"
             onSubmit={onSubmit}
             onCancel={() => onCancel(history)}
             editMode={EditMode.Edit}
