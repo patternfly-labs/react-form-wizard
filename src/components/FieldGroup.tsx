@@ -71,11 +71,14 @@ export const InternalFormFieldGroup: React.FunctionComponent<InternalFormFieldGr
                     aria-label={toggleAriaLabel}
                     // toggleId={id}
                     {...(headerTitleText && { 'aria-labelledby': `c` })}
+                    style={{ paddingTop: 16 }}
                 />
             )}
             {header && header}
             {!isExpandable || (isExpandable && isExpanded) ? (
-                <div className={css(styles.formFieldGroupBody)}>{children}</div>
+                <div className={css(styles.formFieldGroupBody)} style={{ paddingTop: 16, paddingBottom: 32 }}>
+                    {children}
+                </div>
             ) : (
                 <div style={{ display: 'none' }}>{children}</div>
             )}
