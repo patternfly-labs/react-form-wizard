@@ -528,7 +528,7 @@ function PolicyPolicySets() {
     }, [placements])
 
     return (
-        <Fragment>
+        <DetailsHidden>
             {policySets?.length && (
                 <Alert
                     title={
@@ -550,6 +550,6 @@ function PolicyPolicySets() {
                     </p>
                 </Alert>
             )}
-        </Fragment>
+        </DetailsHidden>
     )
 }
