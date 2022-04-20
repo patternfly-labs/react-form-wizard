@@ -47,4 +47,7 @@ export enum RouteE {
     App = '?route=app',
     Inputs = '?route=inputs',
     Wizards = '?route=wizards',
+    Provider = '?route=provider',
+    ControlPlane = '?route=control-plane',
+    CreateCluster = '?route=create-cluster',
 }

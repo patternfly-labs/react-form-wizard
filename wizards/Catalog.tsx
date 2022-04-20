@@ -64,7 +64,7 @@ interface ICatalogCard {
     featureGroups?: ICatalogCardFeatureGroup[]
     labels?: string[]
     badge?: string
-    onClick: () => void
+    onClick?: () => void
 }
 
 interface ICatalogCardFeatureGroup {
@@ -194,9 +194,13 @@ export function Catalog(props: {
                             onClick={card.onClick}
                             isFlat
                             isLarge
-                            isSelectable
+                            isSelectable={card.onClick !== undefined}
                             isRounded
-                            style={{ transition: 'box-shadow 0.25s', cursor: 'pointer' }}
+                            style={{
+                                transition: 'box-shadow 0.25s',
+                                cursor: card.onClick ? 'pointer' : undefined,
+                                background: card.onClick ? undefined : '#00000008',
+                            }}
                         >
                             <CardHeader>
                                 <Split hasGutter style={{ width: '100%' }}>

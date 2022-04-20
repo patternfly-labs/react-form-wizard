@@ -20,6 +20,7 @@ import { AppExample } from './AppWizard/AppExample'
 import { ApplicationSetExamples, CreateApplicationSet, EditApplicationSet } from './Argo/ArgoExamples'
 import { Catalog } from './Catalog'
 import { ClusterForm } from './Cluster/ClusterForm'
+import { ControlPlaneCatalog, CreateCluster, ProviderCatalog } from './Cluster/Provider'
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import { HomeWizard } from './Home/HomeWizard'
 import { InputsWizard } from './Inputs/InputsWizard'
@@ -281,6 +282,12 @@ export function DemoRouter(): JSX.Element {
             return <InputsWizard />
         case RouteE.Wizards:
             return <ExampleWizards />
+        case RouteE.Provider:
+            return <ProviderCatalog />
+        case RouteE.ControlPlane:
+            return <ControlPlaneCatalog />
+        case RouteE.CreateCluster:
+            return <CreateCluster />
         default:
             return <HomeWizard />
     }
