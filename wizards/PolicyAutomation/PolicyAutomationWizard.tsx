@@ -153,7 +153,7 @@ export function PolicyAutomationWizard(props: {
                         }}
                     />
                     <Checkbox
-                        hidden={(item) => item.spec.mode !== 'disabled'}
+                        hidden={(item) => item.spec?.mode !== 'disabled'}
                         path="metadata.annotations.policy\.open-cluster-management\.io/rerun"
                         label="Manual run: Set this automation to run once. After the automation runs, it is set to disabled."
                         inputValueToPathValue={(inputValue) => {
