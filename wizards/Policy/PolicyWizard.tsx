@@ -411,7 +411,6 @@ function ObjectTemplate() {
                 label="Name"
                 required
                 hidden={(template: any) => template?.objectDefinition?.metadata?.name === undefined}
-                validation={isValidKubernetesResourceName}
             />
 
             <TextInput
