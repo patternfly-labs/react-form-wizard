@@ -6,6 +6,7 @@ import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeConte
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useSetHasInputs } from '../../src/contexts/HasInputsProvider'
 import { useItem } from '../../src/contexts/ItemContext'
+import { useValidate } from '../../src/contexts/ValidationProvider'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { IPlacement, PlacementApiGroup, PlacementApiVersion, PlacementKind } from '../common/resources/IPlacement'
@@ -268,6 +269,7 @@ export function PlacementSelector(props: {
     const resources = useItem() as IResource[]
     const { placementCount, placementRuleCount, placementBindingCount } = props
     const { update } = useData()
+    const validate = useValidate()
     return (
         <DetailsHidden>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -352,6 +354,7 @@ export function PlacementSelector(props: {
                                     .filter((resource) => resource.kind !== PlacementRuleKind)
                                     .filter((resource) => resource.kind !== PlacementBindingKind)
                                 update(newResources)
+                                validate()
                             }}
                         />
                     ) : (
