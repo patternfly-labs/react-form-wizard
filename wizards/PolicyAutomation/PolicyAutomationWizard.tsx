@@ -1,7 +1,9 @@
-import { Alert, Button, ButtonVariant } from '@patternfly/react-core'
+import { Alert, AlertVariant, Button, ButtonVariant } from '@patternfly/react-core'
+import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { Checkbox, DetailsHidden, EditMode, KeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
 import { IResource } from '../common/resource'
+import { ConfigMap } from '../common/resources/IConfigMap'
 import { ICredential } from '../common/resources/ICredential'
 import { IPolicyAutomation, PolicyAutomationType } from '../common/resources/IPolicyAutomation'
 
@@ -10,6 +12,7 @@ export function PolicyAutomationWizard(props: {
     breadcrumb?: { label: string; to?: string }[]
     policy: IResource
     credentials: IResource[]
+    configMaps?: ConfigMap[]
     createCredentialsCallback: () => void
     editMode?: EditMode
     yamlEditor?: () => ReactNode
@@ -17,6 +20,7 @@ export function PolicyAutomationWizard(props: {
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     getAnsibleJobsCallback: (credential: ICredential) => Promise<string[]>
+    isAnsibleOperatorInstalled: boolean
 }) {
     const ansibleCredentials = useMemo(
         () => props.credentials.filter((credential) => credential.metadata?.labels?.['cluster.open-cluster-management.io/type'] === 'ans'),
@@ -28,6 +32,33 @@ export function PolicyAutomationWizard(props: {
     )
     const [jobNames, setJobNames] = useState<string[]>()
     const [alert, setAlert] = useState<{ title: string; message: string }>()
+
+    function getOperatorError() {
+        const openShiftConsoleConfig = props.configMaps?.find((configmap) => configmap.metadata?.name === 'console-public')
+        const openShiftConsoleUrl: string = openShiftConsoleConfig?.data?.consoleURL
+        return (
+            <div>
+                {'The Ansible Automation Platform Resource Operator is required to create an Ansible job. '}
+                {openShiftConsoleUrl && openShiftConsoleUrl !== '' ? (
+                    <div>
+                        {'Install the Operator through the following link: '}
+                        <Button
+                            isInline
+                            variant={ButtonVariant.link}
+                            onClick={() =>
+                                window.open(openShiftConsoleUrl + '/operatorhub/all-namespaces?keyword=ansible+automation+platform')
+                            }
+                        >
+                            {'Operator'}
+                            <ExternalLinkAltIcon style={{ marginLeft: '4px', verticalAlign: 'middle' }} />
+                        </Button>
+                    </div>
+                ) : (
+                    'Install the Operator through operator hub.'
+                )}
+            </div>
+        )
+    }
 
     useEffect(() => {
         if (props.editMode === EditMode.Edit) {
@@ -71,6 +102,7 @@ export function PolicyAutomationWizard(props: {
             }
         >
             <Step label="Automation" id="automation-step">
+                {!props.isAnsibleOperatorInstalled && <Alert isInline title={getOperatorError()} variant={AlertVariant.danger} />}
                 <Section label="Policy automation">
                     {alert && (
                         <DetailsHidden>

@@ -88,6 +88,7 @@ export function CreatePolicyAutomation() {
                     return Promise.resolve(['job1', 'job2'])
                 }
             }}
+            isAnsibleOperatorInstalled={true}
         />
     )
 }
@@ -152,6 +153,7 @@ export function EditPolicyAutomation() {
                     return Promise.resolve(['job1', 'job2'])
                 }
             }}
+            isAnsibleOperatorInstalled={true}
         />
     )
 }
