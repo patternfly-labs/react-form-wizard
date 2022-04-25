@@ -35,7 +35,7 @@ export function PolicyAutomationWizard(props: {
 
     function getOperatorError() {
         const openShiftConsoleConfig = props.configMaps?.find((configmap) => configmap.metadata?.name === 'console-public')
-        const openShiftConsoleUrl = openShiftConsoleConfig?.data?.consoleURL
+        const openShiftConsoleUrl: string = openShiftConsoleConfig?.data?.consoleURL
         return (
             <div>
                 {'The Ansible Automation Platform Resource Operator is required to create an Ansible job. '}
