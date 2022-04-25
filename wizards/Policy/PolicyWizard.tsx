@@ -523,15 +523,19 @@ function PolicyPolicySets() {
 
     const policySets = useMemo(() => {
         if (!Array.isArray(placements)) return undefined
-        return placements.map((placement) => placement.policySet)
+        const policySets = placements
+            .map((placement) => placement.policySet)
+            .filter((policySet) => policySet !== undefined && policySet !== '')
+        if (policySets.length === 0) return undefined
+        return policySets
     }, [placements])
 
     return (
         <DetailsHidden>
-            {policySets?.length && (
+            {policySets && (
                 <Alert
                     title={
-                        policySets?.length === 1
+                        policySets.length === 1
                             ? 'Policy placement is managed by a policy set.'
                             : 'Policy placement is managed by policy sets.'
                     }
@@ -539,7 +543,7 @@ function PolicyPolicySets() {
                     variant="warning"
                 >
                     <p>
-                        {policySets?.length === 1
+                        {policySets.length === 1
                             ? 'This policy is placed by the policy set: '
                             : 'This policy is placed by the policy sets: '}
                         <b>{policySets.join(', ')}</b>
