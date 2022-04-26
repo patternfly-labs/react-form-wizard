@@ -1,6 +1,6 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { DetailsHidden, EditMode, ItemSelector, Section, Select } from '../../src'
+import { DetailsHidden, EditMode, ItemSelector, Section, Select, SingleSelect } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
@@ -244,7 +244,7 @@ export function PlacementSection(props: {
                         hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
                         options={namespacedPlacements.map((placement) => placement.metadata?.name ?? '')}
                     />
-                    <Select
+                    <SingleSelect
                         path="placementRef.name"
                         label="Placement rule"
                         required
@@ -267,7 +267,7 @@ export function PlacementSelector(props: {
     allowNoPlacement?: boolean
 }) {
     const resources = useItem() as IResource[]
-    const { placementCount, placementRuleCount, placementBindingCount } = props
+    const { placementCount, placementRuleCount, placementBindingCount, bindingSubjectKind } = props
     const { update } = useData()
     const validate = useValidate()
     return (
@@ -279,40 +279,48 @@ export function PlacementSelector(props: {
                         text="New placement"
                         isSelected={placementCount + placementRuleCount === 1}
                         onClick={() => {
+                            const bindingSubject = resources.find((resource) => resource.kind === bindingSubjectKind)
                             let newResources = [...resources]
                             newResources = resources
                                 .filter((resource) => resource.kind !== PlacementKind)
                                 .filter((resource) => resource.kind !== PlacementRuleKind)
                                 .filter((resource) => resource.kind !== PlacementBindingKind)
+
+                            const placementName = bindingSubject
+                                ? uniqueResourceName(`${bindingSubject.metadata?.name ?? ''}-placement`, newResources)
+                                : ''
+                            const placementBindingName = bindingSubject
+                                ? uniqueResourceName(`${bindingSubject.metadata?.name ?? ''}-placement-binding`, newResources)
+                                : ''
+                            const namespace = bindingSubject?.metadata?.namespace ?? ''
+                            const placementRefApiGroup =
+                                props.defaultPlacementKind === PlacementKind ? PlacementApiGroup : PlacementRuleApiGroup
                             if (props.defaultPlacementKind === PlacementKind) {
                                 newResources.push({
                                     apiVersion: PlacementApiVersion,
                                     kind: PlacementKind,
-                                    metadata: { name: '', namespace: '' },
+                                    metadata: { name: placementName, namespace },
                                     spec: {},
                                 } as IResource)
                             } else {
                                 newResources.push({
                                     ...PlacementRuleType,
-                                    metadata: { name: '', namespace: '' },
+                                    metadata: { name: placementName, namespace },
                                     spec: { clusterSelector: { matchExpressions: [] } },
                                 } as IResource)
                             }
-                            if (props.defaultPlacementKind === PlacementKind) {
-                                newResources.push({
-                                    ...PlacementBindingType,
-                                    metadata: { name: '', namespace: '' },
-                                    placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
-                                    subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
-                                } as IResource)
-                            } else {
-                                newResources.push({
-                                    ...PlacementBindingType,
-                                    metadata: { name: '', namespace: '' },
-                                    placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: '' },
-                                    subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
-                                } as IResource)
-                            }
+                            newResources.push({
+                                ...PlacementBindingType,
+                                metadata: { name: placementBindingName, namespace },
+                                placementRef: { apiGroup: placementRefApiGroup, kind: props.defaultPlacementKind, name: placementName },
+                                subjects: [
+                                    {
+                                        apiGroup: props.bindingSubjectApiGroup,
+                                        kind: bindingSubjectKind,
+                                        name: bindingSubject?.metadata?.name ?? '',
+                                    },
+                                ],
+                            } as IResource)
                             update(newResources)
                         }}
                     />
@@ -320,26 +328,34 @@ export function PlacementSelector(props: {
                         text="Existing placement"
                         isSelected={placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 1}
                         onClick={() => {
+                            const bindingSubject = resources.find((resource) => resource.kind === bindingSubjectKind)
                             let newResources = [...resources]
                             newResources = resources
                                 .filter((resource) => resource.kind !== PlacementKind)
                                 .filter((resource) => resource.kind !== PlacementRuleKind)
                                 .filter((resource) => resource.kind !== PlacementBindingKind)
-                            if (props.defaultPlacementKind === PlacementKind) {
-                                newResources.push({
-                                    ...PlacementBindingType,
-                                    metadata: { name: '', namespace: '' },
-                                    placementRef: { apiGroup: PlacementApiGroup, kind: PlacementKind, name: '' },
-                                    subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
-                                } as IResource)
-                            } else {
-                                newResources.push({
-                                    ...PlacementBindingType,
-                                    metadata: { name: '', namespace: '' },
-                                    placementRef: { apiGroup: PlacementRuleApiGroup, kind: PlacementRuleKind, name: '' },
-                                    subjects: [{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind, name: '' }],
-                                } as IResource)
-                            }
+                            const placementBindingName = bindingSubject
+                                ? uniqueResourceName(`${bindingSubject.metadata?.name ?? ''}-placement-binding`, newResources)
+                                : ''
+                            const namespace = bindingSubject?.metadata?.namespace ?? ''
+                            const placementRefApiGroup =
+                                props.defaultPlacementKind === PlacementKind ? PlacementApiGroup : PlacementRuleApiGroup
+
+                            newResources.push({
+                                ...PlacementBindingType,
+                                metadata: {
+                                    name: placementBindingName,
+                                    namespace: namespace,
+                                },
+                                placementRef: { apiGroup: placementRefApiGroup, kind: props.defaultPlacementKind, name: '' },
+                                subjects: [
+                                    {
+                                        apiGroup: props.bindingSubjectApiGroup,
+                                        kind: props.bindingSubjectKind,
+                                        name: bindingSubject?.metadata?.name ?? '',
+                                    },
+                                ],
+                            } as IResource)
                             update(newResources)
                         }}
                     />
@@ -369,4 +385,14 @@ export function PlacementSelector(props: {
             )}
         </DetailsHidden>
     )
+}
+
+function uniqueResourceName(name: string | undefined, resources: IResource[]) {
+    if (!name) return ''
+    let counter = 1
+    let newName = name
+    while (resources.find((resource) => resource.metadata?.name === newName)) {
+        newName = name + '-' + (counter++).toString()
+    }
+    return newName
 }
