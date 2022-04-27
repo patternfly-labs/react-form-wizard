@@ -8,7 +8,7 @@ import {
     SelectOptionObject,
     SelectVariant,
 } from '@patternfly/react-core'
-import { Fragment, ReactNode, useCallback, useState } from 'react'
+import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
 import { InputLabel } from './InputLabel'
@@ -53,6 +53,14 @@ export function SingleSelect(props: SingleSelectProps) {
                 )),
         [props.options]
     )
+
+    useEffect(() => {
+        if (!props.isCreatable) {
+            if (value && !props.options.includes(value)) {
+                setValue('')
+            }
+        }
+    }, [props.isCreatable, props.options, setValue, value])
 
     if (hidden) return <Fragment />
 
