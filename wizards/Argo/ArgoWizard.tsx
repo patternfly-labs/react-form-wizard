@@ -764,39 +764,41 @@ function ArgoWizardPlacementSection(props: {
     const { update } = useData()
     return (
         <Section label="Placement">
-            <DetailsHidden>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {editMode === EditMode.Create && (
-                        <span className="pf-c-form__label pf-c-form__label-text">How do you want to select clusters?</span>
-                    )}
-                    <ToggleGroup>
-                        <ToggleGroupItem
-                            text="New placement"
-                            isSelected={hasPlacement}
-                            onClick={() => {
-                                let newResources = [...resources]
-                                newResources = resources.filter((resource) => resource.kind !== PlacementKind)
-                                newResources.push({
-                                    apiVersion: PlacementApiVersion,
-                                    kind: PlacementKind,
-                                    metadata: { name: '', namespace: '' },
-                                    spec: {},
-                                } as IResource)
-                                update(newResources)
-                            }}
-                        />
-                        <ToggleGroupItem
-                            text="Existing placement"
-                            isSelected={!hasPlacement}
-                            onClick={() => {
-                                let newResources = [...resources]
-                                newResources = resources.filter((resource) => resource.kind !== PlacementKind)
-                                update(newResources)
-                            }}
-                        />
-                    </ToggleGroup>
-                </div>
-            </DetailsHidden>
+            {(editMode === EditMode.Create || !hasPlacement) && (
+                <DetailsHidden>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        {editMode === EditMode.Create && (
+                            <span className="pf-c-form__label pf-c-form__label-text">How do you want to select clusters?</span>
+                        )}
+                        <ToggleGroup>
+                            <ToggleGroupItem
+                                text="New placement"
+                                isSelected={hasPlacement}
+                                onClick={() => {
+                                    let newResources = [...resources]
+                                    newResources = resources.filter((resource) => resource.kind !== PlacementKind)
+                                    newResources.push({
+                                        apiVersion: PlacementApiVersion,
+                                        kind: PlacementKind,
+                                        metadata: { name: '', namespace: '' },
+                                        spec: {},
+                                    } as IResource)
+                                    update(newResources)
+                                }}
+                            />
+                            <ToggleGroupItem
+                                text="Existing placement"
+                                isSelected={!hasPlacement}
+                                onClick={() => {
+                                    let newResources = [...resources]
+                                    newResources = resources.filter((resource) => resource.kind !== PlacementKind)
+                                    update(newResources)
+                                }}
+                            />
+                        </ToggleGroup>
+                    </div>
+                </DetailsHidden>
+            )}
             {hasPlacement ? (
                 <ItemSelector selectKey="kind" selectValue={PlacementKind}>
                     <Placement
