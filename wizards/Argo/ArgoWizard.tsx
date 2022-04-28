@@ -445,19 +445,19 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         description="Settings used to configure application syncing when there are differences between the desired state and the live cluster state."
                     >
                         <Checkbox
-                            label="Delete resources that are no longer defined in Git"
+                            label="Delete resources that are no longer defined in the source repository"
                             path="spec.template.spec.syncPolicy.automated.prune"
                         />
                         <Checkbox
                             id="prune-last"
-                            label="Delete resources that are no longer defined in Git at the end of a sync operation"
+                            label="Delete resources that are no longer defined in the source repository at the end of a sync operation"
                             path="spec.template.spec.syncPolicy.syncOptions"
                             inputValueToPathValue={booleanToSyncOptions('PruneLast')}
                             pathValueToInputValue={syncOptionsToBoolean('PruneLast')}
                         />
                         <Checkbox
                             id="replace"
-                            label="Replace resources instead of applying changes from Git"
+                            label="Replace resources instead of applying changes from the source repository"
                             path="spec.template.spec.syncPolicy.syncOptions"
                             inputValueToPathValue={booleanToSyncOptions('Replace')}
                             pathValueToInputValue={syncOptionsToBoolean('Replace')}
