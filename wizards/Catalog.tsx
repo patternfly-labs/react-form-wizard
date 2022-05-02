@@ -31,7 +31,8 @@ import {
 } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import Fuse from 'fuse.js'
-import { Fragment, useCallback, useMemo, useState } from 'react'
+/* Copyright Contributors to the Open Cluster Management project */
+import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Masonry } from './common/Masonry'
 
 interface ICatalogBreadcrumb {
@@ -183,10 +184,8 @@ export function Catalog(props: {
     const catalogCards = useMemo(() => {
         if (!searchedCards) return <Fragment />
         return (
-            <Masonry size={470}>
+            <Masonry size={415}>
                 {searchedCards.map((card) => {
-                    const hasBody = card.descriptions || card.featureGroups || card.labels
-
                     return (
                         <Card
                             id={card.id}
@@ -200,6 +199,7 @@ export function Catalog(props: {
                                 transition: 'box-shadow 0.25s',
                                 cursor: card.onClick ? 'pointer' : undefined,
                                 background: card.onClick ? undefined : '#00000008',
+                                height: (415 * 8) / 7,
                             }}
                         >
                             <CardHeader>
@@ -216,41 +216,45 @@ export function Catalog(props: {
                                     )}
                                 </Split>
                             </CardHeader>
-                            {hasBody && (
-                                <CardBody>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+                            <AcmScrollable>
+                                <CardBody style={{ paddingTop: 0 }}>
+                                    <Flex direction={{ default: 'column' }} style={{ gap: 16, height: '100%' }}>
                                         {Array.isArray(card.descriptions) &&
                                             card.descriptions.map((description, index) => (
-                                                <Text component="p" key={index}>
-                                                    {description}
-                                                </Text>
+                                                <FlexItem key={index}>
+                                                    <Text component="p">{description}</Text>
+                                                </FlexItem>
                                             ))}
                                         {Array.isArray(card.featureGroups) &&
                                             card.featureGroups.map((featureGroup, index) => (
-                                                <Stack key={index}>
-                                                    <Title headingLevel="h6" style={{ paddingBottom: 8 }}>
-                                                        {featureGroup.title}
-                                                    </Title>
-                                                    <List isPlain>
-                                                        {featureGroup.features?.map((feature, index) => (
-                                                            <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
-                                                                {feature}
-                                                            </ListItem>
-                                                        ))}
-                                                    </List>
-                                                </Stack>
+                                                <FlexItem key={index}>
+                                                    <Stack>
+                                                        <Title headingLevel="h6" style={{ paddingBottom: 8 }}>
+                                                            {featureGroup.title}
+                                                        </Title>
+                                                        <List isPlain>
+                                                            {featureGroup.features?.map((feature, index) => (
+                                                                <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
+                                                                    {feature}
+                                                                </ListItem>
+                                                            ))}
+                                                        </List>
+                                                    </Stack>
+                                                </FlexItem>
                                             ))}
-
+                                        <FlexItem grow={{ default: 'grow' }}></FlexItem>
                                         {card.labels && (
-                                            <LabelGroup numLabels={999}>
-                                                {card.labels.map((label) => (
-                                                    <Label key={label}>{label}</Label>
-                                                ))}
-                                            </LabelGroup>
+                                            <FlexItem>
+                                                <LabelGroup numLabels={999}>
+                                                    {card.labels.map((label) => (
+                                                        <Label key={label}>{label}</Label>
+                                                    ))}
+                                                </LabelGroup>
+                                            </FlexItem>
                                         )}
-                                    </div>
+                                    </Flex>
                                 </CardBody>
-                            )}
+                            </AcmScrollable>
                         </Card>
                     )
                 })}
@@ -335,5 +339,74 @@ function Filter(props: { filter: ICatalogFilter; selectedValues?: CatalogFilterV
                 </Stack>
             )}
         </Fragment>
+    )
+}
+
+/** Scollable container that adds a top and bottom shadow on scroll */
+export function AcmScrollable(props: { children?: ReactNode; borderTop?: boolean; borderBottom?: boolean }) {
+    const divEl = useRef<HTMLDivElement>(null)
+    const [topShadow, setTopShadow] = useState(0)
+    const [bottomShadow, setBottomShadow] = useState(0)
+    const update = useCallback(() => {
+        /* istanbul ignore else */
+        if (divEl.current) {
+            setTopShadow(Math.min(1, divEl.current.scrollTop / 8))
+            const scrollBottom = divEl.current.scrollHeight - divEl.current.scrollTop - divEl.current.clientHeight
+            setBottomShadow(Math.max(0, Math.min(1, scrollBottom / 8)))
+        }
+    }, [])
+    useEffect(update, [update, props.children])
+    const shadowOpacityTop = 0.08 * topShadow
+    const shadowOpacityBottom = 0.06 * bottomShadow
+
+    /* istanbul ignore next */
+    const borderTop = props.borderTop ? 'thin solid rgba(0, 0, 0, 0.12)' : ''
+
+    /* istanbul ignore next */
+    const borderBottom = props.borderBottom ? 'thin solid rgba(0, 0, 0, 0.12)' : ''
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflowY: 'hidden', position: 'relative' }}>
+            <div
+                ref={divEl}
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flexGrow: 1,
+                    overflowY: 'auto',
+                    borderTop,
+                    borderBottom,
+                }}
+                onScroll={update}
+            >
+                {props.children}
+            </div>
+            {
+                /* istanbul ignore next */ shadowOpacityTop > 0 && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            height: '8px',
+                            width: '100%',
+                            background: `linear-gradient(rgba(0,0,0,${shadowOpacityTop}), rgba(0,0,0,0))`,
+                        }}
+                    />
+                )
+            }
+            {
+                /* istanbul ignore next */ shadowOpacityBottom > 0 && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            height: '6px',
+                            width: '100%',
+                            background: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,${shadowOpacityBottom}))`,
+                        }}
+                    />
+                )
+            }
+        </div>
     )
 }

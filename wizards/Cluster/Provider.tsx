@@ -1,5 +1,20 @@
+import { Stack } from '@patternfly/react-core'
 import { useHistory } from 'react-router-dom'
-import { ArrayInput, Checkbox, KeyValue, Section, Select, SingleSelect, Step, TextArea, TextDetail, TextInput, WizardPage } from '../../src'
+import {
+    ArrayInput,
+    Hidden,
+    ItemContext,
+    NumberInput,
+    Section,
+    Select,
+    SingleSelect,
+    Step,
+    Switch,
+    TableSelect,
+    TextDetail,
+    TextInput,
+    WizardPage,
+} from '../../src'
 import { Catalog } from '../Catalog'
 import { RouteE } from '../Routes'
 
@@ -151,33 +166,104 @@ export function CreateCluster() {
             breadcrumb={[{ label: 'Cluster' }, { label: 'Provider' }, { label: 'Control plane' }, { label: 'Create cluster' }]}
             onSubmit={() => Promise.resolve(undefined)}
             onCancel={() => history.push(RouteE.ControlPlane)}
+            defaultData={{ clusterSet: 'default', hostingCluster: 'local-cluster' }}
         >
-            <Step label="Cluster details" id="cluster-details-step">
+            <Step label="Details" id="cluster-details-step">
                 <Section label="Cluster Details">
-                    <TextInput label="Name" path="name" required />
-                    <SingleSelect label="Cluster set" path="clusterSet" options={['cluster-set-1']} />
-                    <TextInput label="Base domain" path="baseDomain" required />
-                    <SingleSelect label="OpenShift version" path="openShiftVersion" options={['OpenShift 4.9.7']} required />
-                    <Checkbox
-                        label="Install single node OpenShift (SNO)"
-                        path="sno"
-                        helperText="SNO enabled you to install OpenShift using only one host."
+                    <TextInput label="Name" path="name" required disablePaste />
+                    <SingleSelect
+                        label="Cluster set"
+                        path="clusterSet"
+                        options={['default', 'cluster-set-1']}
+                        helperText="A cluster set enables grouping of clusters and access control for those clusters."
+                        required
                     />
-                    <KeyValue label="Additional labels" path="additionalLabels" />
-                    <TextArea label="Pull secret" path="pullSecret" required />
                 </Section>
+            </Step>
+
+            <Step label="Hosts" id="work-pools-step">
+                <Section label="Control plane location">
+                    <SingleSelect
+                        label="Cluster"
+                        path="hostingCluster"
+                        options={['local-cluster']}
+                        required
+                        helperText="By default, the local-cluster will be selected as the hosting service cluster in order to run OpenShift in a hyperscale maneer with many control planes hosted on a central hosting service cluster."
+                    />
+                </Section>
+                <ArrayInput
+                    path="workerPools"
+                    helperText="Worker pools are created from infrastructure environment hosts."
+                    label="Worker pools"
+                    placeholder="Add worker pool"
+                    collapsedContent={
+                        <ItemContext.Consumer>
+                            {(item) => {
+                                const typedItem = item as { name: string; hosts: string }
+                                return (
+                                    <Stack hasGutter>
+                                        <TextDetail path="name" placeholder="Expand to edit the worker pool details" />
+                                        {typedItem.name && (typedItem.hosts?.length ?? 0) > 0 && (
+                                            <div>
+                                                <small>{typedItem.hosts?.length} worker nodes</small>
+                                            </div>
+                                        )}
+                                    </Stack>
+                                )
+                            }}
+                        </ItemContext.Consumer>
+                    }
+                    expandedContent={<div>Enter worker pool details</div>}
+                    isSection
+                    newValue={{ numberOfHosts: 1 }}
+                >
+                    <TextInput path="name" label="Worker pool name" required disablePaste />
+                    <SingleSelect label="Infrastructure environment" path="infraEnv" options={['infrastructure-1']} required />
+                    <Hidden hidden={(item) => !item.infraEnv}>
+                        <Switch path="auto" label="Auto select hosts" />
+                        <NumberInput label="Number of hosts" path="numberOfHosts" min={1} hidden={(item) => !item.auto} />
+                        <TableSelect
+                            label="Infrastructure hosts"
+                            path="hosts"
+                            columns={[
+                                { name: 'Name', cellFn: (item) => item.name },
+                                { name: 'Status', cellFn: (item) => item.status },
+                                { name: 'Cores', cellFn: (item) => item.cores },
+                                { name: 'Memory', cellFn: (item) => item.memory },
+                                { name: 'Storage', cellFn: (item) => item.storage },
+                            ]}
+                            items={new Array(16).fill(0).map((_, i) => ({
+                                name: `host-${i.toString().padStart(4, '0')}`,
+                                status: 'Ready',
+                                cores: '8',
+                                memory: '16 GB',
+                                storage: '128 GB',
+                            }))}
+                            itemToValue={(item: unknown) => (item as any).name}
+                            valueMatchesItem={(value: unknown, item: { name: string }) => value === item.name}
+                            emptyTitle="Nothing available for selection."
+                            emptyMessage="Nothing available for selection."
+                            hidden={(item) => item.auto}
+                        />
+                    </Hidden>
+                </ArrayInput>
             </Step>
 
             <Step label="Automation" id="automation-step">
                 <Section
                     label="Automation"
-                    description="Choose an automation job template to automatically run Ansible jobs at differrent stages of a clusters's life sysle. To use this dfeture the Ansible Automation Platform Resource Operator must be installed."
+                    description="Choose an automation job template to automatically run Ansible jobs at differrent stages of a clusters life cycle. To use this feature the Ansible Automation Platform Resource Operator must be installed."
                 >
-                    <Select label="Ansible Automation Template" path="ansibleAutomationtemplate" options={['ansible-template-1']} />
+                    <Select
+                        label="Ansible automation template"
+                        path="ansibleAutomationtemplate"
+                        options={['my-ansible-template-1', 'my-ansible-template-2']}
+                        placeholder="Select the Ansible automation template"
+                    />
                 </Section>
             </Step>
 
-            <Step label="Networking" id="networking">
+            {/* <Step label="Networking" id="networking">
                 <Section
                     label="Networking"
                     prompt="Enter networking options"
@@ -197,9 +283,9 @@ export function CreateCluster() {
                         <TextInput path="machienCidr" label="Machine CIDR" />
                     </ArrayInput>
                 </Section>
-            </Step>
+            </Step> */}
 
-            <Step label="Proxy" id="proxy">
+            {/* <Step label="Proxy" id="proxy">
                 <Section
                     label="Proxy"
                     prompt="Configure a proxy"
@@ -228,7 +314,7 @@ export function CreateCluster() {
                     />
                     <TextInput path="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
                 </Section>
-            </Step>
+            </Step> */}
         </WizardPage>
     )
 }

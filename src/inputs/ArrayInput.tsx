@@ -14,7 +14,7 @@ import {
 } from '@patternfly/react-core'
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
-import { Fragment, ReactNode, useCallback, useContext, useState } from 'react'
+import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { TextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
 import { Indented } from '../components/Indented'
@@ -44,6 +44,7 @@ export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
     dropdownItems?: { label: string; action: () => object }[]
     placeholder?: string
     collapsedContent: ReactNode
+    expandedContent?: ReactNode
     collapsedPlaceholder?: ReactNode
     sortable?: boolean
     newValue?: object
@@ -199,6 +200,7 @@ export function ArrayInput(props: ArrayInputProps) {
                             index={index}
                             count={values.length}
                             collapsedContent={props.collapsedContent}
+                            expandedContent={props.expandedContent}
                             collapsedPlaceholder={props.collapsedPlaceholder}
                             sortable={props.sortable}
                             moveUp={moveUp}
@@ -275,6 +277,7 @@ export function ArrayInputItem(props: {
     children: ReactNode
     defaultExpanded?: boolean
     collapsedContent: ReactNode
+    expandedContent?: ReactNode
     collapsedPlaceholder?: ReactNode
     sortable?: boolean
     moveUp: (index: number) => void
@@ -283,6 +286,29 @@ export function ArrayInputItem(props: {
 }) {
     const { id, value, index, defaultExpanded, moveUp, moveDown, removeItem } = props
     const [expanded, setExpanded] = useState(defaultExpanded !== undefined ? defaultExpanded : true)
+
+    const collapsedContent = useMemo(() => {
+        return typeof props.collapsedContent === 'string' ? (
+            <TextDetail
+                id={props.collapsedContent}
+                path={props.collapsedContent}
+                placeholder={props.collapsedPlaceholder ?? 'Expand to edit'}
+            />
+        ) : (
+            props.collapsedContent
+        )
+    }, [props.collapsedContent, props.collapsedPlaceholder])
+
+    const expandedContent = useMemo(() => {
+        if (props.expandedContent) {
+            return typeof props.expandedContent === 'string' ? (
+                <TextDetail id={props.expandedContent} path={props.expandedContent} />
+            ) : (
+                props.expandedContent
+            )
+        }
+        return collapsedContent
+    }, [collapsedContent, props.expandedContent])
 
     return (
         <ValidationProvider>
@@ -311,19 +337,12 @@ export function ArrayInputItem(props: {
                                                                 </span>
                                                             </SplitItem>
                                                         </Split>
+                                                    ) : expanded ? (
+                                                        <Fragment>{expandedContent}</Fragment>
                                                     ) : (
-                                                        <Fragment>
-                                                            {typeof props.collapsedContent === 'string' ? (
-                                                                <TextDetail
-                                                                    id={props.collapsedContent}
-                                                                    path={props.collapsedContent}
-                                                                    placeholder={props.collapsedPlaceholder ?? 'Expand to edit'}
-                                                                />
-                                                            ) : (
-                                                                props.collapsedContent
-                                                            )}
-                                                        </Fragment>
+                                                        <Fragment>{collapsedContent}</Fragment>
                                                     ),
+
                                                 id: `nested-field-group1-titleText-id-${index}`,
                                             }}
                                             // titleDescription={!hasErrors && props.collapsedDescription ? props.collapsedDescription : undefined}
@@ -363,15 +382,7 @@ export function ArrayInputItem(props: {
                                 >
                                     <Split>
                                         <SplitItem isFilled>
-                                            {typeof props.collapsedContent === 'string' ? (
-                                                <TextDetail
-                                                    id={props.collapsedContent}
-                                                    path={props.collapsedContent}
-                                                    placeholder={props.collapsedPlaceholder ?? 'Expand to edit'}
-                                                />
-                                            ) : (
-                                                props.collapsedContent
-                                            )}
+                                            {expanded ? <Fragment>{expandedContent}</Fragment> : <Fragment>{collapsedContent}</Fragment>}
                                         </SplitItem>
                                         <SplitItem>
                                             {props.sortable && (
