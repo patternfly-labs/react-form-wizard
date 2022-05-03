@@ -17,6 +17,7 @@ import {
     RadioGroup,
     Section,
     Select,
+    SingleSelect,
     Step,
     StringsInput,
     StringsMapInput,
@@ -103,24 +104,30 @@ export function PolicyWizard(props: {
                             </DetailsHidden>
                         )}
 
-                        <TextInput
-                            id="name"
-                            path="metadata.name"
-                            label="Name"
-                            required
-                            validation={validatePolicyName}
-                            disabledInEditMode
-                        />
-                        <Select
-                            id="namespace"
-                            path="metadata.namespace"
-                            label="Namespace"
-                            placeholder="Select namespace"
-                            helperText="The namespace on the hub cluster where the policy resources will be created."
-                            options={props.namespaces}
-                            required
-                            disabledInEditMode
-                        />
+                        <ItemContext.Consumer>
+                            {(item: IResource) => (
+                                <Fragment>
+                                    <TextInput
+                                        id="name"
+                                        path="metadata.name"
+                                        label="Name"
+                                        required
+                                        validation={validatePolicyName}
+                                        readonly={item.metadata?.uid !== undefined}
+                                    />
+                                    <SingleSelect
+                                        id="namespace"
+                                        path="metadata.namespace"
+                                        label="Namespace"
+                                        placeholder="Select namespace"
+                                        helperText="The namespace on the hub cluster where the policy resources will be created."
+                                        options={props.namespaces}
+                                        required
+                                        readonly={item.metadata?.uid !== undefined}
+                                    />
+                                </Fragment>
+                            )}
+                        </ItemContext.Consumer>
                         <Checkbox
                             path="spec.disabled"
                             label="Disable policy"
