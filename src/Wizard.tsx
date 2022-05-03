@@ -6,11 +6,13 @@ import {
     DrawerContent,
     DrawerContentBody,
     DrawerPanelContent,
+    Form,
     Split,
     SplitItem,
+    Wizard as PFWizard,
+    WizardStep,
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
-import Handlebars, { HelperOptions } from 'handlebars'
 import { klona } from 'klona/json'
 import {
     Children,
@@ -25,7 +27,6 @@ import {
     useState,
 } from 'react'
 import { EditMode } from '.'
-import { YamlToObject } from './components/YamlEditor'
 import { DataContext } from './contexts/DataContext'
 import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
 import { EditModeContext } from './contexts/EditModeContext'
@@ -38,21 +39,11 @@ import { useHasValidationError, ValidationProvider } from './contexts/Validation
 import { useID } from './inputs/Input'
 import { Step } from './Step'
 
-Handlebars.registerHelper('if_eq', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
-    return arg1 == arg2 ? options.fn(this) : options.inverse(this)
-})
-
-Handlebars.registerHelper('if_ne', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
-    return arg1 !== arg2 ? options.fn(this) : options.inverse(this)
-})
-
 export interface WizardProps {
     title: string
     description?: string
     children: ReactNode
     defaultData?: object
-    template?: string
-    yamlToDataTemplate?: string
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     hasButtons?: boolean
@@ -87,7 +78,6 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
         }
     }, [props.showYaml])
     const displayMode = DisplayMode.Wizard
-    const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const isYamlArray = useMemo(() => Array.isArray(props.defaultData), [props.defaultData])
 
     return (
@@ -109,7 +99,6 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                                 onSubmit={props.onSubmit}
                                                                 onCancel={props.onCancel}
                                                                 hasButtons={props.hasButtons}
-                                                                template={template}
                                                                 isYamlArray={isYamlArray}
                                                             >
                                                                 {props.children}
@@ -132,7 +121,60 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
 }
 
 function WizardInternal(props: {
-    template?: HandlebarsTemplateDelegate
+    children: ReactNode
+    onSubmit: WizardSubmit
+    onCancel: WizardCancel
+    hasButtons?: boolean
+    isYamlArray: boolean
+}) {
+    const stepComponents = useMemo(
+        () => Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[],
+        [props.children]
+    )
+
+    const reviewStep = useMemo(
+        () => ({
+            name: 'Review',
+            component: (
+                <Step label="Review" id="review-step">
+                    <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
+                        <DisplayModeContext.Provider value={DisplayMode.Details}>{props.children}</DisplayModeContext.Provider>
+                    </DescriptionList>
+                </Step>
+            ),
+        }),
+        [props.children]
+    )
+
+    const steps: WizardStep[] = useMemo(() => {
+        const steps = stepComponents.map((stepComponent) => ({
+            name: stepComponent.props?.label,
+            component: (
+                <Form>
+                    <HasInputsProvider key={stepComponent.props.id}>
+                        <ShowValidationProvider>
+                            <ValidationProvider>{stepComponent}</ValidationProvider>
+                        </ShowValidationProvider>
+                    </HasInputsProvider>
+                </Form>
+            ),
+        }))
+        steps.push(reviewStep)
+        return steps
+    }, [reviewStep, stepComponents])
+
+    // const setShowValidation = useSetShowValidation()
+    // useLayoutEffect(() => {
+    //     if (activeStep.props.id === 'review-step') {
+    //         setShowValidation(true)
+    //     }
+    // }, [activeStep, setShowValidation])
+
+    const title = 'Basic wizard'
+    return <PFWizard navAriaLabel={`${title} steps`} mainAriaLabel={`${title} content`} steps={steps} />
+}
+
+function WizardInternalOld(props: {
     children: ReactNode
     onSubmit: WizardSubmit
     onCancel: WizardCancel
@@ -167,19 +209,19 @@ function WizardInternal(props: {
 
     return (
         <div className="pf-c-wizard">
-            {/* <button aria-label="Wizard Header Toggle" className="pf-c-wizard__toggle" aria-expanded="false">
+            <button aria-label="Wizard Header Toggle" className="pf-c-wizard__toggle" aria-expanded="false">
                 <span className="pf-c-wizard__toggle-list">
                     <span className="pf-c-wizard__toggle-list-item">
-                        <span className="pf-c-wizard__toggle-num">2</span>
-                        Configuration
+                        <span className="pf-c-wizard__toggle-num">{steps.indexOf(activeStep) + 1}</span>
+                        {activeStep.props?.label}
                         <i className="fas fa-angle-right pf-c-wizard__toggle-separator" aria-hidden="true"></i>
                     </span>
-                    <span className="pf-c-wizard__toggle-list-item">Substep B</span>
+                    {/* <span className="pf-c-wizard__toggle-list-item">Substep B</span> */}
                 </span>
                 <span className="pf-c-wizard__toggle-icon">
                     <i className="fas fa-caret-down" aria-hidden="true"></i>
                 </span>
-            </button> */}
+            </button>
             {steps?.map((step) => {
                 if (step !== activeStep)
                     return (
@@ -203,7 +245,6 @@ function WizardInternal(props: {
                                 onSubmit={props.onSubmit}
                                 onCancel={props.onCancel}
                                 hasButtons={props.hasButtons}
-                                template={props.template}
                                 isYamlArray={props.isYamlArray}
                             />
                         </HasInputsProvider>
@@ -241,7 +282,6 @@ export function WizardActiveStep(props: {
     back: () => void
     onSubmit: WizardSubmit
     onCancel: WizardCancel
-    template?: HandlebarsTemplateDelegate
     hasButtons?: boolean
     isYamlArray: boolean
 }) {
@@ -311,11 +351,7 @@ export function WizardActiveStep(props: {
                             type="submit"
                             onClick={() => {
                                 setShowValidation(true)
-                                if (props.template) {
-                                    void onSubmit2(YamlToObject(props.template(item), props.isYamlArray))
-                                } else {
-                                    void onSubmit2(item)
-                                }
+                                void onSubmit2(item)
                             }}
                             isLoading={submitting}
                         >
