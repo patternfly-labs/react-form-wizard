@@ -1,9 +1,10 @@
 import { Fragment, ReactNode, useMemo } from 'react'
 import {
     EditMode,
+    ItemContext,
     ItemSelector,
     Section,
-    Select,
+    SingleSelect,
     Step,
     TableSelect,
     TextArea,
@@ -80,23 +81,29 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                 <Sync kind={PolicySetKind} path="metadata.namespace" />
                 <Section label="Details">
                     <ItemSelector selectKey="kind" selectValue={PolicySetKind}>
-                        <TextInput
-                            label="Name"
-                            path="metadata.name"
-                            id="name"
-                            required
-                            validation={isValidKubernetesResourceName}
-                            disabledInEditMode
-                        />
-                        <TextArea label="Description" path="spec.description" />
-                        <Select
-                            label="Namespace"
-                            path="metadata.namespace"
-                            id="namespace"
-                            required
-                            options={props.namespaces}
-                            disabledInEditMode
-                        />
+                        <ItemContext.Consumer>
+                            {(item: IResource) => (
+                                <Fragment>
+                                    <TextInput
+                                        label="Name"
+                                        path="metadata.name"
+                                        id="name"
+                                        required
+                                        validation={isValidKubernetesResourceName}
+                                        readonly={item.metadata?.uid !== undefined}
+                                    />
+                                    <TextArea label="Description" path="spec.description" />
+                                    <SingleSelect
+                                        label="Namespace"
+                                        path="metadata.namespace"
+                                        id="namespace"
+                                        required
+                                        options={props.namespaces}
+                                        readonly={item.metadata?.uid !== undefined}
+                                    />
+                                </Fragment>
+                            )}
+                        </ItemContext.Consumer>
                     </ItemSelector>
                 </Section>
             </Step>

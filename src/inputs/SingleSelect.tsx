@@ -79,7 +79,7 @@ export function SingleSelect(props: SingleSelectProps) {
             <InputLabel {...props} id={id}>
                 <InputGroup>
                     <PfSelect
-                        isDisabled={disabled}
+                        isDisabled={disabled || props.readonly}
                         variant={SelectVariant.single}
                         isOpen={open}
                         onToggle={setOpen}
