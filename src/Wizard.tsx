@@ -243,10 +243,10 @@ function MyFooter(props: { onSubmit: (data: object) => Promise<string>; steps: W
 
     const onNextClick = useCallback(() => {
         // showValidation for this step
-        if (validStep) {
+        if (stepHasValidationError) {
             onNext()
         }
-    }, [onNext])
+    }, [onNext, stepHasValidationError])
 
     if (wizardContext.activeStep.name === lastStep.name) {
         // We are on the review step - show validation for all steps
