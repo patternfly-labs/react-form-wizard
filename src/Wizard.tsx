@@ -9,7 +9,10 @@ import {
     Form,
     Split,
     SplitItem,
+    Stack,
     Wizard as PFWizard,
+    WizardContext,
+    WizardFooter,
     WizardStep,
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
@@ -21,12 +24,14 @@ import {
     ReactElement,
     ReactNode,
     useCallback,
+    useContext,
     useEffect,
     useLayoutEffect,
     useMemo,
     useState,
 } from 'react'
 import { EditMode } from '.'
+import { onSubmit } from '../wizards/common/utils'
 import { DataContext } from './contexts/DataContext'
 import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
 import { EditModeContext } from './contexts/EditModeContext'
@@ -96,6 +101,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                         {/* <PageSection variant="light" style={{ height: '100%' }} type="wizard" isWidthLimited> */}
                                                         <ItemContext.Provider value={data}>
                                                             <WizardInternal
+                                                                title={props.title}
                                                                 onSubmit={props.onSubmit}
                                                                 onCancel={props.onCancel}
                                                                 hasButtons={props.hasButtons}
@@ -121,6 +127,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
 }
 
 function WizardInternal(props: {
+    title: string
     children: ReactNode
     onSubmit: WizardSubmit
     onCancel: WizardCancel
@@ -170,8 +177,123 @@ function WizardInternal(props: {
     //     }
     // }, [activeStep, setShowValidation])
 
-    const title = 'Basic wizard'
-    return <PFWizard navAriaLabel={`${title} steps`} mainAriaLabel={`${title} content`} steps={steps} />
+    const setShowValidation = useSetShowValidation()
+    useLayoutEffect(() => {
+        //     if (activeStep.props.id === 'review-step') {
+        setShowValidation(true)
+        //     }
+    }, [setShowValidation])
+
+    const { title } = props
+    return (
+        <PFWizard
+            navAriaLabel={`${title} steps`}
+            mainAriaLabel={`${title} content`}
+            steps={steps}
+            footer={<MyFooter onSubmit={onSubmit} steps={steps} />}
+            onClose={props.onCancel}
+        />
+    )
+}
+
+function MyFooter(props: { onSubmit: (data: object) => Promise<string>; steps: WizardStep[] }) {
+    const wizardContext = useContext(WizardContext)
+    const { activeStep, goToStepByName, goToStepById, onNext, onBack, onClose } = wizardContext
+
+    const [submitting, setSubmitting] = useState(false)
+    const [submitError, setSubmitError] = useState('')
+
+    const { onSubmit } = props
+    const onSubmitClickHandler = useCallback(
+        (data: object) => {
+            async function asyncSubmit() {
+                setSubmitError('')
+                setSubmitting(true)
+                try {
+                    await onSubmit(data)
+                } catch (err) {
+                    if (err instanceof Error) {
+                        setSubmitError(err.message)
+                        return err.message
+                    } else {
+                        setSubmitError('Unknown error')
+                        return 'Unknown error'
+                    }
+                } finally {
+                    setSubmitting(false)
+                }
+                return undefined
+            }
+            void asyncSubmit()
+        },
+        [onSubmit]
+    )
+    const data = useItem()
+    const onSubmitClick = useCallback(() => onSubmitClickHandler(data), [data, onSubmitClickHandler])
+
+    const setShowValidation = useSetShowValidation()
+    const showWizardValidation = useShowValidation()
+    const wizardHasValidationError = useHasValidationError()
+
+    const firstStep = props.steps[0]
+    const lastStep = props.steps[props.steps.length - 1]
+
+    const stepHasValidationError = useStepHasValidationError()
+    const activeStepHasValidationError = activeStep.id ? stepHasValidationError[activeStep.id] : false
+
+    const onNextClick = useCallback(() => {
+        // showValidation for this step
+        if (validStep) {
+            onNext()
+        }
+    }, [onNext])
+
+    if (wizardContext.activeStep.name === lastStep.name) {
+        // We are on the review step - show validation for all steps
+        setShowValidation(true)
+        return (
+            <WizardFooter>
+                <Button
+                    onClick={onSubmitClick}
+                    isDisabled={(wizardHasValidationError && showWizardValidation) || submitting}
+                    isLoading={submitting}
+                >
+                    {submitting ? 'Submitting' : 'Submit'}
+                </Button>
+                <Button onClick={onBack}>Back</Button>
+                <Button variant="link" onClick={onClose}>
+                    Cancel
+                </Button>
+            </WizardFooter>
+        )
+    }
+
+    return (
+        <WizardFooter>
+            <Stack hasGutter>
+                {wizardHasValidationError && showWizardValidation && (
+                    <Alert title="Please fix validation errors" isInline variant="danger" isPlain />
+                )}
+                {submitError && <Alert title={submitError} isInline variant="danger" isPlain />}
+                <Split hasGutter>
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        onClick={onNextClick}
+                        isDisabled={(activeStepHasValidationError && showWizardValidation) || submitting}
+                    >
+                        Next
+                    </Button>
+                    <Button variant="secondary" onClick={onBack} isDisabled={firstStep.name === activeStep.name}>
+                        Back
+                    </Button>
+                    <Button variant="link" onClick={onClose}>
+                        Cancel
+                    </Button>
+                </Split>
+            </Stack>
+        </WizardFooter>
+    )
 }
 
 function WizardInternalOld(props: {

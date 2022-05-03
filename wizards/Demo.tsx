@@ -320,7 +320,7 @@ function ExampleWizards() {
 
 function DemoHeader() {
     return (
-        <Masthead>
+        <Masthead display={{ default: 'inline' }}>
             <MastheadToggle>
                 <PageToggleButton variant="plain" aria-label="Global navigation">
                     <BarsIcon />
