@@ -34,7 +34,6 @@ import Fuse from 'fuse.js'
 /* Copyright Contributors to the Open Cluster Management project */
 import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Grid } from './common/Grid'
-
 interface ICatalogBreadcrumb {
     id?: string
     label: string
@@ -60,6 +59,7 @@ interface ICatalogFilter {
 
 interface ICatalogCard {
     id?: string
+    icon?: ReactNode
     title: string
     descriptions?: string[]
     featureGroups?: ICatalogCardFeatureGroup[]
@@ -205,7 +205,23 @@ export function Catalog(props: {
                             <CardHeader>
                                 <Split hasGutter style={{ width: '100%' }}>
                                     <SplitItem isFilled>
-                                        <CardTitle>{card.title}</CardTitle>
+                                        <Split>
+                                            {card.icon && (
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        height: 40,
+                                                        width: 40,
+                                                        marginTop: -20,
+                                                        marginBottom: -20,
+                                                        marginRight: 8,
+                                                    }}
+                                                >
+                                                    {card.icon}
+                                                </div>
+                                            )}
+                                            <CardTitle>{card.title}</CardTitle>
+                                        </Split>
                                     </SplitItem>
                                     {card.badge && (
                                         <SplitItem>

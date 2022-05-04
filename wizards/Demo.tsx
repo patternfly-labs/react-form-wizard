@@ -13,11 +13,13 @@ import {
     Title,
 } from '@patternfly/react-core'
 import { BarsIcon, GithubIcon } from '@patternfly/react-icons'
+import { ReactNode } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
 import { ApplicationSetExamples, CreateApplicationSet, EditApplicationSet } from './Argo/ArgoExamples'
+import ArgoIcon from './Argo/logos/ArgoIcon.svg'
 import { Catalog } from './Catalog'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ControlPlaneCatalog, CreateCluster, ProviderCatalog } from './Cluster/Provider'
@@ -78,6 +80,7 @@ enum StateE {
 interface IWizard {
     shortName: string
     name: string
+    icon?: ReactNode
     description?: string
     route: RouteE
     state?: StateE
@@ -102,6 +105,7 @@ const wizards: IWizard[] = [
         state: StateE.alpha,
     },
     {
+        icon: <ArgoIcon />,
         shortName: 'ArgoCD',
         name: 'ArgoCD',
         route: RouteE.ArgoCD,
@@ -308,6 +312,7 @@ function ExampleWizards() {
                 },
             ]}
             cards={wizards.map((wizard) => ({
+                icon: wizard.icon,
                 title: wizard.name,
                 descriptions: wizard.description ? [wizard.description] : undefined,
                 labels: wizard.labels,
