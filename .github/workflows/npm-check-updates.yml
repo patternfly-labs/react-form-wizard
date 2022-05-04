@@ -2,7 +2,7 @@ name: NPM Check Updates
 on:
     workflow_dispatch:
     schedule:
-        - cron: '0 0 * * *'
+        - cron: '0 0 * * 1-5'
 jobs:
     npm-check-updates:
         if: (github.event_name == 'schedule' && github.repository == 'patternfly-labs/react-form-wizard') || (github.event_name != 'schedule')
@@ -15,6 +15,7 @@ jobs:
               with:
                   node-version: '14'
             - run: npx npm-check-updates --doctor --upgrade --target minor
+            - run: npm audit fix
             - uses: EndBug/add-and-commit@v7
               with:
                   default_author: github_actions
