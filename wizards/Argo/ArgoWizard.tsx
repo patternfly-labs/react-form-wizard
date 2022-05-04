@@ -175,6 +175,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
 
     const [gitRevisionsAsyncCallback, setGitRevisionsAsyncCallback] = useState<() => Promise<string[]>>()
     const [gitPathsAsyncCallback, setGitPathsAsyncCallback] = useState<() => Promise<string[]>>()
+    const editMode = useEditMode()
 
     useEffect(() => {
         const applicationSet: any = resources?.find((resource) => resource.kind === 'ApplicationSet')
@@ -244,14 +245,18 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     targetKind="ApplicationSet"
                     targetPath="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
                 />
-                <Sync kind="ApplicationSet" path="metadata.name" prefix="-placement" />
+                {editMode === EditMode.Create && (
+                    <Fragment>
+                        <Sync kind="ApplicationSet" path="metadata.name" suffix="-placement" />
+                    </Fragment>
+                )}
                 <Sync kind="ApplicationSet" path="metadata.namespace" />
                 <Sync
                     kind="ApplicationSet"
                     path="metadata.name"
                     targetKind="ApplicationSet"
                     targetPath="spec.template.metadata.name"
-                    postfix="-{{name}}"
+                    suffix="-{{name}}"
                 />
                 <ItemSelector selectKey="kind" selectValue="ApplicationSet">
                     <Section label="General">
