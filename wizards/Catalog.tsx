@@ -216,42 +216,40 @@ export function Catalog(props: {
                                     )}
                                 </Split>
                             </CardHeader>
-                            <AcmScrollable>
-                                <CardBody style={{ paddingTop: 0 }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, height: '100%' }}>
-                                        {Array.isArray(card.descriptions) &&
-                                            card.descriptions.map((description, index) => (
-                                                <Text component="p" key={index}>
-                                                    {description}
-                                                </Text>
-                                            ))}
-                                        {Array.isArray(card.featureGroups) &&
-                                            card.featureGroups.map((featureGroup, index) => (
-                                                <Stack key={index}>
-                                                    <Title headingLevel="h6" style={{ paddingBottom: 8 }}>
-                                                        {featureGroup.title}
-                                                    </Title>
-                                                    <List isPlain>
-                                                        {featureGroup.features?.map((feature, index) => (
-                                                            <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
-                                                                {feature}
-                                                            </ListItem>
-                                                        ))}
-                                                    </List>
-                                                </Stack>
-                                            ))}
-                                        {card.labels && (
-                                            <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'end' }}>
-                                                <LabelGroup numLabels={999}>
-                                                    {card.labels.map((label) => (
-                                                        <Label key={label}>{label}</Label>
+                            <CardBody style={{ paddingTop: 0 }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 24, height: '100%' }}>
+                                    {Array.isArray(card.descriptions) &&
+                                        card.descriptions.map((description, index) => (
+                                            <Text component="p" key={index}>
+                                                {description}
+                                            </Text>
+                                        ))}
+                                    {Array.isArray(card.featureGroups) &&
+                                        card.featureGroups.map((featureGroup, index) => (
+                                            <Stack key={index}>
+                                                <Title headingLevel="h6" style={{ paddingBottom: 8 }}>
+                                                    {featureGroup.title}
+                                                </Title>
+                                                <List isPlain>
+                                                    {featureGroup.features?.map((feature, index) => (
+                                                        <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
+                                                            {feature}
+                                                        </ListItem>
                                                     ))}
-                                                </LabelGroup>
-                                            </div>
-                                        )}
-                                    </div>
-                                </CardBody>
-                            </AcmScrollable>
+                                                </List>
+                                            </Stack>
+                                        ))}
+                                    {card.labels && (
+                                        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'end' }}>
+                                            <LabelGroup numLabels={999}>
+                                                {card.labels.map((label) => (
+                                                    <Label key={label}>{label}</Label>
+                                                ))}
+                                            </LabelGroup>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardBody>
                         </Card>
                     )
                 })}
