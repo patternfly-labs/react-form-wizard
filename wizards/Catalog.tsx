@@ -254,7 +254,7 @@ export function Catalog(props: {
                             <CardHeader>
                                 <Split hasGutter style={{ width: '100%' }}>
                                     <SplitItem isFilled>
-                                        <Split>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
                                             {card.icon && (
                                                 <div
                                                     style={{
@@ -264,13 +264,17 @@ export function Catalog(props: {
                                                         marginTop: -20,
                                                         marginBottom: -20,
                                                         marginRight: 8,
+                                                        alignItems: 'stretch',
+                                                        justifyItems: 'stretch',
+                                                        alignContent: 'stretch',
+                                                        justifyContent: 'stretch',
                                                     }}
                                                 >
                                                     {card.icon}
                                                 </div>
                                             )}
                                             <CardTitle>{card.title}</CardTitle>
-                                        </Split>
+                                        </div>
                                     </SplitItem>
                                     {card.badge && (
                                         <SplitItem>
@@ -429,14 +433,7 @@ export function AcmScrollable(props: { children?: ReactNode; borderTop?: boolean
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflowY: 'hidden', position: 'relative' }}>
             <div
                 ref={divEl}
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexGrow: 1,
-                    overflowY: 'auto',
-                    borderTop,
-                    borderBottom,
-                }}
+                style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflowY: 'auto', borderTop, borderBottom }}
                 onScroll={update}
             >
                 {props.children}
