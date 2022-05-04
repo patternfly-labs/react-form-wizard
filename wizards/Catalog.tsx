@@ -263,11 +263,9 @@ export function Catalog(props: {
                                                         width: 40,
                                                         marginTop: -20,
                                                         marginBottom: -20,
-                                                        marginRight: 8,
-                                                        alignItems: 'stretch',
+                                                        marginRight: 12,
+                                                        alignItems: 'center',
                                                         justifyItems: 'stretch',
-                                                        alignContent: 'stretch',
-                                                        justifyContent: 'stretch',
                                                     }}
                                                 >
                                                     {card.icon}
