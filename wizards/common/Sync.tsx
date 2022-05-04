@@ -5,15 +5,7 @@ import { useData } from '../../src/contexts/DataContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
 
-export function Sync(props: {
-    kind: string
-    path: string
-    targetKind?: string
-    targetPath?: string
-    addIndex?: boolean
-    prefix?: string
-    postfix?: string
-}) {
+export function Sync(props: { kind: string; path: string; targetKind?: string; targetPath?: string; suffix?: string }) {
     const resources = useItem() as IResource[]
     const { update } = useData()
     const [value, setValue] = useState('')
@@ -30,9 +22,9 @@ export function Sync(props: {
                     if (!index) index = 0
                     index++
                     indices[resource.kind ?? ''] = index
-                    if (props.prefix) newValue += props.prefix
-                    if (props.addIndex) newValue = newValue + '-' + index.toString()
-                    if (props.postfix) newValue += props.postfix
+                    // if (props.prefix) newValue = props.prefix + newValue
+                    // if (props.addIndex) newValue = newValue + '-' + index.toString()
+                    if (props.suffix) newValue += props.suffix
                     const existingValue = get(resource, props.targetPath ?? props.path)
                     if (existingValue !== newValue) {
                         changed = true
@@ -42,7 +34,7 @@ export function Sync(props: {
             }
         }
         if (changed) update()
-    }, [props.addIndex, props.kind, props.path, props.postfix, props.prefix, props.targetKind, props.targetPath, resources, update, value])
+    }, [props.kind, props.path, props.suffix, props.targetKind, props.targetPath, resources, update, value])
 
     useEffect(() => {
         if (Array.isArray(resources)) {
