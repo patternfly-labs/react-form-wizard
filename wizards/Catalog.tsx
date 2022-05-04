@@ -75,6 +75,7 @@ interface ICatalogCardFeatureGroup {
 
 const fuseCardOptions: Fuse.IFuseOptions<ICatalogCard> = {
     includeScore: true,
+    fieldNormWeight: 0,
     keys: [
         { name: 'title', weight: 0.35 },
         { name: 'descriptions', weight: 0.15 },
