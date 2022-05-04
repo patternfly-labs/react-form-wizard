@@ -20,6 +20,10 @@ export function ApplicationSetExamples() {
             cards={[
                 {
                     title: 'Create application set',
+                    descriptions: [
+                        'Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.',
+                        "The application set is a sub-project of Argo CD which adds Application automation, and seeks to improve multi-cluster support and cluster multitenant support within Argo CD. Argo CD Applications may be templated from multiple different sources, including from Git or Argo CD's own defined cluster list",
+                    ],
                     onClick: () => history.push(RouteE.CreateArgoCD),
                 },
                 {

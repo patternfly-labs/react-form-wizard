@@ -13,7 +13,8 @@ describe('edit policy set', () => {
     })
 
     it('details', () => {
-        cy.get('#name').should('be.disabled')
+        // cy.get('#name').should('be.disabled')
+        cy.get('#name').should('have.attr', 'readonly')
         // cy.get('#namespace').should('be.disabled')
         cy.contains('Next').click()
     })
