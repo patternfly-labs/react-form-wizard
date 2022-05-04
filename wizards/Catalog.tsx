@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
     Breadcrumb,
@@ -34,7 +35,6 @@ import Fuse from 'fuse.js'
 /* Copyright Contributors to the Open Cluster Management project */
 import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Grid } from './common/Grid'
-
 interface ICatalogBreadcrumb {
     id?: string
     label: string
@@ -60,6 +60,7 @@ interface ICatalogFilter {
 
 interface ICatalogCard {
     id?: string
+    icon?: ReactNode
     title: string
     descriptions?: string[]
     featureGroups?: ICatalogCardFeatureGroup[]
@@ -134,12 +135,51 @@ export function Catalog(props: {
         [filterSelections]
     )
 
+    const featureFilterGroups = useMemo(() => {
+        const groupMap: Record<string, ICatalogFilterGroup> = {}
+        for (const card of props.cards ?? []) {
+            for (const featureGroup of card.featureGroups ?? []) {
+                let catalogFilterGroup = groupMap[featureGroup.title]
+                if (!catalogFilterGroup) {
+                    catalogFilterGroup = {
+                        id: featureGroup.title,
+                        label: featureGroup.title,
+                        filters: [],
+                    }
+                    groupMap[featureGroup.title] = catalogFilterGroup
+                }
+                for (const feature of featureGroup.features) {
+                    if (!catalogFilterGroup.filters?.find((filter) => filter.value === feature)) {
+                        const filter: ICatalogFilter = {
+                            value: feature,
+                        }
+                        catalogFilterGroup.filters!.push(filter)
+                    }
+                }
+            }
+        }
+        const groups = Object.values(groupMap)
+        for (const group of groups) {
+            group.filters?.sort((l, r) => (l.value as string).localeCompare(r.value as string))
+        }
+        return groups.sort((l, r) => l.label.localeCompare(r.label))
+    }, [props.cards])
+
     const catalogFilterGroups = useMemo(() => {
-        if (!props.filterGroups) return <Fragment />
+        if (!props.filterGroups && !featureFilterGroups.length) return <Fragment />
         return (
             <DrawerPanelContent minSize="250px" defaultSize="250px" maxSize="250px">
                 <DrawerPanelBody>
-                    {props.filterGroups.map((filterGroup) => (
+                    {props.filterGroups?.map((filterGroup) => (
+                        <DrawerSection key={filterGroup.id} style={{ paddingBottom: 32 }}>
+                            <FilterGroup
+                                filterGroup={filterGroup}
+                                selectedValues={filterSelections[filterGroup.id]}
+                                onClickFilter={onClickFilter}
+                            />
+                        </DrawerSection>
+                    ))}
+                    {featureFilterGroups.map((filterGroup) => (
                         <DrawerSection key={filterGroup.id} style={{ paddingBottom: 32 }}>
                             <FilterGroup
                                 filterGroup={filterGroup}
@@ -151,7 +191,7 @@ export function Catalog(props: {
                 </DrawerPanelBody>
             </DrawerPanelContent>
         )
-    }, [props.filterGroups, filterSelections, onClickFilter])
+    }, [props.filterGroups, filterSelections, onClickFilter, featureFilterGroups])
 
     const filteredCards = useMemo(() => {
         let filteredCards = props.cards
@@ -161,9 +201,18 @@ export function Catalog(props: {
                 const t = filterSelections[key]
                 if (t.length == 0) continue
                 filteredCards = filteredCards?.filter((card) => {
-                    return card.labels?.find((label) => {
+                    const matchesLabel = card.labels?.find((label) => {
                         return t.includes(label)
                     })
+                    if (matchesLabel) return true
+                    const matchesFeature = card.featureGroups?.find((featureGroup) => {
+                        for (const feature of featureGroup.features) {
+                            if (t.includes(feature)) return true
+                        }
+                        return false
+                    })
+                    if (matchesFeature) return true
+                    return false
                 })
             }
         }
@@ -205,7 +254,23 @@ export function Catalog(props: {
                             <CardHeader>
                                 <Split hasGutter style={{ width: '100%' }}>
                                     <SplitItem isFilled>
-                                        <CardTitle>{card.title}</CardTitle>
+                                        <Split>
+                                            {card.icon && (
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        height: 40,
+                                                        width: 40,
+                                                        marginTop: -20,
+                                                        marginBottom: -20,
+                                                        marginRight: 8,
+                                                    }}
+                                                >
+                                                    {card.icon}
+                                                </div>
+                                            )}
+                                            <CardTitle>{card.title}</CardTitle>
+                                        </Split>
                                     </SplitItem>
                                     {card.badge && (
                                         <SplitItem>
