@@ -198,7 +198,7 @@ function WizardInternal(props: {
 
 function MyFooter(props: { onSubmit: (data: object) => Promise<string>; steps: WizardStep[] }) {
     const wizardContext = useContext(WizardContext)
-    const { activeStep, goToStepByName, goToStepById, onNext, onBack, onClose } = wizardContext
+    const { activeStep, onNext, onBack, onClose } = wizardContext
 
     const [submitting, setSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState('')
