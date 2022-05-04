@@ -2,7 +2,7 @@ name: NPM Check Updates
 on:
     workflow_dispatch:
     schedule:
-        - cron: '0 9 * * 1'
+        - cron: '0 0 * * *'
 jobs:
     npm-check-updates:
         if: (github.event_name == 'schedule' && github.repository == 'patternfly-labs/react-form-wizard') || (github.event_name != 'schedule')
