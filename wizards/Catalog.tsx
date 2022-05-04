@@ -33,7 +33,7 @@ import { CheckIcon } from '@patternfly/react-icons'
 import Fuse from 'fuse.js'
 /* Copyright Contributors to the Open Cluster Management project */
 import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Masonry } from './common/Masonry'
+import { Grid } from './common/Grid'
 
 interface ICatalogBreadcrumb {
     id?: string
@@ -185,7 +185,7 @@ export function Catalog(props: {
     const catalogCards = useMemo(() => {
         if (!searchedCards) return <Fragment />
         return (
-            <Masonry size={415}>
+            <Grid>
                 {searchedCards.map((card) => {
                     return (
                         <Card
@@ -200,7 +200,6 @@ export function Catalog(props: {
                                 transition: 'box-shadow 0.25s',
                                 cursor: card.onClick ? 'pointer' : undefined,
                                 background: card.onClick ? undefined : '#00000008',
-                                height: (415 * 8) / 7,
                             }}
                         >
                             <CardHeader>
@@ -219,47 +218,44 @@ export function Catalog(props: {
                             </CardHeader>
                             <AcmScrollable>
                                 <CardBody style={{ paddingTop: 0 }}>
-                                    <Flex direction={{ default: 'column' }} style={{ gap: 16, height: '100%' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, height: '100%' }}>
                                         {Array.isArray(card.descriptions) &&
                                             card.descriptions.map((description, index) => (
-                                                <FlexItem key={index}>
-                                                    <Text component="p">{description}</Text>
-                                                </FlexItem>
+                                                <Text component="p" key={index}>
+                                                    {description}
+                                                </Text>
                                             ))}
                                         {Array.isArray(card.featureGroups) &&
                                             card.featureGroups.map((featureGroup, index) => (
-                                                <FlexItem key={index}>
-                                                    <Stack>
-                                                        <Title headingLevel="h6" style={{ paddingBottom: 8 }}>
-                                                            {featureGroup.title}
-                                                        </Title>
-                                                        <List isPlain>
-                                                            {featureGroup.features?.map((feature, index) => (
-                                                                <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
-                                                                    {feature}
-                                                                </ListItem>
-                                                            ))}
-                                                        </List>
-                                                    </Stack>
-                                                </FlexItem>
+                                                <Stack key={index}>
+                                                    <Title headingLevel="h6" style={{ paddingBottom: 8 }}>
+                                                        {featureGroup.title}
+                                                    </Title>
+                                                    <List isPlain>
+                                                        {featureGroup.features?.map((feature, index) => (
+                                                            <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
+                                                                {feature}
+                                                            </ListItem>
+                                                        ))}
+                                                    </List>
+                                                </Stack>
                                             ))}
-                                        <FlexItem grow={{ default: 'grow' }}></FlexItem>
                                         {card.labels && (
-                                            <FlexItem>
+                                            <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'end' }}>
                                                 <LabelGroup numLabels={999}>
                                                     {card.labels.map((label) => (
                                                         <Label key={label}>{label}</Label>
                                                     ))}
                                                 </LabelGroup>
-                                            </FlexItem>
+                                            </div>
                                         )}
-                                    </Flex>
+                                    </div>
                                 </CardBody>
                             </AcmScrollable>
                         </Card>
                     )
                 })}
-            </Masonry>
+            </Grid>
         )
     }, [searchedCards])
 
@@ -278,7 +274,7 @@ export function Catalog(props: {
                     </FlexItem>
                 </Flex>
             </PageSection>
-            <PageSection variant="light" padding={{ default: 'noPadding' }} isFilled hasOverflowScroll isWidthLimited>
+            <PageSection variant="light" padding={{ default: 'noPadding' }} isFilled hasOverflowScroll>
                 <Drawer position="left" isStatic>
                     <DrawerContent panelContent={catalogFilterGroups}>
                         <DrawerContentBody hasPadding>{catalogCards}</DrawerContentBody>
