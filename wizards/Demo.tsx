@@ -12,7 +12,7 @@ import {
     PageToggleButton,
     Title,
 } from '@patternfly/react-core'
-import { AnsibleTowerIcon, ApplicationsIcon, BarsIcon, ClusterIcon, GithubIcon, RedhatIcon, UserSecretIcon } from '@patternfly/react-icons'
+import { AnsibleTowerIcon, ApplicationsIcon, BarsIcon, ClusterIcon, GithubIcon, LockIcon, RedhatIcon } from '@patternfly/react-icons'
 import { ReactNode } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
@@ -126,7 +126,7 @@ const wizards: IWizard[] = [
         labels: ['Multi-Cluster Engine'],
     },
     {
-        icon: <UserSecretIcon size="lg" />,
+        icon: <LockIcon size="lg" />,
         shortName: 'Credentials',
         name: 'Credentials',
         route: RouteE.Credentials,
