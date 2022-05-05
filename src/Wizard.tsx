@@ -288,16 +288,16 @@ function WizardDrawer(props: { yamlEditor?: () => ReactNode }) {
     )
 }
 
-function getSteps(children: ReactNode | ReactNode[]) {
-    const childArray = Children.toArray(children)
-    let steps = childArray.filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
-    if (steps.length === 0) {
-        if (childArray.length === 1) {
-            const child = childArray[0]
-            if (isValidElement(child)) {
-                steps = getSteps(child.props.children)
-            }
-        }
-    }
-    return steps
-}
+// function getSteps(children: ReactNode | ReactNode[]) {
+//     const childArray = Children.toArray(children)
+//     let steps = childArray.filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
+//     if (steps.length === 0) {
+//         if (childArray.length === 1) {
+//             const child = childArray[0]
+//             if (isValidElement(child)) {
+//                 steps = getSteps(child.props.children)
+//             }
+//         }
+//     }
+//     return steps
+// }

@@ -15,14 +15,13 @@ import {
     Tiles,
     WizardPage,
 } from '../../src'
-import YamlTemplate from './Cluster.hbs'
 
 export function ClusterForm() {
     const history = useHistory()
     return (
         <WizardPage
             title="Create cluster"
-            template={YamlTemplate}
+            // template={YamlTemplate}
             breadcrumb={[{ label: 'Managed clusters', to: '.' }]}
             onSubmit={() => Promise.resolve(undefined)}
             onCancel={() => history.push('./?route=wizards')}

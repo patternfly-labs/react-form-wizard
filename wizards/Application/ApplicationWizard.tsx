@@ -1,6 +1,5 @@
 import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
 import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
-import Handlebars from 'handlebars'
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
     ArrayInput,
@@ -24,16 +23,6 @@ import {
 } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { useItem } from '../../src/contexts/ItemContext'
-import ApplicationHandlebars from './applicationTemplates/App.hbs'
-import ArgoAppSetHandlebars from './applicationTemplates/argoApplicationSet/ArgoApplication.hbs'
-import ArgoTemplateGit from './applicationTemplates/argoApplicationSet/templateArgoGit.hbs'
-import ArgoTemplateHelm from './applicationTemplates/argoApplicationSet/templateArgoHelm.hbs'
-import ArgoTemplatePlacement from './applicationTemplates/argoApplicationSet/templateArgoPlacement.hbs'
-import SubscriptionHandlebars from './applicationTemplates/subscription/Application.hbs'
-import SubscriptionGitHandlebars from './applicationTemplates/subscription/templateSubscriptionGit.hbs'
-import SubscriptionHelmHandlebars from './applicationTemplates/subscription/templateSubscriptionHelm.hbs'
-import SubscriptionObjHandlebars from './applicationTemplates/subscription/templateSubscriptionObj.hbs'
-import SubscriptionPlacementHandlebars from './applicationTemplates/subscription/templateSubscriptionPlacement.hbs'
 import ArgoIcon from './logos/ArgoIcon.svg'
 import HelmIcon from './logos/HelmIcon.svg'
 import ObjectStore from './logos/ObjectStore.svg'
@@ -70,16 +59,6 @@ interface Channel {
 }
 
 export function ApplicationWizard(props: ApplicationWizardProps) {
-    Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
-    Handlebars.registerPartial('templateSubscription', Handlebars.compile(SubscriptionHandlebars))
-    Handlebars.registerPartial('templateSubscriptionGit', Handlebars.compile(SubscriptionGitHandlebars))
-    Handlebars.registerPartial('templateSubscriptionHelm', Handlebars.compile(SubscriptionHelmHandlebars))
-    Handlebars.registerPartial('templateSubscriptionObj', Handlebars.compile(SubscriptionObjHandlebars))
-    Handlebars.registerPartial('templateSubscriptionPlacement', Handlebars.compile(SubscriptionPlacementHandlebars))
-    Handlebars.registerPartial('templateArgoCD', Handlebars.compile(ArgoAppSetHandlebars))
-    Handlebars.registerPartial('templateArgoGit', Handlebars.compile(ArgoTemplateGit))
-    Handlebars.registerPartial('templateArgoHelm', Handlebars.compile(ArgoTemplateHelm))
-    Handlebars.registerPartial('templateArgoPlacement', Handlebars.compile(ArgoTemplatePlacement))
     const reconcileOptions = useMemo(() => ['merge', 'replace'], [])
     const reconcileRates = useMemo(() => ['medium', 'low', 'high', 'off'], [])
     const requeueTimes = useMemo(() => [30, 60, 120, 180, 300], [])
@@ -102,7 +81,6 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
     return (
         <WizardPage
             title="Create application"
-            template={ApplicationHandlebars}
             defaultData={{ curlyServer: '{{server}}', curlyName: '{{name}}', uniqueGroupID: 1 }}
             onCancel={props.onCancel}
             onSubmit={props.onSubmit}
