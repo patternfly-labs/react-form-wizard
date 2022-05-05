@@ -18,7 +18,6 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { klona } from 'klona/json'
 import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { EditMode } from '.'
-import { onSubmit } from '../wizards/common/utils'
 import { DataContext } from './contexts/DataContext'
 import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
 import { EditModeContext } from './contexts/EditModeContext'
@@ -157,7 +156,7 @@ function WizardInternal(props: {
                 navAriaLabel={`${title} steps`}
                 mainAriaLabel={`${title} content`}
                 steps={steps}
-                footer={<MyFooter onSubmit={onSubmit} steps={steps} />}
+                footer={<MyFooter onSubmit={props.onSubmit} steps={steps} />}
                 onClose={props.onCancel}
             />
             <div style={{ display: 'none' }}>{stepComponents}</div>
