@@ -245,9 +245,11 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[] }) {
                         {submitting ? 'Submitting' : 'Submit'}
                     </Button>
                     <Button onClick={onBack}>Back</Button>
-                    <Button variant="link" onClick={onClose}>
-                        Cancel
-                    </Button>
+                    <div className="pf-c-wizard__footer-cancel">
+                        <Button variant="link" onClick={onClose}>
+                            Cancel
+                        </Button>
+                    </div>
                 </WizardFooter>
             </div>
         )
@@ -270,9 +272,11 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[] }) {
                 <Button variant="secondary" onClick={onBack} isDisabled={firstStep.name === activeStep.name}>
                     Back
                 </Button>
-                <Button variant="link" onClick={onClose}>
-                    Cancel
-                </Button>
+                <div className="pf-c-wizard__footer-cancel">
+                    <Button variant="link" onClick={onClose}>
+                        Cancel
+                    </Button>
+                </div>
             </WizardFooter>
         </div>
     )
