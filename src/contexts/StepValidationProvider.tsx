@@ -26,7 +26,9 @@ export function StepValidationProvider(props: { children: ReactNode }) {
             })
         })
     }, [])
-    useLayoutEffect(() => validateSteps(), [item, validateSteps])
+    useLayoutEffect(() => {
+        validateSteps()
+    }, [item, validateSteps])
     return (
         <StepSetHasValidationErrorContext.Provider value={setHasValidationErrors}>
             <StepHasValidationErrorContext.Provider value={hasStepValidationErrors}>

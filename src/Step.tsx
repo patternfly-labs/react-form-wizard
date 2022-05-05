@@ -2,23 +2,34 @@ import { Split, SplitItem } from '@patternfly/react-core'
 import { Fragment, ReactNode, useLayoutEffect } from 'react'
 import { DisplayMode, useDisplayMode } from './contexts/DisplayModeContext'
 import { useHasInputs } from './contexts/HasInputsProvider'
-import { useShowValidation } from './contexts/ShowValidationProvider'
+import { useSetShowValidation } from './contexts/ShowValidationProvider'
 import { useSetStepHasInputs } from './contexts/StepHasInputsProvider'
+import { useStepShowValidation } from './contexts/StepShowValidationProvider'
 import { useSetStepHasValidationError } from './contexts/StepValidationProvider'
 import { useHasValidationError } from './contexts/ValidationProvider'
 import { HiddenFn, useInputHidden } from './inputs/Input'
 
 export function Step(props: { label: string; children?: ReactNode; id: string; hidden?: HiddenFn; autohide?: boolean }) {
+    const displayMode = useDisplayMode()
+
+    const setShowValidation = useSetShowValidation()
+    const stepShowValidation = useStepShowValidation()
+    useLayoutEffect(() => {
+        if (displayMode !== DisplayMode.Details) {
+            if (stepShowValidation[props.id]) {
+                setShowValidation(true)
+            }
+        }
+    }, [displayMode, props.id, setShowValidation, stepShowValidation])
+
     const hasValidationError = useHasValidationError()
     const setStepHasValidationError = useSetStepHasValidationError()
+    useLayoutEffect(() => {
+        if (displayMode !== DisplayMode.Details) setStepHasValidationError(props.id, hasValidationError)
+    }, [hasValidationError, displayMode, props.id, setStepHasValidationError])
+
     const hasInputs = useHasInputs()
     const setStepHasInputs = useSetStepHasInputs()
-    const showValidation = useShowValidation()
-    const displayMode = useDisplayMode()
-    useLayoutEffect(() => {
-        if (displayMode !== DisplayMode.Details) setStepHasValidationError(props.id, hasValidationError && showValidation)
-    }, [hasValidationError, displayMode, props.id, setStepHasValidationError, showValidation])
-
     useLayoutEffect(() => {
         if (displayMode !== DisplayMode.Details) setStepHasInputs(props.id, hasInputs)
     }, [hasInputs, displayMode, props.id, setStepHasInputs])

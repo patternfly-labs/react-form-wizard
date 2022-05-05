@@ -16,7 +16,9 @@ export function HasInputsProvider(props: { children: ReactNode }) {
         setHasInputsState(false)
         setHasInputsFunction(() => () => setHasInputsState(true))
     }, [])
-    useLayoutEffect(() => validate(), [validate])
+    useLayoutEffect(() => {
+        validate()
+    }, [validate])
 
     const parentUpdateHasInputs = useContext(UpdateHasInputsContext)
     useLayoutEffect(() => {

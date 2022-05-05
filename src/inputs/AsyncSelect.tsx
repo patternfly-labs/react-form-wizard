@@ -82,7 +82,7 @@ export function AsyncSelect(props: AsyncSelectProps) {
         }
     }, [asyncCallback, mode])
 
-    useEffect(sync, [sync])
+    useEffect(() => sync(), [sync])
 
     if (hidden) return <Fragment />
 
