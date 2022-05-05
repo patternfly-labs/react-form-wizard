@@ -32,7 +32,6 @@ import {
 } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import Fuse from 'fuse.js'
-/* Copyright Contributors to the Open Cluster Management project */
 import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Grid } from './common/Grid'
 interface ICatalogBreadcrumb {
@@ -299,7 +298,10 @@ export function Catalog(props: {
                                                 </Title>
                                                 <List isPlain>
                                                     {featureGroup.features?.map((feature, index) => (
-                                                        <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
+                                                        <ListItem
+                                                            key={index}
+                                                            icon={<CheckIcon color="green" size="md" style={{ marginTop: -2 }} />}
+                                                        >
                                                             {feature}
                                                         </ListItem>
                                                     ))}
