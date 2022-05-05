@@ -1,8 +1,8 @@
 import { RouteE } from '../Routes'
 
-export async function onSubmit(data: unknown) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function onSubmit(_data: unknown) {
     // eslint-disable-next-line no-console
-    console.log(data)
     await new Promise((resolve) => setTimeout(resolve, 2000))
     return Promise.reject(new Error('No backend connected'))
 }

@@ -8,51 +8,33 @@ import {
     DrawerPanelContent,
     Split,
     SplitItem,
+    Stack,
+    Wizard as PFWizard,
+    WizardContext,
+    WizardFooter,
+    WizardStep,
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
-import Handlebars, { HelperOptions } from 'handlebars'
 import { klona } from 'klona/json'
-import {
-    Children,
-    Fragment,
-    isValidElement,
-    ReactElement,
-    ReactNode,
-    useCallback,
-    useEffect,
-    useLayoutEffect,
-    useMemo,
-    useState,
-} from 'react'
+import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { EditMode } from '.'
-import { YamlToObject } from './components/YamlEditor'
+import { onSubmit } from '../wizards/common/utils'
 import { DataContext } from './contexts/DataContext'
 import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
 import { EditModeContext } from './contexts/EditModeContext'
-import { HasInputsProvider } from './contexts/HasInputsProvider'
 import { ItemContext, useItem } from './contexts/ItemContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
-import { StepHasInputsProvider, useStepHasInputs } from './contexts/StepHasInputsProvider'
+import { StepHasInputsProvider } from './contexts/StepHasInputsProvider'
+import { StepShowValidationProvider, useSetStepShowValidation, useStepShowValidation } from './contexts/StepShowValidationProvider'
 import { StepValidationProvider, useStepHasValidationError } from './contexts/StepValidationProvider'
 import { useHasValidationError, ValidationProvider } from './contexts/ValidationProvider'
-import { useID } from './inputs/Input'
 import { Step } from './Step'
-
-Handlebars.registerHelper('if_eq', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
-    return arg1 == arg2 ? options.fn(this) : options.inverse(this)
-})
-
-Handlebars.registerHelper('if_ne', function (this: unknown, arg1: string, arg2: string, options: HelperOptions) {
-    return arg1 !== arg2 ? options.fn(this) : options.inverse(this)
-})
 
 export interface WizardProps {
     title: string
     description?: string
     children: ReactNode
     defaultData?: object
-    template?: string
-    yamlToDataTemplate?: string
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     hasButtons?: boolean
@@ -62,20 +44,6 @@ export interface WizardProps {
 
 export type WizardSubmit = (data: unknown) => Promise<void>
 export type WizardCancel = () => void
-
-function getSteps(children: ReactNode | ReactNode[]) {
-    const childArray = Children.toArray(children)
-    let steps = childArray.filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
-    if (steps.length === 0) {
-        if (childArray.length === 1) {
-            const child = childArray[0]
-            if (isValidElement(child)) {
-                steps = getSteps(child.props.children)
-            }
-        }
-    }
-    return steps
-}
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
     const [data, setData] = useState(props.defaultData ? klona(props.defaultData) : {})
@@ -87,311 +55,231 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
         }
     }, [props.showYaml])
     const displayMode = DisplayMode.Wizard
-    const [template] = useState(() => (props.template ? Handlebars.compile(props.template) : undefined))
     const isYamlArray = useMemo(() => Array.isArray(props.defaultData), [props.defaultData])
 
     return (
         <EditModeContext.Provider value={props.editMode === undefined ? EditMode.Create : props.editMode}>
             <StepHasInputsProvider>
-                <StepValidationProvider>
-                    <DisplayModeContext.Provider value={displayMode}>
-                        <DataContext.Provider value={{ update }}>
-                            <ItemContext.Provider value={data}>
-                                <ShowValidationProvider>
-                                    <ValidationProvider>
-                                        <Drawer isExpanded={drawerExpanded} isInline>
-                                            <DrawerContent panelContent={<WizardPageDrawer yamlEditor={props.yamlEditor} />}>
-                                                <DrawerContentBody>
-                                                    <section className="pf-c-page__main-wizard" style={{ height: '100%' }}>
-                                                        {/* <PageSection variant="light" style={{ height: '100%' }} type="wizard" isWidthLimited> */}
-                                                        <ItemContext.Provider value={data}>
-                                                            <WizardInternal
-                                                                onSubmit={props.onSubmit}
-                                                                onCancel={props.onCancel}
-                                                                hasButtons={props.hasButtons}
-                                                                template={template}
-                                                                isYamlArray={isYamlArray}
-                                                            >
-                                                                {props.children}
-                                                            </WizardInternal>
-                                                        </ItemContext.Provider>
-                                                        {/* </PageSection> */}
-                                                    </section>
-                                                </DrawerContentBody>
-                                            </DrawerContent>
-                                        </Drawer>
-                                    </ValidationProvider>
-                                </ShowValidationProvider>
-                            </ItemContext.Provider>
-                        </DataContext.Provider>
-                    </DisplayModeContext.Provider>
-                </StepValidationProvider>
+                <StepShowValidationProvider>
+                    <StepValidationProvider>
+                        <DisplayModeContext.Provider value={displayMode}>
+                            <DataContext.Provider value={{ update }}>
+                                <ItemContext.Provider value={data}>
+                                    <ShowValidationProvider>
+                                        <ValidationProvider>
+                                            <Drawer isExpanded={drawerExpanded} isInline>
+                                                <DrawerContent panelContent={<WizardDrawer yamlEditor={props.yamlEditor} />}>
+                                                    <DrawerContentBody>
+                                                        <section className="pf-c-page__main-wizard" style={{ height: '100%' }}>
+                                                            {/* <PageSection variant="light" style={{ height: '100%' }} type="wizard" isWidthLimited> */}
+                                                            <ItemContext.Provider value={data}>
+                                                                <WizardInternal
+                                                                    title={props.title}
+                                                                    onSubmit={props.onSubmit}
+                                                                    onCancel={props.onCancel}
+                                                                    hasButtons={props.hasButtons}
+                                                                    isYamlArray={isYamlArray}
+                                                                >
+                                                                    {props.children}
+                                                                </WizardInternal>
+                                                            </ItemContext.Provider>
+                                                            {/* </PageSection> */}
+                                                        </section>
+                                                    </DrawerContentBody>
+                                                </DrawerContent>
+                                            </Drawer>
+                                        </ValidationProvider>
+                                    </ShowValidationProvider>
+                                </ItemContext.Provider>
+                            </DataContext.Provider>
+                        </DisplayModeContext.Provider>
+                    </StepValidationProvider>
+                </StepShowValidationProvider>
             </StepHasInputsProvider>
         </EditModeContext.Provider>
     )
 }
 
 function WizardInternal(props: {
-    template?: HandlebarsTemplateDelegate
+    title: string
     children: ReactNode
     onSubmit: WizardSubmit
     onCancel: WizardCancel
     hasButtons?: boolean
     isYamlArray: boolean
 }) {
-    const steps = getSteps(props.children)
-    if (props.hasButtons !== false) {
-        steps.push(
-            <Step label="Review" id="review-step">
-                <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
-                    <DisplayModeContext.Provider value={DisplayMode.Details}>{props.children}</DisplayModeContext.Provider>
-                </DescriptionList>
-            </Step>
+    const stepComponents = useMemo(
+        () => Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[],
+        [props.children]
+    )
+
+    const reviewStep = useMemo<WizardStep>(
+        () => ({
+            id: 'Review',
+            name: 'Review',
+            component: (
+                <Step label="Review" id="review-step">
+                    <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
+                        <DisplayModeContext.Provider value={DisplayMode.Details}>{props.children}</DisplayModeContext.Provider>
+                    </DescriptionList>
+                </Step>
+            ),
+        }),
+        [props.children]
+    )
+
+    const showValidation = useShowValidation()
+    const stepHasValidationError = useStepHasValidationError()
+    const stepShowValidation = useStepShowValidation()
+
+    const steps: WizardStep[] = useMemo(() => {
+        const steps = stepComponents.map(
+            (component) =>
+                ({
+                    id: component.props?.id,
+                    name: (
+                        <Split hasGutter>
+                            <SplitItem isFilled>{component.props?.label}</SplitItem>
+                            {(showValidation || stepShowValidation[component.props?.id]) && stepHasValidationError[component.props?.id] && (
+                                <SplitItem>
+                                    <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+                                </SplitItem>
+                            )}
+                        </Split>
+                    ),
+                    component,
+                } as WizardStep)
         )
-    }
+        steps.push(reviewStep)
+        return steps
+    }, [reviewStep, showValidation, stepComponents, stepHasValidationError, stepShowValidation])
 
-    const [activeIndex, setActiveIndex] = useState(0)
-    const next = useCallback(() => setActiveIndex((activeIndex) => activeIndex + 1), [])
-    const back = useCallback(() => setActiveIndex((activeIndex) => activeIndex - 1), [])
-    const setActiveStep = (step: ReactElement) => setActiveIndex(steps.indexOf(step))
-
-    let activeStep = steps[activeIndex]
-    if (!activeStep) activeStep = steps[0]
-
-    const setShowValidation = useSetShowValidation()
-    useLayoutEffect(() => {
-        if (activeStep.props.id === 'review-step') {
-            setShowValidation(true)
-        }
-    }, [activeStep, setShowValidation])
-
+    const { title } = props
     return (
-        <div className="pf-c-wizard">
-            {/* <button aria-label="Wizard Header Toggle" className="pf-c-wizard__toggle" aria-expanded="false">
-                <span className="pf-c-wizard__toggle-list">
-                    <span className="pf-c-wizard__toggle-list-item">
-                        <span className="pf-c-wizard__toggle-num">2</span>
-                        Configuration
-                        <i className="fas fa-angle-right pf-c-wizard__toggle-separator" aria-hidden="true"></i>
-                    </span>
-                    <span className="pf-c-wizard__toggle-list-item">Substep B</span>
-                </span>
-                <span className="pf-c-wizard__toggle-icon">
-                    <i className="fas fa-caret-down" aria-hidden="true"></i>
-                </span>
-            </button> */}
-            {steps?.map((step) => {
-                if (step !== activeStep)
-                    return (
-                        <HasInputsProvider key={step.props.id}>
-                            <ShowValidationProvider>
-                                <ValidationProvider>
-                                    <div style={{ display: 'none' }}>{step}</div>
-                                </ValidationProvider>
-                            </ShowValidationProvider>
-                        </HasInputsProvider>
-                    )
-                if (step.props.id === 'review-step') {
-                    return (
-                        <HasInputsProvider key={step.props.id}>
-                            <WizardActiveStep
-                                activeStep={activeStep}
-                                setActiveStep={setActiveStep}
-                                steps={steps}
-                                next={next}
-                                back={back}
-                                onSubmit={props.onSubmit}
-                                onCancel={props.onCancel}
-                                hasButtons={props.hasButtons}
-                                template={props.template}
-                                isYamlArray={props.isYamlArray}
-                            />
-                        </HasInputsProvider>
-                    )
-                }
-                return (
-                    <HasInputsProvider key={step.props.id}>
-                        <ShowValidationProvider>
-                            <ValidationProvider>
-                                <WizardActiveStep
-                                    activeStep={activeStep}
-                                    setActiveStep={setActiveStep}
-                                    steps={steps}
-                                    next={next}
-                                    back={back}
-                                    onSubmit={props.onSubmit}
-                                    onCancel={props.onCancel}
-                                    hasButtons={props.hasButtons}
-                                    isYamlArray={props.isYamlArray}
-                                />
-                            </ValidationProvider>
-                        </ShowValidationProvider>
-                    </HasInputsProvider>
-                )
-            })}
-        </div>
+        <Fragment>
+            <PFWizard
+                navAriaLabel={`${title} steps`}
+                mainAriaLabel={`${title} content`}
+                steps={steps}
+                footer={<MyFooter onSubmit={onSubmit} steps={steps} />}
+                onClose={props.onCancel}
+            />
+            <div style={{ display: 'none' }}>{stepComponents}</div>
+        </Fragment>
     )
 }
 
-export function WizardActiveStep(props: {
-    steps: ReactElement[]
-    activeStep: ReactElement
-    setActiveStep: (activeStep: ReactElement) => void
-    next: () => void
-    back: () => void
-    onSubmit: WizardSubmit
-    onCancel: WizardCancel
-    template?: HandlebarsTemplateDelegate
-    hasButtons?: boolean
-    isYamlArray: boolean
-}) {
+function MyFooter(props: { onSubmit: (data: object) => Promise<string>; steps: WizardStep[] }) {
+    const wizardContext = useContext(WizardContext)
+    const { activeStep, onNext, onBack, onClose } = wizardContext
+
     const [submitting, setSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState('')
 
     const { onSubmit } = props
-    const onSubmit2 = useCallback(
-        async (data: object) => {
-            setSubmitError('')
-            setSubmitting(true)
-            try {
-                await onSubmit(data)
-            } catch (err) {
-                if (err instanceof Error) {
-                    setSubmitError(err.message)
-                    return err.message
-                } else {
-                    setSubmitError('Unknown error')
-                    return 'Unknown error'
+    const onSubmitClickHandler = useCallback(
+        (data: object) => {
+            async function asyncSubmit() {
+                setSubmitError('')
+                setSubmitting(true)
+                try {
+                    await onSubmit(data)
+                } catch (err) {
+                    if (err instanceof Error) {
+                        setSubmitError(err.message)
+                        return err.message
+                    } else {
+                        setSubmitError('Unknown error')
+                        return 'Unknown error'
+                    }
+                } finally {
+                    setSubmitting(false)
                 }
-            } finally {
-                setSubmitting(false)
+                return undefined
             }
-            return undefined
+            void asyncSubmit()
         },
         [onSubmit]
     )
+    const data = useItem()
+    const onSubmitClick = useCallback(() => onSubmitClickHandler(data), [data, onSubmitClickHandler])
 
-    const hasValidationError = useHasValidationError()
-    const showValidation = useShowValidation()
     const setShowValidation = useSetShowValidation()
-    const id = useID(props.activeStep.props)
-    const item = useItem()
-    return (
-        <div className="pf-c-wizard__outer-wrap" id={id}>
-            <div className="pf-c-wizard__inner-wrap">
-                <nav className="pf-c-wizard__nav" aria-label="Steps">
-                    <ol className="pf-c-wizard__nav-list">
-                        {props.steps?.map((step) => (
-                            <StepNavItem
-                                key={step.props.label}
-                                step={step}
-                                activeStep={props.activeStep}
-                                setActiveStep={props.setActiveStep}
-                                isDisabled={submitting}
-                            />
-                        ))}
-                    </ol>
-                </nav>
-                <main className="pf-c-wizard__main">
-                    <div className="pf-c-wizard__main-body">
-                        <form noValidate className="pf-c-form">
-                            {props.activeStep}
-                        </form>
-                    </div>
-                </main>
-            </div>
-            {hasValidationError && showValidation && <Alert title="Please fix validation errors" isInline variant="danger" />}
-            {submitError && <Alert title={submitError} isInline variant="danger" />}
-            {props.hasButtons !== false && (
-                <footer className="pf-c-wizard__footer">
-                    {props.activeStep === props.steps[props.steps.length - 1] ? (
-                        <Button
-                            variant="primary"
-                            isDisabled={(hasValidationError && showValidation) || submitting}
-                            type="submit"
-                            onClick={() => {
-                                setShowValidation(true)
-                                if (props.template) {
-                                    void onSubmit2(YamlToObject(props.template(item), props.isYamlArray))
-                                } else {
-                                    void onSubmit2(item)
-                                }
-                            }}
-                            isLoading={submitting}
-                        >
-                            {submitting ? 'Submitting' : 'Submit'}
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="primary"
-                            isDisabled={(hasValidationError && showValidation) || submitting}
-                            type="submit"
-                            onClick={() => {
-                                setShowValidation(true)
-                                if (!hasValidationError) {
-                                    props.next()
-                                }
-                            }}
-                        >
-                            Next
-                        </Button>
-                    )}
-                    <Button variant="secondary" onClick={props.back} isDisabled={props.activeStep === props.steps?.[0] || submitting}>
-                        Back
-                    </Button>
-                    <div className="pf-c-wizard__footer-cancel">
-                        <Button variant="link" onClick={props.onCancel}>
-                            Cancel
-                        </Button>
-                    </div>
-                </footer>
-            )}
-        </div>
-    )
-}
+    const showWizardValidation = useShowValidation()
+    const wizardHasValidationError = useHasValidationError()
 
-function StepNavItem(props: {
-    step: ReactElement
-    activeStep: ReactElement
-    setActiveStep: (activeStep: ReactElement) => void
-    isDisabled: boolean
-}) {
-    let classname = 'pf-c-wizard__nav-link'
-    if (props.activeStep === props.step) {
-        classname += ' pf-m-current'
-    }
+    const firstStep = props.steps[0]
+    const lastStep = props.steps[props.steps.length - 1]
 
     const stepHasValidationError = useStepHasValidationError()
+    const activeStepHasValidationError = activeStep.id ? stepHasValidationError[activeStep.id] : false
+    const stepShowValidation = useStepShowValidation()
+    const activeStepShowValidation = activeStep.id ? stepShowValidation[activeStep.id] : false
 
-    const stepHasInputs = useStepHasInputs()
-    if (!stepHasInputs[props.step.props.id]) {
-        return <Fragment />
+    const setStepShowValidation = useSetStepShowValidation()
+
+    const onNextClick = useCallback(() => {
+        const stepID = activeStep.id?.toString() ?? ''
+        setStepShowValidation(stepID, true)
+        if (!activeStepHasValidationError) {
+            onNext()
+        }
+    }, [activeStep.id, activeStepHasValidationError, onNext, setStepShowValidation])
+
+    useEffect(() => {
+        if (wizardContext.activeStep.name === lastStep.name) {
+            // We are on the review step - show validation for all steps
+            setShowValidation(true)
+        }
+    }, [lastStep.name, setShowValidation, wizardContext.activeStep.name])
+
+    if (wizardContext.activeStep.name === lastStep.name) {
+        return (
+            <WizardFooter>
+                <Button
+                    onClick={onSubmitClick}
+                    isDisabled={(wizardHasValidationError && showWizardValidation) || submitting}
+                    isLoading={submitting}
+                >
+                    {submitting ? 'Submitting' : 'Submit'}
+                </Button>
+                <Button onClick={onBack}>Back</Button>
+                <Button variant="link" onClick={onClose}>
+                    Cancel
+                </Button>
+            </WizardFooter>
+        )
     }
 
     return (
-        <li key={props.step.props.id} className="pf-c-wizard__nav-item">
-            <button
-                id={`${props.step.props.id as string}-button`}
-                className={classname}
-                onClick={() => {
-                    props.setActiveStep(props.step)
-                }}
-                disabled={props.isDisabled}
-            >
-                <Split>
-                    <SplitItem isFilled>{props.step.props.label}</SplitItem>
-                    {props.step.props.id !== 'review-step' && stepHasValidationError[props.step.props.id] && (
-                        <SplitItem>
-                            <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
-                        </SplitItem>
-                    )}
+        <WizardFooter>
+            <Stack hasGutter>
+                {activeStepHasValidationError && activeStepShowValidation && (
+                    <Alert title="Please fix validation errors" isInline variant="danger" isPlain />
+                )}
+                {submitError && <Alert title={submitError} isInline variant="danger" isPlain />}
+                <Split hasGutter>
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        onClick={onNextClick}
+                        isDisabled={(activeStepHasValidationError && activeStepShowValidation) || submitting}
+                    >
+                        Next
+                    </Button>
+                    <Button variant="secondary" onClick={onBack} isDisabled={firstStep.name === activeStep.name}>
+                        Back
+                    </Button>
+                    <Button variant="link" onClick={onClose}>
+                        Cancel
+                    </Button>
                 </Split>
-            </button>
-        </li>
+            </Stack>
+        </WizardFooter>
     )
 }
 
-function WizardPageDrawer(props: { yamlEditor?: () => ReactNode }) {
+function WizardDrawer(props: { yamlEditor?: () => ReactNode }) {
     const [yamlEditor] = useState(props.yamlEditor ?? undefined)
     return (
         <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
@@ -399,3 +287,17 @@ function WizardPageDrawer(props: { yamlEditor?: () => ReactNode }) {
         </DrawerPanelContent>
     )
 }
+
+// function getSteps(children: ReactNode | ReactNode[]) {
+//     const childArray = Children.toArray(children)
+//     let steps = childArray.filter((child) => isValidElement(child) && child.type === Step) as ReactElement[]
+//     if (steps.length === 0) {
+//         if (childArray.length === 1) {
+//             const child = childArray[0]
+//             if (isValidElement(child)) {
+//                 steps = getSteps(child.props.children)
+//             }
+//         }
+//     }
+//     return steps
+// }

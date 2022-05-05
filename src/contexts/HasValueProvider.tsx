@@ -16,7 +16,9 @@ export function HasValueProvider(props: { children: ReactNode }) {
         setHasValueState(false)
         setHasValueFunction(() => () => setHasValueState(true))
     }, [])
-    useLayoutEffect(() => validate(), [validate])
+    useLayoutEffect(() => {
+        validate()
+    }, [validate])
 
     const parentUpdateHasValue = useContext(UpdateHasValueContext)
     useLayoutEffect(() => {

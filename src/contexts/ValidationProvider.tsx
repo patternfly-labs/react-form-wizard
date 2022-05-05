@@ -16,7 +16,9 @@ export function ValidationProvider(props: { children: ReactNode }) {
         setHasValidationErrorState(false)
         setHasValidationErrorFunction(() => () => setHasValidationErrorState(true))
     }, [])
-    useLayoutEffect(() => validate(), [validate])
+    useLayoutEffect(() => {
+        validate()
+    }, [validate])
 
     const parentValidate = useContext(ValidateContext)
     useLayoutEffect(() => {

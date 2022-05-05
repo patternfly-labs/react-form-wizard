@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useHistory } from 'react-router'
+import ArgoIcon from '../Argo/logos/ArgoIcon.svg'
 import { Catalog } from '../Catalog'
 import { IResource } from '../common/resource'
 import { clusters, clusterSetBindings, clusterSets, placements as testPlacements } from '../common/test-data'
@@ -19,6 +20,7 @@ export function ApplicationSetExamples() {
             breadcrumbs={[{ label: 'Example Wizards', to: RouteE.Wizards }, { label: 'Application Set Wizard Examples' }]}
             cards={[
                 {
+                    icon: <ArgoIcon />,
                     title: 'Create application set',
                     descriptions: [
                         'Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.',
@@ -27,6 +29,7 @@ export function ApplicationSetExamples() {
                     onClick: () => history.push(RouteE.CreateArgoCD),
                 },
                 {
+                    icon: <ArgoIcon />,
                     title: 'Edit application set',
                     onClick: () => history.push(RouteE.EditArgoCD),
                 },

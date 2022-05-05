@@ -14,7 +14,6 @@ module.exports = function (_env: unknown, argv: { hot: boolean; mode: string | u
         entry: './wizards',
         resolve: {
             extensions: ['.ts', '.tsx', '.js', '.jsx'],
-            alias: { handlebars: 'handlebars/dist/handlebars.js' },
         },
         module: {
             rules: [

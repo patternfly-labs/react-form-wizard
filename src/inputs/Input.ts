@@ -112,7 +112,9 @@ export function useInput(props: InputCommonProps) {
     }, [hidden, setHasInputs])
 
     const updateHasInputs = useUpdateHasInputs()
-    useLayoutEffect(() => updateHasInputs(), [hidden, updateHasInputs])
+    useLayoutEffect(() => {
+        updateHasInputs()
+    }, [hidden, updateHasInputs])
 
     const { validated, error } = useInputValidation(props)
     const setHasValidationError = useSetHasValidationError()
@@ -124,7 +126,9 @@ export function useInput(props: InputCommonProps) {
     // if value changes we need to validate in the case of a checkbox which hides child inputs
     // if hidden changes we need to validate in the case of a inputs which hides child inputs
     // if error changes we need to validate to set the error or clear errors if there is no other inputs with errors
-    useLayoutEffect(() => validate(), [value, hidden, error, validate])
+    useLayoutEffect(() => {
+        validate()
+    }, [value, hidden, error, validate])
 
     const path = usePath(props)
     const id = useID(props)

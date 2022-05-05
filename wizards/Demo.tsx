@@ -12,12 +12,14 @@ import {
     PageToggleButton,
     Title,
 } from '@patternfly/react-core'
-import { BarsIcon, GithubIcon } from '@patternfly/react-icons'
+import { AnsibleTowerIcon, ApplicationsIcon, BarsIcon, ClusterIcon, GithubIcon, RedhatIcon, UserSecretIcon } from '@patternfly/react-icons'
+import { ReactNode } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
 import { ApplicationExample } from './Application/ApplicationExample'
 import { AppExample } from './AppWizard/AppExample'
 import { ApplicationSetExamples, CreateApplicationSet, EditApplicationSet } from './Argo/ArgoExamples'
+import ArgoIcon from './Argo/logos/ArgoIcon.svg'
 import { Catalog } from './Catalog'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ControlPlaneCatalog, CreateCluster, ProviderCatalog } from './Cluster/Provider'
@@ -78,6 +80,7 @@ enum StateE {
 interface IWizard {
     shortName: string
     name: string
+    icon?: ReactNode
     description?: string
     route: RouteE
     state?: StateE
@@ -86,6 +89,7 @@ interface IWizard {
 
 const wizards: IWizard[] = [
     {
+        icon: <AnsibleTowerIcon size="lg" color="#EE0000" />,
         shortName: 'Ansible',
         name: 'Ansible automation',
         route: RouteE.Ansible,
@@ -94,6 +98,7 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
+        icon: <ApplicationsIcon size="lg" />,
         shortName: 'Application',
         name: 'Application',
         route: RouteE.Application,
@@ -102,6 +107,7 @@ const wizards: IWizard[] = [
         state: StateE.alpha,
     },
     {
+        icon: <ArgoIcon />,
         shortName: 'ArgoCD',
         name: 'ArgoCD',
         route: RouteE.ArgoCD,
@@ -110,6 +116,7 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
+        icon: <ClusterIcon size="lg" />,
         shortName: 'Cluster',
         name: 'Cluster',
         route: RouteE.Cluster,
@@ -119,6 +126,7 @@ const wizards: IWizard[] = [
         labels: ['Multi-Cluster Engine'],
     },
     {
+        icon: <UserSecretIcon size="lg" />,
         shortName: 'Credentials',
         name: 'Credentials',
         route: RouteE.Credentials,
@@ -146,6 +154,7 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
+        icon: <AnsibleTowerIcon size="lg" color="#EE0000" />,
         shortName: 'Policy Automation',
         name: 'Policy Automation',
         route: RouteE.PolicyAutomation,
@@ -161,6 +170,7 @@ const wizards: IWizard[] = [
         labels: ['Advanced Cluster Management'],
     },
     {
+        icon: <RedhatIcon size="lg" color="#EE0000" />,
         shortName: 'ROSA',
         name: 'ROSA',
         route: RouteE.ROSA,
@@ -308,6 +318,7 @@ function ExampleWizards() {
                 },
             ]}
             cards={wizards.map((wizard) => ({
+                icon: wizard.icon,
                 title: wizard.name,
                 descriptions: wizard.description ? [wizard.description] : undefined,
                 labels: wizard.labels,
@@ -320,7 +331,7 @@ function ExampleWizards() {
 
 function DemoHeader() {
     return (
-        <Masthead>
+        <Masthead display={{ default: 'inline' }}>
             <MastheadToggle>
                 <PageToggleButton variant="plain" aria-label="Global navigation">
                     <BarsIcon />

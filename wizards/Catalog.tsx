@@ -421,7 +421,7 @@ export function AcmScrollable(props: { children?: ReactNode; borderTop?: boolean
             setBottomShadow(Math.max(0, Math.min(1, scrollBottom / 8)))
         }
     }, [])
-    useEffect(update, [update, props.children])
+    useEffect(() => update(), [update, props.children])
     const shadowOpacityTop = 0.08 * topShadow
     const shadowOpacityBottom = 0.06 * bottomShadow
 

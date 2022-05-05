@@ -11,8 +11,8 @@ function displays() {
 function credentialsType(type: string) {
     cy.get('#credential-type').within(() => {
         cy.get(`#${type}`).click()
-        cy.contains('Next').click()
     })
+    cy.contains('Next').click()
 }
 
 function basicInformation() {
@@ -28,8 +28,8 @@ function proxy() {
         cy.get('#https-proxy').type('my-https-proxy')
         cy.get('#no-proxy').type('my-no-proxy')
         cy.get('#trust-bundle').type('my-trust-bundle')
-        cy.contains('Next').click()
     })
+    cy.contains('Next').click()
 }
 
 function pullSecretAndSsh() {
@@ -37,8 +37,8 @@ function pullSecretAndSsh() {
         cy.get('#pull-secret').type('my-pull-secret')
         cy.get('#ssh-private-key').type('my-ssh-private')
         cy.get('#ssh-public-key').type('my-ssh-public')
-        cy.contains('Next').click()
     })
+    cy.contains('Next').click()
 }
 
 describe('credentials wizard - aws', () => {
@@ -49,8 +49,8 @@ describe('credentials wizard - aws', () => {
         cy.get('#amazon-web-services').within(() => {
             cy.get('#aws-key-id').type('my-key-id')
             cy.get('#aws-access-key').type('my-access-key')
-            cy.contains('Next').click()
         })
+        cy.contains('Next').click()
     })
     it('proxy', proxy)
     it('pull secret and ssh', pullSecretAndSsh)
