@@ -28,7 +28,7 @@ export function ProviderCatalog() {
     return (
         <Catalog
             title="Provider"
-            breadcrumbs={[{ label: 'Cluster' }, { label: 'Provider' }]}
+            breadcrumbs={[{ label: 'Provider' }]}
             cards={[
                 {
                     icon: <ALIBABA />,
@@ -82,7 +82,7 @@ export function ControlPlaneCatalog() {
     return (
         <Catalog
             title="Control Plane Type"
-            breadcrumbs={[{ label: 'Cluster' }, { label: 'Provider' }, { label: 'Control plane' }]}
+            breadcrumbs={[{ label: 'Provider', to: RouteE.Provider }, { label: 'Control plane' }]}
             cards={[
                 {
                     title: 'Hosted',
@@ -134,7 +134,7 @@ export function HostsCatalog() {
     return (
         <Catalog
             title="Hosts"
-            breadcrumbs={[{ label: 'Cluster' }, { label: 'Provider' }, { label: 'Control plane' }]}
+            breadcrumbs={[{ label: 'Provider', to: RouteE.Provider }, { label: 'Control plane' }]}
             cards={[
                 {
                     title: 'Use existing hosts',
@@ -162,7 +162,11 @@ export function CreateCluster() {
     return (
         <WizardPage
             title="Create cluster"
-            breadcrumb={[{ label: 'Cluster' }, { label: 'Provider' }, { label: 'Control plane' }, { label: 'Create cluster' }]}
+            breadcrumb={[
+                { label: 'Provider', to: RouteE.Provider },
+                { label: 'Control plane', to: RouteE.ControlPlane },
+                { label: 'Create cluster' },
+            ]}
             onSubmit={() => Promise.resolve(undefined)}
             onCancel={() => history.push(RouteE.ControlPlane)}
             defaultData={{ clusterSet: 'default', hostingCluster: 'local-cluster' }}
