@@ -49,12 +49,7 @@ function SectionInternal(props: SectionProps) {
                         hasValue ? (
                             <Fragment>
                                 <Title headingLevel="h2">{props.label}</Title>
-                                <DescriptionList
-                                    id={id}
-                                    isHorizontal
-                                    isCompact
-                                    style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}
-                                >
+                                <DescriptionList id={id} isHorizontal isCompact style={{ padding: 16 }}>
                                     {props.children}
                                 </DescriptionList>
                             </Fragment>
