@@ -63,14 +63,16 @@ interface ICatalogCard {
     title: string
     descriptions?: string[]
     featureGroups?: ICatalogCardFeatureGroup[]
-    labels?: string[]
+    labels?: string[] // TODO - disable/enable auto generated filters
     badge?: string
     onClick?: () => void
+    // TODO maxHeight - adds scrolling
 }
 
 interface ICatalogCardFeatureGroup {
     title: string
-    features: string[]
+    features: string[] // TODO - allow features to specify an optional icon
+    // TODO - disable/enable auto generated filters
 }
 
 const fuseCardOptions: Fuse.IFuseOptions<ICatalogCard> = {
@@ -78,7 +80,7 @@ const fuseCardOptions: Fuse.IFuseOptions<ICatalogCard> = {
     fieldNormWeight: 0,
     keys: [
         { name: 'title', weight: 0.35 },
-        { name: 'descriptions', weight: 0.15 },
+        { name: 'descriptions', weight: 0.05 },
         { name: 'featureGroups.features', weight: 0.15 },
         { name: 'labels', weight: 0.15 },
         { name: 'labels.label', weight: 0.15 },
