@@ -3,8 +3,7 @@ import useResizeObserver from '@react-hook/resize-observer'
 import { ReactNode, useCallback, useLayoutEffect, useRef, useState } from 'react'
 
 export function Grid(props: { size?: number; maxColumns?: number; children?: ReactNode }) {
-    let { size } = props
-    size = size ?? 350
+    const size = props.size ?? 350
     const target = useRef<HTMLDivElement>(null)
     const [gridTemplateColumns, setGridTemplateColumns] = useState('1fr')
     const resize = useCallback(

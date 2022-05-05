@@ -73,8 +73,8 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
             <Step label="Details" id="details-step">
                 {props.editMode !== EditMode.Edit && (
                     <Fragment>
-                        <Sync kind={PolicySetKind} path="metadata.name" prefix="-placement" />
-                        <Sync kind={PolicySetKind} path="metadata.name" prefix="-placement" />
+                        <Sync kind={PolicySetKind} path="metadata.name" suffix="-placement" />
+                        <Sync kind={PolicySetKind} path="metadata.name" suffix="-placement" />
                         <Sync kind={PolicySetKind} path="metadata.name" targetKind={PlacementBindingKind} targetPath="subjects.0.name" />
                     </Fragment>
                 )}
