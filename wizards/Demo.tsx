@@ -12,7 +12,7 @@ import {
     PageToggleButton,
     Title,
 } from '@patternfly/react-core'
-import { BarsIcon, GithubIcon } from '@patternfly/react-icons'
+import { AnsibleTowerIcon, ApplicationsIcon, BarsIcon, ClusterIcon, GithubIcon, RedhatIcon, UserSecretIcon } from '@patternfly/react-icons'
 import { ReactNode } from 'react'
 import { BrowserRouter, Link, useHistory, useLocation } from 'react-router-dom'
 import { AnsibleExample } from './Ansible/AnsibleExample'
@@ -89,6 +89,7 @@ interface IWizard {
 
 const wizards: IWizard[] = [
     {
+        icon: <AnsibleTowerIcon size="lg" color="#EE0000" />,
         shortName: 'Ansible',
         name: 'Ansible automation',
         route: RouteE.Ansible,
@@ -97,6 +98,7 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
+        icon: <ApplicationsIcon size="lg" />,
         shortName: 'Application',
         name: 'Application',
         route: RouteE.Application,
@@ -114,6 +116,7 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
+        icon: <ClusterIcon size="lg" />,
         shortName: 'Cluster',
         name: 'Cluster',
         route: RouteE.Cluster,
@@ -123,6 +126,7 @@ const wizards: IWizard[] = [
         labels: ['Multi-Cluster Engine'],
     },
     {
+        icon: <UserSecretIcon size="lg" />,
         shortName: 'Credentials',
         name: 'Credentials',
         route: RouteE.Credentials,
@@ -150,6 +154,7 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
+        icon: <AnsibleTowerIcon size="lg" color="#EE0000" />,
         shortName: 'Policy Automation',
         name: 'Policy Automation',
         route: RouteE.PolicyAutomation,
@@ -165,6 +170,7 @@ const wizards: IWizard[] = [
         labels: ['Advanced Cluster Management'],
     },
     {
+        icon: <RedhatIcon size="lg" color="#EE0000" />,
         shortName: 'ROSA',
         name: 'ROSA',
         route: RouteE.ROSA,
