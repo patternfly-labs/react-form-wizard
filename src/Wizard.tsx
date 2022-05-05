@@ -8,7 +8,6 @@ import {
     DrawerPanelContent,
     Split,
     SplitItem,
-    Stack,
     Wizard as PFWizard,
     WizardContext,
     WizardFooter,
@@ -232,47 +231,50 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[] }) {
 
     if (wizardContext.activeStep.name === lastStep.name) {
         return (
-            <WizardFooter>
-                <Button
-                    onClick={onSubmitClick}
-                    isDisabled={(wizardHasValidationError && showWizardValidation) || submitting}
-                    isLoading={submitting}
-                >
-                    {submitting ? 'Submitting' : 'Submit'}
-                </Button>
-                <Button onClick={onBack}>Back</Button>
-                <Button variant="link" onClick={onClose}>
-                    Cancel
-                </Button>
-            </WizardFooter>
+            <div className="pf-u-box-shadow-sm-top">
+                {wizardHasValidationError && wizardHasValidationError && (
+                    <Alert title="Please fix validation errors" isInline variant="danger" />
+                )}
+                {submitError && <Alert title={submitError} isInline variant="danger" />}
+                <WizardFooter>
+                    <Button
+                        onClick={onSubmitClick}
+                        isDisabled={(wizardHasValidationError && showWizardValidation) || submitting}
+                        isLoading={submitting}
+                    >
+                        {submitting ? 'Submitting' : 'Submit'}
+                    </Button>
+                    <Button onClick={onBack}>Back</Button>
+                    <Button variant="link" onClick={onClose}>
+                        Cancel
+                    </Button>
+                </WizardFooter>
+            </div>
         )
     }
 
     return (
-        <WizardFooter>
-            <Stack hasGutter>
-                {activeStepHasValidationError && activeStepShowValidation && (
-                    <Alert title="Please fix validation errors" isInline variant="danger" isPlain />
-                )}
-                {submitError && <Alert title={submitError} isInline variant="danger" isPlain />}
-                <Split hasGutter>
-                    <Button
-                        variant="primary"
-                        type="submit"
-                        onClick={onNextClick}
-                        isDisabled={(activeStepHasValidationError && activeStepShowValidation) || submitting}
-                    >
-                        Next
-                    </Button>
-                    <Button variant="secondary" onClick={onBack} isDisabled={firstStep.name === activeStep.name}>
-                        Back
-                    </Button>
-                    <Button variant="link" onClick={onClose}>
-                        Cancel
-                    </Button>
-                </Split>
-            </Stack>
-        </WizardFooter>
+        <div className="pf-u-box-shadow-sm-top">
+            {activeStepHasValidationError && activeStepShowValidation && (
+                <Alert title="Please fix validation errors" isInline variant="danger" />
+            )}
+            <WizardFooter>
+                <Button
+                    variant="primary"
+                    type="submit"
+                    onClick={onNextClick}
+                    isDisabled={(activeStepHasValidationError && activeStepShowValidation) || submitting}
+                >
+                    Next
+                </Button>
+                <Button variant="secondary" onClick={onBack} isDisabled={firstStep.name === activeStep.name}>
+                    Back
+                </Button>
+                <Button variant="link" onClick={onClose}>
+                    Cancel
+                </Button>
+            </WizardFooter>
+        </div>
     )
 }
 

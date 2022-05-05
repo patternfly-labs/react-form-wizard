@@ -1,4 +1,15 @@
-import { Breadcrumb, BreadcrumbItem, Flex, Page, PageSection, Switch, Text, Title } from '@patternfly/react-core'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    Flex,
+    Page,
+    PageSection,
+    PageSectionTypes,
+    PageSectionVariants,
+    Switch,
+    Text,
+    Title,
+} from '@patternfly/react-core'
 import { ReactNode, useCallback, useState } from 'react'
 import { WizardYamlEditor } from './components/YamlEditor'
 import { Wizard, WizardProps } from './Wizard'
@@ -50,9 +61,11 @@ export function WizardPage(props: WizardPageProps) {
             }
             groupProps={{ sticky: 'top' }}
         >
-            <Wizard {...props} showHeader={false} showYaml={drawerExpanded} yamlEditor={yamlEditor}>
-                {props.children}
-            </Wizard>
+            <PageSection type={PageSectionTypes.wizard} variant={PageSectionVariants.light}>
+                <Wizard {...props} showHeader={false} showYaml={drawerExpanded} yamlEditor={yamlEditor}>
+                    {props.children}
+                </Wizard>
+            </PageSection>
         </Page>
     )
 }
