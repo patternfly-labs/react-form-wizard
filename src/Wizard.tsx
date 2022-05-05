@@ -158,9 +158,15 @@ function WizardInternal(props: {
                 footer={<MyFooter onSubmit={props.onSubmit} steps={steps} />}
                 onClose={props.onCancel}
             />
-            <div style={{ display: 'none' }}>{stepComponents}</div>
+            <RenderHiddenSteps stepComponents={stepComponents} />
         </Fragment>
     )
+}
+
+function RenderHiddenSteps(props: { stepComponents: ReactElement[] }) {
+    const wizardContext = useContext(WizardContext)
+    const { activeStep } = wizardContext
+    return <div style={{ display: 'none' }}>{props.stepComponents.filter((component) => component.props.id !== activeStep.id)}</div>
 }
 
 function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[] }) {
