@@ -164,7 +164,7 @@ function WizardInternal(props: {
     )
 }
 
-function MyFooter(props: { onSubmit: (data: object) => Promise<string>; steps: WizardStep[] }) {
+function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[] }) {
     const wizardContext = useContext(WizardContext)
     const { activeStep, onNext, onBack, onClose } = wizardContext
 
