@@ -212,7 +212,12 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 },
                             ],
                             template: {
-                                metadata: { name: '-{{name}}' },
+                                metadata: {
+                                    name: '-{{name}}',
+                                    labels: {
+                                        'velero.io/exclude-from-backup': 'true',
+                                    },
+                                },
                                 spec: {
                                     project: 'default',
                                     source: {},
