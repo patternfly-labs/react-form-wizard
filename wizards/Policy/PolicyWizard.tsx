@@ -76,7 +76,7 @@ export function PolicyWizard(props: {
                 {props.editMode !== EditMode.Edit && (
                     <Fragment>
                         <Sync kind={PolicyKind} path="metadata.namespace" />
-                        <Sync kind={PolicyKind} path="metadata.name" prefix="-placement" />
+                        <Sync kind={PolicyKind} path="metadata.name" suffix="-placement" />
                         <Sync kind={PolicyKind} path="metadata.name" targetKind={PlacementBindingKind} targetPath="subjects.0.name" />
                     </Fragment>
                 )}

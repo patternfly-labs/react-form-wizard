@@ -1,4 +1,5 @@
 import { Stack } from '@patternfly/react-core'
+import { ServerIcon, VirtualMachineIcon } from '@patternfly/react-icons'
 import { useHistory } from 'react-router-dom'
 import {
     ArrayInput,
@@ -17,6 +18,10 @@ import {
 } from '../../src'
 import { Catalog } from '../Catalog'
 import { RouteE } from '../Routes'
+import ALIBABA from './icons/alibaba.svg'
+import AWS from './icons/aws.svg'
+import AZURE from './icons/azure.svg'
+import GOOGLE from './icons/google-cloud.svg'
 
 export function ProviderCatalog() {
     const history = useHistory()
@@ -26,48 +31,42 @@ export function ProviderCatalog() {
             breadcrumbs={[{ label: 'Cluster' }, { label: 'Provider' }]}
             cards={[
                 {
+                    icon: <ALIBABA />,
                     title: 'ALIBABA',
                     descriptions: ['Create and manage your clusters through ALIBABA cloud.'],
-                    featureGroups: [
-                        { title: 'Available Control Planes', features: ['Standalone'] },
-                        { title: 'Comin Soon', features: ['Hosted'] },
-                    ],
+                    featureGroups: [{ title: 'Available Control Planes', features: ['Standalone'] }],
                     onClick: () => history.push(RouteE.ControlPlane),
                 },
                 {
+                    icon: <AWS />,
                     title: 'Amazon Web Services',
                     descriptions: ['Create and manage your clusters through Amazon cloud.'],
                     featureGroups: [{ title: 'Available Control Planes', features: ['Hosted', 'Standalone', 'Managed'] }],
                     onClick: () => history.push(RouteE.ControlPlane),
                 },
                 {
+                    icon: <ServerIcon size="lg" />,
                     title: 'Bare Metal',
                     descriptions: ['Create and manage your clusters on your bare metal machines.'],
-                    featureGroups: [
-                        { title: 'Available Control Planes', features: ['Hosted', 'Standalone'] },
-                        { title: 'Comin Soon', features: ['Hosted'] },
-                    ],
+                    featureGroups: [{ title: 'Available Control Planes', features: ['Hosted', 'Standalone'] }],
                     onClick: () => history.push(RouteE.ControlPlane),
                 },
                 {
+                    icon: <GOOGLE />,
                     title: 'Google Cloud',
                     descriptions: ['Create and manage your clusters through Google cloud.'],
-                    featureGroups: [
-                        { title: 'Available Control Planes', features: ['Standalone'] },
-                        { title: 'Comin Soon', features: ['Hosted'] },
-                    ],
+                    featureGroups: [{ title: 'Available Control Planes', features: ['Standalone'] }],
                     onClick: () => history.push(RouteE.ControlPlane),
                 },
                 {
+                    icon: <AZURE />,
                     title: 'Microsoft Azure',
                     descriptions: ['Create and manage your clusters through Azure cloud.'],
-                    featureGroups: [
-                        { title: 'Available Control Planes', features: ['Standalone', 'Managed'] },
-                        { title: 'Comin Soon', features: ['Hosted'] },
-                    ],
+                    featureGroups: [{ title: 'Available Control Planes', features: ['Standalone', 'Managed'] }],
                     onClick: () => history.push(RouteE.ControlPlane),
                 },
                 {
+                    icon: <VirtualMachineIcon size="lg" />,
                     title: 'VIRT',
                     descriptions: ['Create and manage your clusters on virtual machines.'],
                     featureGroups: [{ title: 'Available Control Planes', features: ['VSphere', 'RHV', 'OpenStack'] }],

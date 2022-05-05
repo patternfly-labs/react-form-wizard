@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
     Breadcrumb,
@@ -31,7 +32,6 @@ import {
 } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import Fuse from 'fuse.js'
-/* Copyright Contributors to the Open Cluster Management project */
 import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Grid } from './common/Grid'
 interface ICatalogBreadcrumb {
@@ -63,14 +63,16 @@ interface ICatalogCard {
     title: string
     descriptions?: string[]
     featureGroups?: ICatalogCardFeatureGroup[]
-    labels?: string[]
+    labels?: string[] // TODO - disable/enable auto generated filters
     badge?: string
     onClick?: () => void
+    // TODO maxHeight - adds scrolling
 }
 
 interface ICatalogCardFeatureGroup {
     title: string
-    features: string[]
+    features: string[] // TODO - allow features to specify an optional icon
+    // TODO - disable/enable auto generated filters
 }
 
 const fuseCardOptions: Fuse.IFuseOptions<ICatalogCard> = {
@@ -78,7 +80,7 @@ const fuseCardOptions: Fuse.IFuseOptions<ICatalogCard> = {
     fieldNormWeight: 0,
     keys: [
         { name: 'title', weight: 0.35 },
-        { name: 'descriptions', weight: 0.15 },
+        { name: 'descriptions', weight: 0.05 },
         { name: 'featureGroups.features', weight: 0.15 },
         { name: 'labels', weight: 0.15 },
         { name: 'labels.label', weight: 0.15 },
@@ -134,12 +136,51 @@ export function Catalog(props: {
         [filterSelections]
     )
 
+    const featureFilterGroups = useMemo(() => {
+        const groupMap: Record<string, ICatalogFilterGroup> = {}
+        for (const card of props.cards ?? []) {
+            for (const featureGroup of card.featureGroups ?? []) {
+                let catalogFilterGroup = groupMap[featureGroup.title]
+                if (!catalogFilterGroup) {
+                    catalogFilterGroup = {
+                        id: featureGroup.title,
+                        label: featureGroup.title,
+                        filters: [],
+                    }
+                    groupMap[featureGroup.title] = catalogFilterGroup
+                }
+                for (const feature of featureGroup.features) {
+                    if (!catalogFilterGroup.filters?.find((filter) => filter.value === feature)) {
+                        const filter: ICatalogFilter = {
+                            value: feature,
+                        }
+                        catalogFilterGroup.filters!.push(filter)
+                    }
+                }
+            }
+        }
+        const groups = Object.values(groupMap)
+        for (const group of groups) {
+            group.filters?.sort((l, r) => (l.value as string).localeCompare(r.value as string))
+        }
+        return groups.sort((l, r) => l.label.localeCompare(r.label))
+    }, [props.cards])
+
     const catalogFilterGroups = useMemo(() => {
-        if (!props.filterGroups) return <Fragment />
+        if (!props.filterGroups && !featureFilterGroups.length) return <Fragment />
         return (
             <DrawerPanelContent minSize="250px" defaultSize="250px" maxSize="250px">
                 <DrawerPanelBody>
-                    {props.filterGroups.map((filterGroup) => (
+                    {props.filterGroups?.map((filterGroup) => (
+                        <DrawerSection key={filterGroup.id} style={{ paddingBottom: 32 }}>
+                            <FilterGroup
+                                filterGroup={filterGroup}
+                                selectedValues={filterSelections[filterGroup.id]}
+                                onClickFilter={onClickFilter}
+                            />
+                        </DrawerSection>
+                    ))}
+                    {featureFilterGroups.map((filterGroup) => (
                         <DrawerSection key={filterGroup.id} style={{ paddingBottom: 32 }}>
                             <FilterGroup
                                 filterGroup={filterGroup}
@@ -151,7 +192,7 @@ export function Catalog(props: {
                 </DrawerPanelBody>
             </DrawerPanelContent>
         )
-    }, [props.filterGroups, filterSelections, onClickFilter])
+    }, [props.filterGroups, filterSelections, onClickFilter, featureFilterGroups])
 
     const filteredCards = useMemo(() => {
         let filteredCards = props.cards
@@ -161,9 +202,18 @@ export function Catalog(props: {
                 const t = filterSelections[key]
                 if (t.length == 0) continue
                 filteredCards = filteredCards?.filter((card) => {
-                    return card.labels?.find((label) => {
+                    const matchesLabel = card.labels?.find((label) => {
                         return t.includes(label)
                     })
+                    if (matchesLabel) return true
+                    const matchesFeature = card.featureGroups?.find((featureGroup) => {
+                        for (const feature of featureGroup.features) {
+                            if (t.includes(feature)) return true
+                        }
+                        return false
+                    })
+                    if (matchesFeature) return true
+                    return false
                 })
             }
         }
@@ -205,7 +255,7 @@ export function Catalog(props: {
                             <CardHeader>
                                 <Split hasGutter style={{ width: '100%' }}>
                                     <SplitItem isFilled>
-                                        <Split>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
                                             {card.icon && (
                                                 <div
                                                     style={{
@@ -214,14 +264,16 @@ export function Catalog(props: {
                                                         width: 40,
                                                         marginTop: -20,
                                                         marginBottom: -20,
-                                                        marginRight: 8,
+                                                        marginRight: 12,
+                                                        alignItems: 'center',
+                                                        justifyItems: 'stretch',
                                                     }}
                                                 >
                                                     {card.icon}
                                                 </div>
                                             )}
                                             <CardTitle>{card.title}</CardTitle>
-                                        </Split>
+                                        </div>
                                     </SplitItem>
                                     {card.badge && (
                                         <SplitItem>
@@ -248,7 +300,10 @@ export function Catalog(props: {
                                                 </Title>
                                                 <List isPlain>
                                                     {featureGroup.features?.map((feature, index) => (
-                                                        <ListItem key={index} icon={<CheckIcon color="green" size="md" />}>
+                                                        <ListItem
+                                                            key={index}
+                                                            icon={<CheckIcon color="green" size="md" style={{ marginTop: -2 }} />}
+                                                        >
                                                             {feature}
                                                         </ListItem>
                                                     ))}
@@ -380,14 +435,7 @@ export function AcmScrollable(props: { children?: ReactNode; borderTop?: boolean
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflowY: 'hidden', position: 'relative' }}>
             <div
                 ref={divEl}
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexGrow: 1,
-                    overflowY: 'auto',
-                    borderTop,
-                    borderBottom,
-                }}
+                style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflowY: 'auto', borderTop, borderBottom }}
                 onScroll={update}
             >
                 {props.children}
