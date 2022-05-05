@@ -181,9 +181,8 @@ describe('ansible wizard', () => {
                 cy.get('#upgrade-posthooks').contains('post-up-1')
                 cy.get('#upgrade-posthooks').contains('post-up-2')
             })
-
-            cy.contains('Submit')
         })
+        cy.contains('Submit')
     })
 
     it('results', () => {

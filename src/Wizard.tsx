@@ -6,7 +6,6 @@ import {
     DrawerContent,
     DrawerContentBody,
     DrawerPanelContent,
-    Form,
     Split,
     SplitItem,
     Stack,
@@ -17,13 +16,12 @@ import {
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { klona } from 'klona/json'
-import { Children, isValidElement, ReactElement, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { EditMode } from '.'
 import { onSubmit } from '../wizards/common/utils'
 import { DataContext } from './contexts/DataContext'
 import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
 import { EditModeContext } from './contexts/EditModeContext'
-import { HasInputsProvider } from './contexts/HasInputsProvider'
 import { ItemContext, useItem } from './contexts/ItemContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
 import { StepHasInputsProvider } from './contexts/StepHasInputsProvider'
@@ -136,29 +134,20 @@ function WizardInternal(props: {
 
     const steps: WizardStep[] = useMemo(() => {
         const steps = stepComponents.map(
-            (stepComponent) =>
+            (component) =>
                 ({
-                    id: stepComponent.props?.id,
+                    id: component.props?.id,
                     name: (
                         <Split hasGutter>
-                            <SplitItem isFilled>{stepComponent.props?.label}</SplitItem>
-                            {(showValidation || stepShowValidation[stepComponent.props?.id]) &&
-                                stepHasValidationError[stepComponent.props?.id] && (
-                                    <SplitItem>
-                                        <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
-                                    </SplitItem>
-                                )}
+                            <SplitItem isFilled>{component.props?.label}</SplitItem>
+                            {(showValidation || stepShowValidation[component.props?.id]) && stepHasValidationError[component.props?.id] && (
+                                <SplitItem>
+                                    <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+                                </SplitItem>
+                            )}
                         </Split>
                     ),
-                    component: (
-                        <Form>
-                            <HasInputsProvider key={stepComponent.props.id}>
-                                <ShowValidationProvider>
-                                    <ValidationProvider>{stepComponent}</ValidationProvider>
-                                </ShowValidationProvider>
-                            </HasInputsProvider>
-                        </Form>
-                    ),
+                    component,
                 } as WizardStep)
         )
         steps.push(reviewStep)
@@ -167,13 +156,16 @@ function WizardInternal(props: {
 
     const { title } = props
     return (
-        <PFWizard
-            navAriaLabel={`${title} steps`}
-            mainAriaLabel={`${title} content`}
-            steps={steps}
-            footer={<MyFooter onSubmit={onSubmit} steps={steps} />}
-            onClose={props.onCancel}
-        />
+        <Fragment>
+            <PFWizard
+                navAriaLabel={`${title} steps`}
+                mainAriaLabel={`${title} content`}
+                steps={steps}
+                footer={<MyFooter onSubmit={onSubmit} steps={steps} />}
+                onClose={props.onCancel}
+            />
+            <div style={{ display: 'none' }}>{stepComponents}</div>
+        </Fragment>
     )
 }
 
