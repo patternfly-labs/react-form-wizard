@@ -19,7 +19,6 @@ export interface StepProps {
 
 export function Step(props: StepProps) {
     return (
-        // <Form>
         <div id={props.id}>
             <HasInputsProvider key={props.id}>
                 <ShowValidationProvider>
@@ -29,7 +28,6 @@ export function Step(props: StepProps) {
                 </ShowValidationProvider>
             </HasInputsProvider>
         </div>
-        // </Form>
     )
 }
 
@@ -61,13 +59,5 @@ export function StepInternal(props: StepProps) {
     const hidden = useInputHidden(props)
     if (hidden && props.autohide !== false) return <Fragment />
 
-    return (
-        <Form>
-            <HasInputsProvider key={props.id}>
-                <ShowValidationProvider>
-                    <ValidationProvider>{props.children}</ValidationProvider>
-                </ShowValidationProvider>
-            </HasInputsProvider>
-        </Form>
-    )
+    return <Form>{props.children}</Form>
 }
