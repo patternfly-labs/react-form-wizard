@@ -59,5 +59,9 @@ export function StepInternal(props: StepProps) {
     const hidden = useInputHidden(props)
     if (hidden && props.autohide !== false) return <Fragment />
 
+    if (displayMode === DisplayMode.Details) {
+        // Don't use forms in steps which are forms
+        return <Fragment>{props.children}</Fragment>
+    }
     return <Form>{props.children}</Form>
 }

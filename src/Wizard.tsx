@@ -70,21 +70,17 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                             <Drawer isExpanded={drawerExpanded} isInline>
                                                 <DrawerContent panelContent={<WizardDrawer yamlEditor={props.yamlEditor} />}>
                                                     <DrawerContentBody>
-                                                        <section className="pf-c-page__main-wizard" style={{ height: '100%' }}>
-                                                            {/* <PageSection variant="light" style={{ height: '100%' }} type="wizard" isWidthLimited> */}
-                                                            <ItemContext.Provider value={data}>
-                                                                <WizardInternal
-                                                                    title={props.title}
-                                                                    onSubmit={props.onSubmit}
-                                                                    onCancel={props.onCancel}
-                                                                    hasButtons={props.hasButtons}
-                                                                    isYamlArray={isYamlArray}
-                                                                >
-                                                                    {props.children}
-                                                                </WizardInternal>
-                                                            </ItemContext.Provider>
-                                                            {/* </PageSection> */}
-                                                        </section>
+                                                        <ItemContext.Provider value={data}>
+                                                            <WizardInternal
+                                                                title={props.title}
+                                                                onSubmit={props.onSubmit}
+                                                                onCancel={props.onCancel}
+                                                                hasButtons={props.hasButtons}
+                                                                isYamlArray={isYamlArray}
+                                                            >
+                                                                {props.children}
+                                                            </WizardInternal>
+                                                        </ItemContext.Provider>
                                                     </DrawerContentBody>
                                                 </DrawerContent>
                                             </Drawer>
