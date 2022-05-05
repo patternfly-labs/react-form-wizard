@@ -202,7 +202,9 @@ function MyFooter(props: { onSubmit: (data: object) => Promise<string>; steps: W
         [onSubmit]
     )
     const data = useItem()
-    const onSubmitClick = useCallback(() => onSubmitClickHandler(data), [data, onSubmitClickHandler])
+    const onSubmitClick = useCallback(() => {
+        onSubmitClickHandler(data)
+    }, [data, onSubmitClickHandler])
 
     const setShowValidation = useSetShowValidation()
     const showWizardValidation = useShowValidation()
