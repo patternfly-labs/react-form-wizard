@@ -240,6 +240,7 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[]; stepComp
                         onClick={onSubmitClick}
                         isDisabled={(wizardHasValidationError && showWizardValidation) || submitting}
                         isLoading={submitting}
+                        type="submit"
                     >
                         {submitting ? 'Submitting' : 'Submit'}
                     </Button>
