@@ -155,21 +155,14 @@ function WizardInternal(props: {
                 navAriaLabel={`${title} steps`}
                 mainAriaLabel={`${title} content`}
                 steps={steps}
-                footer={<MyFooter onSubmit={props.onSubmit} steps={steps} />}
+                footer={<MyFooter onSubmit={props.onSubmit} steps={steps} stepComponents={stepComponents} />}
                 onClose={props.onCancel}
             />
-            <RenderHiddenSteps stepComponents={stepComponents} />
         </Fragment>
     )
 }
 
-function RenderHiddenSteps(props: { stepComponents: ReactElement[] }) {
-    const wizardContext = useContext(WizardContext)
-    const { activeStep } = wizardContext
-    return <div style={{ display: 'none' }}>{props.stepComponents.filter((component) => component.props.id !== activeStep.id)}</div>
-}
-
-function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[] }) {
+function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[]; stepComponents: ReactElement[] }) {
     const wizardContext = useContext(WizardContext)
     const { activeStep, onNext, onBack, onClose } = wizardContext
 
@@ -257,6 +250,7 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[] }) {
                         </Button>
                     </div>
                 </WizardFooter>
+                <RenderHiddenSteps stepComponents={props.stepComponents} />
             </div>
         )
     }
@@ -284,8 +278,15 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[] }) {
                     </Button>
                 </div>
             </WizardFooter>
+            <RenderHiddenSteps stepComponents={props.stepComponents} />
         </div>
     )
+}
+
+function RenderHiddenSteps(props: { stepComponents: ReactElement[] }) {
+    const wizardContext = useContext(WizardContext)
+    const { activeStep } = wizardContext
+    return <div style={{ display: 'none' }}>{props.stepComponents.filter((component) => component.props.id !== activeStep.id)}</div>
 }
 
 function WizardDrawer(props: { yamlEditor?: () => ReactNode }) {
