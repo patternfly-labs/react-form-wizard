@@ -52,7 +52,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
             setDrawerExpanded(props.showYaml)
         }
     }, [props.showYaml])
-    const displayMode = DisplayMode.Wizard
+    const displayMode = DisplayMode.Step
     const isYamlArray = useMemo(() => Array.isArray(props.defaultData), [props.defaultData])
 
     return (
@@ -141,7 +141,7 @@ function WizardInternal(props: {
                             )}
                         </Split>
                     ),
-                    component,
+                    component: <Fragment key={component.props?.id}>{component}</Fragment>,
                 } as WizardStep)
         )
         steps.push(reviewStep)
@@ -286,7 +286,11 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[]; stepComp
 function RenderHiddenSteps(props: { stepComponents: ReactElement[] }) {
     const wizardContext = useContext(WizardContext)
     const { activeStep } = wizardContext
-    return <div style={{ display: 'none' }}>{props.stepComponents.filter((component) => component.props.id !== activeStep.id)}</div>
+    return (
+        <DisplayModeContext.Provider value={DisplayMode.StepsHidden}>
+            <div style={{ display: 'none' }}>{props.stepComponents.filter((component) => component.props.id !== activeStep.id)}</div>
+        </DisplayModeContext.Provider>
+    )
 }
 
 function WizardDrawer(props: { yamlEditor?: () => ReactNode }) {

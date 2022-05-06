@@ -26,7 +26,7 @@ type AsyncSelectProps = InputCommonProps<string> & {
 
 export function AsyncSelect(props: AsyncSelectProps) {
     const { asyncCallback } = props
-    const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
+    const { displayMode, value, setValue, validated, hidden, id, disabled } = useInput(props)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
     const [open, setOpen] = useState(false)
     const [options, setOptions] = useState<string[]>([])
@@ -60,7 +60,7 @@ export function AsyncSelect(props: AsyncSelectProps) {
     )
 
     const sync = useCallback(() => {
-        if (mode === DisplayMode.Details) return
+        if (displayMode !== DisplayMode.Step) return
         if (asyncCallback) {
             setLoading((loading) => {
                 if (loading) return loading
@@ -80,13 +80,13 @@ export function AsyncSelect(props: AsyncSelectProps) {
                 return false
             })
         }
-    }, [asyncCallback, mode])
+    }, [asyncCallback, displayMode])
 
     useEffect(() => sync(), [sync])
 
     if (hidden) return <Fragment />
 
-    if (mode === DisplayMode.Details) {
+    if (displayMode === DisplayMode.Details) {
         if (!value) return <Fragment />
         return (
             <DescriptionListGroup>
