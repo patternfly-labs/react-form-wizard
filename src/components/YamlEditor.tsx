@@ -1,5 +1,3 @@
-import { Button } from '@patternfly/react-core'
-import { CheckIcon, CopyIcon } from '@patternfly/react-icons'
 import useResizeObserver from '@react-hook/resize-observer'
 import { useEffect, useRef, useState } from 'react'
 import YAML from 'yaml'
@@ -54,10 +52,9 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
             setErrorLine(-1)
         }
     }, [props.data, hasFocus, props.isYamlArray])
-    const [copied, setCopied] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const [width, setWidth] = useState(10)
-    useResizeObserver(ref, (entry) => setWidth(entry.contentRect.width - 20))
+    useResizeObserver(ref, (entry) => setWidth(entry.contentRect.width + 1))
 
     const smallRef = useRef<HTMLDivElement>(null)
     const [textWidth, setTextWidth] = useState(10)
@@ -65,28 +62,6 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, maxHeight: '100%' }} ref={ref}>
-            <div
-                style={{
-                    display: 'flex',
-                    borderBottom: 'thin solid #ffffff30',
-                    justifyContent: 'end',
-                    backgroundColor: color.background,
-                    color: 'white',
-                    alignItems: 'center',
-                }}
-            >
-                <Button
-                    variant="plain"
-                    onClick={() => {
-                        void navigator.clipboard.writeText(yaml)
-                        setCopied(true)
-                        setTimeout(() => setCopied(false), 2000)
-                    }}
-                    tabIndex={-1}
-                >
-                    {copied ? <CheckIcon color="var(--pf-global--success-color--100)" /> : <CopyIcon color="white" />}
-                </Button>
-            </div>
             <div style={{ display: 'flex', flexGrow: 1, overflow: 'auto' }}>
                 <div style={{ width: '100%' }}>
                     <pre
@@ -148,6 +123,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                                     color: 'transparent',
                                     caretColor: 'white',
                                     resize: 'none',
+                                    boxShadow: 'none',
                                 }}
                                 value={yaml}
                                 onChange={(e) => {
