@@ -243,7 +243,9 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[]; stepComp
                     >
                         {submitting ? 'Submitting' : 'Submit'}
                     </Button>
-                    <Button onClick={onBack}>Back</Button>
+                    <Button variant="secondary" onClick={onBack}>
+                        Back
+                    </Button>
                     <div className="pf-c-wizard__footer-cancel">
                         <Button variant="link" onClick={onClose}>
                             Cancel
