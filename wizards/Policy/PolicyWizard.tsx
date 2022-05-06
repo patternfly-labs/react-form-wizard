@@ -346,7 +346,7 @@ export function PolicyWizardTemplates() {
                     </ArrayInput>
                 </Hidden>
 
-                <Hidden hidden={(template: any) => template.objectDefinition.spec.namespaceSelector === undefined}>
+                <Hidden hidden={(template: any) => template?.objectDefinition?.spec?.namespaceSelector === undefined}>
                     <StringsInput
                         id="include-namespaces"
                         path="objectDefinition.spec.namespaceSelector.include"
@@ -507,7 +507,7 @@ function ObjectTemplate() {
 }
 
 function pascalCaseToSentenceCase(text: string) {
-    const result = text.replace(/([A-Z])/g, ' $1')
+    const result = text?.replace(/([A-Z])/g, ' $1') ?? ''
     const finalResult = result.charAt(0).toUpperCase() + result.slice(1)
     return finalResult
 }
