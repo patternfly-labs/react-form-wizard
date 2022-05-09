@@ -266,7 +266,6 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[]; stepComp
             <WizardFooter>
                 <Button
                     variant="primary"
-                    type="submit"
                     onClick={onNextClick}
                     isDisabled={(activeStepHasValidationError && activeStepShowValidation) || submitting}
                 >
