@@ -1,3 +1,4 @@
+import get from 'get-value'
 import { Fragment, ReactNode, useMemo } from 'react'
 import {
     EditMode,
@@ -18,6 +19,7 @@ import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
+import { PolicyApiVersion, PolicyKind } from '../common/resources/IPolicy'
 import { PolicySetApiGroup, PolicySetKind, PolicySetType } from '../common/resources/IPolicySet'
 import { Sync } from '../common/Sync'
 import { isValidKubernetesResourceName } from '../common/validation'
@@ -41,6 +43,32 @@ export interface PolicySetWizardProps {
 }
 
 export function PolicySetWizard(props: PolicySetWizardProps) {
+    const policySet = props.resources?.find((resource) => resource.kind === PolicySetKind)
+    const virtualPolicies = useMemo(() => {
+        const virtualPolicies = [...props.policies]
+        if (policySet) {
+            const policies = get(policySet, 'spec.policies') ?? []
+            for (const policyName of policies) {
+                if (
+                    !virtualPolicies.find(
+                        (policy) => policy.metadata?.name === policyName && policy.metadata?.namespace === policySet.metadata?.namespace
+                    )
+                ) {
+                    virtualPolicies.push({
+                        apiVersion: PolicyApiVersion,
+                        kind: PolicyKind,
+                        metadata: {
+                            name: policyName,
+                            namespace: policySet.metadata?.namespace,
+                        },
+                    })
+                }
+            }
+        }
+
+        return virtualPolicies
+    }, [policySet, props.policies])
+
     return (
         <WizardPage
             title={props.title}
@@ -108,7 +136,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                 </Section>
             </Step>
             <Step label="Policies" id="policies-step">
-                <PoliciesSection policies={props.policies} />
+                <PoliciesSection policies={virtualPolicies} />
             </Step>
             <Step label="Placement" id="placement-step">
                 <PlacementSection
@@ -146,6 +174,7 @@ function PoliciesSection(props: { policies: IResource[] }) {
                     columns={[
                         { name: 'Name', cellFn: (policy: IResource) => policy.metadata?.name },
                         { name: 'Namespace', cellFn: (policy: IResource) => policy.metadata?.namespace },
+                        { name: '', cellFn: (policy: IResource) => (policy.metadata?.uid ? '' : 'Not found') },
                     ]}
                     items={namespacedPolicies}
                     itemToValue={(policy: IResource) => policy.metadata?.name}
