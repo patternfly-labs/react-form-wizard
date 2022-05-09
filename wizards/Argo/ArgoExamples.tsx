@@ -71,11 +71,11 @@ export function CreateApplicationSet() {
             placements={placements}
             channels={channels}
             timeZones={timeZones}
-            getGitRevisions={async (channel) => {
+            getGitRevisions={async () => {
                 await new Promise((resolve) => setTimeout(resolve, 1000))
                 return Promise.resolve(['branch-1', 'branch-2'])
             }}
-            getGitPaths={async (channelPath, branch) => {
+            getGitPaths={async () => {
                 await new Promise((resolve) => setTimeout(resolve, 1000))
                 return Promise.resolve(['path-1', 'path-2'])
             }}
