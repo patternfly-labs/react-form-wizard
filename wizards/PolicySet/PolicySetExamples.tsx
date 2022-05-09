@@ -276,7 +276,7 @@ export function EditPolicySet8() {
 const policySetResource: IResource = {
     ...PolicySetType,
     metadata: { name: 'my-policy-set', namespace: 'my-namespace-1', uid: '00000000-0000-0000-0000-000000000000' },
-    spec: { policies: ['my-policy-1', 'my-policy-2'] },
+    spec: { policies: ['my-policy-1', 'my-policy-2', 'my-policy-1000'] },
 } as IResource
 
 const singlePlacementResources: IResource[] = [

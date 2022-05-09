@@ -7,10 +7,10 @@ import { PolicyType } from './resources/IPolicy'
 export const namespaces = ['default', 'my-namespace-1', 'my-namespace-2']
 
 export const policies: IResource[] = [
-    { ...PolicyType, metadata: { name: 'my-policy-1', namespace: 'my-namespace-1' } },
-    { ...PolicyType, metadata: { name: 'my-policy-2', namespace: 'my-namespace-1' } },
-    { ...PolicyType, metadata: { name: 'my-policy-3', namespace: 'my-namespace-2' } },
-    { ...PolicyType, metadata: { name: 'my-policy-4', namespace: 'my-namespace-2' } },
+    { ...PolicyType, metadata: { name: 'my-policy-1', namespace: 'my-namespace-1', uid: '1234' } },
+    { ...PolicyType, metadata: { name: 'my-policy-2', namespace: 'my-namespace-1', uid: '1234' } },
+    { ...PolicyType, metadata: { name: 'my-policy-3', namespace: 'my-namespace-2', uid: '1234' } },
+    { ...PolicyType, metadata: { name: 'my-policy-4', namespace: 'my-namespace-2', uid: '1234' } },
 ]
 
 export const clusterSets: IResource[] = [
