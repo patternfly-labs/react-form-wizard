@@ -50,7 +50,7 @@
         "@babel/preset-react": "7.16.7",
         "@babel/preset-typescript": "7.16.7",
         "@cypress/code-coverage": "3.9.12",
-        "@patternfly/react-core": "4.208.6",
+        "@patternfly/react-core": "4.212.0",
         "@patternfly/react-icons": "4.63.0",
         "@patternfly/react-table": "4.81.0",
         "@pmmmwh/react-refresh-webpack-plugin": "0.5.5",
