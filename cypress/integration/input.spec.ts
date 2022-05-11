@@ -11,7 +11,7 @@ describe('inputs wizard', () => {
     it('text input', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
-        cy.get('#text-input').within(() => {
+        cy.get('section #text-input').within(() => {
             cy.contains('Text input required is required')
             cy.get('#text-input').within(() => {
                 cy.get('#textinput-text').type('text-input')
@@ -25,7 +25,7 @@ describe('inputs wizard', () => {
     it('text area', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
-        cy.get('#text-area').within(() => {
+        cy.get('section #text-area').within(() => {
             cy.contains('Text area required is required')
             cy.get('#text-area').within(() => {
                 cy.get('#textarea-text').type('text-area')
@@ -39,7 +39,7 @@ describe('inputs wizard', () => {
     it('select', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
-        cy.get('#select').within(() => {
+        cy.get('section #select').within(() => {
             cy.contains('Select required is required')
             cy.get('#select').within(() => {
                 cy.get('#select-value').click().get(`#Option\\ 1`).click()
@@ -57,7 +57,7 @@ describe('inputs wizard', () => {
     it('radio', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
-        cy.get('#radio-step').within(() => {
+        cy.get('section #radio-step').within(() => {
             cy.get('#group-5').within(() => {
                 cy.get('#radio-1').click()
             })
@@ -66,7 +66,7 @@ describe('inputs wizard', () => {
     })
 
     it('checkbox', () => {
-        cy.get('#checkbox-step').within(() => {
+        cy.get('section #checkbox-step').within(() => {
             cy.get('#checkbox-1').click()
             cy.get('#checkbox-2').click()
             cy.get('#checkbox-3').click()
@@ -74,7 +74,7 @@ describe('inputs wizard', () => {
         })
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
-        cy.get('#checkbox-step').within(() => {
+        cy.get('section #checkbox-step').within(() => {
             cy.get('#checkbox-2-text').type('hello')
             cy.get('#checkbox-4').click()
         })
@@ -104,7 +104,7 @@ describe('inputs wizard', () => {
     it('section', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
-        cy.get('#section-step').within(() => {
+        cy.get('section #section-step').within(() => {
             cy.contains('Text 1 is required')
             cy.contains('Text 3 is required')
             cy.contains('Text input is required')
@@ -116,12 +116,12 @@ describe('inputs wizard', () => {
     })
 
     it('hidden', () => {
-        cy.get('#hidden-step').within(() => {
+        cy.get('div #hidden-step').within(() => {
             cy.get('#show-hidden').click()
         })
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
-        cy.get('#hidden-step').within(() => {
+        cy.get('div #hidden-step').within(() => {
             cy.get('#show-hidden').click()
         })
         cy.contains('Next').click()
