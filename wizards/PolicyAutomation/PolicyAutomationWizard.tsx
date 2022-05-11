@@ -168,6 +168,18 @@ export function PolicyAutomationWizard(props: {
                     <Select
                         id="mode"
                         label="Schedule"
+                        labelHelp={
+                            <div>
+                                <p>
+                                    <strong>Run once:</strong> When a policy is violated, the automation runs one time, after which it is
+                                    disabled.
+                                </p>
+                                <p>
+                                    <strong>Disabled:</strong> The automation does not run automatically.
+                                </p>
+                                <p>{`(To run automation manually, select "Disabled" and check the "Manual run" checkbox.)`}</p>
+                            </div>
+                        }
                         path="spec.mode"
                         options={[
                             { label: 'Once', value: 'once' },

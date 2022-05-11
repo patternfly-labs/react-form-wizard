@@ -1,5 +1,5 @@
 import get from 'get-value'
-import { useCallback, useContext, useLayoutEffect } from 'react'
+import { ReactNode, useCallback, useContext, useLayoutEffect } from 'react'
 import set from 'set-value'
 import { EditMode } from '..'
 import { useData } from '../contexts/DataContext'
@@ -24,7 +24,7 @@ export type InputCommonProps<ValueT = any> = {
     readonly?: boolean
     disabled?: boolean
     label?: string
-    labelHelp?: string
+    labelHelp?: ReactNode
     labelHelpTitle?: string
     helperText?: string
     disabledInEditMode?: boolean
