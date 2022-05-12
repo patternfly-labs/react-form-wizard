@@ -1,3 +1,4 @@
+import { Alert } from '@patternfly/react-core'
 import get from 'get-value'
 import { Fragment, ReactNode, useMemo } from 'react'
 import {
@@ -164,8 +165,22 @@ function PoliciesSection(props: { policies: IResource[] }) {
         if (!namespace) return []
         return props.policies.filter((policy) => policy.metadata?.namespace === namespace)
     }, [props.policies, resources])
+
+    // If at least one selected policy does not have a uid it is "missing" and we need to alert the user.
+    const arePoliciesMissing = useMemo(() => {
+        const policySet = resources?.find((resource) => resource.kind === PolicySetKind)
+        if (policySet) {
+            const selectedPolicies: string[] = get(policySet, 'spec.policies') ?? []
+            return selectedPolicies.find((policy: string) =>
+                namespacedPolicies.find((p: IResource) => p.metadata?.name === policy && !p.metadata?.uid)
+            )
+        }
+        return false
+    }, [resources, namespacedPolicies])
+
     return (
         <Section label="Policies">
+            {arePoliciesMissing && <Alert title="One or more selected policies can not be found." variant="warning" isInline />}
             <ItemSelector selectKey="kind" selectValue={PolicySetKind}>
                 <TableSelect
                     id="policies"
