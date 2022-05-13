@@ -180,7 +180,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
     useEffect(() => {
         const applicationSet: any = resources?.find((resource) => resource.kind === 'ApplicationSet')
         if (applicationSet) {
-            const channel = gitChannels.find((channel) => channel === applicationSet.spec.template.spec.source.repoURL)
+            const channel = gitChannels.find((channel: any) => channel === applicationSet.spec.template.spec.source.repoURL)
             if (channel) {
                 setGitRevisionsAsyncCallback(
                     () => () =>
@@ -206,7 +206,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 )
             }
         }
-    }, [props.channels, props.getGitPaths, props.getGitRevisions, resources])
+    }, [props.channels, props.getGitPaths, props.getGitRevisions, resources, gitChannels])
 
     return (
         <WizardPage
@@ -381,6 +381,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                     labelHelp="Refer to a single commit"
                                     placeholder="Enter or select a tracking revision"
                                     asyncCallback={gitRevisionsAsyncCallback}
+                                    isCreatable
                                     onValueChange={(value, item) => {
                                         const channel = props.channels?.find(
                                             (channel) => channel?.spec?.pathname === item.spec.template.spec.source.repoURL
