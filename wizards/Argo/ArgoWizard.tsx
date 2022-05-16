@@ -139,7 +139,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                 .map((channel) => channel?.spec?.pathname),
         [props.channels]
     )
-    const [createdChannels, setCreatedChannels] = useState<string[]>(['test'])
+    const [createdChannels, setCreatedChannels] = useState<string[]>([])
     const gitChannels = useMemo(() => {
         const gitArgoAppSetRepoURLs: string[] = []
         if (props.applicationSets) {
@@ -180,15 +180,33 @@ export function ArgoWizard(props: ArgoWizardProps) {
     useEffect(() => {
         const applicationSet: any = resources?.find((resource) => resource.kind === 'ApplicationSet')
         if (applicationSet) {
-            const channel = props.channels?.find((channel) => channel?.spec?.pathname === applicationSet.spec.template.spec.source.repoURL)
+            const channel = gitChannels.find((channel: any) => channel === applicationSet.spec.template.spec.source.repoURL)
             if (channel) {
-                setGitRevisionsAsyncCallback(() => () => getGitBranchList(channel, props.getGitRevisions))
+                setGitRevisionsAsyncCallback(
+                    () => () =>
+                        getGitBranchList(
+                            { metadata: { name: '', namespace: '' }, spec: { pathname: channel, type: 'git' } },
+                            props.getGitRevisions
+                        )
+                )
+
                 setGitPathsAsyncCallback(
-                    () => () => getGitPathList(channel, applicationSet.spec.template.spec.source.targetRevision, props.getGitPaths)
+                    () => () =>
+                        getGitPathList(
+                            {
+                                metadata: {
+                                    name: '',
+                                    namespace: '',
+                                },
+                                spec: { pathname: channel, type: 'git' },
+                            },
+                            applicationSet.spec.template.spec.source.targetRevision,
+                            props.getGitPaths
+                        )
                 )
             }
         }
-    }, [props.channels, props.getGitPaths, props.getGitRevisions, resources])
+    }, [props.channels, props.getGitPaths, props.getGitRevisions, resources, gitChannels])
 
     return (
         <WizardPage
@@ -363,6 +381,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                     labelHelp="Refer to a single commit"
                                     placeholder="Enter or select a tracking revision"
                                     asyncCallback={gitRevisionsAsyncCallback}
+                                    isCreatable
                                     onValueChange={(value, item) => {
                                         const channel = props.channels?.find(
                                             (channel) => channel?.spec?.pathname === item.spec.template.spec.source.repoURL
