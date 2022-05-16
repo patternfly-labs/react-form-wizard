@@ -7,7 +7,6 @@ import { YamlToObject } from '../../src/components/YamlEditor'
 import { Catalog } from '../Catalog'
 import { clusters, clusterSetBindings, clusterSets, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
-import { DashboardCard, DashboardPage } from '../Dashboard'
 import { RouteE } from '../Routes'
 import { PolicyWizard } from './PolicyWizard'
 import editPolicyLimitClusterAdmin from './stable/AC-Access-Control/policy-limitclusteradmin.yaml'
@@ -161,22 +160,6 @@ export function PolicyExamples() {
             ]}
             onBack={() => history.push(RouteE.Wizards)}
         />
-    )
-}
-
-export function PolicyExamples2() {
-    return (
-        <DashboardPage title="Policy examples">
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyImageManifestVuln}>
-                <Checked>Image Manifest Vuln</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyPsp}>
-                <Checked>Psp</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyScc}>
-                <Checked>Security Context Constraints</Checked>
-            </DashboardCard>
-        </DashboardPage>
     )
 }
 
