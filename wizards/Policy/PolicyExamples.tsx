@@ -1,13 +1,9 @@
-import { Split, SplitItem } from '@patternfly/react-core'
-import { CheckIcon } from '@patternfly/react-icons'
-import { ReactNode } from 'react'
 import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
 import { YamlToObject } from '../../src/components/YamlEditor'
 import { Catalog } from '../Catalog'
 import { clusters, clusterSetBindings, clusterSets, namespaces, placementRules, placements, policies } from '../common/test-data'
 import { onSubmit } from '../common/utils'
-import { DashboardCard, DashboardPage } from '../Dashboard'
 import { RouteE } from '../Routes'
 import { PolicyWizard } from './PolicyWizard'
 import editPolicyLimitClusterAdmin from './stable/AC-Access-Control/policy-limitclusteradmin.yaml'
@@ -28,17 +24,6 @@ import editPolicyImageManifestVuln from './stable/SI-System-and-Information-Inte
 
 export function onCancel(history: { push: (location: string) => void }) {
     history.push(`./${RouteE.Policy}`)
-}
-
-function Checked(props: { children: ReactNode }) {
-    return (
-        <Split hasGutter>
-            <SplitItem>
-                <CheckIcon color="green" />
-            </SplitItem>
-            <SplitItem>{props.children}</SplitItem>
-        </Split>
-    )
 }
 
 export function PolicyExamples() {
@@ -161,22 +146,6 @@ export function PolicyExamples() {
             ]}
             onBack={() => history.push(RouteE.Wizards)}
         />
-    )
-}
-
-export function PolicyExamples2() {
-    return (
-        <DashboardPage title="Policy examples">
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyImageManifestVuln}>
-                <Checked>Image Manifest Vuln</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyPsp}>
-                <Checked>Psp</Checked>
-            </DashboardCard>
-            <DashboardCard title="Edit policy" route={RouteE.EditPolicyScc}>
-                <Checked>Security Context Constraints</Checked>
-            </DashboardCard>
-        </DashboardPage>
     )
 }
 

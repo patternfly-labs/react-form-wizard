@@ -138,7 +138,7 @@ export function PolicyWizard(props: {
             </Step>
             <Step label="Policy templates" id="templates">
                 <ItemSelector selectKey="kind" selectValue={PolicyKind}>
-                    <PolicyWizardTemplates />
+                    <PolicyWizardTemplates policies={props.policies} />
                 </ItemSelector>
             </Step>
             <Step label="Placement" id="placement">
@@ -195,10 +195,9 @@ export function PolicyWizard(props: {
     )
 }
 
-export function PolicyWizardTemplates() {
+export function PolicyWizardTemplates(props: { policies: IResource[] }) {
     const policy = useContext(ItemContext)
     const editMode = useEditMode()
-
     return (
         <Section label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
             <RadioGroup
@@ -261,24 +260,24 @@ export function PolicyWizardTemplates() {
                                 })
                             }
 
-                            // make each policy template name unique in policy
+                            // make each policy template name unique in policy and globally
                             if (policy) {
                                 const existingTemplates = get(policy, 'spec.policy-templates')
-                                if (Array.isArray(existingTemplates)) {
-                                    for (const newPolicyTemplate of newPolicyTemplates) {
-                                        const name: string = get(newPolicyTemplate, 'objectDefinition.metadata.name')
-                                        if (!name) continue
-                                        let counter = 1
-                                        let newName = name
-                                        while (
+                                for (const newPolicyTemplate of newPolicyTemplates) {
+                                    const name: string = get(newPolicyTemplate, 'objectDefinition.metadata.name')
+                                    if (!name) continue
+                                    let counter = 1
+                                    let newName = name
+                                    while (
+                                        (Array.isArray(existingTemplates) &&
                                             existingTemplates.find((existingTemplate) => {
                                                 return get(existingTemplate, 'objectDefinition.metadata.name') === newName
-                                            })
-                                        ) {
-                                            newName = name + '-' + (counter++).toString()
-                                        }
-                                        set(newPolicyTemplate, 'objectDefinition.metadata.name', newName)
+                                            })) ||
+                                        isExistingTemplateName(newName, props.policies)
+                                    ) {
+                                        newName = name + '-' + (counter++).toString()
                                     }
+                                    set(newPolicyTemplate, 'objectDefinition.metadata.name', newName)
                                 }
                             }
 
@@ -386,6 +385,22 @@ export function PolicyWizardTemplates() {
             </ArrayInput>
         </Section>
     )
+}
+
+function isExistingTemplateName(name: string, policies: IResource[]) {
+    for (const policy of policies) {
+        const existingTemplates = get(policy, 'spec.policy-templates')
+        if (Array.isArray(existingTemplates)) {
+            if (
+                existingTemplates.find((existingTemplate) => {
+                    return get(existingTemplate, 'objectDefinition.metadata.name') === name
+                })
+            ) {
+                return true
+            }
+        }
+    }
+    return false
 }
 
 function ObjectTemplate() {
