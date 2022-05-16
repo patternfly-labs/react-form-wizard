@@ -1,6 +1,3 @@
-import { Split, SplitItem } from '@patternfly/react-core'
-import { CheckIcon } from '@patternfly/react-icons'
-import { ReactNode } from 'react'
 import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
 import { YamlToObject } from '../../src/components/YamlEditor'
@@ -27,17 +24,6 @@ import editPolicyImageManifestVuln from './stable/SI-System-and-Information-Inte
 
 export function onCancel(history: { push: (location: string) => void }) {
     history.push(`./${RouteE.Policy}`)
-}
-
-function Checked(props: { children: ReactNode }) {
-    return (
-        <Split hasGutter>
-            <SplitItem>
-                <CheckIcon color="green" />
-            </SplitItem>
-            <SplitItem>{props.children}</SplitItem>
-        </Split>
-    )
 }
 
 export function PolicyExamples() {
