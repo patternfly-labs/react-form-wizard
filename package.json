@@ -1,6 +1,6 @@
 {
     "name": "@patternfly-labs/react-form-wizard",
-    "version": "1.7.17",
+    "version": "1.7.18",
     "description": "A Patternfly react wizard framework.",
     "license": "Apache-2.0",
     "main": "lib/src/index.js",
