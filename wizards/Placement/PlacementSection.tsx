@@ -306,7 +306,15 @@ export function PlacementSelector(props: {
                                 newResources.push({
                                     ...PlacementRuleType,
                                     metadata: { name: placementName, namespace },
-                                    spec: { clusterSelector: { matchExpressions: [] } },
+                                    spec: {
+                                        clusterSelector: { matchExpressions: [] },
+                                        clusterConditions: [
+                                            {
+                                                status: 'True',
+                                                type: 'ManagedClusterConditionAvailable',
+                                            },
+                                        ],
+                                    },
                                 } as IResource)
                             }
                             newResources.push({
