@@ -87,7 +87,15 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                     {
                         ...PlacementRuleType,
                         metadata: { name: '', namespace: '' },
-                        spec: { clusterSelector: { matchExpressions: [] } },
+                        spec: {
+                            clusterSelector: { matchExpressions: [] },
+                            clusterConditions: [
+                                {
+                                    status: 'True',
+                                    type: 'ManagedClusterConditionAvailable',
+                                },
+                            ],
+                        },
                     },
                     {
                         ...PlacementBindingType,
