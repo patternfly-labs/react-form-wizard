@@ -49,7 +49,7 @@ export function PolicyAutomationWizard(props: {
                                 window.open(openShiftConsoleUrl + '/operatorhub/all-namespaces?keyword=ansible+automation+platform')
                             }
                         >
-                            {'Operator'}
+                            OperatorHub
                             <ExternalLinkAltIcon style={{ marginLeft: '4px', verticalAlign: 'middle' }} />
                         </Button>
                     </div>
