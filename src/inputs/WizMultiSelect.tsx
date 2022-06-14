@@ -12,10 +12,10 @@ import {
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
-import { InputLabel } from './InputLabel'
 import './Select.css'
+import { WizFormGroup } from './WizFormGroup'
 
-type MultiSelectStringsProps = InputCommonProps<string[]> & {
+export type WizMultiSelectProps = InputCommonProps<string[]> & {
     placeholder?: string
     footer?: ReactNode
     label: string
@@ -23,7 +23,7 @@ type MultiSelectStringsProps = InputCommonProps<string[]> & {
     options: string[]
 }
 
-export function MultiSelect(props: MultiSelectStringsProps) {
+export function WizMultiSelect(props: WizMultiSelectProps) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
     const [open, setOpen] = useState(false)
@@ -103,7 +103,7 @@ export function MultiSelect(props: MultiSelectStringsProps) {
 
     return (
         <div id={id}>
-            <InputLabel {...props}>
+            <WizFormGroup {...props}>
                 <PfSelect
                     isDisabled={disabled}
                     variant={SelectVariant.checkbox}
@@ -115,7 +115,7 @@ export function MultiSelect(props: MultiSelectStringsProps) {
                     isCreatable={props.isCreatable}
                     validated={validated}
                     onFilter={onFilter}
-                    hasInlineFilter={props.isCreatable || options.length > 10}
+                    hasInlineFilter
                     footer={props.footer}
                     placeholderText={
                         Array.isArray(selections) ? (
@@ -141,7 +141,7 @@ export function MultiSelect(props: MultiSelectStringsProps) {
                         </SelectOption>
                     ))}
                 </PfSelect>
-            </InputLabel>
+            </WizFormGroup>
         </div>
     )
 }

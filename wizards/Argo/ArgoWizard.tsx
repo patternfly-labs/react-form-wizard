@@ -2,27 +2,27 @@ import { Button, Flex, FlexItem, Split, Stack, ToggleGroup, ToggleGroupItem } fr
 import { GitAltIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
-    ArrayInput,
-    AsyncSelect,
-    Checkbox,
-    DetailsHidden,
+    WizAsyncSelect,
+    WizDetailsHidden,
     EditMode,
-    Hidden,
-    ItemSelector,
-    MultiSelect,
+    WizHidden,
+    WizItemSelector,
+    WizMultiSelect,
     Radio,
-    RadioGroup,
+    WizRadioGroup,
     Section,
     Select,
     Step,
-    TextDetail,
-    TextInput,
+    WizTextDetail,
     Tile,
-    Tiles,
-    TimeRange,
+    WizTiles,
+    WizTimeRange,
     WizardCancel,
     WizardPage,
     WizardSubmit,
+    WizArrayInput,
+    WizCheckbox,
+    WizTextInput,
 } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
@@ -281,9 +281,9 @@ export function ArgoWizard(props: ArgoWizardProps) {
                     targetPath="spec.template.metadata.name"
                     suffix="-{{name}}"
                 />
-                <ItemSelector selectKey="kind" selectValue="ApplicationSet">
+                <WizItemSelector selectKey="kind" selectValue="ApplicationSet">
                     <Section label="General">
-                        <TextInput
+                        <WizTextInput
                             path="metadata.name"
                             label="ApplicationSet name"
                             placeholder="Enter the application set name"
@@ -308,12 +308,12 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             required
                         />
                     </Section>
-                </ItemSelector>
+                </WizItemSelector>
             </Step>
             <Step id="template" label="Template">
-                <ItemSelector selectKey="kind" selectValue="ApplicationSet">
+                <WizItemSelector selectKey="kind" selectValue="ApplicationSet">
                     <Section label="Source">
-                        <Tiles
+                        <WizTiles
                             path="spec.template.spec.source"
                             label="Repository type"
                             inputValueToPathValue={repositoryTypeToSource}
@@ -332,9 +332,9 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         >
                             <Tile id="git" value="Git" label="Git" icon={<GitAltIcon />} description="Use a Git repository" />
                             <Tile id="helm" value="Helm" label="Helm" icon={<HelmIcon />} description="Use a Helm repository" />
-                        </Tiles>
+                        </WizTiles>
                         {/* Git repo */}
-                        <Hidden hidden={(data) => data.spec.template.spec.source.path === undefined}>
+                        <WizHidden hidden={(data) => data.spec.template.spec.source.path === undefined}>
                             <Select
                                 path="spec.template.spec.source.repoURL"
                                 label="URL"
@@ -374,8 +374,8 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 }
                                 // TODO valid URL
                             />
-                            <Hidden hidden={(data) => data.spec.template.spec.source.repoURL === ''}>
-                                <AsyncSelect
+                            <WizHidden hidden={(data) => data.spec.template.spec.source.repoURL === ''}>
+                                <WizAsyncSelect
                                     path="spec.template.spec.source.targetRevision"
                                     label="Revision"
                                     labelHelp="Refer to a single commit"
@@ -403,7 +403,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                         )
                                     }}
                                 />
-                                <AsyncSelect
+                                <WizAsyncSelect
                                     path="spec.template.spec.source.path"
                                     label="Path"
                                     labelHelp="The location of the resources on the Git repository."
@@ -411,10 +411,10 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                     isCreatable
                                     asyncCallback={gitPathsAsyncCallback}
                                 />
-                            </Hidden>
-                        </Hidden>
+                            </WizHidden>
+                        </WizHidden>
                         {/* Helm repo */}
-                        <Hidden hidden={(data) => data.spec.template.spec.source.chart === undefined}>
+                        <WizHidden hidden={(data) => data.spec.template.spec.source.chart === undefined}>
                             <Select
                                 path="spec.template.spec.source.repoURL"
                                 label="URL"
@@ -440,24 +440,24 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 }
                                 // TODO valid URL
                             />
-                            <TextInput
+                            <WizTextInput
                                 path="spec.template.spec.source.chart"
                                 label="Chart name"
                                 placeholder="Enter the name of the Helm chart"
                                 labelHelp="The specific name for the target Helm chart."
                                 required
                             />
-                            <TextInput
+                            <WizTextInput
                                 path="spec.template.spec.source.targetRevision"
                                 label="Package version"
                                 placeholder="Enter the version or versions"
                                 labelHelp="The version or versions for the deployable. You can use a range of versions in the form >1.0, or <3.0."
                                 required
                             />
-                        </Hidden>
+                        </WizHidden>
                     </Section>
                     <Section label="Destination">
-                        <TextInput
+                        <WizTextInput
                             id="destination"
                             path="spec.template.spec.destination.namespace"
                             label="Remote namespace"
@@ -465,26 +465,26 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             required
                         />
                     </Section>
-                </ItemSelector>
+                </WizItemSelector>
             </Step>
             <Step id="sync-policy" label="Sync policy">
-                <ItemSelector selectKey="kind" selectValue="ApplicationSet">
+                <WizItemSelector selectKey="kind" selectValue="ApplicationSet">
                     <Section
                         label="Sync policy"
                         description="Settings used to configure application syncing when there are differences between the desired state and the live cluster state."
                     >
-                        <Checkbox
+                        <WizCheckbox
                             label="Delete resources that are no longer defined in the source repository"
                             path="spec.template.spec.syncPolicy.automated.prune"
                         />
-                        <Checkbox
+                        <WizCheckbox
                             id="prune-last"
                             label="Delete resources that are no longer defined in the source repository at the end of a sync operation"
                             path="spec.template.spec.syncPolicy.syncOptions"
                             inputValueToPathValue={booleanToSyncOptions('PruneLast')}
                             pathValueToInputValue={syncOptionsToBoolean('PruneLast')}
                         />
-                        <Checkbox
+                        <WizCheckbox
                             id="replace"
                             label="Replace resources instead of applying changes from the source repository"
                             path="spec.template.spec.syncPolicy.syncOptions"
@@ -492,36 +492,36 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             pathValueToInputValue={syncOptionsToBoolean('Replace')}
                         />
 
-                        <Checkbox
+                        <WizCheckbox
                             path="spec.template.spec.syncPolicy.automated.allowEmpty"
                             label="Allow applications to have empty resources"
                         />
-                        <Checkbox
+                        <WizCheckbox
                             id="apply-out-of-sync-only"
                             label="Only synchronize out-of-sync resources"
                             path="spec.template.spec.syncPolicy.syncOptions"
                             inputValueToPathValue={booleanToSyncOptions('ApplyOutOfSyncOnly')}
                             pathValueToInputValue={syncOptionsToBoolean('ApplyOutOfSyncOnly')}
                         />
-                        <Checkbox
+                        <WizCheckbox
                             path="spec.template.spec.syncPolicy.automated.selfHeal"
                             label="Automatically sync when cluster state changes"
                         />
-                        <Checkbox
+                        <WizCheckbox
                             id="create-namespace"
                             label="Automatically create namespace if it does not exist"
                             path="spec.template.spec.syncPolicy.syncOptions"
                             inputValueToPathValue={booleanToSyncOptions('CreateNamespace')}
                             pathValueToInputValue={syncOptionsToBoolean('CreateNamespace')}
                         />
-                        <Checkbox
+                        <WizCheckbox
                             id="validate"
                             label="Disable kubectl validation"
                             path="spec.template.spec.syncPolicy.syncOptions"
                             inputValueToPathValue={booleanToSyncOptions('Validate')}
                             pathValueToInputValue={syncOptionsToBoolean('Validate')}
                         />
-                        <Checkbox
+                        <WizCheckbox
                             id="propagation-policy"
                             label="Prune propagation policy"
                             path="spec.template.spec.syncPolicy.syncOptions"
@@ -536,9 +536,9 @@ export function ArgoWizard(props: ArgoWizardProps) {
                                 pathValueToInputValue={syncOptionsToPrunePropagationPolicy}
                                 required
                             />
-                        </Checkbox>
+                        </WizCheckbox>
                     </Section>
-                </ItemSelector>
+                </WizItemSelector>
             </Step>
             <Step id="placement" label="Placement">
                 <ArgoWizardPlacementSection
@@ -564,7 +564,7 @@ export function DeploymentWindow(props: { timeZone: string[] }) {
             description="Schedule a time window for deployments"
             labelHelp="Define a time window if you want to activate or block resources deployment within a certain time interval."
         >
-            <RadioGroup
+            <WizRadioGroup
                 id="remediation"
                 path="deployment.window"
                 required
@@ -577,7 +577,7 @@ export function DeploymentWindow(props: { timeZone: string[] }) {
                 <Radio id="blocked" label="Blocked within specified interval" value="blocked">
                     <TimeWindow timeZone={props.timeZone} />
                 </Radio>
-            </RadioGroup>
+            </WizRadioGroup>
         </Section>
     )
 }
@@ -585,7 +585,7 @@ export function DeploymentWindow(props: { timeZone: string[] }) {
 export function TimeWindow(props: { timeZone: string[] }) {
     return (
         <Stack hasGutter style={{ paddingBottom: 16 }}>
-            <MultiSelect
+            <WizMultiSelect
                 label="Time window configuration"
                 placeholder="Select at least one day to create a time window."
                 path="timewindow.daysofweek"
@@ -593,24 +593,24 @@ export function TimeWindow(props: { timeZone: string[] }) {
                 options={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}
             />
             <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
-            <ArrayInput
+            <WizArrayInput
                 path="timeWindows"
                 placeholder="Add time range"
                 collapsedContent={
                     <Fragment>
-                        <TextDetail path="start" placeholder="Expand to enter the variable" />
-                        <Hidden hidden={(item: ITimeRangeVariableData) => item.end === undefined}>
+                        <WizTextDetail path="start" placeholder="Expand to enter the variable" />
+                        <WizHidden hidden={(item: ITimeRangeVariableData) => item.end === undefined}>
                             &nbsp;-&nbsp;
-                            <TextDetail path="end" />
-                        </Hidden>
+                            <WizTextDetail path="end" />
+                        </WizHidden>
                     </Fragment>
                 }
             >
                 <Split hasGutter>
-                    <TimeRange path="start" label="Start Time"></TimeRange>
-                    <TimeRange path="end" label="End Time"></TimeRange>
+                    <WizTimeRange path="start" label="Start Time"></WizTimeRange>
+                    <WizTimeRange path="end" label="End Time"></WizTimeRange>
                 </Split>
-            </ArrayInput>
+            </WizArrayInput>
         </Stack>
     )
 }
@@ -794,7 +794,7 @@ function ArgoWizardPlacementSection(props: {
     return (
         <Section label="Placement">
             {(editMode === EditMode.Create || !hasPlacement) && (
-                <DetailsHidden>
+                <WizDetailsHidden>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                         {editMode === EditMode.Create && (
                             <span className="pf-c-form__label pf-c-form__label-text">How do you want to select clusters?</span>
@@ -826,25 +826,25 @@ function ArgoWizardPlacementSection(props: {
                             />
                         </ToggleGroup>
                     </div>
-                </DetailsHidden>
+                </WizDetailsHidden>
             )}
             {hasPlacement ? (
-                <ItemSelector selectKey="kind" selectValue={PlacementKind}>
+                <WizItemSelector selectKey="kind" selectValue={PlacementKind}>
                     <Placement
                         namespaceClusterSetNames={namespaceClusterSetNames}
                         clusters={props.clusters}
                         hideName
                         createClusterSetCallback={props.createClusterSetCallback}
                     />
-                </ItemSelector>
+                </WizItemSelector>
             ) : (
-                <ItemSelector selectKey="kind" selectValue="ApplicationSet">
+                <WizItemSelector selectKey="kind" selectValue="ApplicationSet">
                     <Select
                         path="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
                         label="Existing placement"
                         options={placements.map((placement) => placement.metadata?.name ?? '')}
                     />
-                </ItemSelector>
+                </WizItemSelector>
             )}
         </Section>
     )

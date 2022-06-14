@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { ArrayInput, Select, TextInput } from '../../src'
+import { Select, WizArrayInput, WizTextInput } from '../../src'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
 import { PlacementApiGroup, PlacementKind } from '../common/resources/IPlacement'
@@ -19,7 +19,7 @@ export function PlacementBindings(props: {
     existingPlacementRules: IResource[]
 }) {
     return (
-        <ArrayInput
+        <WizArrayInput
             id="placement-bindings"
             label="Placement bindings"
             helperText="To apply a resource to a cluster, the placement must be bound to the resource using a placement binding."
@@ -39,7 +39,7 @@ export function PlacementBindings(props: {
             }}
         >
             <PlacementBinding bindingSubjectKind={props.bindingSubjectKind} bindingSubjectApiGroup={props.bindingSubjectApiGroup} />
-        </ArrayInput>
+        </WizArrayInput>
     )
 }
 
@@ -47,7 +47,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
     const placementBinding: IPlacementBinding = useItem()
     return (
         <Fragment>
-            <TextInput
+            <WizTextInput
                 path="metadata.name"
                 label="Binding name"
                 readonly={placementBinding.metadata?.uid !== undefined}
@@ -62,7 +62,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
                 required
                 options={['Placement', PlacementRuleKind]}
             />
-            <TextInput
+            <WizTextInput
                 path="placementRef.name"
                 label="Placement name"
                 required
@@ -70,7 +70,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
                 helperText="The placement name should match the name of a placement in this namespace.."
                 validation={isValidKubernetesResourceName}
             />
-            <TextInput
+            <WizTextInput
                 path="placementRef.name"
                 label="Placement rule name"
                 required
@@ -94,7 +94,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
         hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
         options={props.existingPlacementRules.map((placement) => placement.metadata?.name ?? '')}
     /> */}
-            <ArrayInput
+            <WizArrayInput
                 path="subjects"
                 label="Subjects"
                 helperText="Placement bindings can have multiple subjects which the placement is applied to."
@@ -104,7 +104,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
                 newValue={{ apiGroup: props.bindingSubjectApiGroup, kind: props.bindingSubjectKind }}
             >
                 <Subject />
-            </ArrayInput>
+            </WizArrayInput>
         </Fragment>
     )
 }
@@ -129,7 +129,7 @@ function Subject() {
                     }
                 }}
             />
-            <TextInput
+            <WizTextInput
                 path="name"
                 label="Subject name"
                 required

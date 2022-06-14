@@ -11,10 +11,10 @@ import {
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
-import { InputLabel } from './InputLabel'
 import './Select.css'
+import { WizFormGroup } from './WizFormGroup'
 
-type SingleSelectProps = InputCommonProps<string> & {
+export type WizSingleSelectProps = InputCommonProps<string> & {
     label: string
     placeholder?: string
     isCreatable?: boolean
@@ -22,7 +22,7 @@ type SingleSelectProps = InputCommonProps<string> & {
     options: string[]
 }
 
-export function SingleSelect(props: SingleSelectProps) {
+export function WizSingleSelect(props: WizSingleSelectProps) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
     const [open, setOpen] = useState(false)
@@ -76,7 +76,7 @@ export function SingleSelect(props: SingleSelectProps) {
 
     return (
         <div id={id}>
-            <InputLabel {...props} id={id}>
+            <WizFormGroup {...props} id={id}>
                 <InputGroup>
                     <PfSelect
                         isDisabled={disabled || props.readonly}
@@ -88,7 +88,7 @@ export function SingleSelect(props: SingleSelectProps) {
                         onClear={props.required ? undefined : onClear}
                         validated={validated}
                         onFilter={onFilter}
-                        hasInlineFilter={props.isCreatable || props.options.length > 10}
+                        hasInlineFilter
                         footer={props.footer}
                         placeholderText={placeholder}
                         isCreatable={props.isCreatable}
@@ -100,7 +100,7 @@ export function SingleSelect(props: SingleSelectProps) {
                         ))}
                     </PfSelect>
                 </InputGroup>
-            </InputLabel>
+            </WizFormGroup>
         </div>
     )
 }

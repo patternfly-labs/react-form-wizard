@@ -8,7 +8,7 @@ export function wizardSelectorItem(props: any, item: any[]) {
     })
 }
 
-export function ItemSelector(props: { selectKey: string; selectValue: string; children?: ReactNode; empty?: ReactNode }) {
+export function WizItemSelector(props: { selectKey: string; selectValue: string; children?: ReactNode; empty?: ReactNode }) {
     const item = useContext(ItemContext)
     if (!Array.isArray(item)) return <Fragment>Input must be an array!</Fragment>
 

@@ -1,11 +1,11 @@
 import { NumberInput as PFNumberInput } from '@patternfly/react-core'
 import { Fragment, useCallback } from 'react'
-import { TextDetail } from '..'
+import { WizTextDetail } from '..'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
-import { InputLabel } from './InputLabel'
+import { WizFormGroup } from './WizFormGroup'
 
-export type NumberInputProps = InputCommonProps<string> & {
+export type WizNumberInputProps = InputCommonProps<string> & {
     label: string
     placeholder?: string
     secret?: boolean
@@ -14,7 +14,7 @@ export type NumberInputProps = InputCommonProps<string> & {
     zeroIsUndefined?: boolean
 }
 
-export function NumberInput(props: NumberInputProps) {
+export function WizNumberInput(props: WizNumberInputProps) {
     const { displayMode: mode, value, setValue, disabled, hidden, id } = useInput(props)
 
     const onMinus = useCallback(() => {
@@ -46,13 +46,13 @@ export function NumberInput(props: NumberInputProps) {
 
     if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
-        return <TextDetail id={id} path={props.path} label={props.label} />
+        return <WizTextDetail id={id} path={props.path} label={props.label} />
     }
 
     const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`
 
     return (
-        <InputLabel {...props} id={id}>
+        <WizFormGroup {...props} id={id}>
             <PFNumberInput
                 id={id}
                 placeholder={placeholder}
@@ -67,6 +67,6 @@ export function NumberInput(props: NumberInputProps) {
                 // type={!props.secret || showSecrets ? 'text' : 'password'}
                 isDisabled={disabled}
             />
-        </InputLabel>
+        </WizFormGroup>
     )
 }

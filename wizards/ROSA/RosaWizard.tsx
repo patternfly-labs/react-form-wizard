@@ -1,18 +1,18 @@
 import {
-    Checkbox,
-    KeyValue,
+    WizKeyValue,
     Radio,
-    RadioGroup,
+    WizRadioGroup,
     Section,
     Select,
     Step,
-    TextInput,
     Tile,
-    Tiles,
-    TimeRange,
+    WizTiles,
+    WizTimeRange,
     WizardCancel,
     WizardPage,
     WizardSubmit,
+    WizCheckbox,
+    WizTextInput,
 } from '../../src'
 
 export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCancel }) {
@@ -31,36 +31,36 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                     label="Account roles ARNs"
                     description="The following roles were detected according to the associated account. The ARNs can be edited according to your preferences."
                 >
-                    <TextInput id="installer-role" path="installerRole" label="Installer role" required />
-                    <TextInput id="support-role" path="supportRole" label="Support role" required />
-                    <TextInput id="worker-role" path="workerRole" label="Worker role" required />
-                    <TextInput id="control-plane-role" path="controlPlaneRole" label="Control plane role" required />
+                    <WizTextInput id="installer-role" path="installerRole" label="Installer role" required />
+                    <WizTextInput id="support-role" path="supportRole" label="Support role" required />
+                    <WizTextInput id="worker-role" path="workerRole" label="Worker role" required />
+                    <WizTextInput id="control-plane-role" path="controlPlaneRole" label="Control plane role" required />
                 </Section>
             </Step>
 
             <Step label="Cluster settings" id="cluster-settings">
                 <Step label="Details" id="details">
                     <Section label="Cluster details" prompt="Enter the cluster details">
-                        <TextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
-                        <Checkbox id="use-roles-prefix" path="useRolesPrefix" label="Use operator roles prefix">
-                            <TextInput
+                        <WizTextInput id="cluster-name-role" path="clusterName" label="Cluster name" required />
+                        <WizCheckbox id="use-roles-prefix" path="useRolesPrefix" label="Use operator roles prefix">
+                            <WizTextInput
                                 id="roles-prefix"
                                 path="rolesPrefix"
                                 label="Operator roles prefix"
                                 required
                                 helperText="Maximum 32 characters."
                             />
-                        </Checkbox>
+                        </WizCheckbox>
                         <Select id="version" path="version" label="Version" options={['TODO']} required />
                         <Select id="region" path="region" label="Region" options={['TODO']} required />
-                        <RadioGroup id="availability" path="availability" label="Availability">
+                        <WizRadioGroup id="availability" path="availability" label="Availability">
                             <Radio id="single-zone" value="single-zone" label="Single zone" />
                             <Radio id="multi-zone" value="multi-zone" label="Multi zone" />
-                        </RadioGroup>
+                        </WizRadioGroup>
                         {/* </Section> */}
 
                         {/* <Section label="Monitoring"> */}
-                        <Checkbox
+                        <WizCheckbox
                             id="monitoring"
                             path="monitoring"
                             title="Monitoring"
@@ -73,13 +73,13 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                         label="Encryption"
                         description="Add additional encryption to your cluster. Note that cloud storage already encrypts storage as rest."
                     >
-                        <Checkbox
+                        <WizCheckbox
                             id="etcd-encryption"
                             path="etcdEncryption"
                             label="Enable etcd encryption"
                             helperText="Add another layer of data security to your cluster."
                         />
-                        <Checkbox
+                        <WizCheckbox
                             id="ebs-encryption"
                             path="ebsEncryption"
                             label="Encrypt EBS with customer keys"
@@ -96,18 +96,18 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                         <Select id="instance-type" path="instanceType" label="Compute node instance type" options={['TODO']} required />
                         <Select id="availability-zones" path="availabilityZones" label="Availability zones" options={['TODO']} required />
 
-                        <Checkbox
+                        <WizCheckbox
                             id="autoscaling"
                             path="autoscaling"
                             title="Autoscaling"
                             label="Enable autoscaling"
                             helperText="Autoscaling automatically adds and removes worker (compute) nodes from the cluster based on resource requirments."
                         >
-                            <TextInput id="minimum-nodes" path="minimumNodes" label="Minimum nodes per zone" required />
-                            <TextInput id="maximim-nodes" path="maximumNodes" label="Maximum nodes per zone" required />
-                        </Checkbox>
+                            <WizTextInput id="minimum-nodes" path="minimumNodes" label="Minimum nodes per zone" required />
+                            <WizTextInput id="maximim-nodes" path="maximumNodes" label="Maximum nodes per zone" required />
+                        </WizCheckbox>
 
-                        <KeyValue id="node-labels" path="nodeLabels" label="Extra node labels" />
+                        <WizKeyValue id="node-labels" path="nodeLabels" label="Extra node labels" />
                     </Section>
                 </Step>
             </Step>
@@ -115,21 +115,21 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
             <Step label="Networking" id="networking">
                 <Step label="Configuration" id="configuration">
                     <Section label="Networking configuration" description="Configure network access for your cluster.">
-                        <Checkbox
+                        <WizCheckbox
                             id="vpc"
                             path="vpc"
                             title="Virtual Private Cloud (VPC) subnets"
                             label="Install into an existing Virtual Private Cloud (VPC)."
                         >
-                            <TextInput id="existing-vpc-id" path="existingVpcId" label="Existing VPC ID" required />
-                            <Checkbox
+                            <WizTextInput id="existing-vpc-id" path="existingVpcId" label="Existing VPC ID" required />
+                            <WizCheckbox
                                 id="private-link"
                                 path="privateLink"
                                 label="Use a PrivateLink"
                                 helperText="To provide support, Red Hat Site Reliability Engineer (SRE) would connect to the cluster using only AWS PrivateLink endpoints instead of public endpoints. This option cannot be changed after a cluster is created."
-                            ></Checkbox>
-                        </Checkbox>
-                        <RadioGroup
+                            ></WizCheckbox>
+                        </WizCheckbox>
+                        <WizRadioGroup
                             id="cluster-privacy"
                             path="clusterPrivacy"
                             label="Cluster privacy"
@@ -147,7 +147,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                                 label="Private"
                                 description="Access master API endpoint and application routes from durect private connections only."
                             />
-                        </RadioGroup>
+                        </WizRadioGroup>
                     </Section>
                 </Step>
 
@@ -162,28 +162,28 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
 
                 <Step label="CIDR ranges" id="cidr-ranges">
                     <Section label="CIDR ranges">
-                        <TextInput
+                        <WizTextInput
                             id="machine-cidr"
                             path="machineCIDR"
                             label="Machine CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask is /23."
                         />
-                        <TextInput
+                        <WizTextInput
                             id="service-cidr"
                             path="serviceCIDR"
                             label="Service CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask is /24."
                         />
-                        <TextInput
+                        <WizTextInput
                             id="pod-cidr"
                             path="podCIDR"
                             label="Pod CIDR"
                             required
                             helperText="Range must be private. Maximum subnet mask ust allow at lease 32 nodes."
                         />
-                        <TextInput
+                        <WizTextInput
                             id="host-prefix"
                             path="hostPrefix"
                             label="Host prefix"
@@ -199,7 +199,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                     label="Cluster updates"
                     description="High and critical security concerns (CVEs) will be patched automatically within 48 hours regardless of your chosen update strategy."
                 >
-                    <RadioGroup id="cluster-update" path="clusterUpdate">
+                    <WizRadioGroup id="cluster-update" path="clusterUpdate">
                         <Radio
                             id="manual"
                             value="manual"
@@ -219,9 +219,9 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                                 options={['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Firday', 'Saturday']}
                                 required
                             />
-                            <TimeRange id="time" path="time" label="Start time" />
+                            <WizTimeRange id="time" path="time" label="Start time" />
                         </Radio>
-                    </RadioGroup>
+                    </WizRadioGroup>
                 </Section>
 
                 <Section
@@ -238,7 +238,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                     prompt="Select role creation mode"
                     description="Choose the prefered mode for creating operator roles and OIDC provider."
                 >
-                    <Tiles id="creation-mode" path="creationMode">
+                    <WizTiles id="creation-mode" path="creationMode">
                         <Tile
                             id="manual"
                             value="manual"
@@ -251,7 +251,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                             label="Automatic"
                             description="Clusters will be automatically updared beased on your defined day and start time when new versions are available."
                         />
-                    </Tiles>
+                    </WizTiles>
                 </Section>
             </Step>
         </WizardPage>

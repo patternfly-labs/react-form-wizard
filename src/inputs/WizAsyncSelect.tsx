@@ -13,10 +13,10 @@ import { SpinnerButton } from '../components/SpinnerButton'
 import { SyncButton } from '../components/SyncButton'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
-import { InputLabel } from './InputLabel'
 import './Select.css'
+import { WizFormGroup } from './WizFormGroup'
 
-type AsyncSelectProps = InputCommonProps<string> & {
+type WizAsyncSelectProps = InputCommonProps<string> & {
     label: string
     placeholder?: string
     isCreatable?: boolean
@@ -24,7 +24,7 @@ type AsyncSelectProps = InputCommonProps<string> & {
     footer?: ReactNode
 }
 
-export function AsyncSelect(props: AsyncSelectProps) {
+export function WizAsyncSelect(props: WizAsyncSelectProps) {
     const { asyncCallback } = props
     const { displayMode, value, setValue, validated, hidden, id, disabled } = useInput(props)
     const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
@@ -97,7 +97,7 @@ export function AsyncSelect(props: AsyncSelectProps) {
     }
 
     return (
-        <InputLabel {...props} id={id}>
+        <WizFormGroup {...props} id={id}>
             <InputGroup>
                 <PfSelect
                     isDisabled={disabled || (loading && !props.isCreatable)}
@@ -124,6 +124,6 @@ export function AsyncSelect(props: AsyncSelectProps) {
                 {props.asyncCallback && loading && <SpinnerButton />}
                 {props.asyncCallback && !loading && <SyncButton onClick={sync} />}
             </InputGroup>
-        </InputLabel>
+        </WizFormGroup>
     )
 }

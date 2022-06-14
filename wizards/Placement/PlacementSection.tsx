@@ -1,6 +1,6 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { DetailsHidden, EditMode, ItemSelector, Section, Select, SingleSelect } from '../../src'
+import { WizDetailsHidden, EditMode, WizItemSelector, Section, Select, WizSingleSelect } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
@@ -210,9 +210,9 @@ export function PlacementSection(props: {
                     )}
                     <Sync kind={PlacementKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
 
-                    <ItemSelector selectKey="kind" selectValue={PlacementKind}>
+                    <WizItemSelector selectKey="kind" selectValue={PlacementKind}>
                         <Placement namespaceClusterSetNames={namespaceClusterSetNames} clusters={props.clusters} />
-                    </ItemSelector>
+                    </WizItemSelector>
                 </Fragment>
             )}
             {placementRuleCount === 1 && (
@@ -230,13 +230,13 @@ export function PlacementSection(props: {
                     )}
                     <Sync kind={PlacementRuleKind} path="metadata.namespace" targetKind={PlacementBindingKind} />
 
-                    <ItemSelector selectKey="kind" selectValue={PlacementRuleKind}>
+                    <WizItemSelector selectKey="kind" selectValue={PlacementRuleKind}>
                         <PlacementRule clusters={props.clusters} hideName />
-                    </ItemSelector>
+                    </WizItemSelector>
                 </Fragment>
             )}
             {placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 1 && (
-                <ItemSelector selectKey="kind" selectValue={PlacementBindingKind}>
+                <WizItemSelector selectKey="kind" selectValue={PlacementBindingKind}>
                     <Select
                         path="placementRef.name"
                         label="Placement"
@@ -244,14 +244,14 @@ export function PlacementSection(props: {
                         hidden={(binding) => binding.placementRef?.kind !== PlacementKind}
                         options={namespacedPlacements.map((placement) => placement.metadata?.name ?? '')}
                     />
-                    <SingleSelect
+                    <WizSingleSelect
                         path="placementRef.name"
                         label="Placement rule"
                         required
                         hidden={(binding) => binding.placementRef?.kind !== PlacementRuleKind}
                         options={namespacedPlacementRules.map((placement) => placement.metadata?.name ?? '')}
                     />
-                </ItemSelector>
+                </WizItemSelector>
             )}
         </Section>
     )
@@ -271,7 +271,7 @@ export function PlacementSelector(props: {
     const { update } = useData()
     const validate = useValidate()
     return (
-        <DetailsHidden>
+        <WizDetailsHidden>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <span className="pf-c-form__label pf-c-form__label-text">How do you want to select clusters?</span>
                 <ToggleGroup aria-label="Default with single selectable">
@@ -391,7 +391,7 @@ export function PlacementSelector(props: {
                     Do not add a placement if you want to place this policy using policy set placement.
                 </p>
             )}
-        </DetailsHidden>
+        </WizDetailsHidden>
     )
 }
 

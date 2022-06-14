@@ -1,13 +1,13 @@
-import { Split, Stack, Switch as PFSwitch, Text } from '@patternfly/react-core'
+import { Checkbox as PFCheckbox, Split, Stack, Text } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode } from 'react'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
-import { InputLabel } from './InputLabel'
+import { WizFormGroup } from './WizFormGroup'
 
-export type SwitchProps = InputCommonProps & {
+export type WizCheckboxProps = InputCommonProps & {
     children?: ReactNode
     title?: string
 }
@@ -22,7 +22,7 @@ function getIsChecked(value: any) {
     return value
 }
 
-export function Switch(props: SwitchProps) {
+export function WizCheckbox(props: WizCheckboxProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     if (hidden) return <Fragment />
@@ -45,12 +45,12 @@ export function Switch(props: SwitchProps) {
     return (
         <Stack hasGutter>
             <Stack>
-                <InputLabel {...props} id={id} label={props.title} helperText={undefined}>
+                <WizFormGroup {...props} id={id} label={props.title} helperText={undefined}>
                     <Split>
-                        <PFSwitch id={id} isChecked={getIsChecked(value)} onChange={setValue} label={props.label} value={value} />
+                        <PFCheckbox id={id} isChecked={getIsChecked(value)} onChange={setValue} label={props.label} value={value} />
                         <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
                     </Split>
-                </InputLabel>
+                </WizFormGroup>
                 {props.helperText && (
                     <Text className="pf-c-form__helper-text" style={{ paddingLeft: 22 }}>
                         {props.helperText}

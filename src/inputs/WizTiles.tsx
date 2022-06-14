@@ -3,9 +3,9 @@ import { Children, Fragment, isValidElement, ReactNode, useContext } from 'react
 import { IRadioGroupContextState, RadioGroupContext } from '..'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
-import { InputLabel } from './InputLabel'
+import { WizFormGroup } from './WizFormGroup'
 
-type TilesProps = InputCommonProps & { children?: ReactNode }
+type WizTilesProps = InputCommonProps & { children?: ReactNode }
 
 // id: string
 // label?: string
@@ -18,7 +18,7 @@ type TilesProps = InputCommonProps & { children?: ReactNode }
 // labelHelpTitle?: string
 // helperText?: string
 // children?: ReactNode
-export function Tiles(props: TilesProps) {
+export function WizTiles(props: WizTilesProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     const state: IRadioGroupContextState = {
@@ -51,9 +51,9 @@ export function Tiles(props: TilesProps) {
 
     return (
         <RadioGroupContext.Provider value={state}>
-            <InputLabel {...props} id={id}>
+            <WizFormGroup {...props} id={id}>
                 <Gallery hasGutter>{props.children}</Gallery>
-            </InputLabel>
+            </WizFormGroup>
         </RadioGroupContext.Provider>
     )
 }

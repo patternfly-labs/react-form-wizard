@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { ArrayInput, EditMode, KeyValue, TextInput } from '../../src'
+import { EditMode, WizKeyValue, WizArrayInput, WizTextInput } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
@@ -11,7 +11,7 @@ import { MatchExpression, MatchExpressionCollapsed } from './MatchExpression'
 export function PlacementRules(props: { clusters: IResource[] }) {
     const editMode = useEditMode()
     return (
-        <ArrayInput
+        <WizArrayInput
             id="placement-rules"
             label="Placement rules"
             labelHelp="Placement rules determine which clusters a resources will be applied."
@@ -30,7 +30,7 @@ export function PlacementRules(props: { clusters: IResource[] }) {
             defaultCollapsed={editMode !== EditMode.Create}
         >
             <PlacementRule clusters={props.clusters} />
-        </ArrayInput>
+        </WizArrayInput>
     )
 }
 
@@ -43,7 +43,7 @@ export function PlacementRule(props: { clusters: IResource[]; hideName?: boolean
     return (
         <Fragment>
             {!props.hideName && (
-                <TextInput
+                <WizTextInput
                     id="name"
                     path="metadata.name"
                     label="Name"
@@ -53,14 +53,14 @@ export function PlacementRule(props: { clusters: IResource[]; hideName?: boolean
                     validation={isValidKubernetesResourceName}
                 />
             )}
-            <KeyValue
+            <WizKeyValue
                 label="Label selectors"
                 path={`spec.clusterSelector.matchLabels`}
                 labelHelp="A label selector allows selection of clusters using cluster labels. A cluster must match all label selectors and label expressions to be selected."
                 placeholder="Add cluster label selector"
                 hidden={() => placementRule.spec?.clusterSelector?.matchLabels === undefined}
             />
-            <ArrayInput
+            <WizArrayInput
                 id="label-expressions"
                 label={inputLabel}
                 path="spec.clusterSelector.matchExpressions"
@@ -72,7 +72,7 @@ export function PlacementRule(props: { clusters: IResource[]; hideName?: boolean
                 helperText="A placement without any label selectors or label expressions will select all clusters."
             >
                 <MatchExpression labelValuesMap={labelValuesMap} />
-            </ArrayInput>
+            </WizArrayInput>
         </Fragment>
     )
 }

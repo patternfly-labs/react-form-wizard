@@ -4,7 +4,7 @@ import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { useRandomID } from '../contexts/useRandomID'
 import { InputCommonProps, useInput } from './Input'
-import { InputLabel } from './InputLabel'
+import { WizFormGroup } from './WizFormGroup'
 
 export interface IRadioGroupContextState {
     value?: any
@@ -16,9 +16,9 @@ export interface IRadioGroupContextState {
 
 export const RadioGroupContext = createContext<IRadioGroupContextState>({})
 
-type RadioGroupProps = InputCommonProps & { children?: ReactNode }
+export type WizRadioGroupProps = InputCommonProps & { children?: ReactNode }
 
-export function RadioGroup(props: RadioGroupProps) {
+export function WizRadioGroup(props: WizRadioGroupProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     const radioGroup = useRandomID()
@@ -60,14 +60,14 @@ export function RadioGroup(props: RadioGroupProps) {
     return (
         <RadioGroupContext.Provider value={state}>
             <div id={id}>
-                <InputLabel {...props} id={id} helperText={undefined}>
+                <WizFormGroup {...props} id={id} helperText={undefined}>
                     {props.helperText && (
                         <Text className="pf-c-form__helper-text" style={{ marginTop: -4, paddingBottom: 8 }}>
                             {props.helperText}
                         </Text>
                     )}
                     <div style={{ display: 'flex', flexDirection: 'column', rowGap: 12, paddingBottom: 4 }}>{props.children}</div>
-                </InputLabel>
+                </WizFormGroup>
             </div>
         </RadioGroupContext.Provider>
     )

@@ -15,7 +15,7 @@ import {
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
-import { TextDetail } from '..'
+import { WizTextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
@@ -24,7 +24,6 @@ import { DisplayMode } from '../contexts/DisplayModeContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { ShowValidationContext } from '../contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from '../contexts/ValidationProvider'
-import './ArrayInput.css'
 import { InputCommonProps, useInput } from './Input'
 
 export function wizardArrayItems(props: any, item: any) {
@@ -37,7 +36,7 @@ export function wizardArrayItems(props: any, item: any) {
     return values
 }
 
-export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
+export type WizArrayInputProps = Omit<InputCommonProps, 'path'> & {
     path: string | null
     children: ReactNode
     filter?: (item: any) => boolean
@@ -53,7 +52,7 @@ export type ArrayInputProps = Omit<InputCommonProps, 'path'> & {
     summaryList?: boolean
 }
 
-export function ArrayInput(props: ArrayInputProps) {
+export function WizArrayInput(props: WizArrayInputProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props as InputCommonProps)
     const [open, setOpen] = useState(false)
     const onToggle = useCallback(() => setOpen((open: boolean) => !open), [])
@@ -129,7 +128,7 @@ export function ArrayInput(props: ArrayInputProps) {
                                 <ListItem key={index} style={{ paddingBottom: 4 }}>
                                     <ItemContext.Provider value={value}>
                                         {typeof props.collapsedContent === 'string' ? (
-                                            <TextDetail
+                                            <WizTextDetail
                                                 id={props.collapsedContent}
                                                 path={props.collapsedContent}
                                                 placeholder={props.collapsedPlaceholder}
@@ -154,7 +153,7 @@ export function ArrayInput(props: ArrayInputProps) {
                             <ListItem key={index} style={{ paddingBottom: 4 }}>
                                 <ItemContext.Provider value={value}>
                                     {typeof props.collapsedContent === 'string' ? (
-                                        <TextDetail
+                                        <WizTextDetail
                                             id={props.collapsedContent}
                                             path={props.collapsedContent}
                                             placeholder={props.collapsedPlaceholder}
@@ -289,7 +288,7 @@ export function ArrayInputItem(props: {
 
     const collapsedContent = useMemo(() => {
         return typeof props.collapsedContent === 'string' ? (
-            <TextDetail
+            <WizTextDetail
                 id={props.collapsedContent}
                 path={props.collapsedContent}
                 placeholder={props.collapsedPlaceholder ?? 'Expand to edit'}
@@ -302,7 +301,7 @@ export function ArrayInputItem(props: {
     const expandedContent = useMemo(() => {
         if (props.expandedContent) {
             return typeof props.expandedContent === 'string' ? (
-                <TextDetail id={props.expandedContent} path={props.expandedContent} />
+                <WizTextDetail id={props.expandedContent} path={props.expandedContent} />
             ) : (
                 props.expandedContent
             )

@@ -1,7 +1,18 @@
 import { Alert, AlertVariant, Button, ButtonVariant } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import { Checkbox, DetailsHidden, EditMode, KeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
+import {
+    WizDetailsHidden,
+    EditMode,
+    WizKeyValue,
+    Section,
+    Select,
+    Step,
+    WizardCancel,
+    WizardPage,
+    WizardSubmit,
+    WizCheckbox,
+} from '../../src'
 import { IResource } from '../common/resource'
 import { ConfigMap } from '../common/resources/IConfigMap'
 import { ICredential } from '../common/resources/ICredential'
@@ -105,11 +116,11 @@ export function PolicyAutomationWizard(props: {
                 {!props.isAnsibleOperatorInstalled && <Alert isInline title={getOperatorError()} variant={AlertVariant.danger} />}
                 <Section label="Policy automation">
                     {alert && (
-                        <DetailsHidden>
+                        <WizDetailsHidden>
                             <Alert title={alert.title} isInline variant="danger">
                                 {alert.message}
                             </Alert>
-                        </DetailsHidden>
+                        </WizDetailsHidden>
                     )}
                     <Select
                         id="secret"
@@ -158,7 +169,7 @@ export function PolicyAutomationWizard(props: {
                         hidden={(item) => !item.spec?.automationDef?.secret}
                         required
                     />
-                    <KeyValue
+                    <WizKeyValue
                         id="extra_vars"
                         path="spec.automationDef.extra_vars"
                         label="Extra variables"
@@ -196,7 +207,7 @@ export function PolicyAutomationWizard(props: {
                             }
                         }}
                     />
-                    <Checkbox
+                    <WizCheckbox
                         hidden={(item) => item.spec?.mode !== 'disabled'}
                         path="metadata.annotations.policy\.open-cluster-management\.io/rerun"
                         label="Manual run: Set this automation to run once. After the automation runs, it is set to disabled."

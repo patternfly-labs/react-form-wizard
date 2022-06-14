@@ -9,16 +9,16 @@ import {
 } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
-import { TextInput } from '..'
+import { WizTextInput } from '..'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
-import { InputLabel } from './InputLabel'
+import { WizFormGroup } from './WizFormGroup'
 
-type StringsInputProps = InputCommonProps & {
+export type WizStringsInputProps = InputCommonProps & {
     placeholder?: string
 }
 
-export function StringsInput(props: StringsInputProps) {
+export function WizStringsInput(props: WizStringsInputProps) {
     const { displayMode: mode, value, setValue, id, hidden } = useInput(props)
 
     let values: string[] = value
@@ -56,18 +56,17 @@ export function StringsInput(props: StringsInputProps) {
     }
 
     return (
-        <InputLabel {...props} id={id}>
+        <WizFormGroup {...props} id={id}>
             <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 8 : 4 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
                     {values.map((_, index) => {
                         return (
                             <InputGroup key={index}>
-                                <TextInput
+                                <WizTextInput
                                     id={`${id}-${index + 1}`}
                                     path={props.path + '.' + index.toString()}
                                     // onChange={(e) => onKeyChange(index, e)}
                                     required
-                                    disablePaste
                                 />
                                 <Button
                                     variant="plain"
@@ -89,11 +88,11 @@ export function StringsInput(props: StringsInputProps) {
                     </Button>
                 </div>
             </div>
-        </InputLabel>
+        </WizFormGroup>
     )
 }
 
-type StringsMapInputProps = StringsInputProps & {
+type StringsMapInputProps = WizStringsInputProps & {
     map?: (value: any) => string[]
     unmap?: (values: string[]) => any
 }
@@ -148,7 +147,7 @@ export function StringsMapInput(props: StringsMapInputProps) {
     }
 
     return (
-        <InputLabel {...props} id={id}>
+        <WizFormGroup {...props} id={id}>
             <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: values.length ? 8 : 4 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', rowGap: 8 }}>
                     {values.map((pair, index) => {
@@ -175,6 +174,6 @@ export function StringsMapInput(props: StringsMapInputProps) {
                     </Button>
                 </div>
             </div>
-        </InputLabel>
+        </WizFormGroup>
     )
 }

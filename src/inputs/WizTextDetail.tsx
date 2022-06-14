@@ -3,7 +3,7 @@ import { Fragment, ReactNode } from 'react'
 import { Indented } from '../components/Indented'
 import { useInputHidden, useValue } from './Input'
 
-export function TextDetail(props: {
+export function WizTextDetail(props: {
     id?: string
     label?: string
     path: string
