@@ -3,9 +3,9 @@ import { ReactNode } from 'react'
 import { LabelHelp } from '../components/LabelHelp'
 import { InputCommonProps, useID, useInputValidation } from './Input'
 
-type InputLabelProps = InputCommonProps & { children: ReactNode; isHelperTextBeforeField?: boolean }
+type WizFormGroupProps = InputCommonProps & { children: ReactNode; isHelperTextBeforeField?: boolean }
 
-export function InputLabel(props: InputLabelProps) {
+export function WizFormGroup(props: WizFormGroupProps) {
     const { validated, error } = useInputValidation(props)
     const id = useID(props)
     return (

@@ -5,26 +5,26 @@ import { klona } from 'klona/json'
 import { Fragment, ReactNode, useContext, useMemo } from 'react'
 import set from 'set-value'
 import {
-    ArrayInput,
-    Checkbox,
-    DetailsHidden,
+    WizDetailsHidden,
     EditMode,
-    Hidden,
-    ItemSelector,
-    KeyValue,
-    NumberInput,
+    WizHidden,
+    WizItemSelector,
+    WizKeyValue,
+    WizNumberInput,
     Radio,
-    RadioGroup,
+    WizRadioGroup,
     Section,
     Select,
-    SingleSelect,
+    WizSingleSelect,
     Step,
-    StringsInput,
+    WizStringsInput,
     StringsMapInput,
-    TextInput,
     WizardCancel,
     WizardPage,
     WizardSubmit,
+    WizArrayInput,
+    WizCheckbox,
+    WizTextInput,
 } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { ItemContext, useItem } from '../../src/contexts/ItemContext'
@@ -82,10 +82,10 @@ export function PolicyWizard(props: {
                 )}
 
                 <Sync kind={PolicyKind} path="metadata.namespace" />
-                <ItemSelector selectKey="kind" selectValue={PolicyKind}>
+                <WizItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <Section label="Details" prompt="Enter the details for the policy">
                         {props.gitSource && (
-                            <DetailsHidden>
+                            <WizDetailsHidden>
                                 <Alert title="This policy is managed externally" variant="warning" isInline>
                                     <Fragment>
                                         <p>Any changes made here may be overridden by the content of an upstream repository.</p>
@@ -101,13 +101,13 @@ export function PolicyWizard(props: {
                                         </Button>
                                     </Fragment>
                                 </Alert>
-                            </DetailsHidden>
+                            </WizDetailsHidden>
                         )}
 
                         <ItemContext.Consumer>
                             {(item: IResource) => (
                                 <Fragment>
-                                    <TextInput
+                                    <WizTextInput
                                         id="name"
                                         path="metadata.name"
                                         label="Name"
@@ -115,7 +115,7 @@ export function PolicyWizard(props: {
                                         validation={validatePolicyName}
                                         readonly={item.metadata?.uid !== undefined}
                                     />
-                                    <SingleSelect
+                                    <WizSingleSelect
                                         id="namespace"
                                         path="metadata.namespace"
                                         label="Namespace"
@@ -128,18 +128,18 @@ export function PolicyWizard(props: {
                                 </Fragment>
                             )}
                         </ItemContext.Consumer>
-                        <Checkbox
+                        <WizCheckbox
                             path="spec.disabled"
                             label="Disable policy"
                             helperText="Select to disable the policy from being propagated to managed clusters."
                         />
                     </Section>
-                </ItemSelector>
+                </WizItemSelector>
             </Step>
             <Step label="Policy templates" id="templates">
-                <ItemSelector selectKey="kind" selectValue={PolicyKind}>
+                <WizItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <PolicyWizardTemplates policies={props.policies} />
-                </ItemSelector>
+                </WizItemSelector>
             </Step>
             <Step label="Placement" id="placement">
                 <PolicyPolicySets />
@@ -156,7 +156,7 @@ export function PolicyWizard(props: {
                 />
             </Step>
             <Step label="Policy annotations" id="security-groups">
-                <ItemSelector selectKey="kind" selectValue={PolicyKind}>
+                <WizItemSelector selectKey="kind" selectValue={PolicyKind}>
                     <Section label="Policy annotations">
                         <StringsMapInput
                             id="standards"
@@ -189,7 +189,7 @@ export function PolicyWizard(props: {
                             labelHelp="The name of the security control that is being checked. For example, the certificate policy controller."
                         />
                     </Section>
-                </ItemSelector>
+                </WizItemSelector>
             </Step>
         </WizardPage>
     )
@@ -200,7 +200,7 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
     const editMode = useEditMode()
     return (
         <Section label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
-            <RadioGroup
+            <WizRadioGroup
                 path="spec.remediationAction"
                 label="Remediation"
                 labelHelp="Optional. Specifies the remediation of your policy. The parameter values are enforce and inform. If specified, the spec.remediationAction value that is defined overrides the remediationAction parameter defined in the child policy, from the policy-templates section. For example, if spec.remediationAction value section is set to enforce, then the remediationAction in the policy-templates section is set to enforce during runtime. Important: Some policies might not support the enforce feature."
@@ -218,8 +218,8 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                     value={undefined}
                     description="Remediation action will be determined by what is set in the policy template definitions."
                 />
-            </RadioGroup>
-            <ArrayInput
+            </WizRadioGroup>
+            <WizArrayInput
                 id="templates"
                 path="spec.policy-templates"
                 label="Policy templates"
@@ -289,45 +289,45 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                 defaultCollapsed={editMode !== EditMode.Create}
             >
                 {/* CertificatePolicy */}
-                <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'CertificatePolicy'}>
+                <WizHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'CertificatePolicy'}>
                     <div>
                         <Title headingLevel="h6">Certificate Policy</Title>
                     </div>
 
-                    <TextInput
+                    <WizTextInput
                         path="objectDefinition.metadata.name"
                         label="Name"
                         required
                         validation={isValidKubernetesResourceName}
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                     />
-                    <TextInput path="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
-                </Hidden>
+                    <WizTextInput path="objectDefinition.spec.minimumDuration" label="Minimum duration" required />
+                </WizHidden>
 
                 {/* IamPolicy */}
-                <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'IamPolicy'}>
+                <WizHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'IamPolicy'}>
                     <div>
                         <Title headingLevel="h6">IAM Policy</Title>
                     </div>
 
-                    <TextInput
+                    <WizTextInput
                         path="objectDefinition.metadata.name"
                         label="Name"
                         required
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                         validation={isValidKubernetesResourceName}
                     />
-                    <NumberInput path="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
-                </Hidden>
+                    <WizNumberInput path="objectDefinition.spec.maxClusterRoleBindingUsers" label="Limit cluster role bindings" required />
+                </WizHidden>
 
                 {/* ConfigurationPolicy */}
-                <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ConfigurationPolicy'}>
+                <WizHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ConfigurationPolicy'}>
                     <div>
                         <Title headingLevel="h6">Configuration Policy</Title>
                         <Text component="small">A configuration policy creates configuration objects on managed clusters.</Text>
                     </div>
 
-                    <TextInput
+                    <WizTextInput
                         path="objectDefinition.metadata.name"
                         label="Name"
                         required
@@ -335,32 +335,32 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                         validation={isValidKubernetesResourceName}
                     />
 
-                    <ArrayInput
+                    <WizArrayInput
                         path="objectDefinition.spec.object-templates"
                         label="Configuration objects"
                         // placeholder="Add configuration object"
                         collapsedContent="objectDefinition.metadata.name"
                     >
                         <ObjectTemplate />
-                    </ArrayInput>
-                </Hidden>
+                    </WizArrayInput>
+                </WizHidden>
 
-                <Hidden hidden={(template: any) => template?.objectDefinition?.spec?.namespaceSelector === undefined}>
-                    <StringsInput
+                <WizHidden hidden={(template: any) => template?.objectDefinition?.spec?.namespaceSelector === undefined}>
+                    <WizStringsInput
                         id="include-namespaces"
                         path="objectDefinition.spec.namespaceSelector.include"
                         label="Include namespaces"
                         placeholder="Add namespace"
                     />
-                    <StringsInput
+                    <WizStringsInput
                         id="exclude-namespaces"
                         path="objectDefinition.spec.namespaceSelector.exclude"
                         label="Exclude namespaces"
                         placeholder="Add namespace"
                     />
-                </Hidden>
+                </WizHidden>
 
-                <RadioGroup path="objectDefinition.spec.remediationAction" label="Remediation">
+                <WizRadioGroup path="objectDefinition.spec.remediationAction" label="Remediation">
                     <Radio
                         id="inform"
                         label="Inform"
@@ -373,7 +373,7 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                         value="enforce"
                         description="Automatically runs remediation action that is defined in the source, if this feature is supported."
                     />
-                </RadioGroup>
+                </WizRadioGroup>
 
                 <Select
                     path="objectDefinition.spec.severity"
@@ -382,7 +382,7 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                     options={['low', 'medium', 'high']}
                     required
                 />
-            </ArrayInput>
+            </WizArrayInput>
         </Section>
     )
 }
@@ -407,7 +407,7 @@ function ObjectTemplate() {
     const template: any = useItem()
     return (
         <Fragment>
-            <Hidden hidden={(template: any) => template?.complianceType === undefined}>
+            <WizHidden hidden={(template: any) => template?.complianceType === undefined}>
                 <Stack>
                     <Text component="small">
                         {template?.complianceType === 'musthave'
@@ -418,95 +418,100 @@ function ObjectTemplate() {
                             ? 'Must not have'
                             : template?.complianceType}
                     </Text>
-                    <Hidden hidden={(template: any) => template?.objectDefinition?.kind === undefined}>
+                    <WizHidden hidden={(template: any) => template?.objectDefinition?.kind === undefined}>
                         <Title headingLevel="h6">{pascalCaseToSentenceCase(template?.objectDefinition?.kind)}</Title>
-                    </Hidden>
+                    </WizHidden>
                 </Stack>
-            </Hidden>
+            </WizHidden>
 
-            <Hidden hidden={(template: any) => template?.complianceType !== undefined || template?.objectDefinition?.kind === undefined}>
+            <WizHidden hidden={(template: any) => template?.complianceType !== undefined || template?.objectDefinition?.kind === undefined}>
                 <Title headingLevel="h6">{template?.objectDefinition?.kind}</Title>
-            </Hidden>
+            </WizHidden>
 
-            <TextInput
+            <WizTextInput
                 path="objectDefinition.metadata.name"
                 label="Name"
                 required
                 hidden={(template: any) => template?.objectDefinition?.metadata?.name === undefined}
             />
 
-            <TextInput
+            <WizTextInput
                 path="objectDefinition.metadata.namespace"
                 label="Namespace"
                 required
                 hidden={(template: any) => template?.objectDefinition?.metadata?.namespace === undefined}
             />
 
-            <KeyValue
+            <WizKeyValue
                 path="objectDefinition.metadata.labels"
                 label="Labels"
                 hidden={(template: any) => template?.objectDefinition?.metadata?.labels === undefined}
             />
 
-            <KeyValue
+            <WizKeyValue
                 path="objectDefinition.metadata.annotations"
                 label="Annotations"
                 hidden={(template: any) => template?.objectDefinition?.metadata?.annotations === undefined}
             />
 
-            <TextInput
+            <WizTextInput
                 path="objectDefinition.status.phase"
                 label="Phase"
                 hidden={(template: any) => template?.objectDefinition?.status?.phase === undefined}
             />
 
             {/* LimitRange */}
-            <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'LimitRange'}>
-                <ArrayInput path="objectDefinition.spec.limits" label="Limits" placeholder="Add limit" collapsedContent={'default.memory'}>
-                    <TextInput
+            <WizHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'LimitRange'}>
+                <WizArrayInput
+                    path="objectDefinition.spec.limits"
+                    label="Limits"
+                    placeholder="Add limit"
+                    collapsedContent={'default.memory'}
+                >
+                    <WizTextInput
                         path="default.memory"
                         label="Memory limit"
                         placeholder="Enter memory limit"
                         required
                         helperText="Examples: 512Mi, 2Gi"
                     />
-                    <TextInput
+                    <WizTextInput
                         path="defaultRequest.memory"
                         label="Memory request"
                         placeholder="Enter memory request"
                         required
                         helperText="Examples: 512Mi, 2Gi"
                     />
-                </ArrayInput>
-            </Hidden>
+                </WizArrayInput>
+            </WizHidden>
 
             {/* SecurityContextConstraints */}
-            <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'SecurityContextConstraints'}>
-                <Checkbox path="objectDefinition.allowHostDirVolumePlugin" label="Allow host dir volume plugin" />
-                <Checkbox path="objectDefinition.allowHostIPC" label="Allow host IPC" />
-                <Checkbox path="objectDefinition.allowHostNetwork" label="Allow host network" />
-                <Checkbox path="objectDefinition.allowHostPID" label="Allow host PID" />
-                <Checkbox path="objectDefinition.allowHostPorts" label="Allow host ports" />
-                <Checkbox path="objectDefinition.allowPrivilegeEscalation" label="Allow privilege escalation" />
-                <Checkbox path="objectDefinition.allowPrivilegedContainer" label="Allow privileged container" />
-            </Hidden>
+            <WizHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'SecurityContextConstraints'}>
+                <WizCheckbox path="objectDefinition.allowHostDirVolumePlugin" label="Allow host dir volume plugin" />
+                <WizCheckbox path="objectDefinition.allowHostIPC" label="Allow host IPC" />
+                <WizCheckbox path="objectDefinition.allowHostNetwork" label="Allow host network" />
+                <WizCheckbox path="objectDefinition.allowHostPID" label="Allow host PID" />
+                <WizCheckbox path="objectDefinition.allowHostPorts" label="Allow host ports" />
+                <WizCheckbox path="objectDefinition.allowPrivilegeEscalation" label="Allow privilege escalation" />
+                <WizCheckbox path="objectDefinition.allowPrivilegedContainer" label="Allow privileged container" />
+            </WizHidden>
 
             {/* ScanSettingBinding */}
-            <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ScanSettingBinding'}>
-                <ArrayInput id="profiles" label="Profiles" path="objectDefinition.profiles" collapsedContent="name">
-                    <TextInput path="kind" label="Kind" required />
-                    <TextInput path="name" label="Name" required />
-                </ArrayInput>
-            </Hidden>
+            <WizHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ScanSettingBinding'}>
+                <WizArrayInput id="profiles" label="Profiles" path="objectDefinition.profiles" collapsedContent="name">
+                    <WizTextInput path="kind" label="Kind" required />
+                    <WizTextInput path="name" label="Name" required />
+                </WizArrayInput>
+            </WizHidden>
 
             {/* Role */}
-            <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'Role'}>
-                <ArrayInput id="rules" label="Rules" path="objectDefinition.rules" collapsedContent="name" placeholder="Add rule">
-                    <StringsInput label="API Groups" path="apiGroups" />
-                    <StringsInput label="Resources" path="resources" />
-                    <StringsInput label="Verbs" path="verbs" />
-                </ArrayInput>
-            </Hidden>
+            <WizHidden hidden={(template: any) => template?.objectDefinition?.kind !== 'Role'}>
+                <WizArrayInput id="rules" label="Rules" path="objectDefinition.rules" collapsedContent="name" placeholder="Add rule">
+                    <WizStringsInput label="API Groups" path="apiGroups" />
+                    <WizStringsInput label="Resources" path="resources" />
+                    <WizStringsInput label="Verbs" path="verbs" />
+                </WizArrayInput>
+            </WizHidden>
 
             {/* ComplianceCheckResult */}
             {/* <Hidden hidden={(template: any) => template?.objectDefinition?.kind !== 'ComplianceCheckResult'}>
@@ -553,7 +558,7 @@ function PolicyPolicySets() {
     }, [placements])
 
     return (
-        <DetailsHidden>
+        <WizDetailsHidden>
             {policySets && (
                 <Alert
                     title={
@@ -575,6 +580,6 @@ function PolicyPolicySets() {
                     </p>
                 </Alert>
             )}
-        </DetailsHidden>
+        </WizDetailsHidden>
     )
 }

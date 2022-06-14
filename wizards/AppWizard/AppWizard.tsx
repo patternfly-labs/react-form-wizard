@@ -1,14 +1,14 @@
 import {
-    ArrayInput,
-    ItemSelector,
-    KeyValue,
+    WizItemSelector,
+    WizKeyValue,
     Section,
     Select,
     Step,
-    TextInput as TextInput,
     WizardCancel,
     WizardPage,
     WizardSubmit,
+    WizArrayInput,
+    WizTextInput,
 } from '../../src'
 import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 
@@ -25,10 +25,10 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
         >
             <Step label="Details" id="details">
                 <Section label="Details" prompt="Enter the application details">
-                    <ItemSelector selectKey="kind" selectValue="Application">
-                        <TextInput id="text-input" path="metadata.name" label="Name" required />
-                        <TextInput id="text-input" path="metadata.namespace" label="Namespace" required />
-                    </ItemSelector>
+                    <WizItemSelector selectKey="kind" selectValue="Application">
+                        <WizTextInput id="text-input" path="metadata.name" label="Name" required />
+                        <WizTextInput id="text-input" path="metadata.namespace" label="Namespace" required />
+                    </WizItemSelector>
                 </Section>
             </Step>
             <Step label="Subscriptions" id="specifications">
@@ -37,7 +37,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     prompt="Add repository subscriptions"
                     description={'An application can be made up of multiple subscriptions. '}
                 >
-                    <ArrayInput
+                    <WizArrayInput
                         id=""
                         placeholder="Add subscription"
                         collapsedContent="metadata.name"
@@ -63,8 +63,8 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                         }}
                         collapsedPlaceholder="Expand to enter the subscription details"
                     >
-                        <TextInput id="text-input" path="metadata.name" label="Name" required />
-                        <TextInput id="text-input" path="metadata.namespace" label="Namespace" required />
+                        <WizTextInput id="text-input" path="metadata.name" label="Name" required />
+                        <WizTextInput id="text-input" path="metadata.namespace" label="Namespace" required />
                         <Select
                             id="select"
                             path="spec.channel"
@@ -75,22 +75,26 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                             ]}
                             helperText="A subscription targets a channel. The channel targets a source repository containing the application resources. Click on 'Channels' to add a new channel."
                         />
-                        <TextInput
+                        <WizTextInput
                             id="text-input"
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/git-branch`}
                             label="Branch"
                         />
-                        <TextInput
+                        <WizTextInput
                             id="text-input"
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/git-path`}
                             label="Path"
                         />
-                        <TextInput
+                        <WizTextInput
                             id="text-input"
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/git-desired-commit`}
                             label="Commit hash"
                         />
-                        <TextInput id="text-input" path={`metadata.annotations.apps\\.open-cluster-management\\.io/git-tag`} label="Tag" />
+                        <WizTextInput
+                            id="text-input"
+                            path={`metadata.annotations.apps\\.open-cluster-management\\.io/git-tag`}
+                            label="Tag"
+                        />
                         <Select
                             id="select"
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/reconcile-option`}
@@ -98,7 +102,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                             options={['merge', 'replace']}
                             required
                         />
-                    </ArrayInput>
+                    </WizArrayInput>
                 </Section>
             </Step>
             <Step label="Channels" id="channels">
@@ -107,7 +111,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     prompt="Add channels"
                     description="A channel targets a source repository containing application resources."
                 >
-                    <ArrayInput
+                    <WizArrayInput
                         id=""
                         placeholder="Add channel"
                         collapsedContent="metadata.name"
@@ -130,7 +134,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                             },
                         }}
                     >
-                        <TextInput id="text-input" path="metadata.name" label="Channel name" required />
+                        <WizTextInput id="text-input" path="metadata.name" label="Channel name" required />
                         <Select
                             id="type"
                             path={`spec.type`}
@@ -138,7 +142,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                             options={['Git', 'HelmRepo', 'ObjectBucket']}
                             required
                         />
-                        <TextInput id="pathname" path="spec.pathname" label="Repository URL" placeholder="Enter the URL" required />
+                        <WizTextInput id="pathname" path="spec.pathname" label="Repository URL" placeholder="Enter the URL" required />
                         <Select
                             id="type"
                             path="spec.secretRef.name"
@@ -152,7 +156,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                             label="Repository reconcile rate"
                             options={['low', 'medium', 'high', 'off']}
                         />
-                    </ArrayInput>
+                    </WizArrayInput>
                 </Section>
             </Step>
             <Step label="Placements" id="placements">
@@ -161,7 +165,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     prompt="Add placements"
                     description="Placements are used to place applications on clusters. Only new placements are shown here. Both new and existing placements can be selected when creating a subscription."
                 >
-                    <ArrayInput
+                    <WizArrayInput
                         id=""
                         placeholder="Add"
                         collapsedContent="metadata.name"
@@ -171,9 +175,9 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                         filter={(item) => item.kind === PlacementRuleKind}
                         newValue={{ ...PlacementRuleType, metadata: { name: '' } }}
                     >
-                        <TextInput id="text-input" path="metadata.name" label="Name" required />
-                        <KeyValue id="" path="spec.clusterSelector.matchLabels" label="Cluster labels"></KeyValue>
-                    </ArrayInput>
+                        <WizTextInput id="text-input" path="metadata.name" label="Name" required />
+                        <WizKeyValue id="" path="spec.clusterSelector.matchLabels" label="Cluster labels"></WizKeyValue>
+                    </WizArrayInput>
                 </Section>
             </Step>
             <Step label="Secrets" id="secret">
@@ -182,7 +186,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     prompt="Add secrets"
                     description="Some repositories need credentials stored as secrets to access the repository. Add any needed credential secrets here."
                 >
-                    <ArrayInput
+                    <WizArrayInput
                         id=""
                         placeholder="Add"
                         collapsedContent="metadata.name"
@@ -196,24 +200,24 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                             metadata: { name: '' },
                         }}
                     >
-                        <TextInput id="text-input" path="metadata.name" label="Name" required />
-                        <TextInput id="" path="stringData.user" label="Username" secret />
-                        <TextInput id="" path="stringData.accessToken" label="Access token" secret />
-                        <TextInput
+                        <WizTextInput id="text-input" path="metadata.name" label="Name" required />
+                        <WizTextInput id="" path="stringData.user" label="Username" secret />
+                        <WizTextInput id="" path="stringData.accessToken" label="Access token" secret />
+                        <WizTextInput
                             id=""
                             path="stringData.AccessKeyID"
                             label="Access key"
                             secret
                             helperText="The access key for accessing the object store."
                         />
-                        <TextInput
+                        <WizTextInput
                             id=""
                             path="stringData.SecretAccessKey"
                             label="Secret key"
                             secret
                             helperText="The secret key for accessing the object store."
                         />
-                    </ArrayInput>
+                    </WizArrayInput>
                 </Section>
             </Step>
         </WizardPage>

@@ -1,15 +1,5 @@
 import { Fragment } from 'react'
-import {
-    ArrayInput as ArrayInput,
-    KeyValue,
-    Section,
-    Select as Select,
-    Step,
-    TextInput,
-    WizardCancel,
-    WizardPage,
-    WizardSubmit,
-} from '../../src'
+import { WizKeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit, WizArrayInput, WizTextInput } from '../../src'
 
 export function AnsibleWizard(props: {
     onSubmit: WizardSubmit
@@ -39,7 +29,7 @@ export function AnsibleWizard(props: {
                     prompt="Configure the automation"
                     description="Automation is accomplished by creating a ClusterCurator resource which can be selected during cluster creation to automate running ansible jobs."
                 >
-                    <TextInput label="Name" id="name" path="metadata.name" required />
+                    <WizTextInput label="Name" id="name" path="metadata.name" required />
                     <Select
                         label="Namespace"
                         id="namespace"
@@ -62,7 +52,7 @@ export function AnsibleWizard(props: {
                         required
                     />
 
-                    <ArrayInput
+                    <WizArrayInput
                         id="install-prehooks"
                         path="spec.install.prehook"
                         label="Pre-install jobs"
@@ -73,9 +63,9 @@ export function AnsibleWizard(props: {
                         sortable
                     >
                         <JobInputs />
-                    </ArrayInput>
+                    </WizArrayInput>
 
-                    <ArrayInput
+                    <WizArrayInput
                         id="install-posthooks"
                         path="spec.install.posthook"
                         label="Post-install jobs"
@@ -86,7 +76,7 @@ export function AnsibleWizard(props: {
                         sortable
                     >
                         <JobInputs />
-                    </ArrayInput>
+                    </WizArrayInput>
                 </Section>
             </Step>
 
@@ -100,7 +90,7 @@ export function AnsibleWizard(props: {
                         options={props.credentials}
                         required
                     />
-                    <ArrayInput
+                    <WizArrayInput
                         id="upgrade-prehooks"
                         path="spec.upgrade.prehook"
                         label="Pre-upgrade jobs"
@@ -111,8 +101,8 @@ export function AnsibleWizard(props: {
                         sortable
                     >
                         <JobInputs />
-                    </ArrayInput>
-                    <ArrayInput
+                    </WizArrayInput>
+                    <WizArrayInput
                         id="upgrade-posthooks"
                         path="spec.upgrade.posthook"
                         label="Post-upgrade jobs"
@@ -123,7 +113,7 @@ export function AnsibleWizard(props: {
                         sortable
                     >
                         <JobInputs />
-                    </ArrayInput>
+                    </WizArrayInput>
                 </Section>
             </Step>
         </WizardPage>
@@ -133,14 +123,14 @@ export function AnsibleWizard(props: {
 function JobInputs() {
     return (
         <Fragment>
-            <TextInput
+            <WizTextInput
                 id="name"
                 path="name"
                 label="Ansible job template name"
                 placeholder="Enter or select Ansible job template name"
                 required
             />
-            <KeyValue id="extra_vars" path="extra_vars" label="Extra variables" placeholder="Add variable" />
+            <WizKeyValue id="extra_vars" path="extra_vars" label="Extra variables" placeholder="Add variable" />
         </Fragment>
     )
 }

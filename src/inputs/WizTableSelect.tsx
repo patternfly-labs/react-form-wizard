@@ -20,14 +20,14 @@ import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, useInput } from './Input'
-import { InputLabel } from './InputLabel'
+import { WizFormGroup } from './WizFormGroup'
 
 interface ITableColumn<T> {
     name: string
     cellFn: (item: T) => ReactNode
 }
 
-export type TableSelectProps<T> = InputCommonProps<string> & {
+export type WizTableSelectProps<T> = InputCommonProps<string> & {
     label: string
     columns: ITableColumn<T>[]
     items: T[]
@@ -38,7 +38,7 @@ export type TableSelectProps<T> = InputCommonProps<string> & {
     summaryList?: boolean
 }
 
-export function TableSelect<T = any>(props: TableSelectProps<T>) {
+export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     const [page, setPage] = useState(1)
@@ -145,7 +145,7 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
     }
 
     return (
-        <InputLabel {...props}>
+        <WizFormGroup {...props}>
             <div style={{ display: 'flex', gap: 8 }}>
                 <BulkSelect
                     selectedCount={selectedItems.length}
@@ -193,7 +193,7 @@ export function TableSelect<T = any>(props: TableSelectProps<T>) {
                     perPageOptions={[]}
                 />
             )}
-        </InputLabel>
+        </WizFormGroup>
     )
 }
 

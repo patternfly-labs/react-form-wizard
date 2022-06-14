@@ -2,18 +2,18 @@
 // eslint-disable-next-line no-use-before-define
 import { useHistory } from 'react-router-dom'
 import {
-    ArrayInput,
-    Checkbox,
-    KeyValue,
-    MultiSelect,
+    WizKeyValue,
+    WizMultiSelect,
     Section,
     Select,
     Step,
-    TextDetail,
-    TextInput,
+    WizTextDetail,
     Tile,
-    Tiles,
+    WizTiles,
     WizardPage,
+    WizArrayInput,
+    WizCheckbox,
+    WizTextInput,
 } from '../../src'
 
 export function ClusterForm() {
@@ -28,17 +28,17 @@ export function ClusterForm() {
         >
             <Step label="Infrastructure provider" id="infrastructure-provider">
                 <Section label="Infrastructure provider" prompt="Select the infrastructure for the cluster">
-                    <Tiles path="provider" label="Cloud infrastructure providers">
+                    <WizTiles path="provider" label="Cloud infrastructure providers">
                         <Tile id="aws" value="aws" label="Amazon Web Services" />
                         <Tile id="azr" value="azr" label="Microsoft Azure" />
                         <Tile id="gcp" value="gcp" label="Google Cloud Platform" />
                         <Tile id="ost" value="ost" label="Red Hat OpenStack Platform" />
                         <Tile id="vsp" value="vsp" label="VMWare vSphere" />
                         <Tile id="bare" value="bare" label="Bare metal" />
-                    </Tiles>
-                    <Tiles id="centrallyManagedCredentials" path="provider" label="Centrally managed">
+                    </WizTiles>
+                    <WizTiles id="centrallyManagedCredentials" path="provider" label="Centrally managed">
                         <Tile id="onp" value="onp" label="On premise" />
-                    </Tiles>
+                    </WizTiles>
                 </Section>
                 <Section label="Credentials" prompt="Select the infrastructure for the cluster" hidden={(item) => !item.provider}>
                     <Select
@@ -53,7 +53,7 @@ export function ClusterForm() {
 
             <Step label="Cluster details" id="cluster-details">
                 <Section label="Cluster details" prompt="Enter the cluster details">
-                    <TextInput path="name" label="Cluster name" placeholder="Enter the cluster name" required />
+                    <WizTextInput path="name" label="Cluster name" placeholder="Enter the cluster name" required />
                     <Select path="region" label="Region" options={Object.keys(awsRegions)} />
                     <Select
                         path="clusterSet"
@@ -63,9 +63,9 @@ export function ClusterForm() {
                         options={['default']}
                         required
                     />
-                    <TextInput path="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
+                    <WizTextInput path="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
                     <Select path="releaseImage" label="Release image" placeholder="Select a release image" options={['default']} required />
-                    <KeyValue path="labels" label="Additional labels" />
+                    <WizKeyValue path="labels" label="Additional labels" />
                 </Section>
             </Step>
 
@@ -85,17 +85,17 @@ export function ClusterForm() {
                 >
                     <Select path="networkType" label="Network type" options={['default']} required />
 
-                    <ArrayInput
+                    <WizArrayInput
                         path="networks"
                         label="Networks"
                         placeholder="Add network"
-                        collapsedContent={<TextDetail path="clusterCidr" placeholder="Expand to edit the network" />}
+                        collapsedContent={<WizTextDetail path="clusterCidr" placeholder="Expand to edit the network" />}
                     >
-                        <TextInput path="clusterCidr" label="Cluster network CIDR" />
-                        <TextInput path="hostPrefix" label="Network host prefix" />
-                        <TextInput path="serviceCidr" label="Service network Cidr" />
-                        <TextInput path="machienCidr" label="Machine CIDR" />
-                    </ArrayInput>
+                        <WizTextInput path="clusterCidr" label="Cluster network CIDR" />
+                        <WizTextInput path="hostPrefix" label="Network host prefix" />
+                        <WizTextInput path="serviceCidr" label="Service network Cidr" />
+                        <WizTextInput path="machienCidr" label="Machine CIDR" />
+                    </WizArrayInput>
                 </Section>
             </Step>
 
@@ -105,28 +105,28 @@ export function ClusterForm() {
                     prompt="Configure a proxy"
                     description="Production environments can deny direct access to the Internet and instead have an HTTP or HTTPS proxy available. You can configure a new OpenShift Container Platform cluster to use a proxy by configuring the proxy settings."
                 >
-                    <Checkbox path="useProxy" label="Use proxy" />
-                    <TextInput
+                    <WizCheckbox path="useProxy" label="Use proxy" />
+                    <WizTextInput
                         path="httpProxy"
                         label="Http Proxy "
                         helperText="Requires this format: http://<username>:<pswd>@<ip>:<port>"
                         required
                         hidden={(item) => !item.useProxy}
                     />
-                    <TextInput
+                    <WizTextInput
                         path="httpsProxy"
                         label="Https Proxy"
                         helperText="Requires this format: https://<username>:<pswd>@<ip>:<port>"
                         required
                         hidden={(item) => !item.useProxy}
                     />
-                    <TextInput
+                    <WizTextInput
                         path="noProxy"
                         label="No Proxy"
                         helperText="By default, all cluster egress traffic is proxied, including calls to hosting cloud provider APIs. Add sites to No Proxy to bypass the proxy if necessary."
                         hidden={(item) => !item.useProxy}
                     />
-                    <TextInput path="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
+                    <WizTextInput path="additionalTrustBundle" label="Additional Trust Bundle" hidden={(item) => !item.useProxy} />
                 </Section>
             </Step>
 
@@ -150,7 +150,7 @@ export function ControlPlaneStep() {
             prompt="Enter the control plane details"
             description="Three control plane nodes will be created to control this cluster unless single node is enabled, in which case there will only be one control plane node."
         >
-            <MultiSelect path="zones" label="Zones" options={awsRegions['us-east-1']} />
+            <WizMultiSelect path="zones" label="Zones" options={awsRegions['us-east-1']} />
             <Select
                 path="instanceType"
                 label="Instance type"
@@ -170,18 +170,18 @@ export function WorkerPoolsStep() {
             prompt="Enter the worker pools"
             description="One or more worker nodes will be created to run the container workloads in this cluster."
         >
-            <ArrayInput
+            <WizArrayInput
                 path="workerPools"
                 label="Worker pools"
                 placeholder="Add worker pool"
-                collapsedContent={<TextDetail path="name" placeholder="Expand to edit the worker pool details" />}
+                collapsedContent={<WizTextDetail path="name" placeholder="Expand to edit the worker pool details" />}
             >
-                <TextInput path="name" label="Pool name" />
+                <WizTextInput path="name" label="Pool name" />
                 <Select path="zones" label="Zones" options={['default']} />
                 <Select path="instanceType" label="Instance type" options={['default']} />
                 {/* <NumberInput */}
                 <Select path="rootStorage" label="Root storage (GiB)" options={['default']} />
-            </ArrayInput>
+            </WizArrayInput>
         </Section>
     )
 }

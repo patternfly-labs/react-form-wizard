@@ -2,19 +2,19 @@ import { Stack } from '@patternfly/react-core'
 import { ServerIcon, VirtualMachineIcon } from '@patternfly/react-icons'
 import { useHistory } from 'react-router-dom'
 import {
-    ArrayInput,
-    Hidden,
+    WizHidden,
     ItemContext,
-    NumberInput,
+    WizNumberInput,
     Section,
     Select,
-    SingleSelect,
+    WizSingleSelect,
     Step,
-    Switch,
-    TableSelect,
-    TextDetail,
-    TextInput,
+    WizSwitch,
+    WizTableSelect,
+    WizTextDetail,
     WizardPage,
+    WizArrayInput,
+    WizTextInput,
 } from '../../src'
 import { Catalog } from '../Catalog'
 import { RouteE } from '../Routes'
@@ -173,8 +173,8 @@ export function CreateCluster() {
         >
             <Step label="Details" id="cluster-details-step">
                 <Section label="Cluster Details">
-                    <TextInput label="Name" path="name" required disablePaste />
-                    <SingleSelect
+                    <WizTextInput label="Name" path="name" required />
+                    <WizSingleSelect
                         label="Cluster set"
                         path="clusterSet"
                         options={['default', 'cluster-set-1']}
@@ -186,7 +186,7 @@ export function CreateCluster() {
 
             <Step label="Hosts" id="work-pools-step">
                 <Section label="Control plane location">
-                    <SingleSelect
+                    <WizSingleSelect
                         label="Cluster"
                         path="hostingCluster"
                         options={['local-cluster']}
@@ -194,7 +194,7 @@ export function CreateCluster() {
                         helperText="By default, the local-cluster will be selected as the hosting service cluster in order to run OpenShift in a hyperscale maneer with many control planes hosted on a central hosting service cluster."
                     />
                 </Section>
-                <ArrayInput
+                <WizArrayInput
                     path="workerPools"
                     helperText="Worker pools are created from infrastructure environment hosts."
                     label="Worker pools"
@@ -205,7 +205,7 @@ export function CreateCluster() {
                                 const typedItem = item as { name: string; hosts: string }
                                 return (
                                     <Stack hasGutter>
-                                        <TextDetail path="name" placeholder="Expand to edit the worker pool details" />
+                                        <WizTextDetail path="name" placeholder="Expand to edit the worker pool details" />
                                         {typedItem.name && (typedItem.hosts?.length ?? 0) > 0 && (
                                             <div>
                                                 <small>{typedItem.hosts?.length} worker nodes</small>
@@ -220,12 +220,12 @@ export function CreateCluster() {
                     isSection
                     newValue={{ numberOfHosts: 1 }}
                 >
-                    <TextInput path="name" label="Worker pool name" required disablePaste />
-                    <SingleSelect label="Infrastructure environment" path="infraEnv" options={['infrastructure-1']} required />
-                    <Hidden hidden={(item) => !item.infraEnv}>
-                        <Switch path="auto" label="Auto select hosts" />
-                        <NumberInput label="Number of hosts" path="numberOfHosts" min={1} hidden={(item) => !item.auto} />
-                        <TableSelect
+                    <WizTextInput path="name" label="Worker pool name" required />
+                    <WizSingleSelect label="Infrastructure environment" path="infraEnv" options={['infrastructure-1']} required />
+                    <WizHidden hidden={(item) => !item.infraEnv}>
+                        <WizSwitch path="auto" label="Auto select hosts" />
+                        <WizNumberInput label="Number of hosts" path="numberOfHosts" min={1} hidden={(item) => !item.auto} />
+                        <WizTableSelect
                             label="Infrastructure hosts"
                             path="hosts"
                             columns={[
@@ -248,8 +248,8 @@ export function CreateCluster() {
                             emptyMessage="Nothing available for selection."
                             hidden={(item) => item.auto}
                         />
-                    </Hidden>
-                </ArrayInput>
+                    </WizHidden>
+                </WizArrayInput>
             </Step>
 
             <Step label="Automation" id="automation-step">

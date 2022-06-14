@@ -15,8 +15,8 @@ import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { SpinnerButton } from '../components/SpinnerButton'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, lowercaseFirst, useInput } from './Input'
-import { InputLabel } from './InputLabel'
 import './Select.css'
+import { WizFormGroup } from './WizFormGroup'
 
 export interface Option<T> {
     id?: string
@@ -237,7 +237,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     // currently disabling select field when undefined
     return (
         <div id={id}>
-            <InputLabel {...props}>
+            <WizFormGroup {...props}>
                 <InputGroup>
                     {!selectOptions && <SpinnerButton />}
                     <PfSelect
@@ -269,7 +269,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                         ))}
                     </PfSelect>
                 </InputGroup>
-            </InputLabel>
+            </WizFormGroup>
         </div>
     )
 }

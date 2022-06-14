@@ -8,7 +8,7 @@ import { InputCommonProps, useInput } from './Input'
 
 type KeyValueProps = InputCommonProps & { placeholder?: string; summaryList?: boolean }
 
-export function KeyValue(props: KeyValueProps) {
+export function WizKeyValue(props: KeyValueProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
     const [pairs] = useState<{ key: string; value: string }[]>(() => Object.keys(value).map((key) => ({ key, value: value[key] })))
     const onKeyChange = (index: number, newKey: string) => {

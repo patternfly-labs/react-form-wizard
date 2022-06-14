@@ -1,5 +1,5 @@
 import { AnsibleTowerIcon, ServerIcon } from '@patternfly/react-icons'
-import { Section, Select, Step, TextArea, TextInput, Tile, Tiles, WizardCancel, WizardPage, WizardSubmit } from '../../src'
+import { Section, Select, Step, WizTextArea, Tile, WizTiles, WizardCancel, WizardPage, WizardSubmit, WizTextInput } from '../../src'
 import { isValidKubernetesResourceName } from '../common/validation'
 import AWSIcon from './icons/AWSIcon'
 import AzureIcon from './icons/AzureIcon'
@@ -43,7 +43,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
         >
             <Step label="Credential type" id="credential-type">
                 <Section label="Credentials type">
-                    <Tiles
+                    <WizTiles
                         id="cloudCredentials"
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Cloud provider credentials"
@@ -51,8 +51,8 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                         <Tile id={CredentialsType.aws} icon={<AWSIcon />} value={CredentialsType.aws} label="Amazon Web Services" />
                         <Tile id={CredentialsType.azure} icon={<AzureIcon />} value={CredentialsType.azure} label="Microsoft Azure" />
                         <Tile id={CredentialsType.gcp} icon={<GCPIcon />} value={CredentialsType.gcp} label="Google Cloud Platform" />
-                    </Tiles>
-                    <Tiles
+                    </WizTiles>
+                    <WizTiles
                         id="datacenterCredentials"
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Datacenter credentials"
@@ -70,8 +70,8 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                             value={CredentialsType.baremetal}
                             label="Bare metal"
                         />
-                    </Tiles>
-                    <Tiles
+                    </WizTiles>
+                    <WizTiles
                         id="automationCredentials"
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Automation & other credentials"
@@ -88,20 +88,20 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                             value={CredentialsType.redhatcloud}
                             label="Red Hat OpenShift Cluster Manager"
                         />
-                    </Tiles>
-                    <Tiles
+                    </WizTiles>
+                    <WizTiles
                         id={'centrallyManagedCredentials'}
                         path="metadata.labels.cluster\.open-cluster-management\.io/type"
                         label="Centrally managed"
                     >
                         <Tile id={CredentialsType.hybrid} icon={<HybridIcon />} value={CredentialsType.hybrid} label="On premise" />
-                    </Tiles>
+                    </WizTiles>
                 </Section>
             </Step>
 
             <Step label="Basic Information" id="basic-information">
                 <Section label="Details" prompt="Enter the details for the credentials">
-                    <TextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesResourceName} />
+                    <WizTextInput id="name" path="metadata.name" label="Name" required validation={isValidKubernetesResourceName} />
                     <Select
                         id="namespace"
                         path="metadata.namespace"
@@ -110,7 +110,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                         options={['default']}
                         required
                     />
-                    <TextInput
+                    <WizTextInput
                         id="base-domain"
                         path="stringData.baseDomain"
                         label="Base DNS domain"
@@ -125,21 +125,26 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                 hidden={(item) => item.metadata?.labels?.['cluster.open-cluster-management.io/type'] !== CredentialsType.aws}
             >
                 <Section label="Amazon Web Services" prompt="Enter the Amazon Web Services credentials">
-                    <TextInput id="aws-key-id" path="stringData.aws_access_key_id" label="Access key ID" required />
-                    <TextInput id="aws-access-key" path="stringData.aws_secret_access_key" label="Secret access key" required secret />
+                    <WizTextInput id="aws-key-id" path="stringData.aws_access_key_id" label="Access key ID" required />
+                    <WizTextInput id="aws-access-key" path="stringData.aws_secret_access_key" label="Secret access key" required secret />
                 </Section>
             </Step>
             <Step label="Proxy" id="proxy">
                 <Section label="Proxy" prompt="">
-                    <TextInput id="http-proxy" path="stringData.httpProxy" label="HTTP Proxy" placeholder="Enter the HTTP Proxy url" />
-                    <TextInput id="https-proxy" path="stringData.httpsProxy" label="HTTPS Proxy" placeholder="Enter the HTTPS Proxy url" />
-                    <TextInput
+                    <WizTextInput id="http-proxy" path="stringData.httpProxy" label="HTTP Proxy" placeholder="Enter the HTTP Proxy url" />
+                    <WizTextInput
+                        id="https-proxy"
+                        path="stringData.httpsProxy"
+                        label="HTTPS Proxy"
+                        placeholder="Enter the HTTPS Proxy url"
+                    />
+                    <WizTextInput
                         id="no-proxy"
                         path="stringData.noProxy"
                         label="No Proxy"
                         placeholder="Enter the comma deliminated list of urls that do not require a proxy"
                     />
-                    <TextArea
+                    <WizTextArea
                         id="trust-bundle"
                         path="stringData.additionalTrustBundle"
                         label="Additional Trust Bundle"
@@ -149,8 +154,8 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
             </Step>
             <Step label="Pull secret and SSH" id="pull-secret-and-ssh">
                 <Section label="Pull secret and SSH" prompt="Enter the pull secret and SSH keys">
-                    <TextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
-                    <TextArea
+                    <WizTextArea id="pull-secret" path="stringData.pullSecret" label="Pull secret" required secret />
+                    <WizTextArea
                         id="ssh-private-key"
                         path="stringData.ssh-privatekey"
                         label="SSH private key"
@@ -158,7 +163,7 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                         required
                         secret
                     />
-                    <TextArea
+                    <WizTextArea
                         id="ssh-public-key"
                         path="stringData.ssh-publickey"
                         label="SSH public key"

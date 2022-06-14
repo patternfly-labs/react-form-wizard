@@ -9,7 +9,7 @@ import { ItemContext } from '../contexts/ItemContext'
 import { DisplayMode, useDisplayMode } from '../contexts/DisplayModeContext'
 import { useID } from './Input'
 
-export function TimeRange(props: {
+export function WizTimeRange(props: {
     id?: string
     label: string
     description?: string

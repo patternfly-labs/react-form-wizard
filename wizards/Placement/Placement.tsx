@@ -2,10 +2,10 @@ import { Button } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useMemo } from 'react'
-import { ArrayInput, EditMode, Hidden, KeyValue, NumberInput, TextInput } from '../../src'
+import { EditMode, WizHidden, WizKeyValue, WizNumberInput, WizArrayInput, WizTextInput } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
-import { MultiSelect } from '../../src/inputs/MultiSelect'
+import { WizMultiSelect } from '../../src/inputs/WizMultiSelect'
 import { IResource } from '../common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { IPlacement, PlacementKind, PlacementType, Predicate } from '../common/resources/IPlacement'
@@ -39,7 +39,7 @@ export function Placements(props: {
     }, [props.bindingKind, props.clusterSetBindings, props.clusterSets, resources])
 
     return (
-        <ArrayInput
+        <WizArrayInput
             id="placements"
             label="Placements"
             helperText="A placement selects clusters from the cluster sets which have bindings to the resource namespace."
@@ -57,7 +57,7 @@ export function Placements(props: {
                 clusters={props.clusters}
                 createClusterSetCallback={props.createClusterSetCallback}
             />
-        </ArrayInput>
+        </WizArrayInput>
     )
 }
 
@@ -73,7 +73,7 @@ export function Placement(props: {
     return (
         <Fragment>
             {!props.hideName && (
-                <TextInput
+                <WizTextInput
                     id="name"
                     path="metadata.name"
                     label="Name"
@@ -85,7 +85,7 @@ export function Placement(props: {
             )}
 
             {/* <TextInput label="Placement name" path="metadata.name" required labelHelp="Name needs to be unique to the namespace." /> */}
-            <MultiSelect
+            <WizMultiSelect
                 label="Cluster sets"
                 path="spec.clusterSets"
                 placeholder="Select the cluster sets"
@@ -101,7 +101,7 @@ export function Placement(props: {
                 options={props.namespaceClusterSetNames}
             />
 
-            <Hidden
+            <WizHidden
                 hidden={(placement) => {
                     if (editMode === EditMode.Edit) return true
                     if (!placement.spec?.predicates) return false
@@ -110,9 +110,9 @@ export function Placement(props: {
                 }}
             >
                 <PlacementPredicate rootPath="spec.predicates.0." clusters={props.clusters} />
-            </Hidden>
+            </WizHidden>
 
-            <ArrayInput
+            <WizArrayInput
                 label="Cluster selectors"
                 path="spec.predicates"
                 placeholder="Add cluster selector"
@@ -127,8 +127,8 @@ export function Placement(props: {
                 }}
             >
                 <PlacementPredicate clusters={props.clusters} />
-            </ArrayInput>
-            <NumberInput
+            </WizArrayInput>
+            <WizNumberInput
                 label="Limit the number of clusters selected"
                 path="spec.numberOfClusters"
                 zeroIsUndefined
@@ -144,14 +144,14 @@ export function PlacementPredicate(props: { rootPath?: string; clusters: IResour
     const labelValuesMap = useLabelValuesMap(props.clusters)
     return (
         <Fragment>
-            <KeyValue
+            <WizKeyValue
                 label="Label selectors"
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchLabels`}
                 labelHelp="Select clusters from the clusters in selected cluster sets using cluster labels. For a cluster to be be selected, the cluster must match all label selectors, label expressions, and claim expressions."
                 placeholder="Add cluster label selector"
                 hidden={(item) => get(item, `${rootPath}requiredClusterSelector.labelSelector.matchLabels`) === undefined}
             />
-            <ArrayInput
+            <WizArrayInput
                 label="Label expressions"
                 path={`${rootPath}requiredClusterSelector.labelSelector.matchExpressions`}
                 placeholder="Add label expression"
@@ -161,8 +161,8 @@ export function PlacementPredicate(props: { rootPath?: string; clusters: IResour
                 defaultCollapsed={editMode !== EditMode.Create}
             >
                 <MatchExpression labelValuesMap={labelValuesMap} />
-            </ArrayInput>
-            <ArrayInput
+            </WizArrayInput>
+            <WizArrayInput
                 label="Cluster claim expressions"
                 path={`${rootPath}requiredClusterSelector.claimSelector.matchExpressions`}
                 placeholder="Add claim expression"
@@ -173,7 +173,7 @@ export function PlacementPredicate(props: { rootPath?: string; clusters: IResour
                 hidden={(item) => get(item, `${rootPath}requiredClusterSelector.claimSelector.matchExpressions`) === undefined}
             >
                 <MatchExpression labelValuesMap={labelValuesMap} />
-            </ArrayInput>
+            </WizArrayInput>
         </Fragment>
     )
 }

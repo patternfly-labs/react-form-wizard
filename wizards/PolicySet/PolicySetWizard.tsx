@@ -4,16 +4,16 @@ import { Fragment, ReactNode, useMemo } from 'react'
 import {
     EditMode,
     ItemContext,
-    ItemSelector,
+    WizItemSelector,
     Section,
-    SingleSelect,
+    WizSingleSelect,
     Step,
-    TableSelect,
-    TextArea,
-    TextInput,
+    WizTableSelect,
+    WizTextArea,
     WizardCancel,
     WizardPage,
     WizardSubmit,
+    WizTextInput,
 } from '../../src'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../common/resource'
@@ -117,11 +117,11 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                 )}
                 <Sync kind={PolicySetKind} path="metadata.namespace" />
                 <Section label="Details">
-                    <ItemSelector selectKey="kind" selectValue={PolicySetKind}>
+                    <WizItemSelector selectKey="kind" selectValue={PolicySetKind}>
                         <ItemContext.Consumer>
                             {(item: IResource) => (
                                 <Fragment>
-                                    <TextInput
+                                    <WizTextInput
                                         label="Name"
                                         path="metadata.name"
                                         id="name"
@@ -129,8 +129,8 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                                         validation={isValidKubernetesResourceName}
                                         readonly={item.metadata?.uid !== undefined}
                                     />
-                                    <TextArea label="Description" path="spec.description" />
-                                    <SingleSelect
+                                    <WizTextArea label="Description" path="spec.description" />
+                                    <WizSingleSelect
                                         label="Namespace"
                                         path="metadata.namespace"
                                         id="namespace"
@@ -141,7 +141,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                                 </Fragment>
                             )}
                         </ItemContext.Consumer>
-                    </ItemSelector>
+                    </WizItemSelector>
                 </Section>
             </Step>
             <Step label="Policies" id="policies-step">
@@ -189,8 +189,8 @@ function PoliciesSection(props: { policies: IResource[] }) {
     return (
         <Section label="Policies">
             {arePoliciesMissing && <Alert title="One or more selected policies can not be found." variant="warning" isInline />}
-            <ItemSelector selectKey="kind" selectValue={PolicySetKind}>
-                <TableSelect
+            <WizItemSelector selectKey="kind" selectValue={PolicySetKind}>
+                <WizTableSelect
                     id="policies"
                     path="spec.policies"
                     label=""
@@ -205,7 +205,7 @@ function PoliciesSection(props: { policies: IResource[] }) {
                     emptyTitle="No policies available for selection."
                     emptyMessage="Select a namespace to be able to select policies in that namespace."
                 />
-            </ItemSelector>
+            </WizItemSelector>
         </Section>
     )
 }

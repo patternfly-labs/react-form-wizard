@@ -44,7 +44,12 @@ describe('create policy set', () => {
             {
                 ...PlacementRuleType,
                 metadata: { name: 'my-policy-set-placement', namespace: 'my-namespace-1' },
-                spec: { clusterSelector: { matchExpressions: [{ key: 'region', operator: 'In', values: ['us-east-1'] }] } },
+                spec: {
+                    clusterSelector: {
+                        matchExpressions: [{ key: 'region', operator: 'In', values: ['us-east-1'] }],
+                    },
+                    clusterConditions: [{ status: 'True', type: 'ManagedClusterConditionAvailable' }],
+                },
             },
             {
                 ...PlacementBindingType,

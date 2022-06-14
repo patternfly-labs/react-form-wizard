@@ -1,7 +1,7 @@
 import { Flex } from '@patternfly/react-core'
 import { Fragment } from 'react'
 import set from 'set-value'
-import { MultiSelect, Select, SingleSelect } from '../../src'
+import { WizMultiSelect, Select, WizSingleSelect } from '../../src'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { ItemContext, useItem } from '../../src/contexts/ItemContext'
 import { IExpression } from '../common/resources/IMatchExpression'
@@ -9,7 +9,7 @@ import { IExpression } from '../common/resources/IMatchExpression'
 export function MatchExpression(props: { labelValuesMap: Record<string, string[]> }) {
     return (
         <Flex style={{ rowGap: 16 }}>
-            <SingleSelect
+            <WizSingleSelect
                 label="Label"
                 path="key"
                 options={Object.keys(props.labelValuesMap)}
@@ -33,7 +33,7 @@ export function MatchExpression(props: { labelValuesMap: Record<string, string[]
                     const selectedLabel = item.key ?? ''
                     const values = props.labelValuesMap[selectedLabel] ?? []
                     return (
-                        <MultiSelect
+                        <WizMultiSelect
                             label="Values"
                             path="values"
                             isCreatable
