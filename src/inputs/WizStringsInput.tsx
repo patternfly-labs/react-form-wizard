@@ -11,7 +11,7 @@ import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
 import { WizTextInput } from '..'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { InputCommonProps, useInput } from './Input'
+import { getAddPlaceholder, InputCommonProps, useInput } from './Input'
 import { WizFormGroup } from './WizFormGroup'
 
 export type WizStringsInputProps = InputCommonProps & {
@@ -84,7 +84,7 @@ export function WizStringsInput(props: WizStringsInputProps) {
                 {!values.length && <Divider />}
                 <div>
                     <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onNewKey}>
-                        <PlusIcon /> &nbsp; {props.placeholder ?? 'Add'}
+                        <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
                     </Button>
                 </div>
             </div>
@@ -170,7 +170,7 @@ export function StringsMapInput(props: StringsMapInputProps) {
                 {!values.length && <Divider />}
                 <div>
                     <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onNewKey}>
-                        <PlusIcon /> &nbsp; {props.placeholder ?? 'Add'}
+                        <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
                     </Button>
                 </div>
             </div>

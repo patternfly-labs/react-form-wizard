@@ -6,7 +6,7 @@ import { ClearInputButton } from '../components/ClearInputButton'
 import { PasteInputButton } from '../components/PasteInputButton'
 import { ShowSecretsButton } from '../components/ShowSecretsButton'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { InputCommonProps, lowercaseFirst, useInput } from './Input'
+import { InputCommonProps, getEnterPlaceholder, useInput } from './Input'
 import { WizFormGroup } from './WizFormGroup'
 
 export type WizTextInputProps = InputCommonProps<string> & {
@@ -26,7 +26,7 @@ export function WizTextInput(props: WizTextInputProps) {
         return <WizTextDetail id={id} path={props.path} label={props.label} />
     }
 
-    const placeholder = props.placeholder ?? props.label !== undefined ? `Enter the ${lowercaseFirst(props.label ?? '')}` : ''
+    const placeholder = getEnterPlaceholder(props)
     const canPaste = props.canPaste !== undefined ? props.canPaste : props.secret === true
 
     if (!props.label) {

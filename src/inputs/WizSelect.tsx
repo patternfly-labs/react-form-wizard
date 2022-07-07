@@ -14,7 +14,7 @@ import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { SpinnerButton } from '../components/SpinnerButton'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { InputCommonProps, lowercaseFirst, useInput } from './Input'
+import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
 import './Select.css'
 import { WizFormGroup } from './WizFormGroup'
 
@@ -60,7 +60,7 @@ type SelectProps<T> = SingleSelectProps<T>
 function SelectBase<T = any>(props: SelectProps<T>) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
 
-    const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
+    const placeholder = getSelectPlaceholder(props)
 
     const keyPath = props.keyPath ?? props.path
 
