@@ -24,7 +24,9 @@ import { Catalog } from './Catalog'
 import { ClusterForm } from './Cluster/ClusterForm'
 import { ControlPlaneCatalog, CreateCluster, ProviderCatalog } from './Cluster/Provider'
 import { CredentialsExample } from './Credentials/CredentialsExample'
+import AWSIcon from './Credentials/icons/AWSIcon'
 import { HomeWizard } from './Home/HomeWizard'
+import { AmazonHypershiftWizard } from './Hypershift/AmazonHypershiftWizard'
 import { InputsWizard } from './Inputs/InputsWizard'
 import {
     CreatePlacement,
@@ -88,6 +90,14 @@ interface IWizard {
 }
 
 const wizards: IWizard[] = [
+    {
+        icon: <AWSIcon />,
+        shortName: 'AmazonHyperShift',
+        name: 'Amazon HyperShift CLuster',
+        route: RouteE.AmazonHyperShift,
+        labels: ['Advanced Cluster Management'],
+        state: StateE.prototype,
+    },
     {
         icon: <AnsibleTowerIcon size="lg" color="#EE0000" />,
         shortName: 'Ansible',
@@ -198,6 +208,8 @@ export default function Demo() {
 export function DemoRouter(): JSX.Element {
     const location = useLocation()
     switch (location.search) {
+        case RouteE.AmazonHyperShift:
+            return <AmazonHypershiftWizard />
         case RouteE.Ansible:
             return <AnsibleExample />
         case RouteE.Application:

@@ -1,5 +1,6 @@
 export enum RouteE {
     Home = '.',
+    AmazonHyperShift = '?route=amazon-hypershift',
     ArgoCD = '?route=argo-cd',
     CreateArgoCD = '?route=argo-cd-create',
     EditArgoCD = '?route=argo-cd-edit',
