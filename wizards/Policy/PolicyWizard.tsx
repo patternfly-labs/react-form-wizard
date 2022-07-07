@@ -5,25 +5,25 @@ import { klona } from 'klona/json'
 import { Fragment, ReactNode, useContext, useMemo } from 'react'
 import set from 'set-value'
 import {
-    WizDetailsHidden,
     EditMode,
-    WizHidden,
-    WizItemSelector,
-    WizKeyValue,
-    WizNumberInput,
     Radio,
-    WizRadioGroup,
     Section,
     Select,
-    WizSingleSelect,
     Step,
-    WizStringsInput,
     StringsMapInput,
     WizardCancel,
     WizardPage,
     WizardSubmit,
     WizArrayInput,
     WizCheckbox,
+    WizDetailsHidden,
+    WizHidden,
+    WizItemSelector,
+    WizKeyValue,
+    WizNumberInput,
+    WizRadioGroup,
+    WizSingleSelect,
+    WizStringsInput,
     WizTextInput,
 } from '../../src'
 import { useEditMode } from '../../src/contexts/EditModeContext'
@@ -35,6 +35,7 @@ import { PlacementRuleKind } from '../common/resources/IPlacementRule'
 import { PolicyApiGroup, PolicyKind, PolicyType } from '../common/resources/IPolicy'
 import { Sync } from '../../src/Sync'
 import { isValidKubernetesResourceName, validatePolicyName } from '../common/validation'
+import { MatchExpression, MatchExpressionCollapsed } from '../Placement/MatchExpression'
 import { PlacementSection } from '../Placement/PlacementSection'
 import { Specifications } from './specifications'
 
@@ -198,6 +199,8 @@ export function PolicyWizard(props: {
 export function PolicyWizardTemplates(props: { policies: IResource[] }) {
     const policy = useContext(ItemContext)
     const editMode = useEditMode()
+    const selectorPath = 'objectDefinition.spec.namespaceSelector'
+    const selectorMatchLabels = `${selectorPath}.matchLabels`
     return (
         <Section label="Templates" description="A policy contains  policy templates that create policies on managed clusters.">
             <WizRadioGroup
@@ -348,16 +351,32 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                 <WizHidden hidden={(template: any) => template?.objectDefinition?.spec?.namespaceSelector === undefined}>
                     <WizStringsInput
                         id="include-namespaces"
-                        path="objectDefinition.spec.namespaceSelector.include"
+                        path={`${selectorPath}.include`}
                         label="Include namespaces"
                         placeholder="Add namespace"
                     />
                     <WizStringsInput
                         id="exclude-namespaces"
-                        path="objectDefinition.spec.namespaceSelector.exclude"
+                        path={`${selectorPath}.exclude`}
                         label="Exclude namespaces"
                         placeholder="Add namespace"
                     />
+                    <WizKeyValue
+                        label="Namespaces match labels"
+                        path={selectorMatchLabels}
+                        placeholder="Add label"
+                        hidden={(item) => get(item, selectorMatchLabels) === undefined}
+                    />
+                    <WizArrayInput
+                        label="Namespaces match label expressions"
+                        path={`${selectorPath}.matchExpressions`}
+                        placeholder="Add expression"
+                        collapsedContent={<MatchExpressionCollapsed />}
+                        newValue={{ key: '', operator: 'In', values: [] }}
+                        defaultCollapsed={editMode !== EditMode.Create}
+                    >
+                        <MatchExpression />
+                    </WizArrayInput>
                 </WizHidden>
 
                 <WizRadioGroup path="objectDefinition.spec.remediationAction" label="Remediation">

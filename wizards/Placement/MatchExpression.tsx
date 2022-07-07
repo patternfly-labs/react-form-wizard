@@ -1,22 +1,27 @@
 import { Flex } from '@patternfly/react-core'
 import { Fragment } from 'react'
 import set from 'set-value'
-import { WizMultiSelect, Select, WizSingleSelect } from '../../src'
+import { Select, WizMultiSelect, WizSingleSelect, WizStringsInput, WizTextInput } from '../../src'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { ItemContext, useItem } from '../../src/contexts/ItemContext'
 import { IExpression } from '../common/resources/IMatchExpression'
 
-export function MatchExpression(props: { labelValuesMap: Record<string, string[]> }) {
+export function MatchExpression(props: { labelValuesMap?: Record<string, string[]> }) {
+    const labelValuesMap = props.labelValuesMap
     return (
         <Flex style={{ rowGap: 16 }}>
-            <WizSingleSelect
-                label="Label"
-                path="key"
-                options={Object.keys(props.labelValuesMap)}
-                isCreatable
-                required
-                onValueChange={(_value, item) => set(item as object, 'values', [])}
-            />
+            {labelValuesMap ? (
+                <WizSingleSelect
+                    label="Label"
+                    path="key"
+                    options={Object.keys(labelValuesMap)}
+                    isCreatable
+                    required
+                    onValueChange={(_value, item) => set(item as object, 'values', [])}
+                />
+            ) : (
+                <WizTextInput label="Label" path="key" required onValueChange={(_value, item) => set(item as object, 'values', [])} />
+            )}
             <Select
                 label="Operator"
                 path="operator"
@@ -27,23 +32,40 @@ export function MatchExpression(props: { labelValuesMap: Record<string, string[]
                     { label: 'does not exist', value: 'DoesNotExist' },
                 ]}
                 required
-            />
-            <ItemContext.Consumer>
-                {(item: IExpression) => {
-                    const selectedLabel = item.key ?? ''
-                    const values = props.labelValuesMap[selectedLabel] ?? []
-                    return (
-                        <WizMultiSelect
-                            label="Values"
-                            path="values"
-                            isCreatable
-                            required
-                            hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
-                            options={values}
-                        />
-                    )
+                onValueChange={(value, item) => {
+                    switch (value) {
+                        case 'Exists':
+                        case 'DoesNotExist':
+                            set(item, 'values', undefined)
+                            break
+                    }
                 }}
-            </ItemContext.Consumer>
+            />
+            {labelValuesMap ? (
+                <ItemContext.Consumer>
+                    {(item: IExpression) => {
+                        const selectedLabel = item.key ?? ''
+                        const values = labelValuesMap[selectedLabel] ?? []
+                        return (
+                            <WizMultiSelect
+                                label="Values"
+                                path="values"
+                                isCreatable
+                                required
+                                hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
+                                options={values}
+                            />
+                        )
+                    }}
+                </ItemContext.Consumer>
+            ) : (
+                <WizStringsInput
+                    label="Values"
+                    path="values"
+                    required
+                    hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
+                />
+            )}
         </Flex>
     )
 }
