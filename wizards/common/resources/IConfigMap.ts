@@ -1,5 +1,5 @@
 /* Copyright Contributors to the Open Cluster Management project */
-import { IResource } from '../resource'
+import { IResource } from '../../../src/common/resource'
 
 export const ConfigMapApiVersion = 'v1'
 export type ConfigMapApiVersionType = 'v1'

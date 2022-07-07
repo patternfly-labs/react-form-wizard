@@ -1,4 +1,4 @@
-import { IResource } from '../resource'
+import { IResource } from '../../../src/common/resource'
 import { IExpression } from './IMatchExpression'
 
 export const PlacementApiGroup = 'cluster.open-cluster-management.io'

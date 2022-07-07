@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router-dom'
 import { EditMode } from '../../src'
 import { Catalog } from '../Catalog'
-import { IResource } from '../common/resource'
+import { IResource } from '../../src/common/resource'
 import { PlacementApiGroup, PlacementKind, PlacementType } from '../common/resources/IPlacement'
 import { PlacementBindingApiVersion, PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'

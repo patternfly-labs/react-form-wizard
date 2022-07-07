@@ -1,4 +1,4 @@
-import { IResource } from '../resource'
+import { IResource } from '../../../src/common/resource'
 
 export const PolicyAutomationGroup = 'policy.open-cluster-management.io'
 export const PolicyAutomationApiVersion = 'policy.open-cluster-management.io/v1beta1'

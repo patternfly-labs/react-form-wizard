@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { IResource } from './resource'
+import { IResource } from '../../src/common/resource'
 
 export function useLabelValuesMap(clusters: IResource[]) {
     return useMemo(() => {

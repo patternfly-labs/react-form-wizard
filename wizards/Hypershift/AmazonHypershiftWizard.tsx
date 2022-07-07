@@ -18,7 +18,7 @@ import {
     WizTextDetail,
     WizTextInput,
 } from '../../src'
-import { Sync } from '../common/Sync'
+import { Sync } from '../../src/Sync'
 import { IHypershiftDeployment } from './IHypershiftDeployment'
 
 const newNodePool = {

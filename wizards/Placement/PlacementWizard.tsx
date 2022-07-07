@@ -1,5 +1,5 @@
 import { EditMode, Step, WizardCancel, WizardPage, WizardSubmit } from '../../src'
-import { IResource } from '../common/resource'
+import { IResource } from '../../src/common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementSection } from './PlacementSection'
 
