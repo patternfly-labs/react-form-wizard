@@ -12,7 +12,7 @@ import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import { SpinnerButton } from '../components/SpinnerButton'
 import { SyncButton } from '../components/SyncButton'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { InputCommonProps, lowercaseFirst, useInput } from './Input'
+import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
 import './Select.css'
 import { WizFormGroup } from './WizFormGroup'
 
@@ -27,7 +27,7 @@ type WizAsyncSelectProps = InputCommonProps<string> & {
 export function WizAsyncSelect(props: WizAsyncSelectProps) {
     const { asyncCallback } = props
     const { displayMode, value, setValue, validated, hidden, id, disabled } = useInput(props)
-    const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
+    const placeholder = getSelectPlaceholder(props)
     const [open, setOpen] = useState(false)
     const [options, setOptions] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
