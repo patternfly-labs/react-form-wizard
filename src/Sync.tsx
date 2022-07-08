@@ -1,9 +1,9 @@
 import get from 'get-value'
 import { Fragment, useEffect, useState } from 'react'
 import set from 'set-value'
-import { useData } from '../../src/contexts/DataContext'
-import { useItem } from '../../src/contexts/ItemContext'
-import { IResource } from '../common/resource'
+import { useData } from './contexts/DataContext'
+import { useItem } from './contexts/ItemContext'
+import { IResource } from './common/resource'
 
 export function Sync(props: { kind: string; path: string; targetKind?: string; targetPath?: string; suffix?: string }) {
     const resources = useItem() as IResource[]

@@ -16,13 +16,13 @@ import {
     WizTextInput,
 } from '../../src'
 import { useItem } from '../../src/contexts/ItemContext'
-import { IResource } from '../common/resource'
+import { IResource } from '../../src/common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleApiGroup, PlacementRuleKind, PlacementRuleType } from '../common/resources/IPlacementRule'
 import { PolicyApiVersion, PolicyKind } from '../common/resources/IPolicy'
 import { PolicySetApiGroup, PolicySetKind, PolicySetType } from '../common/resources/IPolicySet'
-import { Sync } from '../common/Sync'
+import { Sync } from '../../src/Sync'
 import { isValidKubernetesResourceName } from '../common/validation'
 import { PlacementSection } from '../Placement/PlacementSection'
 

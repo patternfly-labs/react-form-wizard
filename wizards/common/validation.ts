@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 import validator from 'validator'
 import YAML from 'yaml'
-import { IResource } from './resource'
+import { IResource } from '../../src/common/resource'
 
 type TFunction = (t: string) => string
 

@@ -93,13 +93,6 @@ export function useInputHidden(props: { hidden?: (item: any) => boolean }) {
     return props.hidden ? props.hidden(item) : false
 }
 
-export function lowercaseFirst(label: string) {
-    if (label) {
-        label = label[0].toLowerCase() + label.substr(1)
-    }
-    return label
-}
-
 export function useInput(props: InputCommonProps) {
     const editMode = useEditMode()
     const displayMode = useDisplayMode()
@@ -165,4 +158,27 @@ export function useInput(props: InputCommonProps) {
         hidden,
         disabled,
     }
+}
+
+function lowercaseFirst(label: string) {
+    if (label) {
+        label = label[0].toLowerCase() + label.substring(1)
+    }
+    return label
+}
+
+export function getEnterPlaceholder(props: { label?: string; placeholder?: string }) {
+    return props.placeholder ?? (props.label && props.label.length ? `Enter the ${lowercaseFirst(props.label)}` : '')
+}
+
+export function getSelectPlaceholder(props: { label: string; placeholder?: string }) {
+    return props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
+}
+
+export function getCollapsedPlaceholder(props: { collapsedPlaceholder?: ReactNode }) {
+    return props.collapsedPlaceholder ?? 'Expand to edit'
+}
+
+export function getAddPlaceholder(props: { placeholder?: string }) {
+    return props.placeholder ?? 'Add'
 }

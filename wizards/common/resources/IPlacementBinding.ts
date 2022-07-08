@@ -1,4 +1,4 @@
-import { IResource } from '../resource'
+import { IResource } from '../../../src/common/resource'
 
 export const PlacementBindingApiGroup = 'policy.open-cluster-management.io'
 export const PlacementBindingApiVersion = `${PlacementBindingApiGroup}/v1`

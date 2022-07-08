@@ -6,7 +6,7 @@ import { EditMode, WizHidden, WizKeyValue, WizNumberInput, WizArrayInput, WizTex
 import { useEditMode } from '../../src/contexts/EditModeContext'
 import { useItem } from '../../src/contexts/ItemContext'
 import { WizMultiSelect } from '../../src/inputs/WizMultiSelect'
-import { IResource } from '../common/resource'
+import { IResource } from '../../src/common/resource'
 import { IClusterSetBinding } from '../common/resources/IClusterSetBinding'
 import { IPlacement, PlacementKind, PlacementType, Predicate } from '../common/resources/IPlacement'
 import { useLabelValuesMap } from '../common/useLabelValuesMap'

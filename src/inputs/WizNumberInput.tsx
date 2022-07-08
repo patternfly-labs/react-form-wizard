@@ -2,7 +2,7 @@ import { NumberInput as PFNumberInput } from '@patternfly/react-core'
 import { Fragment, useCallback } from 'react'
 import { WizTextDetail } from '..'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { InputCommonProps, lowercaseFirst, useInput } from './Input'
+import { getEnterPlaceholder, InputCommonProps, useInput } from './Input'
 import { WizFormGroup } from './WizFormGroup'
 
 export type WizNumberInputProps = InputCommonProps<string> & {
@@ -49,7 +49,7 @@ export function WizNumberInput(props: WizNumberInputProps) {
         return <WizTextDetail id={id} path={props.path} label={props.label} />
     }
 
-    const placeholder = props.placeholder ?? `Enter the ${lowercaseFirst(props.label)}`
+    const placeholder = getEnterPlaceholder(props)
 
     return (
         <WizFormGroup {...props} id={id}>

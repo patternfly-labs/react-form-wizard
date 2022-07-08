@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-core'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { InputCommonProps, lowercaseFirst, useInput } from './Input'
+import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
 import './Select.css'
 import { WizFormGroup } from './WizFormGroup'
 
@@ -25,7 +25,7 @@ export type WizMultiSelectProps = InputCommonProps<string[]> & {
 
 export function WizMultiSelect(props: WizMultiSelectProps) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
-    const placeholder = props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
+    const placeholder = getSelectPlaceholder(props)
     const [open, setOpen] = useState(false)
 
     const onSelect = useCallback(
