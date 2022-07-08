@@ -146,7 +146,7 @@ export function AmazonHypershiftWizard() {
                             required
                         />
                         <Select
-                            path="spec.infrastructure.release.platform.image"
+                            path="spec.infrastructure.release.image"
                             label="Release image"
                             placeholder="Select a release image"
                             options={['default']}
@@ -244,8 +244,8 @@ export function AmazonHypershiftWizard() {
                             required
                         />
                         <WizTextInput path="spec.hostedClusterSpec.networking.podCIDR" label="Pod CIDR" required />
-                        <WizTextInput path="serviceCIDR" label="Service CIDR" required />
-                        <WizTextInput path="spec.hostedClusterSpec.networking.machienCIDR" label="Machine CIDR" required />
+                        <WizTextInput path="spec.hostedClusterSpec.networking.serviceCIDR" label="Service CIDR" required />
+                        <WizTextInput path="spec.hostedClusterSpec.networking.machineCIDR" label="Machine CIDR" required />
                     </Section>
                 </WizItemSelector>
             </Step>
