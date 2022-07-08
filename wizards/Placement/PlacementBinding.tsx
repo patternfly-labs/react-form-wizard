@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Select, WizArrayInput, WizTextInput } from '../../src'
 import { useItem } from '../../src/contexts/ItemContext'
-import { IResource } from '../common/resource'
+import { IResource } from '../../src/common/resource'
 import { PlacementApiGroup, PlacementKind } from '../common/resources/IPlacement'
 import { IPlacementBinding, IPlacementSubject, PlacementBindingKind, PlacementBindingType } from '../common/resources/IPlacementBinding'
 import { PlacementRuleKind } from '../common/resources/IPlacementRule'

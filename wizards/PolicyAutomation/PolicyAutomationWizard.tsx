@@ -13,7 +13,7 @@ import {
     WizardSubmit,
     WizCheckbox,
 } from '../../src'
-import { IResource } from '../common/resource'
+import { IResource } from '../../src/common/resource'
 import { ConfigMap } from '../common/resources/IConfigMap'
 import { ICredential } from '../common/resources/ICredential'
 import { IPolicyAutomation, PolicyAutomationType } from '../common/resources/IPolicyAutomation'
