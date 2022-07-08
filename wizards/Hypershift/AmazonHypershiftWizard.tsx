@@ -1,6 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 // eslint-disable-next-line no-use-before-define
-import { CodeBlock, List, ListComponent, ListItem, OrderType } from '@patternfly/react-core'
+import { CodeBlock, List, ListItem, Stack } from '@patternfly/react-core'
+import { CheckIcon, CloseIcon } from '@patternfly/react-icons'
 import { useHistory } from 'react-router-dom'
 import {
     Section,
@@ -13,8 +14,8 @@ import {
     WizItemSelector,
     WizKeyValue,
     WizMultiSelect,
+    WizNumberInput,
     WizSingleSelect,
-    WizTextArea,
     WizTextDetail,
     WizTextInput,
 } from '../../src'
@@ -112,20 +113,47 @@ export function AmazonHypershiftWizard() {
             <Step label="Prerequsites" id="prerequsites">
                 <Section label="Prerequsites" autohide={false}>
                     <WizDetailsHidden>
-                        <List component={ListComponent.ol} type={OrderType.number}>
-                            <ListItem>Enable hypershift on the hub cluster.</ListItem>
-                            <ListItem>Amazon S3 Bucket with PUBLIC access.</ListItem>
-                            <ListItem>Create ManagedClusterAddon hypershift-addon.</ListItem>
-                        </List>
-                        <CodeBlock>aws s3api create-bucket --acl public-read --bucket your-bucket-name</CodeBlock>
+                        <Stack hasGutter>
+                            <List>
+                                <ListItem icon={<CheckIcon color="var(--pf-global--success-color--100)" />}>
+                                    <Stack style={{ width: '100%' }} hasGutter>
+                                        <div>The hypershift-preview component is enabled on the multi-cluster engine.</div>
+                                        <CodeBlock>{`oc get mce multiclusterengine-sample -ojsonpath="{.spec.overrides.components[?(@.name=='hypershift-preview')].enabled}"`}</CodeBlock>
+                                    </Stack>
+                                </ListItem>
+                            </List>
+                            <List>
+                                <ListItem icon={<CheckIcon color="var(--pf-global--success-color--100)" />}>
+                                    <Stack style={{ width: '100%' }} hasGutter>
+                                        <div>Managed cluster addon for hypershift is configured.</div>
+                                        <CodeBlock>{`oc get mca hypershift-addon -n local-cluster`}</CodeBlock>
+                                    </Stack>
+                                </ListItem>
+                            </List>
+                            <List>
+                                <ListItem icon={<CloseIcon color="var(--pf-global--danger-color--100)" />}>
+                                    <Stack style={{ width: '100%' }} hasGutter>
+                                        <div>
+                                            An OIDC s3 credentials secret for the HyperShift operator to use to access a public s3 bucket
+                                        </div>
+                                        <CodeBlock>{`oc get secret hypershift-operator-oidc-provider-s3-credentials -n local-cluster`}</CodeBlock>
+                                        <div>
+                                            See Getting started in the{' '}
+                                            <a href="https://hypershift-docs.netlify.app/getting-started" target="_blank" rel="noreferrer">
+                                                HyperShift
+                                            </a>{' '}
+                                            documentation for more information about the secret.
+                                        </div>
+                                        <CodeBlock>aws s3api create-bucket --acl public-read --bucket your-bucket-name</CodeBlock>
+
+                                        <div>The following example shows how to create the secret:</div>
+                                        <CodeBlock>{`oc create secret generic hypershift-operator-oidc-provider-s3-credentials --from-file=credentials=$HOME/.aws/credentials --from-literal=bucket=<your-bucket-name> --from-literal=region=<region> -n local-cluster`}</CodeBlock>
+                                    </Stack>
+                                </ListItem>
+                            </List>
+                        </Stack>
                     </WizDetailsHidden>
                 </Section>
-                <WizItemSelector selectKey="metadata.name" selectValue="hypershift-operator-oidc-provider-s3-credentials">
-                    <Section label="AWS S3 Bucket" description="Amazon S3 bucket used for configuration.">
-                        <WizTextInput path="stringData.bucket" label="Bucket name" required />
-                        <Select path="stringData.region" label="Bucket region" options={Object.keys(awsRegions)} required />
-                    </Section>
-                </WizItemSelector>
             </Step>
             <Step label="Cluster details" id="cluster-details">
                 <WizItemSelector selectKey="kind" selectValue="HypershiftDeployment">
@@ -140,21 +168,6 @@ export function AmazonHypershiftWizard() {
                             options={['default']}
                             required
                         /> */}
-                        <Select
-                            path="spec.infrastructure.release.platform.image"
-                            label="Release image"
-                            placeholder="Select a release image"
-                            options={['default']}
-                        />
-                        <WizCheckbox path="spec.hostedClusterSpec.fips" label="FIPS" />
-                        <WizKeyValue path="metadata.labels" label="Additional labels" placeholder="Add label" />
-                    </Section>
-                </WizItemSelector>
-            </Step>
-
-            <Step label="Credentials" id="credentials">
-                <WizItemSelector selectKey="kind" selectValue="HypershiftDeployment">
-                    <Section label="Credentials">
                         <WizSingleSelect
                             path="spec.infrastructure.cloudProvider.name"
                             label="Infrastructure credentials"
@@ -168,29 +181,14 @@ export function AmazonHypershiftWizard() {
                             placeholder="Enter the Base DNS domain"
                             helperText="Defaults to the base DNS domain from the credentials."
                         />
-                        <WizTextArea
-                            id="pull-secret"
-                            path="stringData.pullSecret"
-                            label="Pull secret"
-                            secret
-                            helperText="Defaults to the pull secret from the credentials."
+                        <Select
+                            path="spec.infrastructure.release.platform.image"
+                            label="Release image"
+                            placeholder="Select a release image"
+                            options={['default']}
                         />
-                        <WizTextArea
-                            id="ssh-private-key"
-                            path="stringData.ssh-privatekey"
-                            label="SSH private key"
-                            placeholder="Enter the SSH private key"
-                            secret
-                            helperText="Defaults to the SSH private key from the credentials."
-                        />
-                        <WizTextArea
-                            id="ssh-public-key"
-                            path="stringData.ssh-publickey"
-                            label="SSH public key"
-                            placeholder="Enter the SSH public key"
-                            secret
-                            helperText="Defaults to the SSH public key from the credentials."
-                        />
+                        <WizCheckbox path="spec.hostedClusterSpec.fips" label="FIPS" />
+                        <WizKeyValue path="metadata.labels" label="Additional labels" placeholder="Add label" />
                     </Section>
                 </WizItemSelector>
             </Step>
@@ -214,6 +212,35 @@ export function AmazonHypershiftWizard() {
                             <WizTextInput path="name" label="Pool name" required />
                             <Select path="spec.platform.aws.instanceType" label="Instance type" options={['default']} required />
                         </WizArrayInput>
+                    </Section>
+                </WizItemSelector>
+            </Step>
+
+            <Step label="Autoscaling" id="autoscaling">
+                <WizItemSelector selectKey="kind" selectValue="HypershiftDeployment">
+                    <Section label="Autoscaling">
+                        <WizNumberInput
+                            path="spec.hostedClusterSpec.autoscaling.maxNodesTotal"
+                            label="Max nodes total"
+                            labelHelp="MaxNodesTotal is the maximum allowable number of nodes across all NodePools for a HostedCluster. The autoscaler will not grow the cluster beyond this number."
+                        />
+                        <WizTextInput
+                            path="spec.hostedClusterSpec.autoscaling.maxNodeProvisionTime"
+                            label="Max node provision time"
+                            labelHelp="MaxNodeProvisionTime is the maximum time to wait for node provisioning before considering the provisioning to be unsuccessful, expressed as a Go duration string. The default is 15 minutes."
+                        />
+                        <WizNumberInput
+                            path="spec.hostedClusterSpec.autoscaling.maxPodGracePeriod"
+                            label="Max pod grace period"
+                            labelHelp="MaxPodGracePeriod is the maximum seconds to wait for graceful pod termination before scaling down a NodePool. The default is 600 seconds."
+                            helperText="The period in seconds."
+                        />
+                        <WizNumberInput
+                            path="spec.hostedClusterSpec.autoscaling.podPriorityThreshold"
+                            label="Pod priority threshold"
+                            labelHelp="PodPriorityThreshold enables users to schedule 'best-effort' pods, which shouldn't trigger autoscaler actions, but only run when there are spare resources available. The default is -10."
+                            min={-9999}
+                        />
                     </Section>
                 </WizItemSelector>
             </Step>
