@@ -11,7 +11,6 @@ import {
     WizCheckbox,
     WizDetailsHidden,
     WizItemSelector,
-    WizKeyValue,
     WizMultiSelect,
     WizSingleSelect,
     WizTextArea,
@@ -130,24 +129,34 @@ export function AmazonHypershiftWizard() {
             <Step label="Cluster details" id="cluster-details">
                 <WizItemSelector selectKey="kind" selectValue="HypershiftDeployment">
                     <Section label="Cluster details" prompt="Enter the cluster details">
-                        <Sync kind="HypershiftDeployment" path="metadata.name" targetPath="metadata.namespace" />
-                        <WizTextInput path="metadata.name" label="Cluster name" placeholder="Enter the cluster name" required />
-                        {/* <Select
-                            path="clusterSet"
+                        <Sync kind="HypershiftDeployment" path="metadata.name" targetPath="metadata.name" />
+                        <WizTextInput
+                            path="metadata.name"
+                            label="Cluster name"
+                            placeholder="Enter the cluster name"
+                            required
+                            labelHelp="The unique name of your cluster. The value must be a string that contains lowercase alphanumeric values, such as dev. Cannot be changed after creation."
+                        />
+                        <Select
+                            path="spec.hostingNamespace"
                             label="Cluster set"
                             placeholder="Select a cluster set"
-                            helperText="A cluster set is a group of clusters that can be targeted as a group."
+                            labelHelp="A cluster set is a group of clusters that can be targeted as a group."
                             options={['default']}
                             required
-                        /> */}
+                        />
                         <Select
                             path="spec.infrastructure.release.platform.image"
                             label="Release image"
                             placeholder="Select a release image"
                             options={['default']}
+                            required
                         />
-                        <WizCheckbox path="spec.hostedClusterSpec.fips" label="FIPS" />
-                        <WizKeyValue path="metadata.labels" label="Additional labels" placeholder="Add label" />
+                        <WizCheckbox
+                            path="spec.hostedClusterSpec.fips"
+                            label="FIPS"
+                            helperText="Use the Federal Information Processing Standards (FIPS) modules provided with Red Hat Enterprise Linux CoreOS instead of the default Kubernetes cryptography suite."
+                        />
                     </Section>
                 </WizItemSelector>
             </Step>
@@ -165,6 +174,7 @@ export function AmazonHypershiftWizard() {
                         <WizTextInput
                             path="spec.hostedClusterSpec.dns.baseDomain"
                             label="Base DNS domain"
+                            labelHelp="The base domain of your provider, which is used to create routes to your OpenShift Container Platform cluster components. It is configured in your cloud provider's DNS as a Start Of Authority record (SOA). Cannot be changed after creation."
                             placeholder="Enter the Base DNS domain"
                             helperText="Defaults to the base DNS domain from the credentials."
                         />
@@ -202,7 +212,13 @@ export function AmazonHypershiftWizard() {
                         prompt="Enter the worker pools"
                         description="One or more worker nodes will be created to run the container workloads in this cluster."
                     >
-                        <Select path="spec.infrastructure.platform.aws.region" label="Region" options={Object.keys(awsRegions)} required />
+                        <Select
+                            path="spec.infrastructure.platform.aws.region"
+                            label="Region"
+                            options={Object.keys(awsRegions)}
+                            required
+                            labelHelp="The AWS region where the installation program creates your cluster resources. You can select zones within the region for your control plane and worker pools."
+                        />
                         <WizMultiSelect path="spec.infrastructure.platform.aws.zones" label="Zones" options={awsRegions['us-east-1']} />
                         <WizArrayInput
                             path="spec.nodePools"
@@ -224,7 +240,7 @@ export function AmazonHypershiftWizard() {
                         <WizSingleSelect
                             path="spec.hostedClusterSpec.networking.networkType"
                             label="Network type"
-                            options={['default']}
+                            options={['OpenShiftSDN', 'OVNKubernetes']}
                             required
                         />
                         <WizTextInput path="spec.hostedClusterSpec.networking.podCIDR" label="Pod CIDR" required />
