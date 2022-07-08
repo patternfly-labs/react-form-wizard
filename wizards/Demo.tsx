@@ -91,10 +91,11 @@ interface IWizard {
 
 const wizards: IWizard[] = [
     {
-        icon: <AWSIcon />,
+        icon: <AWSIcon size="lg" />,
         shortName: 'AmazonHyperShift',
-        name: 'Amazon HyperShift CLuster',
+        name: 'Amazon HyperShift Cluster',
         route: RouteE.AmazonHyperShift,
+        description: 'Run OpenShift in a hyperscale manner with many control planes hosted on a central hosting service cluster.',
         labels: ['Advanced Cluster Management'],
         state: StateE.prototype,
     },
