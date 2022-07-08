@@ -21,8 +21,7 @@ export type WizStringsInputProps = InputCommonProps & {
 export function WizStringsInput(props: WizStringsInputProps) {
     const { displayMode: mode, value, setValue, id, hidden } = useInput(props)
 
-    let values: string[] = value
-    if (!values) values = []
+    const values: string[] = Array.isArray(value) ? value : []
 
     const onNewKey = () => {
         values.push('')
