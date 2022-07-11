@@ -18,6 +18,7 @@ import {
     WizTextDetail,
     WizTextInput,
 } from '../../src'
+import { IResource } from '../../src/common/resource'
 import { Sync } from '../../src/Sync'
 import { IHypershiftDeployment } from './IHypershiftDeployment'
 
@@ -81,8 +82,13 @@ const defaultData: IHypershiftDeployment = {
     },
 }
 
-export function AmazonHypershiftWizard() {
+interface AWSHypershiftWizardProps {
+    clusterSets: IResource[]
+}
+
+export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
     const history = useHistory()
+    const clusterSets = props.clusterSets.map((clusterSet) => clusterSet.metadata?.name) as string[]
     return (
         <WizardPage
             title="Create cluster"
@@ -170,7 +176,7 @@ export function AmazonHypershiftWizard() {
                             label="Cluster set"
                             placeholder="Select a cluster set"
                             labelHelp="A cluster set is a group of clusters that can be targeted as a group."
-                            options={['default']}
+                            options={clusterSets}
                             required
                         />
                         <Select
