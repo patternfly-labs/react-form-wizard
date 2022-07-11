@@ -1,5 +1,14 @@
-import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Stack } from '@patternfly/react-core'
-import { Fragment, ReactNode } from 'react'
+import {
+    Button,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Split,
+    SplitItem,
+    Stack,
+} from '@patternfly/react-core'
+import { EyeIcon, EyeSlashIcon } from '@patternfly/react-icons'
+import { Fragment, ReactNode, useState } from 'react'
 import { Indented } from '../components/Indented'
 import { useInputHidden, useValue } from './Input'
 
@@ -17,6 +26,9 @@ export function WizTextDetail(props: {
 
     const [value] = useValue(props, '')
     const hidden = useInputHidden(props)
+    const [showSecrets, setShowSecrets] = useState(!value)
+
+    const stringValue = typeof value === 'string' ? value : ''
     if (hidden) return <Fragment />
 
     if (!props.label) {
@@ -39,7 +51,18 @@ export function WizTextDetail(props: {
         <Stack>
             <DescriptionListGroup>
                 <DescriptionListTerm>{props.label}</DescriptionListTerm>
-                <DescriptionListDescription id={props.id}>{value}</DescriptionListDescription>
+                <DescriptionListDescription id={props.id} style={{ whiteSpace: 'pre-wrap' }}>
+                    <Split>
+                        <SplitItem isFilled>{props.secret && !showSecrets ? '****************' : stringValue}</SplitItem>
+                        {props.secret && (
+                            <SplitItem>
+                                <Button variant="plain" style={{ marginTop: '-8px' }} onClick={() => setShowSecrets(!showSecrets)}>
+                                    {showSecrets ? <EyeIcon /> : <EyeSlashIcon />}
+                                </Button>
+                            </SplitItem>
+                        )}
+                    </Split>
+                </DescriptionListDescription>
             </DescriptionListGroup>
             {props.children && <Indented>{props.children}</Indented>}
         </Stack>

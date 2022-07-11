@@ -23,7 +23,7 @@ export function WizTextInput(props: WizTextInputProps) {
 
     if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
-        return <WizTextDetail id={id} path={props.path} label={props.label} />
+        return <WizTextDetail id={id} path={props.path} label={props.label} secret={props.secret} />
     }
 
     const placeholder = getEnterPlaceholder(props)
