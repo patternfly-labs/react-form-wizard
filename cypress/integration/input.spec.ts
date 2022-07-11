@@ -65,6 +65,13 @@ describe('inputs wizard', () => {
         cy.contains('Next').click()
     })
 
+    it('switch', () => {
+        cy.get('section #switch-step').within(() => {
+            cy.get('#switch-3').parent().click()
+        })
+        cy.contains('Next').click()
+    })
+
     it('checkbox', () => {
         cy.get('section #checkbox-step').within(() => {
             cy.get('#checkbox-1').click()
@@ -142,6 +149,11 @@ describe('inputs wizard', () => {
                 cy.get('#textarea-secret').contains('****************')
                 cy.get('#textarea-secret button').click()
                 cy.get('#textarea-secret').contains('text-area-secret')
+            })
+            cy.get('#switch-step').within(() => {
+                cy.get('#switch-1').should('not.exist')
+                cy.get('#switch-2').should('not.exist')
+                cy.get('#switch-3 > svg')
             })
             cy.get('#select').within(() => {
                 cy.get('#select-value').contains('Option 1')

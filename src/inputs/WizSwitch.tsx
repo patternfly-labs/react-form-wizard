@@ -1,6 +1,7 @@
-import { Split, Stack, Switch as PFSwitch, Text } from '@patternfly/react-core'
+import { Split, Stack, Switch as PFSwitch } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode } from 'react'
+import { HelperText } from '../components/HelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -46,16 +47,19 @@ export function WizSwitch(props: WizSwitchProps) {
         <Stack hasGutter>
             <Stack>
                 <WizFormGroup {...props} id={id} label={props.title} helperText={undefined}>
-                    <Split>
-                        <PFSwitch id={id} isChecked={getIsChecked(value)} onChange={setValue} label={props.label} value={value} />
-                        <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
-                    </Split>
+                    <PFSwitch
+                        id={id}
+                        isChecked={getIsChecked(value)}
+                        onChange={setValue}
+                        label={
+                            <>
+                                {props.label} <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
+                            </>
+                        }
+                        value={value}
+                    />
                 </WizFormGroup>
-                {props.helperText && (
-                    <Text className="pf-c-form__helper-text" style={{ paddingLeft: 22 }}>
-                        {props.helperText}
-                    </Text>
-                )}
+                <HelperText helperText={props.helperText} />
             </Stack>
             {value && <Indented paddingBottom={8}>{props.children}</Indented>}
         </Stack>
