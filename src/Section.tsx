@@ -83,14 +83,16 @@ function SectionInternal(props: SectionProps) {
                                         <SplitItem isFilled>
                                             <Stack>
                                                 <Split hasGutter>
-                                                    <span className="pf-c-form__section-title">{props.label}</span>
-                                                    {props.id && (
-                                                        <LabelHelp
-                                                            id={props.id}
-                                                            labelHelp={props.labelHelp}
-                                                            labelHelpTitle={props.labelHelpTitle}
-                                                        />
-                                                    )}
+                                                    <div className="pf-c-form__section-title">
+                                                        {props.label}
+                                                        {props.id && (
+                                                            <LabelHelp
+                                                                id={props.id}
+                                                                labelHelp={props.labelHelp}
+                                                                labelHelpTitle={props.labelHelpTitle}
+                                                            />
+                                                        )}
+                                                    </div>
                                                 </Split>
                                                 {expanded && props.description && (
                                                     <Text component="small" style={{ paddingTop: 8 }}>

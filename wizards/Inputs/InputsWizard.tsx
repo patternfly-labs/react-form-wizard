@@ -17,6 +17,7 @@ import {
     WizArrayInput,
     WizCheckbox,
     WizTextInput,
+    WizSwitch,
 } from '../../src'
 import { onCancel, onSubmit } from '../common/utils'
 
@@ -110,6 +111,20 @@ export function InputsWizard() {
                         <Radio id="radio-1" label="Radio 1" value="radio-1" />
                         <Radio id="radio-2" label="Radio 2" value="radio-2" />
                     </WizRadioGroup>
+                </Section>
+            </Step>
+
+            <Step label="Switch" id="switch-step">
+                <Section label="Switch">
+                    <WizSwitch id="switch-1" label="Switch" path="switch.switch1.value" />
+                    <WizSwitch id="switch-2" label="Switch with label help" path="switch.switch2.value" labelHelp="Switch help" />
+                    <WizSwitch
+                        id="switch-3"
+                        label="Switch with label help and description"
+                        path="switch.switch3.value"
+                        labelHelp="Switch hel["
+                        helperText="Switch description"
+                    />
                 </Section>
             </Step>
 

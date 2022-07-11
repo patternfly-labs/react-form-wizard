@@ -2,29 +2,14 @@ import { DescriptionListDescription, Split, TimePicker } from '@patternfly/react
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import { CheckIcon } from '@patternfly/react-icons'
 import get from 'get-value'
-import { Fragment, ReactNode, useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import set from 'set-value'
 import { useData } from '../contexts/DataContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { DisplayMode, useDisplayMode } from '../contexts/DisplayModeContext'
-import { useID } from './Input'
+import { InputCommonProps, useID } from './Input'
 
-export function WizTimeRange(props: {
-    id?: string
-    label: string
-    description?: string
-    path: string
-    placeholder?: string
-    secret?: boolean
-    readonly?: boolean
-    disabled?: boolean
-    hidden?: boolean
-    labelHelp?: string
-    labelHelpTitle?: string
-    helperText?: string
-    validation?: (value: string) => string | undefined
-    children?: ReactNode
-}) {
+export function WizTimeRange(props: InputCommonProps<string>) {
     const id = useID(props)
     const path = props.path ?? id
 
@@ -66,7 +51,7 @@ export function WizTimeRange(props: {
                 helperText={props.helperText}
                 helperTextInvalid={error}
                 validated={validated}
-                isRequired
+                isRequired={props.required}
             >
                 <TimePicker
                     id={`${id}-time-picker`}

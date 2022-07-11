@@ -1,6 +1,7 @@
-import { Checkbox as PFCheckbox, Split, Stack, Text } from '@patternfly/react-core'
+import { Checkbox as PFCheckbox, Split, Stack } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode } from 'react'
+import { HelperText } from '../components/HelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -46,16 +47,19 @@ export function WizCheckbox(props: WizCheckboxProps) {
         <Stack hasGutter>
             <Stack>
                 <WizFormGroup {...props} id={id} label={props.title} helperText={undefined}>
-                    <Split>
-                        <PFCheckbox id={id} isChecked={getIsChecked(value)} onChange={setValue} label={props.label} value={value} />
-                        <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
-                    </Split>
+                    <PFCheckbox
+                        id={id}
+                        isChecked={getIsChecked(value)}
+                        onChange={setValue}
+                        label={
+                            <>
+                                {props.label} <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
+                            </>
+                        }
+                        value={value}
+                        body={<HelperText helperText={props.helperText} />}
+                    />
                 </WizFormGroup>
-                {props.helperText && (
-                    <Text className="pf-c-form__helper-text" style={{ paddingLeft: 22 }}>
-                        {props.helperText}
-                    </Text>
-                )}
             </Stack>
             {value && <Indented paddingBottom={8}>{props.children}</Indented>}
         </Stack>

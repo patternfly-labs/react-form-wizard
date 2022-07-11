@@ -9,7 +9,6 @@ import {
     ListItem,
     Split,
     SplitItem,
-    Text,
     Title,
 } from '@patternfly/react-core'
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
@@ -17,6 +16,7 @@ import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { WizTextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
+import { HelperText } from '../components/HelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
@@ -184,7 +184,7 @@ export function WizArrayInput(props: WizArrayInputProps) {
                             {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                         </div>
                     )}
-                    {props.helperText && <Text component="small">{props.helperText}</Text>}
+                    <HelperText helperText={props.helperText} />
                 </div>
             )}
             {values.length === 0 ? (
