@@ -20,13 +20,14 @@ export type WizTextAreaProps = InputCommonProps<string> & {
 export function WizTextArea(props: WizTextAreaProps) {
     const { displayMode: mode, value, disabled, setValue, validated, hidden, id } = useInput(props)
 
-    const [showSecrets, setShowSecrets] = useState(true)
+    // Hide initially if a value is set
+    const [showSecrets, setShowSecrets] = useState(!value)
 
     if (hidden) return <Fragment />
 
     if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
-        return <WizTextDetail id={id} path={props.path} label={props.label} />
+        return <WizTextDetail id={id} path={props.path} label={props.label} secret={props.secret} />
     }
 
     const placeholder = getEnterPlaceholder(props)
@@ -59,7 +60,7 @@ export function WizTextArea(props: WizTextAreaProps) {
                     <ClearInputButton
                         onClick={() => {
                             setValue('')
-                            setShowSecrets(false)
+                            setShowSecrets(true)
                         }}
                     />
                 )}
