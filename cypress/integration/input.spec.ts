@@ -132,11 +132,15 @@ describe('inputs wizard', () => {
             cy.get('#text-input').within(() => {
                 cy.get('#textinput-text').contains('text-input')
                 cy.get('#textinput-required').contains('text-input-required')
+                cy.get('#textinput-secret').contains('****************')
+                cy.get('#textinput-secret button').click()
                 cy.get('#textinput-secret').contains('text-input-secret')
             })
             cy.get('#text-area').within(() => {
                 cy.get('#textarea-text').contains('text-area')
                 cy.get('#textarea-required').contains('text-area-required')
+                cy.get('#textarea-secret').contains('****************')
+                cy.get('#textarea-secret button').click()
                 cy.get('#textarea-secret').contains('text-area-secret')
             })
             cy.get('#select').within(() => {
