@@ -28,6 +28,7 @@ export function PlacementSection(props: {
     clusters: IResource[]
     createClusterSetCallback?: () => void
     allowNoPlacement?: boolean
+    withoutOnlineClusterCondition?: boolean
 }) {
     const { update } = useData()
     const resources = useItem() as IResource[]
@@ -193,6 +194,7 @@ export function PlacementSection(props: {
                     bindingSubjectApiGroup={props.bindingSubjectApiGroup}
                     defaultPlacementKind={props.defaultPlacementKind}
                     allowNoPlacement={props.allowNoPlacement}
+                    withoutOnlineClusterCondition={props.withoutOnlineClusterCondition}
                 />
             )}
             {placementCount === 1 && (
@@ -265,6 +267,7 @@ export function PlacementSelector(props: {
     bindingSubjectApiGroup: string
     defaultPlacementKind: 'Placement' | 'PlacementRule'
     allowNoPlacement?: boolean
+    withoutOnlineClusterCondition?: boolean
 }) {
     const resources = useItem() as IResource[]
     const { placementCount, placementRuleCount, placementBindingCount, bindingSubjectKind } = props
@@ -308,12 +311,14 @@ export function PlacementSelector(props: {
                                     metadata: { name: placementName, namespace },
                                     spec: {
                                         clusterSelector: { matchExpressions: [] },
-                                        clusterConditions: [
-                                            {
-                                                status: 'True',
-                                                type: 'ManagedClusterConditionAvailable',
-                                            },
-                                        ],
+                                        clusterConditions: props.withoutOnlineClusterCondition
+                                            ? []
+                                            : [
+                                                  {
+                                                      status: 'True',
+                                                      type: 'ManagedClusterConditionAvailable',
+                                                  },
+                                              ],
                                     },
                                 } as IResource)
                             }

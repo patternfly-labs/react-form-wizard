@@ -48,7 +48,7 @@ describe('create policy set', () => {
                     clusterSelector: {
                         matchExpressions: [{ key: 'region', operator: 'In', values: ['us-east-1'] }],
                     },
-                    clusterConditions: [{ status: 'True', type: 'ManagedClusterConditionAvailable' }],
+                    clusterConditions: [],
                 },
             },
             {

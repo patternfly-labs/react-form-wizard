@@ -89,12 +89,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                         metadata: { name: '', namespace: '' },
                         spec: {
                             clusterSelector: { matchExpressions: [] },
-                            clusterConditions: [
-                                {
-                                    status: 'True',
-                                    type: 'ManagedClusterConditionAvailable',
-                                },
-                            ],
+                            clusterConditions: [],
                         },
                     },
                     {
@@ -157,6 +152,7 @@ export function PolicySetWizard(props: PolicySetWizardProps) {
                     existingPlacementRules={props.placementRules}
                     defaultPlacementKind={PlacementRuleKind}
                     clusters={props.clusters}
+                    withoutOnlineClusterCondition
                 />
             </Step>
         </WizardPage>

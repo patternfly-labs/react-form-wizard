@@ -154,6 +154,7 @@ export function PolicyWizard(props: {
                     defaultPlacementKind={PlacementRuleKind}
                     clusters={props.clusters}
                     allowNoPlacement
+                    withoutOnlineClusterCondition
                 />
             </Step>
             <Step label="Policy annotations" id="security-groups">
