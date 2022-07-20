@@ -26,7 +26,7 @@ import { ControlPlaneCatalog, CreateCluster, ProviderCatalog } from './Cluster/P
 import { CredentialsExample } from './Credentials/CredentialsExample'
 import AWSIcon from './Credentials/icons/AWSIcon'
 import { HomeWizard } from './Home/HomeWizard'
-import { AmazonHypershiftWizard } from './Hypershift/AmazonHypershiftWizard'
+import { AmazonHypershiftWizardExample } from './Hypershift/AWSHypershiftWizardExample'
 import { InputsWizard } from './Inputs/InputsWizard'
 import {
     CreatePlacement,
@@ -210,7 +210,7 @@ export function DemoRouter(): JSX.Element {
     const location = useLocation()
     switch (location.search) {
         case RouteE.AmazonHyperShift:
-            return <AmazonHypershiftWizard />
+            return <AmazonHypershiftWizardExample />
         case RouteE.Ansible:
             return <AnsibleExample />
         case RouteE.Application:
