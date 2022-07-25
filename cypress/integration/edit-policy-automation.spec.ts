@@ -49,5 +49,46 @@ describe('edit policy automation', () => {
 
         cy.get('#yaml-editor').should('have.text', expected.map((doc) => YAML.stringify(doc)).join('---\n'))
         cy.contains('Submit').should('be.enabled')
+        cy.contains('Back').should('be.enabled')
+        cy.contains('Back').click()
+    })
+
+    it('mode', () => {
+        cy.get('#mode').within(() => {
+            cy.get('.pf-c-input-group > div').click()
+            cy.get('#EveryEvent').click()
+        })
+        cy.get('#spec-delayafterrunseconds-form-group').within(() => {
+            cy.get('[aria-label="Plus"]').click().click().click()
+        })
+        cy.get('#spec-delayafterrunseconds-form-group').within(() => {
+            cy.get('[aria-label="Minus"]').click()
+        })
+        cy.contains('Next').click()
+    })
+
+    it('review', () => {
+        const expected = [
+            {
+                ...PolicyAutomationType,
+                metadata: {
+                    name: 'my-policy-policy-automation',
+                    namespace: 'my-namespace',
+                },
+                spec: {
+                    policyRef: 'my-policy',
+                    mode: 'everyEvent',
+                    automationDef: {
+                        name: 'job2',
+                        secret: 'my-ansible-creds',
+                        type: 'AnsibleJob',
+                    },
+                    delayAfterRunSeconds: 2,
+                },
+            },
+        ]
+
+        cy.get('#yaml-editor').should('have.text', expected.map((doc) => YAML.stringify(doc)).join('---\n'))
+        cy.contains('Submit').should('be.enabled')
     })
 })

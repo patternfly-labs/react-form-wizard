@@ -12,6 +12,7 @@ import {
     WizardPage,
     WizardSubmit,
     WizCheckbox,
+    WizNumberInput,
 } from '../../src'
 import { IResource } from '../../src/common/resource'
 import { ConfigMap } from '../common/resources/IConfigMap'
@@ -182,6 +183,10 @@ export function PolicyAutomationWizard(props: {
                         labelHelp={
                             <div>
                                 <p>
+                                    <strong>Run everyEvent:</strong> When a policy is violated, the automation runs every time for each
+                                    unique policy violation per managed cluster.
+                                </p>
+                                <p>
                                     <strong>Run once:</strong> When a policy is violated, the automation runs one time, after which it is
                                     disabled.
                                 </p>
@@ -194,6 +199,7 @@ export function PolicyAutomationWizard(props: {
                         path="spec.mode"
                         options={[
                             { label: 'Once', value: 'once' },
+                            { label: 'EveryEvent', value: 'everyEvent' },
                             { label: 'Disabled', value: 'disabled' },
                         ]}
                         hidden={(item) => !item.spec?.automationDef?.name}
@@ -219,6 +225,17 @@ export function PolicyAutomationWizard(props: {
                                 return 'false'
                             }
                         }}
+                    />
+                    <WizNumberInput
+                        hidden={(item) => item.spec?.mode !== 'everyEvent'}
+                        path="spec.delayAfterRunSeconds"
+                        label="DelayAfterRunSeconds"
+                        labelHelp="DelayAfterRunSeconds is the minimum seconds before an automation can be restarted on the same cluster. 
+                        When a policy is violated, the automation runs one time before the delay period.
+                        If the policy is violated multiple times during the delay period and kept in the violated state, 
+                        the automation runs one time after the delay period. 
+                        The default is 0 seconds and is only applicable for the everyEvent mode."
+                        helperText="The period in seconds."
                     />
                 </Section>
             </Step>
