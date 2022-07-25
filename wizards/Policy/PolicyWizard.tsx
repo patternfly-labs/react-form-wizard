@@ -154,6 +154,7 @@ export function PolicyWizard(props: {
                     defaultPlacementKind={PlacementRuleKind}
                     clusters={props.clusters}
                     allowNoPlacement
+                    withoutOnlineClusterCondition
                 />
             </Step>
             <Step label="Policy annotations" id="security-groups">
@@ -337,6 +338,31 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                         helperText="Name needs to be unique to the namespace on each of the managed clusters."
                         validation={isValidKubernetesResourceName}
                     />
+
+                    <WizRadioGroup
+                        path="objectDefinition.spec.pruneObjectBehavior"
+                        label="Prune Object Behavior"
+                        labelHelp="Optional. Specifies how related objects on the managed cluster are pruned when the policy is deleted. The parameter values are None, DeleteIfCreated, and DeleteAll."
+                    >
+                        <Radio
+                            id="deleteIfCreated"
+                            label="Delete If Created"
+                            value="DeleteIfCreated"
+                            description="Attempts to delete objects known to be created by the policy when the policy is deleted."
+                        />
+                        <Radio
+                            id="deleteAll"
+                            label="Delete All"
+                            value="DeleteAll"
+                            description="Attempts to delete all of the objects related to the deleted policy."
+                        />
+                        <Radio
+                            id="none"
+                            label="None"
+                            value="None"
+                            description="Does not delete any resources when the policy is deleted. This value is used by default."
+                        />
+                    </WizRadioGroup>
 
                     <WizArrayInput
                         path="objectDefinition.spec.object-templates"
