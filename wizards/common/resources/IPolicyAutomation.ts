@@ -10,7 +10,7 @@ export interface IPolicyAutomation extends IResource {
     kind: 'PolicyAutomation'
     spec: {
         policyRef: string
-        mode: 'once' | 'disabled'
+        mode: 'once' | 'disabled' | 'everyEvent'
         automationDef: {
             name: string
             secret: string
@@ -19,5 +19,6 @@ export interface IPolicyAutomation extends IResource {
         }
         eventHook?: 'noncompliant'
         rescanAfter?: string
+        delayAfterRunSeconds?: number
     }
 }
