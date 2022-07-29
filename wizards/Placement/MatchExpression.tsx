@@ -52,7 +52,7 @@ export function MatchExpression(props: { labelValuesMap?: Record<string, string[
                                 path="values"
                                 isCreatable
                                 required
-                                hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
+                                hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector?.operator)}
                                 options={values}
                             />
                         )
@@ -63,7 +63,7 @@ export function MatchExpression(props: { labelValuesMap?: Record<string, string[
                     label="Values"
                     path="values"
                     required
-                    hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector.operator)}
+                    hidden={(labelSelector) => !['In', 'NotIn'].includes(labelSelector?.operator)}
                 />
             )}
         </Flex>
@@ -79,7 +79,7 @@ export function MatchExpressionSummary(props: { expression: IExpression }) {
     const { expression } = props
 
     let operator = 'unknown'
-    switch (expression.operator) {
+    switch (expression?.operator) {
         case 'In':
             if (expression.values && expression.values.length > 1) {
                 operator = 'equals any of'
@@ -104,14 +104,14 @@ export function MatchExpressionSummary(props: { expression: IExpression }) {
 
     const displayMode = useDisplayMode()
 
-    if (!expression.key) {
+    if (!expression?.key) {
         if (displayMode === DisplayMode.Details) return <Fragment />
         return <div>Expand to enter expression</div>
     }
 
     return (
         <div>
-            {expression.key} {operator} {expression.values?.map((value) => value).join(', ')}
+            {expression?.key} {operator} {expression?.values?.map((value) => value).join(', ')}
         </div>
     )
 }
