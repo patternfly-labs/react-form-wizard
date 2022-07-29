@@ -1,4 +1,14 @@
 name: NPM Publish
+on:
+    workflow_dispatch:
+        inputs:
+            versionIncrement:
+                description: 'Version Increment'
+                required: true
+                default: 'patch'
+                type: choice
+                options:
+                    - patch
 jobs:
     npm-publish:
         runs-on: ubuntu-latest
