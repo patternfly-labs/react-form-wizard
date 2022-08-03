@@ -38,6 +38,7 @@ export interface WizardProps {
     hasButtons?: boolean
     editMode?: EditMode
     yamlEditor?: () => ReactNode
+    isImport?: boolean
 }
 
 export type WizardSubmit = (data: unknown) => Promise<void>
@@ -75,6 +76,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                                 onCancel={props.onCancel}
                                                                 hasButtons={props.hasButtons}
                                                                 isYamlArray={isYamlArray}
+                                                                isImport={props.isImport}
                                                             >
                                                                 {props.children}
                                                             </WizardInternal>
@@ -101,6 +103,7 @@ function WizardInternal(props: {
     onCancel: WizardCancel
     hasButtons?: boolean
     isYamlArray: boolean
+    isImport?: boolean
 }) {
     const stepComponents = useMemo(
         () => Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[],
@@ -155,21 +158,21 @@ function WizardInternal(props: {
                 navAriaLabel={`${title} steps`}
                 mainAriaLabel={`${title} content`}
                 steps={steps}
-                footer={<MyFooter onSubmit={props.onSubmit} steps={steps} stepComponents={stepComponents} />}
+                footer={<MyFooter onSubmit={props.onSubmit} steps={steps} stepComponents={stepComponents} isImport={props.isImport} />}
                 onClose={props.onCancel}
             />
         </Fragment>
     )
 }
 
-function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[]; stepComponents: ReactElement[] }) {
+function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[]; stepComponents: ReactElement[]; isImport?: boolean }) {
     const wizardContext = useContext(WizardContext)
     const { activeStep, onNext, onBack, onClose } = wizardContext
 
     const [submitting, setSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState('')
 
-    const { onSubmit } = props
+    const { onSubmit, isImport } = props
     const onSubmitClickHandler = useCallback(
         (data: object) => {
             async function asyncSubmit() {
@@ -242,7 +245,7 @@ function MyFooter(props: { onSubmit: WizardSubmit; steps: WizardStep[]; stepComp
                         isLoading={submitting}
                         type="submit"
                     >
-                        {submitting ? 'Submitting' : 'Submit'}
+                        {isImport && isImport ? (submitting ? 'Importing' : 'Import') : submitting ? 'Submitting' : 'Submit'}
                     </Button>
                     <Button variant="secondary" onClick={onBack}>
                         Back
