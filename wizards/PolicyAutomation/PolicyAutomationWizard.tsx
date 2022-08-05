@@ -229,7 +229,7 @@ export function PolicyAutomationWizard(props: {
                     <WizNumberInput
                         hidden={(item) => item.spec?.mode !== 'everyEvent'}
                         path="spec.delayAfterRunSeconds"
-                        label="DelayAfterRunSeconds"
+                        label="Delay After Run Seconds"
                         labelHelp="DelayAfterRunSeconds is the minimum seconds before an automation can be restarted on the same cluster. 
                         When a policy is violated, the automation runs one time before the delay period.
                         If the policy is violated multiple times during the delay period and kept in the violated state, 
