@@ -1,6 +1,5 @@
-import { NumberInput as PFNumberInput } from '@patternfly/react-core'
+import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, NumberInput as PFNumberInput } from '@patternfly/react-core'
 import { Fragment, useCallback } from 'react'
-import { WizTextDetail } from '..'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { getEnterPlaceholder, InputCommonProps, useInput } from './Input'
 import { WizFormGroup } from './WizFormGroup'
@@ -46,7 +45,13 @@ export function WizNumberInput(props: WizNumberInputProps) {
 
     if (mode === DisplayMode.Details) {
         if (!value) return <Fragment />
-        return <WizTextDetail id={id} path={props.path} label={props.label} />
+        // return <WizTextDetail id={id} path={props.path} label={props.label} />
+        return (
+            <DescriptionListGroup>
+                <DescriptionListTerm>{props.label}</DescriptionListTerm>
+                <DescriptionListDescription id={id}>{value}</DescriptionListDescription>
+            </DescriptionListGroup>
+        )
     }
 
     const placeholder = getEnterPlaceholder(props)
