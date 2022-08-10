@@ -59,7 +59,7 @@ describe('inputs wizard', () => {
         cy.contains('Please fix validation errors')
         cy.get('section #radio-step').within(() => {
             cy.get('#group-5').within(() => {
-                cy.get('#radio-1').click()
+                cy.get('label:contains("Radio 1")').click()
             })
         })
         cy.contains('Next').click()
