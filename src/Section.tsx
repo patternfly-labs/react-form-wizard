@@ -12,7 +12,7 @@ import { HiddenFn, useInputHidden } from './inputs/Input'
 type SectionProps = {
     id?: string
     label: string
-    description?: string
+    description?: ReactNode
     prompt?: string
     children?: ReactNode
     defaultExpanded?: boolean
