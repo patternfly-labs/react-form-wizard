@@ -83,7 +83,7 @@ export function Radio(props: {
     return (
         <Fragment>
             <PfRadio
-                id={props.id}
+                id={radioGroupContext.radioGroup ? props.id + '-' + radioGroupContext.radioGroup : props.id}
                 label={props.label}
                 description={props.description}
                 isChecked={radioGroupContext.value === props.value || (props.value === undefined && !radioGroupContext.value)}
