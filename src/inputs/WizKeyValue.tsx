@@ -1,6 +1,6 @@
 import { Button, Divider, List, ListItem, TextInput } from '@patternfly/react-core'
 import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { HelperText } from '../components/HelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
@@ -11,7 +11,11 @@ type KeyValueProps = InputCommonProps & { placeholder?: string; summaryList?: bo
 
 export function WizKeyValue(props: KeyValueProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
-    const [pairs] = useState<{ key: string; value: string }[]>(() => Object.keys(value).map((key) => ({ key, value: value[key] })))
+    let pairs = [{ key: '', value: '' }]
+    if (value instanceof Object) {
+        pairs = Object.keys(value).map((key) => ({ key, value: value[key] }))
+    }
+
     const onKeyChange = (index: number, newKey: string) => {
         pairs[index].key = newKey
         setValue(
