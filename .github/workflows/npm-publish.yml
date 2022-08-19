@@ -13,8 +13,6 @@ on:
                 default: minor
                 type: choice
                 options:
-                    - major
-                    - minor
                     - patch
 jobs:
     npm-publish:
@@ -29,9 +27,9 @@ jobs:
                   node-version: '18'
                   registry-url: https://registry.npmjs.org/
                   cache: 'npm'
-            - name: npm version ${{ inputs.versionIncrement || 'minor' }}
+            - name: npm version patch
               run: |
-                  TAG=$(npm version ${{ inputs.versionIncrement || 'minor' }} --no-git-tag-version)
+                  TAG=$(npm version patch --no-git-tag-version)
                   echo "TAG=$(echo $TAG)" >> $GITHUB_ENV
             - run: npm ci
             - run: npm run build
@@ -40,12 +38,6 @@ jobs:
                   default_author: github_actions
                   message: Release ${{ env.TAG }} [skip ci]
                   tag: ${{ env.TAG }}
-            - run: npm publish
+            - run: npm publish --tag ${GITHUB_REF##*/}
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-            - run: npm run pages
-            - uses: JamesIves/github-pages-deploy-action@4.1.5
-              with:
-                  branch: gh-pages
-                  folder: dist
-                  single-commit: true
