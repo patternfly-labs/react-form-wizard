@@ -125,7 +125,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     return { id, label, value, keyedValue, toString, compareTo }
                 })
         }
-    }, [props, keyPath])
+    }, [props, keyPath, keyPathRequired, keyedValueError])
 
     const keyedValue = useMemo(() => {
         if (typeof value === 'undefined') return ''
