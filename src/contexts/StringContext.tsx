@@ -21,7 +21,6 @@ export interface WizardStrings {
     fixValidationErrorsMsg: string
     submitText: string
     submittingText: string
-    internalFormFieldGroupError: string
     moreInfo: string
     hideSecretTooltip: string
     showSecretTooltip: string
@@ -29,13 +28,9 @@ export interface WizardStrings {
     syncButtonTooltip: string
     isRequired: string
     required: string
-    getEnterPlaceholderString: string
-    getSelectPlaceholderString: string
     getCollapsedPlaceholderString: string
     getAddPlaceholderString: string
     expandToFixValidationErrors: string
-    keyPathRequired: string
-    keyedValueError: string
 }
 
 export const defaultStrings: WizardStrings = {
@@ -59,8 +54,6 @@ export const defaultStrings: WizardStrings = {
     fixValidationErrorsMsg: 'Please fix validation errors',
     submitText: 'Submit',
     submittingText: 'Submitting',
-    internalFormFieldGroupError:
-        'toggleAriaLabel or the titleText prop FormfieldGroupHeader is required to make the toggle button accessible',
     moreInfo: 'More info',
     hideSecretTooltip: 'Hide secret',
     showSecretTooltip: 'Show secret',
@@ -68,13 +61,9 @@ export const defaultStrings: WizardStrings = {
     syncButtonTooltip: 'Refresh',
     isRequired: 'is required',
     required: 'Required',
-    getEnterPlaceholderString: 'Enter the',
-    getSelectPlaceholderString: 'Select the',
     getCollapsedPlaceholderString: 'Expand to edit',
     getAddPlaceholderString: 'Add',
     expandToFixValidationErrors: 'Expand to fix validation errors',
-    keyPathRequired: 'keyPath is required',
-    keyedValueError: 'keyedValue is not a string or number',
 }
 
 export const StringContext = createContext<WizardStrings>(defaultStrings)

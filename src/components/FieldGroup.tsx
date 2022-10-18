@@ -3,7 +3,6 @@ import { FormFieldGroupToggle } from '@patternfly/react-core/dist/js/components/
 import { css } from '@patternfly/react-styles'
 import styles from '@patternfly/react-styles/css/components/Form/form'
 import * as React from 'react'
-import { useStringContext } from '../contexts/StringContext'
 import './FieldGroup.css'
 
 export type FieldGroupProps = FormFieldGroupExpandableProps & { setIsExpanded: (expanded: boolean) => void }
@@ -52,10 +51,12 @@ export const InternalFormFieldGroup: React.FunctionComponent<InternalFormFieldGr
     ...props
 }: InternalFormFieldGroupProps) => {
     const headerTitleText = header ? header.props.titleText : null
-    const { internalFormFieldGroupError } = useStringContext()
     if (isExpandable && !toggleAriaLabel && !headerTitleText) {
         // eslint-disable-next-line no-console
-        console.error('FormFieldGroupExpandable:', internalFormFieldGroupError)
+        console.error(
+            'FormFieldGroupExpandable:',
+            'toggleAriaLabel or the titleText prop FormfieldGroupHeader is required to make the toggle button accessible'
+        )
     }
     return (
         <div

@@ -7,7 +7,7 @@ import { ClearInputButton } from '../components/ClearInputButton'
 import { PasteInputButton } from '../components/PasteInputButton'
 import { ShowSecretsButton } from '../components/ShowSecretsButton'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { GetEnterPlaceholder, InputCommonProps, useInput } from './Input'
+import { getEnterPlaceholder, InputCommonProps, useInput } from './Input'
 import { WizFormGroup } from './WizFormGroup'
 
 export type WizTextAreaProps = InputCommonProps<string> & {
@@ -30,7 +30,7 @@ export function WizTextArea(props: WizTextAreaProps) {
         return <WizTextDetail id={id} path={props.path} label={props.label} secret={props.secret} />
     }
 
-    const placeholder = GetEnterPlaceholder(props)
+    const placeholder = getEnterPlaceholder(props)
     const canPaste = props.canPaste !== undefined ? props.canPaste : props.secret === true
 
     return (

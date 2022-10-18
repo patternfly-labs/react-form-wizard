@@ -78,10 +78,10 @@ export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' |
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
 
-    const { isRequired, required } = useStringContext()
+    const { required } = useStringContext()
 
     if (props.required && !value) {
-        if (props.label) error = `${props.label} ${isRequired}`
+        if (props.label) error = `${required}`
         else error = required
     } else if (props.validation) {
         error = props.validation(value, item)
@@ -171,22 +171,20 @@ function lowercaseFirst(label: string) {
     return label
 }
 
-export const GetEnterPlaceholder = (props: { label?: string; placeholder?: string }) => {
-    const { getEnterPlaceholderString } = useStringContext()
-    return props.placeholder ?? (props.label && props.label.length ? `${getEnterPlaceholderString} ${lowercaseFirst(props.label)}` : '')
+export function getEnterPlaceholder(props: { label?: string; placeholder?: string }) {
+    return props.placeholder ?? (props.label && props.label.length ? `Enter the ${lowercaseFirst(props.label)}` : '')
 }
 
-export const GetSelectPlaceholder = (props: { label: string; placeholder?: string }) => {
-    const { getSelectPlaceholderString } = useStringContext()
-    return props.placeholder ?? `${getSelectPlaceholderString} ${lowercaseFirst(props.label)}`
+export function getSelectPlaceholder(props: { label: string; placeholder?: string }) {
+    return props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
 }
 
-export const GetCollapsedPlaceholder = (props: { collapsedPlaceholder?: ReactNode }) => {
+export function useGetCollapsedPlaceholder(props: { collapsedPlaceholder?: ReactNode }) {
     const { getCollapsedPlaceholderString } = useStringContext()
     return props.collapsedPlaceholder ?? getCollapsedPlaceholderString
 }
 
-export const GetAddPlaceholder = (props: { placeholder?: string }) => {
+export function useGetAddPlaceholder(props: { placeholder?: string }) {
     const { getAddPlaceholderString } = useStringContext()
     return props.placeholder ?? getAddPlaceholderString
 }

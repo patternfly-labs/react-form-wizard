@@ -112,11 +112,7 @@ function WizardInternal(props: {
     submitButtonText?: string
     submittingButtonText?: string
 }) {
-    const {
-        reviewLabel,
-        //  stepsAriaLabel,
-        //  contentAriaLabel,
-    } = useStringContext()
+    const { reviewLabel, stepsAriaLabel, contentAriaLabel } = useStringContext()
     const stepComponents = useMemo(
         () => Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[],
         [props.children]
@@ -163,13 +159,11 @@ function WizardInternal(props: {
         return steps
     }, [reviewStep, showValidation, stepComponents, stepHasValidationError, stepShowValidation])
 
-    const { title } = props
-    const { stepsAriaLabel, contentAriaLabel } = useStringContext()
     return (
         <Fragment>
             <PFWizard
-                navAriaLabel={`${title} ${stepsAriaLabel}`}
-                mainAriaLabel={`${title} ${contentAriaLabel}`}
+                navAriaLabel={`${stepsAriaLabel}`}
+                mainAriaLabel={`${contentAriaLabel}`}
                 steps={steps}
                 footer={
                     <MyFooter

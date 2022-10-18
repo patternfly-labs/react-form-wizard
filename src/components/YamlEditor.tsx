@@ -141,7 +141,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                                             setError('')
                                             setErrorLine(-1)
                                         } catch (err: any) {
-                                            let message: string = err.message ?? { unknownError }
+                                            let message: string = err.message ?? unknownError
                                             const index = message.indexOf('at line')
                                             if (index !== -1) {
                                                 let lineString = message.substring(index).split(' ')[2]

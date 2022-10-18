@@ -25,7 +25,7 @@ import { DisplayMode } from '../contexts/DisplayModeContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { ShowValidationContext } from '../contexts/ShowValidationProvider'
 import { HasValidationErrorContext, ValidationProvider } from '../contexts/ValidationProvider'
-import { GetCollapsedPlaceholder, InputCommonProps, useInput } from './Input'
+import { useGetCollapsedPlaceholder, InputCommonProps, useInput } from './Input'
 
 export function wizardArrayItems(props: any, item: any) {
     const id = props.id
@@ -297,7 +297,7 @@ export function ArrayInputItem(props: {
 
     const collapsedContent = useMemo(() => {
         return typeof props.collapsedContent === 'string' ? (
-            <WizTextDetail id={props.collapsedContent} path={props.collapsedContent} placeholder={GetCollapsedPlaceholder(props)} />
+            <WizTextDetail id={props.collapsedContent} path={props.collapsedContent} placeholder={useGetCollapsedPlaceholder(props)} />
         ) : (
             props.collapsedContent
         )

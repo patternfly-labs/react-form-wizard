@@ -14,8 +14,7 @@ import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { SpinnerButton } from '../components/SpinnerButton'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { useStringContext } from '../contexts/StringContext'
-import { InputCommonProps, GetSelectPlaceholder, useInput } from './Input'
+import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
 import './Select.css'
 import { WizFormGroup } from './WizFormGroup'
 
@@ -61,15 +60,13 @@ type SelectProps<T> = SingleSelectProps<T>
 function SelectBase<T = any>(props: SelectProps<T>) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
 
-    const placeholder = GetSelectPlaceholder(props)
+    const placeholder = getSelectPlaceholder(props)
 
     const keyPath = props.keyPath ?? props.path
 
     const isCreatable = props.isCreatable
 
     const [open, setOpen] = useState(false)
-
-    const { keyPathRequired, keyedValueError } = useStringContext()
 
     // The drop down items with icons and descriptions - optionally grouped
     const selectOptions:
@@ -100,7 +97,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     } else {
                         id = option.id ?? option.label
                         label = option.label
-                        if (!keyPath) throw new Error(keyPathRequired)
+                        if (!keyPath) throw new Error('keyPath is required')
                         value = option.value
                         keyedValue = get(value as any, keyPath)
                         switch (typeof keyedValue) {
@@ -108,7 +105,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                             case 'number':
                                 break
                             default:
-                                throw new Error(keyedValueError)
+                                throw new Error('keyedValue is not a string or number')
                         }
                         toString = () => {
                             return option.label
@@ -125,7 +122,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     return { id, label, value, keyedValue, toString, compareTo }
                 })
         }
-    }, [props, keyPath, keyPathRequired, keyedValueError])
+    }, [props, keyPath])
 
     const keyedValue = useMemo(() => {
         if (typeof value === 'undefined') return ''
