@@ -6,7 +6,7 @@ import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { useStringContext } from '../contexts/StringContext'
-import { GetAddPlaceholder, InputCommonProps, useInput } from './Input'
+import { getAddPlaceholder, InputCommonProps, useInput } from './Input'
 
 type KeyValueProps = InputCommonProps & { placeholder?: string; summaryList?: boolean }
 
@@ -111,7 +111,7 @@ export function WizKeyValue(props: KeyValueProps) {
             {!Object.keys(pairs).length && <Divider />}
             <div>
                 <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey}>
-                    <PlusIcon /> &nbsp; {GetAddPlaceholder(props)}
+                    <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
                 </Button>
             </div>
         </div>

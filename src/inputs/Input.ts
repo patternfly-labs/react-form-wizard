@@ -78,16 +78,16 @@ export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' |
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
 
-    const { required } = useStringContext()
+    const { required, errorString } = useStringContext()
 
     if (props.required && !value) {
-        if (props.label) error = `${required}`
+        if (props.label) error = required
         else error = required
     } else if (props.validation) {
         error = props.validation(value, item)
     }
     if (showValidation) {
-        validated = error ? 'error' : undefined
+        validated = error ? errorString : undefined
     }
     return { validated, error }
 }
@@ -179,12 +179,10 @@ export function getSelectPlaceholder(props: { label: string; placeholder?: strin
     return props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
 }
 
-export function useGetCollapsedPlaceholder(props: { collapsedPlaceholder?: ReactNode }) {
-    const { getCollapsedPlaceholderString } = useStringContext()
-    return props.collapsedPlaceholder ?? getCollapsedPlaceholderString
+export function getCollapsedPlaceholder(props: { collapsedPlaceholder?: ReactNode }) {
+    return props.collapsedPlaceholder ?? 'Expand to edit'
 }
 
-export function useGetAddPlaceholder(props: { placeholder?: string }) {
-    const { getAddPlaceholderString } = useStringContext()
-    return props.placeholder ?? getAddPlaceholderString
+export function getAddPlaceholder(props: { placeholder?: string }) {
+    return props.placeholder ?? 'Add'
 }
