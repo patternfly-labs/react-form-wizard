@@ -28,6 +28,7 @@ export interface WizardStrings {
     syncButtonTooltip: string
     isRequired: string
     required: string
+    expandToFixValidationErrors: string
 }
 
 export const defaultStrings: WizardStrings = {
@@ -58,6 +59,7 @@ export const defaultStrings: WizardStrings = {
     syncButtonTooltip: 'Refresh',
     isRequired: 'is required',
     required: 'Required',
+    expandToFixValidationErrors: 'Expand to fix validation errors',
 }
 
 export const StringContext = createContext<WizardStrings>(defaultStrings)
