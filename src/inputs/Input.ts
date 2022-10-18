@@ -90,27 +90,6 @@ export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' |
     return { validated, error }
 }
 
-// export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' | 'label' | 'required' | 'validation'>) {
-//     const [value] = useValue(props, '')
-//     const showValidation = useShowValidation()
-//     const item = useContext(ItemContext)
-//     let error: string | undefined = undefined
-//     let validated: 'error' | undefined = undefined
-
-//     const { required } = useStringContext()
-
-//     if (props.required && !value) {
-//         if (props.label) error = required
-//         else error = required
-//     } else if (props.validation) {
-//         error = props.validation(value, item)
-//     }
-//     if (showValidation) {
-//         validated = error ? 'error' : undefined
-//     }
-//     return { validated, error }
-// }
-
 export function useInputHidden(props: { hidden?: (item: any) => boolean }) {
     const item = useContext(ItemContext)
     return props.hidden ? props.hidden(item) : false
