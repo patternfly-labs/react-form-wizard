@@ -78,7 +78,7 @@ export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' |
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
 
-    const { required, errorString } = useStringContext()
+    const { required } = useStringContext()
 
     if (props.required && !value) {
         if (props.label) error = required
@@ -87,7 +87,7 @@ export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' |
         error = props.validation(value, item)
     }
     if (showValidation) {
-        validated = error ? errorString : undefined
+        validated = error ? 'error' : undefined
     }
     return { validated, error }
 }
