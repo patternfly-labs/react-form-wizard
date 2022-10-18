@@ -26,7 +26,6 @@ export interface WizardStrings {
     showSecretTooltip: string
     spinnerButtonTooltip: string
     syncButtonTooltip: string
-    isRequired: string
     required: string
     expandToFixValidationErrors: string
 }
@@ -57,7 +56,6 @@ export const defaultStrings: WizardStrings = {
     showSecretTooltip: 'Show secret',
     spinnerButtonTooltip: 'Loading',
     syncButtonTooltip: 'Refresh',
-    isRequired: 'is required',
     required: 'Required',
     expandToFixValidationErrors: 'Expand to fix validation errors',
 }
