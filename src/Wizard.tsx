@@ -21,6 +21,7 @@ import { DataContext } from './contexts/DataContext'
 import { DisplayMode, DisplayModeContext } from './contexts/DisplayModeContext'
 import { EditModeContext } from './contexts/EditModeContext'
 import { ItemContext, useItem } from './contexts/ItemContext'
+import { defaultStrings, StringContext, useStringContext, WizardStrings } from './contexts/StringContext'
 import { ShowValidationProvider, useSetShowValidation, useShowValidation } from './contexts/ShowValidationProvider'
 import { StepHasInputsProvider } from './contexts/StepHasInputsProvider'
 import { StepShowValidationProvider, useSetStepShowValidation, useStepShowValidation } from './contexts/StepShowValidationProvider'
@@ -29,6 +30,7 @@ import { useHasValidationError, ValidationProvider } from './contexts/Validation
 import { Step } from './Step'
 
 export interface WizardProps {
+    wizardStrings?: WizardStrings
     title: string
     description?: string
     children: ReactNode
@@ -56,7 +58,7 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
     }, [props.showYaml])
     const displayMode = DisplayMode.Step
     const isYamlArray = useMemo(() => Array.isArray(props.defaultData), [props.defaultData])
-
+    const { wizardStrings } = props
     return (
         <EditModeContext.Provider value={props.editMode === undefined ? EditMode.Create : props.editMode}>
             <StepHasInputsProvider>
@@ -71,17 +73,19 @@ export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: b
                                                 <DrawerContent panelContent={<WizardDrawer yamlEditor={props.yamlEditor} />}>
                                                     <DrawerContentBody>
                                                         <ItemContext.Provider value={data}>
-                                                            <WizardInternal
-                                                                title={props.title}
-                                                                onSubmit={props.onSubmit}
-                                                                onCancel={props.onCancel}
-                                                                hasButtons={props.hasButtons}
-                                                                isYamlArray={isYamlArray}
-                                                                submitButtonText={props.submitButtonText}
-                                                                submittingButtonText={props.submittingButtonText}
-                                                            >
-                                                                {props.children}
-                                                            </WizardInternal>
+                                                            <StringContext.Provider value={wizardStrings || defaultStrings}>
+                                                                <WizardInternal
+                                                                    title={props.title}
+                                                                    onSubmit={props.onSubmit}
+                                                                    onCancel={props.onCancel}
+                                                                    hasButtons={props.hasButtons}
+                                                                    isYamlArray={isYamlArray}
+                                                                    submitButtonText={props.submitButtonText}
+                                                                    submittingButtonText={props.submittingButtonText}
+                                                                >
+                                                                    {props.children}
+                                                                </WizardInternal>
+                                                            </StringContext.Provider>
                                                         </ItemContext.Provider>
                                                     </DrawerContentBody>
                                                 </DrawerContent>
@@ -108,6 +112,11 @@ function WizardInternal(props: {
     submitButtonText?: string
     submittingButtonText?: string
 }) {
+    const {
+        reviewLabel,
+        //  stepsAriaLabel,
+        //  contentAriaLabel,
+    } = useStringContext()
     const stepComponents = useMemo(
         () => Children.toArray(props.children).filter((child) => isValidElement(child) && child.type === Step) as ReactElement[],
         [props.children]
@@ -116,16 +125,16 @@ function WizardInternal(props: {
     const reviewStep = useMemo<WizardStep>(
         () => ({
             id: 'Review',
-            name: 'Review',
+            name: reviewLabel,
             component: (
-                <Step label="Review" id="review-step">
+                <Step label={reviewLabel} id="review-step">
                     <DescriptionList isHorizontal isCompact style={{ paddingLeft: 16, paddingBottom: 16, paddingRight: 16 }}>
                         <DisplayModeContext.Provider value={DisplayMode.Details}>{props.children}</DisplayModeContext.Provider>
                     </DescriptionList>
                 </Step>
             ),
         }),
-        [props.children]
+        [props.children, reviewLabel]
     )
 
     const showValidation = useShowValidation()
@@ -155,11 +164,12 @@ function WizardInternal(props: {
     }, [reviewStep, showValidation, stepComponents, stepHasValidationError, stepShowValidation])
 
     const { title } = props
+    const { stepsAriaLabel, contentAriaLabel } = useStringContext()
     return (
         <Fragment>
             <PFWizard
-                navAriaLabel={`${title} steps`}
-                mainAriaLabel={`${title} content`}
+                navAriaLabel={`${title} ${stepsAriaLabel}`}
+                mainAriaLabel={`${title} ${contentAriaLabel}`}
                 steps={steps}
                 footer={
                     <MyFooter
@@ -190,6 +200,9 @@ function MyFooter(props: {
     const [submitError, setSubmitError] = useState('')
 
     const { onSubmit, submitButtonText, submittingButtonText } = props
+
+    const { unknownError } = useStringContext()
+
     const onSubmitClickHandler = useCallback(
         (data: object) => {
             async function asyncSubmit() {
@@ -202,8 +215,8 @@ function MyFooter(props: {
                         setSubmitError(err.message)
                         return err.message
                     } else {
-                        setSubmitError('Unknown error')
-                        return 'Unknown error'
+                        setSubmitError(unknownError)
+                        return unknownError
                     }
                 } finally {
                     setSubmitting(false)
@@ -212,7 +225,7 @@ function MyFooter(props: {
             }
             void asyncSubmit()
         },
-        [onSubmit]
+        [onSubmit, unknownError]
     )
     const data = useItem()
     const onSubmitClick = useCallback(() => {
@@ -248,12 +261,12 @@ function MyFooter(props: {
         }
     }, [lastStep.name, setShowValidation, wizardContext.activeStep.name])
 
+    const { fixValidationErrorsMsg, submitText, submittingText, cancelButtonText, backButtonText, nextButtonText } = useStringContext()
+
     if (wizardContext.activeStep.name === lastStep.name) {
         return (
             <div className="pf-u-box-shadow-sm-top">
-                {wizardHasValidationError && wizardHasValidationError && (
-                    <Alert title="Please fix validation errors" isInline variant="danger" />
-                )}
+                {wizardHasValidationError && wizardHasValidationError && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
                 {submitError && <Alert title={submitError} isInline variant="danger" />}
                 <WizardFooter>
                     <Button
@@ -262,15 +275,15 @@ function MyFooter(props: {
                         isLoading={submitting}
                         type="submit"
                     >
-                        {!submitButtonText && (submitting ? 'Submitting' : 'Submit')}
+                        {!submitButtonText && (submitting ? submittingText : submitText)}
                         {submitting ? submittingButtonText : submitButtonText}
                     </Button>
                     <Button variant="secondary" onClick={onBack}>
-                        Back
+                        {backButtonText}
                     </Button>
                     <div className="pf-c-wizard__footer-cancel">
                         <Button variant="link" onClick={onClose}>
-                            Cancel
+                            {cancelButtonText}
                         </Button>
                     </div>
                 </WizardFooter>
@@ -290,14 +303,14 @@ function MyFooter(props: {
                     onClick={onNextClick}
                     isDisabled={(activeStepHasValidationError && activeStepShowValidation) || submitting}
                 >
-                    Next
+                    {nextButtonText}
                 </Button>
                 <Button variant="secondary" onClick={onBack} isDisabled={firstStep.name === activeStep.name}>
-                    Back
+                    {backButtonText}
                 </Button>
                 <div className="pf-c-wizard__footer-cancel">
                     <Button variant="link" onClick={onClose}>
-                        Cancel
+                        {cancelButtonText}
                     </Button>
                 </div>
             </WizardFooter>

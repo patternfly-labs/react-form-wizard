@@ -8,6 +8,7 @@ import { useEditMode } from '../contexts/EditModeContext'
 import { useSetHasInputs, useUpdateHasInputs } from '../contexts/HasInputsProvider'
 import { useSetHasValue } from '../contexts/HasValueProvider'
 import { ItemContext } from '../contexts/ItemContext'
+import { useStringContext } from '../contexts/StringContext'
 import { useShowValidation } from '../contexts/ShowValidationProvider'
 import { useSetHasValidationError, useValidate } from '../contexts/ValidationProvider'
 
@@ -76,9 +77,12 @@ export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' |
     const item = useContext(ItemContext)
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
+
+    const { isRequired, required } = useStringContext()
+
     if (props.required && !value) {
-        if (props.label) error = `${props.label} is required`
-        else error = 'Required'
+        if (props.label) error = `${props.label} ${isRequired}`
+        else error = required
     } else if (props.validation) {
         error = props.validation(value, item)
     }
@@ -167,18 +171,22 @@ function lowercaseFirst(label: string) {
     return label
 }
 
-export function getEnterPlaceholder(props: { label?: string; placeholder?: string }) {
-    return props.placeholder ?? (props.label && props.label.length ? `Enter the ${lowercaseFirst(props.label)}` : '')
+export const GetEnterPlaceholder = (props: { label?: string; placeholder?: string }) => {
+    const { getEnterPlaceholderString } = useStringContext()
+    return props.placeholder ?? (props.label && props.label.length ? `${getEnterPlaceholderString} ${lowercaseFirst(props.label)}` : '')
 }
 
-export function getSelectPlaceholder(props: { label: string; placeholder?: string }) {
-    return props.placeholder ?? `Select the ${lowercaseFirst(props.label)}`
+export const GetSelectPlaceholder = (props: { label: string; placeholder?: string }) => {
+    const { getSelectPlaceholderString } = useStringContext()
+    return props.placeholder ?? `${getSelectPlaceholderString} ${lowercaseFirst(props.label)}`
 }
 
-export function getCollapsedPlaceholder(props: { collapsedPlaceholder?: ReactNode }) {
-    return props.collapsedPlaceholder ?? 'Expand to edit'
+export const GetCollapsedPlaceholder = (props: { collapsedPlaceholder?: ReactNode }) => {
+    const { getCollapsedPlaceholderString } = useStringContext()
+    return props.collapsedPlaceholder ?? getCollapsedPlaceholderString
 }
 
-export function getAddPlaceholder(props: { placeholder?: string }) {
-    return props.placeholder ?? 'Add'
+export const GetAddPlaceholder = (props: { placeholder?: string }) => {
+    const { getAddPlaceholderString } = useStringContext()
+    return props.placeholder ?? getAddPlaceholderString
 }

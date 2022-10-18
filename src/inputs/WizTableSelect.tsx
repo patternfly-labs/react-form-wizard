@@ -19,6 +19,7 @@ import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-tab
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
+import { useStringContext } from '../contexts/StringContext'
 import { InputCommonProps, useInput } from './Input'
 import { WizFormGroup } from './WizFormGroup'
 
@@ -239,17 +240,19 @@ function BulkSelect(props: {
         anySelected ? selectNone() : selectAll()
     }, [anySelected, selectNone, selectAll])
 
+    const { deselectAllAriaLabel, selectAllAriaLabel } = useStringContext()
+
     const splitButtonItems = useMemo(
         () => [
             <DropdownToggleCheckbox
                 id="example-checkbox-2"
                 key="split-checkbox"
-                aria-label={anySelected ? 'Deselect all' : 'Select all'}
+                aria-label={anySelected ? deselectAllAriaLabel : selectAllAriaLabel}
                 isChecked={isChecked}
                 onClick={onCheckbox}
             />,
         ],
-        [anySelected, isChecked, onCheckbox]
+        [anySelected, isChecked, onCheckbox, deselectAllAriaLabel, selectAllAriaLabel]
     )
 
     const toggle = useMemo(

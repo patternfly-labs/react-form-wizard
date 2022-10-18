@@ -6,6 +6,7 @@ import { DisplayMode, useDisplayMode } from './contexts/DisplayModeContext'
 import { HasInputsContext, HasInputsProvider, useSetHasInputs } from './contexts/HasInputsProvider'
 import { HasValueContext, HasValueProvider } from './contexts/HasValueProvider'
 import { useShowValidation } from './contexts/ShowValidationProvider'
+import { useStringContext } from './contexts/StringContext'
 import { HasValidationErrorContext, ValidationProvider } from './contexts/ValidationProvider'
 import { HiddenFn, useInputHidden } from './inputs/Input'
 
@@ -38,6 +39,8 @@ function SectionInternal(props: SectionProps) {
     useEffect(() => {
         if (props.autohide === false) setHasInputs()
     }, [setHasInputs, props.autohide])
+
+    const { expandToFixValidationErrors } = useStringContext()
 
     if (hidden) return <Fragment />
 
@@ -109,7 +112,7 @@ function SectionInternal(props: SectionProps) {
                                                     </SplitItem>
                                                     <SplitItem>
                                                         <span className="pf-c-form__helper-text pf-m-error">
-                                                            &nbsp; Expand to fix validation errors
+                                                            &nbsp; {expandToFixValidationErrors}
                                                         </span>
                                                     </SplitItem>
                                                 </Split>

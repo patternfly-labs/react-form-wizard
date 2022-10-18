@@ -11,7 +11,8 @@ import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
 import { WizTextInput } from '..'
 import { DisplayMode } from '../contexts/DisplayModeContext'
-import { getAddPlaceholder, InputCommonProps, useInput } from './Input'
+import { useStringContext } from '../contexts/StringContext'
+import { GetAddPlaceholder, InputCommonProps, useInput } from './Input'
 import { WizFormGroup } from './WizFormGroup'
 
 export type WizStringsInputProps = InputCommonProps & {
@@ -32,6 +33,8 @@ export function WizStringsInput(props: WizStringsInputProps) {
         values.splice(index, 1)
         setValue(values)
     }
+
+    const { removeItemAriaLabel, actionAriaLabel } = useStringContext()
 
     if (hidden) {
         return <Fragment />
@@ -70,7 +73,7 @@ export function WizStringsInput(props: WizStringsInputProps) {
                                 <Button
                                     variant="plain"
                                     isDisabled={props.required === true && values.length === 1}
-                                    aria-label="Remove item"
+                                    aria-label={removeItemAriaLabel}
                                     onClick={() => onDeleteKey(index)}
                                     style={{ alignSelf: 'start' }}
                                 >
@@ -82,8 +85,8 @@ export function WizStringsInput(props: WizStringsInputProps) {
                 </div>
                 {!values.length && <Divider />}
                 <div>
-                    <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onNewKey}>
-                        <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
+                    <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey}>
+                        <PlusIcon /> &nbsp; {GetAddPlaceholder(props)}
                     </Button>
                 </div>
             </div>
@@ -124,6 +127,8 @@ export function StringsMapInput(props: StringsMapInputProps) {
         setValue(newValue)
     }
 
+    const { removeItemAriaLabel, actionAriaLabel } = useStringContext()
+
     if (hidden) {
         return <Fragment />
     }
@@ -156,7 +161,7 @@ export function StringsMapInput(props: StringsMapInputProps) {
                                 <Button
                                     variant="plain"
                                     isDisabled={props.required === true && values.length === 1}
-                                    aria-label="Remove item"
+                                    aria-label={removeItemAriaLabel}
                                     onClick={() => onDeleteKey(index)}
                                     style={{ alignSelf: 'start' }}
                                 >
@@ -168,8 +173,8 @@ export function StringsMapInput(props: StringsMapInputProps) {
                 </div>
                 {!values.length && <Divider />}
                 <div>
-                    <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onNewKey}>
-                        <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
+                    <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey}>
+                        <PlusIcon /> &nbsp; {GetAddPlaceholder(props)}
                     </Button>
                 </div>
             </div>
