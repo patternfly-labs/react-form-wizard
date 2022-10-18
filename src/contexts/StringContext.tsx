@@ -22,7 +22,6 @@ export interface WizardStrings {
     submitText: string
     submittingText: string
     internalFormFieldGroupError: string
-    internalFormFieldGroupDisplayName: string
     moreInfo: string
     hideSecretTooltip: string
     showSecretTooltip: string
@@ -62,7 +61,6 @@ export const defaultStrings: WizardStrings = {
     submittingText: 'Submitting',
     internalFormFieldGroupError:
         'toggleAriaLabel or the titleText prop FormfieldGroupHeader is required to make the toggle button accessible',
-    internalFormFieldGroupDisplayName: 'InternalFormFieldGroup',
     moreInfo: 'More info',
     hideSecretTooltip: 'Hide secret',
     showSecretTooltip: 'Show secret',
