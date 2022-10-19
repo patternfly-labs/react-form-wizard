@@ -9,6 +9,7 @@ import { useSetHasInputs, useUpdateHasInputs } from '../contexts/HasInputsProvid
 import { useSetHasValue } from '../contexts/HasValueProvider'
 import { ItemContext } from '../contexts/ItemContext'
 import { useShowValidation } from '../contexts/ShowValidationProvider'
+import { useStringContext } from '../contexts/StringContext'
 import { useSetHasValidationError, useValidate } from '../contexts/ValidationProvider'
 
 export type HiddenFn = (item: any) => boolean
@@ -74,11 +75,11 @@ export function useInputValidation(props: Pick<InputCommonProps, 'id' | 'path' |
     const [value] = useValue(props, '')
     const showValidation = useShowValidation()
     const item = useContext(ItemContext)
+    const { required } = useStringContext()
     let error: string | undefined = undefined
     let validated: 'error' | undefined = undefined
     if (props.required && !value) {
-        if (props.label) error = `${props.label} is required`
-        else error = 'Required'
+        error = required
     } else if (props.validation) {
         error = props.validation(value, item)
     }

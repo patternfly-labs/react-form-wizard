@@ -12,7 +12,7 @@ describe('inputs wizard', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
         cy.get('section #text-input').within(() => {
-            cy.contains('Text input required is required')
+            cy.contains('Required')
             cy.get('#text-input').within(() => {
                 cy.get('#textinput-text').type('text-input')
                 cy.get('#textinput-required').type('text-input-required')
@@ -26,7 +26,7 @@ describe('inputs wizard', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
         cy.get('section #text-area').within(() => {
-            cy.contains('Text area required is required')
+            cy.contains('Required')
             cy.get('#text-area').within(() => {
                 cy.get('#textarea-text').type('text-area')
                 cy.get('#textarea-required').type('text-area-required')
@@ -40,7 +40,7 @@ describe('inputs wizard', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
         cy.get('section #select').within(() => {
-            cy.contains('Select required is required')
+            cy.contains('Required')
             cy.get('#select').within(() => {
                 cy.get('#select-value').click().get(`#Option\\ 1`).click()
                 cy.get('#select-required').click().get(`#Option\\ 2`).click()
@@ -112,9 +112,7 @@ describe('inputs wizard', () => {
         cy.contains('Next').click()
         cy.contains('Please fix validation errors')
         cy.get('section #section-step').within(() => {
-            cy.contains('Text 1 is required')
-            cy.contains('Text 3 is required')
-            cy.contains('Text input is required')
+            cy.contains('Required')
             cy.get('#text-1').type('text-1')
             cy.get('#text-3').type('text-3')
             cy.get('#hide-section').click()

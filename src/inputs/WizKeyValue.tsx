@@ -5,6 +5,7 @@ import { HelperText } from '../components/HelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
+import { useStringContext } from '../contexts/StringContext'
 import { getAddPlaceholder, InputCommonProps, useInput } from './Input'
 
 type KeyValueProps = InputCommonProps & { placeholder?: string; summaryList?: boolean }
@@ -56,6 +57,8 @@ export function WizKeyValue(props: KeyValueProps) {
         )
     }
 
+    const { removeItemAriaLabel, actionAriaLabel } = useStringContext()
+
     if (hidden) return <Fragment />
 
     if (mode === DisplayMode.Details) {
@@ -98,7 +101,7 @@ export function WizKeyValue(props: KeyValueProps) {
                             <TextInput id={`key-${index + 1}`} value={pair.key} onChange={(e) => onKeyChange(index, e)} />
                             <span>=</span>
                             <TextInput id={`value-${index + 1}`} value={pair.value} onChange={(e) => onValueChange(index, e)} />
-                            <Button variant="plain" aria-label="Remove item" onClick={() => onDeleteKey(index)}>
+                            <Button variant="plain" aria-label={removeItemAriaLabel} onClick={() => onDeleteKey(index)}>
                                 <TrashIcon />
                             </Button>
                         </Fragment>
@@ -107,7 +110,7 @@ export function WizKeyValue(props: KeyValueProps) {
             </div>
             {!Object.keys(pairs).length && <Divider />}
             <div>
-                <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={onNewKey}>
+                <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey}>
                     <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
                 </Button>
             </div>

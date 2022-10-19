@@ -20,6 +20,7 @@ import { HelperText } from '../components/HelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
+import { useStringContext } from '../contexts/StringContext'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { ItemContext } from '../contexts/ItemContext'
 import { ShowValidationContext } from '../contexts/ShowValidationProvider'
@@ -111,6 +112,8 @@ export function WizArrayInput(props: WizArrayInputProps) {
         },
         [setValue, value]
     )
+
+    const { actionAriaLabel } = useStringContext()
 
     if (hidden) return <Fragment />
 
@@ -216,7 +219,13 @@ export function WizArrayInput(props: WizArrayInputProps) {
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingTop: values.length ? 8 : 4 }}>
                     {/* <div style={{ flexGrow: 1 }} /> */}
                     {!props.dropdownItems ? (
-                        <Button id="add-button" variant="link" isSmall aria-label="Action" onClick={() => addItem(props.newValue ?? {})}>
+                        <Button
+                            id="add-button"
+                            variant="link"
+                            isSmall
+                            aria-label={actionAriaLabel}
+                            onClick={() => addItem(props.newValue ?? {})}
+                        >
                             <PlusIcon /> &nbsp; {props.placeholder}
                         </Button>
                     ) : (
@@ -305,6 +314,14 @@ export function ArrayInputItem(props: {
         return collapsedContent
     }, [collapsedContent, props.expandedContent])
 
+    const {
+        detailsAriaLabel,
+        expandToFixValidationErrors,
+        sortableMoveItemDownAriaLabel,
+        sortableMoveItemUpAriaLabel,
+        removeItemAriaLabel,
+    } = useStringContext()
+
     return (
         <ValidationProvider>
             <ShowValidationContext.Consumer>
@@ -316,7 +333,7 @@ export function ArrayInputItem(props: {
                                     id={id + '-' + (index + 1).toString()}
                                     isExpanded={expanded}
                                     setIsExpanded={setExpanded}
-                                    toggleAriaLabel="Details"
+                                    toggleAriaLabel={detailsAriaLabel}
                                     header={
                                         <FormFieldGroupHeader
                                             titleText={{
@@ -328,7 +345,7 @@ export function ArrayInputItem(props: {
                                                             </SplitItem>
                                                             <SplitItem>
                                                                 <span className="pf-c-form__helper-text pf-m-error">
-                                                                    &nbsp; Expand to fix validation errors
+                                                                    &nbsp; {expandToFixValidationErrors}
                                                                 </span>
                                                             </SplitItem>
                                                         </Split>
@@ -347,7 +364,7 @@ export function ArrayInputItem(props: {
                                                         <Fragment>
                                                             <Button
                                                                 variant="plain"
-                                                                aria-label="Move item up"
+                                                                aria-label={sortableMoveItemUpAriaLabel}
                                                                 isDisabled={index === 0}
                                                                 onClick={() => moveUp(index)}
                                                             >
@@ -355,7 +372,7 @@ export function ArrayInputItem(props: {
                                                             </Button>
                                                             <Button
                                                                 variant="plain"
-                                                                aria-label="Move item down"
+                                                                aria-label={sortableMoveItemDownAriaLabel}
                                                                 isDisabled={index === props.count - 1}
                                                                 onClick={() => moveDown(index)}
                                                             >
@@ -365,7 +382,7 @@ export function ArrayInputItem(props: {
                                                     )}
                                                     <Button
                                                         variant="plain"
-                                                        aria-label="Remove item"
+                                                        aria-label={removeItemAriaLabel}
                                                         onClick={() => removeItem(props.value)}
                                                     >
                                                         <TrashIcon />
@@ -384,7 +401,7 @@ export function ArrayInputItem(props: {
                                                 <Fragment>
                                                     <Button
                                                         variant="plain"
-                                                        aria-label="Move item up"
+                                                        aria-label={sortableMoveItemUpAriaLabel}
                                                         isDisabled={index === 0}
                                                         onClick={() => moveUp(index)}
                                                     >
@@ -392,7 +409,7 @@ export function ArrayInputItem(props: {
                                                     </Button>
                                                     <Button
                                                         variant="plain"
-                                                        aria-label="Move item down"
+                                                        aria-label={sortableMoveItemDownAriaLabel}
                                                         isDisabled={index === props.count - 1}
                                                         onClick={() => moveDown(index)}
                                                     >
@@ -402,7 +419,7 @@ export function ArrayInputItem(props: {
                                             )}
                                             <Button
                                                 variant="plain"
-                                                aria-label="Remove item"
+                                                aria-label={removeItemAriaLabel}
                                                 onClick={() => removeItem(props.value)}
                                                 style={{ marginTop: -6 }}
                                             >

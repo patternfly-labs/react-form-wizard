@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import YAML from 'yaml'
 import { useData } from '../contexts/DataContext'
 import { useItem } from '../contexts/ItemContext'
+import { useStringContext } from '../contexts/StringContext'
 
 const color = {
     background: 'rgb(21, 21, 21)',
@@ -59,6 +60,8 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
     const smallRef = useRef<HTMLDivElement>(null)
     const [textWidth, setTextWidth] = useState(10)
     useResizeObserver(smallRef, (entry) => setTextWidth(entry.contentRect.width + 48))
+
+    const { unknownError } = useStringContext()
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, maxHeight: '100%' }} ref={ref}>
@@ -138,7 +141,7 @@ export function YamlEditor(props: { data: any; setData?: (data: any) => void; is
                                             setError('')
                                             setErrorLine(-1)
                                         } catch (err: any) {
-                                            let message: string = err.message ?? 'Unkown error'
+                                            let message: string = err.message ?? unknownError
                                             const index = message.indexOf('at line')
                                             if (index !== -1) {
                                                 let lineString = message.substring(index).split(' ')[2]
