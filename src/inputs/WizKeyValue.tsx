@@ -12,10 +12,8 @@ type KeyValueProps = InputCommonProps & { placeholder?: string; summaryList?: bo
 
 export function WizKeyValue(props: KeyValueProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
-    let pairs = [{ key: '', value: '' }]
-    if (value instanceof Object) {
-        pairs = Object.keys(value).map((key) => ({ key, value: value[key] }))
-    }
+    const pairs: { key: string; value: string }[] =
+        value instanceof Object ? Object.keys(value).map((key) => ({ key, value: value[key] })) : []
 
     const onKeyChange = (index: number, newKey: string) => {
         pairs[index].key = newKey
