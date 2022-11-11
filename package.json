@@ -54,7 +54,7 @@
         "@patternfly/react-core": "4.261.0",
         "@patternfly/react-icons": "4.92.10",
         "@patternfly/react-table": "4.111.42",
-        "@pmmmwh/react-refresh-webpack-plugin": "0.5.8",
+        "@pmmmwh/react-refresh-webpack-plugin": "0.5.9",
         "@react-hook/resize-observer": "1.2.6",
         "@svgr/webpack": "6.5.1",
         "@types/css-minimizer-webpack-plugin": "3.2.0",
