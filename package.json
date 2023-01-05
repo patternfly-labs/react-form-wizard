@@ -47,13 +47,13 @@
         "yaml": "1.10.2"
     },
     "devDependencies": {
-        "@babel/core": "7.20.7",
+        "@babel/core": "7.20.12",
         "@babel/preset-react": "7.18.6",
         "@babel/preset-typescript": "7.18.6",
         "@cypress/code-coverage": "^3.10.0",
-        "@patternfly/react-core": "4.267.7",
+        "@patternfly/react-core": "4.267.9",
         "@patternfly/react-icons": "4.93.3",
-        "@patternfly/react-table": "4.112.7",
+        "@patternfly/react-table": "4.112.9",
         "@pmmmwh/react-refresh-webpack-plugin": "0.5.10",
         "@react-hook/resize-observer": "1.2.6",
         "@svgr/webpack": "6.5.1",
