@@ -53,7 +53,7 @@
         "@cypress/code-coverage": "^3.10.0",
         "@patternfly/react-core": "4.272.0",
         "@patternfly/react-icons": "4.93.5",
-        "@patternfly/react-table": "4.112.33",
+        "@patternfly/react-table": "4.112.35",
         "@pmmmwh/react-refresh-webpack-plugin": "0.5.10",
         "@react-hook/resize-observer": "1.2.6",
         "@svgr/webpack": "6.5.1",
