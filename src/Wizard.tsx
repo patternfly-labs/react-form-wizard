@@ -288,9 +288,7 @@ function MyFooter(props: {
 
     return (
         <div className="pf-u-box-shadow-sm-top">
-            {activeStepHasValidationError && activeStepShowValidation && (
-                <Alert title="Please fix validation errors" isInline variant="danger" />
-            )}
+            {activeStepHasValidationError && activeStepShowValidation && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
             <WizardFooter>
                 <Button
                     variant="primary"
