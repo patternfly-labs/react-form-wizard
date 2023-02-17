@@ -28,6 +28,10 @@ export interface WizardStrings {
     syncButtonTooltip: string
     required: string
     expandToFixValidationErrors: string
+    selectNoItems: string
+    selectPageItems: string
+    selectAllItems: string
+    itemsString: string
 }
 
 export const defaultStrings: WizardStrings = {
@@ -58,6 +62,10 @@ export const defaultStrings: WizardStrings = {
     syncButtonTooltip: 'Refresh',
     required: 'Required',
     expandToFixValidationErrors: 'Expand to fix validation errors',
+    selectNoItems: 'Select none (0 items)',
+    selectPageItems: 'Select page',
+    selectAllItems: 'Select all',
+    itemsString: 'items',
 }
 
 export const StringContext = createContext<WizardStrings>(defaultStrings)
