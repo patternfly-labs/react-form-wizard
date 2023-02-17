@@ -208,7 +208,7 @@ function BulkSelect(props: {
 }) {
     const [open, setOpen] = useState(false)
     const onDropDownToggle = useCallback(() => setOpen((open) => !open), [])
-
+    const { selectNoItems, selectPageItems, selectAllItems } = useStringContext()
     const allSelected = props.selectedCount === props.total
     const anySelected = props.selectedCount > 0
     const someChecked = props.selectedCount ? null : false
@@ -217,23 +217,23 @@ function BulkSelect(props: {
     const items = useMemo(() => {
         const dropdownItems = [
             <DropdownItem key="item-1" onClick={props.selectNone}>
-                Select none (0 items)
+                {selectNoItems}
             </DropdownItem>,
         ]
         if (props.total > props.perPage) {
             dropdownItems.push(
                 <DropdownItem key="item-2" onClick={props.selectPage}>
-                    Select page ({props.perPage} items)
+                    {selectPageItems(props.perPage)}
                 </DropdownItem>
             )
         }
         dropdownItems.push(
             <DropdownItem key="item-3" onClick={props.selectAll}>
-                Select all ({props.total} items)
+                {selectAllItems(props.total)}
             </DropdownItem>
         )
         return dropdownItems
-    }, [props.perPage, props.selectAll, props.selectNone, props.selectPage, props.total])
+    }, [props.perPage, props.selectAll, props.selectNone, props.selectPage, props.total, selectPageItems, selectAllItems, selectNoItems])
 
     const { selectNone, selectAll } = props
     const onCheckbox = useCallback(() => {
