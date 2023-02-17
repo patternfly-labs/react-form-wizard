@@ -29,9 +29,8 @@ export interface WizardStrings {
     required: string
     expandToFixValidationErrors: string
     selectNoItems: string
-    selectPageItems: string
-    selectAllItems: string
-    itemsString: string
+    selectPageItems: (count: number) => string
+    selectAllItems: (count: number) => string
 }
 
 export const defaultStrings: WizardStrings = {
@@ -63,9 +62,8 @@ export const defaultStrings: WizardStrings = {
     required: 'Required',
     expandToFixValidationErrors: 'Expand to fix validation errors',
     selectNoItems: 'Select none (0 items)',
-    selectPageItems: 'Select page',
-    selectAllItems: 'Select all',
-    itemsString: 'items',
+    selectPageItems: (count) => `Select page (${count} items)`,
+    selectAllItems: (count) => `Select all (${count} items)`,
 }
 
 export const StringContext = createContext<WizardStrings>(defaultStrings)
