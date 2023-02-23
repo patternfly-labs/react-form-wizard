@@ -11,7 +11,7 @@ import {
     SplitItem,
     Title,
 } from '@patternfly/react-core'
-import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusIcon, TrashIcon } from '@patternfly/react-icons'
+import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { WizTextDetail } from '..'
@@ -225,8 +225,9 @@ export function WizArrayInput(props: WizArrayInputProps) {
                             isSmall
                             aria-label={actionAriaLabel}
                             onClick={() => addItem(props.newValue ?? {})}
+                            icon={<PlusCircleIcon />}
                         >
-                            <PlusIcon /> &nbsp; {props.placeholder}
+                            {props.placeholder}
                         </Button>
                     ) : (
                         <Dropdown
@@ -251,25 +252,13 @@ export function WizArrayInput(props: WizArrayInputProps) {
                                     toggleIndicator={CaretDownIcon}
                                     style={{ paddingTop: 0 }}
                                 >
-                                    <span className="pf-c-button pf-m-link pf-m-small" style={{ padding: 0 }}>
-                                        <PlusIcon />
-                                        &nbsp; &nbsp;
+                                    <Button variant="link" isSmall icon={<PlusCircleIcon />}>
                                         {props.placeholder}
-                                    </span>
+                                    </Button>
                                 </DropdownToggle>
                             }
                             isOpen={open}
                         />
-
-                        // <Dropdown2 placeholder={props.placeholder}>
-                        //     {props.dropdownItems.map((item, index) => {
-                        //         return (
-                        //             <DropdownItem key={index} onClick={() => addItem(item.action())}>
-                        //                 {item.label}
-                        //             </DropdownItem>
-                        //         )
-                        //     })}
-                        // </Dropdown2>
                     )}
                 </div>
             )}
