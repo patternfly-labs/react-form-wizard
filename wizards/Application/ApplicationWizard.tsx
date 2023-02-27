@@ -1,5 +1,5 @@
 import { Button, Flex, FlexItem, Split, Stack } from '@patternfly/react-core'
-import { GitAltIcon, PlusIcon } from '@patternfly/react-icons'
+import { GitAltIcon, PlusCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
 import {
     WizHidden,
@@ -335,7 +335,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         options={props.argoServers}
                         required
                     />
-                    <ExternalLinkButton id="addClusterSets" icon={<PlusIcon />} href={props.addClusterSets} />
+                    <ExternalLinkButton id="addClusterSets" icon={<PlusCircleIcon />} href={props.addClusterSets} />
                     <Select
                         path="requeueTime"
                         label="Requeue time"

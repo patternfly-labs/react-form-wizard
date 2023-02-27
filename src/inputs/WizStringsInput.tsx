@@ -7,7 +7,7 @@ import {
     InputGroup,
     TextInput as PFTextInput,
 } from '@patternfly/react-core'
-import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
+import { PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
 import { WizTextInput } from '..'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -85,8 +85,15 @@ export function WizStringsInput(props: WizStringsInputProps) {
                 </div>
                 {!values.length && <Divider />}
                 <div>
-                    <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey}>
-                        <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
+                    <Button
+                        id="add-button"
+                        variant="link"
+                        isSmall
+                        aria-label={actionAriaLabel}
+                        onClick={onNewKey}
+                        icon={<PlusCircleIcon />}
+                    >
+                        {getAddPlaceholder(props)}
                     </Button>
                 </div>
             </div>
@@ -173,8 +180,15 @@ export function StringsMapInput(props: StringsMapInputProps) {
                 </div>
                 {!values.length && <Divider />}
                 <div>
-                    <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey}>
-                        <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
+                    <Button
+                        id="add-button"
+                        variant="link"
+                        isSmall
+                        aria-label={actionAriaLabel}
+                        onClick={onNewKey}
+                        icon={<PlusCircleIcon />}
+                    >
+                        {getAddPlaceholder(props)}
                     </Button>
                 </div>
             </div>

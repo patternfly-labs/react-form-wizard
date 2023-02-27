@@ -1,5 +1,5 @@
 import { Button, Divider, List, ListItem, TextInput } from '@patternfly/react-core'
-import { PlusIcon, TrashIcon } from '@patternfly/react-icons'
+import { PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
 import { HelperText } from '../components/HelperText'
 import { Indented } from '../components/Indented'
@@ -108,8 +108,8 @@ export function WizKeyValue(props: KeyValueProps) {
             </div>
             {!Object.keys(pairs).length && <Divider />}
             <div>
-                <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey}>
-                    <PlusIcon /> &nbsp; {getAddPlaceholder(props)}
+                <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey} icon={<PlusCircleIcon />}>
+                    {getAddPlaceholder(props)}
                 </Button>
             </div>
         </div>
