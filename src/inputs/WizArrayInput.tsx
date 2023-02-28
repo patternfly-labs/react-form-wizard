@@ -3,6 +3,7 @@ import {
     Divider,
     Dropdown,
     DropdownItem,
+    DropdownProps,
     DropdownToggle,
     FormFieldGroupHeader,
     List,
@@ -11,7 +12,7 @@ import {
     SplitItem,
     Title,
 } from '@patternfly/react-core'
-import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, ExclamationCircleIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
+import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { WizTextDetail } from '..'
@@ -217,7 +218,6 @@ export function WizArrayInput(props: WizArrayInputProps) {
             )}
             {props.placeholder && (
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingTop: values.length ? 8 : 4 }}>
-                    {/* <div style={{ flexGrow: 1 }} /> */}
                     {!props.dropdownItems ? (
                         <Button
                             id="add-button"
@@ -246,18 +246,24 @@ export function WizArrayInput(props: WizArrayInputProps) {
                                 )
                             })}
                             toggle={
-                                <DropdownToggle
-                                    id="toggle-id"
-                                    onToggle={onToggle}
-                                    toggleIndicator={CaretDownIcon}
-                                    style={{ paddingTop: 0 }}
-                                >
-                                    <Button variant="link" isSmall icon={<PlusCircleIcon />}>
+                                <DropdownToggle id="toggle-id" onToggle={onToggle}>
+                                    {/* Mimic Button layout to match styling when there is a single add option */}
+                                    <span className="pf-c-button pf-m-link pf-m-small">
+                                        <span className="pf-c-button__icon pf-m-start">
+                                            <PlusCircleIcon />
+                                        </span>
                                         {props.placeholder}
-                                    </Button>
+                                    </span>
                                 </DropdownToggle>
                             }
                             isOpen={open}
+                            // Match dropdown caret colors with button link styling
+                            style={
+                                {
+                                    '--pf-c-dropdown--m-plain__toggle-icon--Color': 'var(--pf-global--link--Color)',
+                                    '--pf-c-dropdown--m-plain--hover__toggle-icon--Color': 'var(--pf-global--link--Color--hover)',
+                                } as DropdownProps['style']
+                            }
                         />
                     )}
                 </div>
