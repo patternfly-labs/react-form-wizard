@@ -105,6 +105,6 @@
         "validator": "13.9.0",
         "webpack": "5.76.2",
         "webpack-cli": "4.10.0",
-        "webpack-dev-server": "4.12.0"
+        "webpack-dev-server": "4.13.1"
     }
 }
