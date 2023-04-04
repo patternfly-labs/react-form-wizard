@@ -42,7 +42,14 @@ export function ApplicationSetExamples() {
 export function CreateApplicationSet() {
     const history = useHistory()
     const namespaces = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
-    const servers = useMemo(() => ['default', 'server-1', 'server-2'], [])
+    const servers = useMemo(
+        () => [
+            { label: 'default', value: 'default', description: 'default-description' },
+            { label: 'server-1', value: 'server-1', description: 'server-1-description' },
+            { label: 'server-2', value: 'server-2', description: 'server-2-description' },
+        ],
+        []
+    )
     const ansibleCredentials = useMemo(() => ['credential1', 'credential2'], [])
     const placements = testPlacements
     const channels = useMemo(
@@ -89,7 +96,15 @@ export function CreateApplicationSet() {
 export function EditApplicationSet() {
     const history = useHistory()
     const namespaces = useMemo(() => ['default', 'namespace-1', 'namespace-2'], [])
-    const servers = useMemo(() => ['default', 'server-1', 'server-2'], [])
+    const servers = useMemo(
+        () => [
+            { label: 'default', value: 'default', description: 'default-description' },
+            { label: 'server-1', value: 'server-1', description: 'server-1-description' },
+            { label: 'server-2', value: 'server-2', description: 'server-2-description' },
+        ],
+        []
+    )
+
     const ansibleCredentials = useMemo(() => ['credential1', 'credential2'], [])
     const placements = testPlacements
     const channels = useMemo(

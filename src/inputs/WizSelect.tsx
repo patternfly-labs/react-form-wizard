@@ -87,6 +87,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                     let label: string
                     let value: string | number | T
                     let keyedValue: string | number
+                    let description: string | undefined
                     let toString: () => string
                     if (typeof option === 'string' || typeof option === 'number') {
                         id = option.toString()
@@ -99,6 +100,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                         label = option.label
                         if (!keyPath) throw new Error('keyPath is required')
                         value = option.value
+                        description = option.description
                         keyedValue = get(value as any, keyPath)
                         switch (typeof keyedValue) {
                             case 'string':
@@ -119,7 +121,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
                         }
                     }
                     const compareTo = (compareTo: any) => compareTo === keyedValue
-                    return { id, label, value, keyedValue, toString, compareTo }
+                    return { id, label, value, keyedValue, toString, compareTo, description }
                 })
         }
     }, [props, keyPath])
