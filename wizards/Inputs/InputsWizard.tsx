@@ -54,7 +54,6 @@ export function InputsWizard() {
                         label="SingleSelect"
                         path="singleSelect.value"
                         isCreatable
-                        required
                         options={['Option 1', 'Option 2']}
                         helperText="isCreatable"
                     />
@@ -65,7 +64,6 @@ export function InputsWizard() {
                         path="singleSelect.value"
                         options={['Option 1', 'Option 2']}
                         helperText="isCreatable"
-                        required
                         prompt={{ label: 'See selection', href: '/?route=inputs' }}
                     />
                 </Section>
