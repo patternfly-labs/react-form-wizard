@@ -80,27 +80,6 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
         )
     }
 
-    const helperTextInvalid = (error: string | undefined) => (
-        <Split>
-            <SplitItem isFilled>
-                <span className="pf-c-form__helper-text pf-m-error">{error}</span>
-            </SplitItem>
-            <SplitItem>
-                {prompt?.label && prompt?.href && (
-                    <Button
-                        variant="link"
-                        style={{ paddingRight: '0px' }}
-                        onClick={() => window.open(prompt.href)}
-                        isDisabled={prompt?.isDisabled}
-                    >
-                        {prompt.label}
-                        <ExternalLinkAltIcon style={{ verticalAlign: '-0.125em', marginLeft: '8px' }} />
-                    </Button>
-                )}
-            </SplitItem>
-        </Split>
-    )
-
     const helperTextPrompt = (
         <Split>
             <SplitItem isFilled>
@@ -113,9 +92,10 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
                         style={{ paddingRight: '0px' }}
                         onClick={() => window.open(prompt.href)}
                         isDisabled={prompt?.isDisabled}
+                        icon={<ExternalLinkAltIcon />}
+                        iconPosition="right"
                     >
                         {prompt.label}
-                        <ExternalLinkAltIcon style={{ verticalAlign: '-0.125em', marginLeft: '8px' }} />
                     </Button>
                 )}
             </SplitItem>
@@ -124,7 +104,7 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
 
     return (
         <div id={id}>
-            <WizFormGroup helperTextNode={helperTextPrompt} helperTextInvalid={helperTextInvalid} {...props} id={id}>
+            <WizFormGroup helperTextNode={helperTextPrompt} {...props} id={id}>
                 <InputGroup>
                     <PfSelect
                         isDisabled={disabled || props.readonly}

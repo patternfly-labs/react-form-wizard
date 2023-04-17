@@ -6,13 +6,12 @@ import { InputCommonProps, useID, useInputValidation } from './Input'
 type WizFormGroupProps = InputCommonProps & {
     children: ReactNode
     isHelperTextBeforeField?: boolean
-    helperTextInvalid?: (error: string | undefined) => ReactNode
     helperTextNode?: ReactNode
 }
 
 export function WizFormGroup(props: WizFormGroupProps) {
     const { validated, error } = useInputValidation(props)
-    const { helperTextInvalid, helperTextNode } = props
+    const { helperTextNode } = props
     const id = useID(props)
     return (
         <FormGroup
@@ -21,7 +20,7 @@ export function WizFormGroup(props: WizFormGroupProps) {
             fieldId={id}
             label={props.label}
             isRequired={props.required}
-            helperTextInvalid={helperTextInvalid ? helperTextInvalid(error) : error}
+            helperTextInvalid={error}
             validated={validated}
             helperText={helperTextNode}
             labelIcon={<LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
