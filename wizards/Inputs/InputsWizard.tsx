@@ -58,6 +58,15 @@ export function InputsWizard() {
                         helperText="isCreatable"
                     />
                 </Section>
+                <Section label="SingleSelect with prompt">
+                    <WizSingleSelect
+                        label="SingleSelect"
+                        path="singleSelect.value"
+                        options={['Option 1', 'Option 2']}
+                        helperText="isCreatable"
+                        prompt={{ label: 'See selection', href: '/?route=inputs' }}
+                    />
+                </Section>
             </Step>
 
             <Step label="Tiles" id="tiles">

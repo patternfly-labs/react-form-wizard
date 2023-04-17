@@ -1,4 +1,5 @@
 import {
+    Button,
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
@@ -7,24 +8,29 @@ import {
     SelectOption,
     SelectOptionObject,
     SelectVariant,
+    Split,
+    SplitItem,
 } from '@patternfly/react-core'
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
 import './Select.css'
 import { WizFormGroup } from './WizFormGroup'
+import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 
 export type WizSingleSelectProps = InputCommonProps<string> & {
     label: string
     placeholder?: string
     isCreatable?: boolean
     footer?: ReactNode
+    prompt?: { label: string; href: string; isDisabled?: boolean }
     options: string[]
 }
 
 export function WizSingleSelect(props: WizSingleSelectProps) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
     const placeholder = getSelectPlaceholder(props)
+    const { prompt, helperText } = props
     const [open, setOpen] = useState(false)
 
     const onSelect = useCallback(
@@ -74,9 +80,31 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
         )
     }
 
+    const helperTextPrompt = (
+        <Split>
+            <SplitItem isFilled>
+                <span className="pf-c-form__helper-text">{helperText}</span>
+            </SplitItem>
+            <SplitItem>
+                {prompt?.label && prompt?.href && (
+                    <Button
+                        variant="link"
+                        style={{ paddingRight: '0px' }}
+                        onClick={() => window.open(prompt.href)}
+                        isDisabled={prompt?.isDisabled}
+                        icon={<ExternalLinkAltIcon />}
+                        iconPosition="right"
+                    >
+                        {prompt.label}
+                    </Button>
+                )}
+            </SplitItem>
+        </Split>
+    )
+
     return (
         <div id={id}>
-            <WizFormGroup {...props} id={id}>
+            <WizFormGroup helperTextNode={helperTextPrompt} {...props} id={id}>
                 <InputGroup>
                     <PfSelect
                         isDisabled={disabled || props.readonly}
