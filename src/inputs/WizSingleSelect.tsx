@@ -1,5 +1,4 @@
 import {
-    Button,
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
@@ -8,8 +7,6 @@ import {
     SelectOption,
     SelectOptionObject,
     SelectVariant,
-    Split,
-    SplitItem,
 } from '@patternfly/react-core'
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
