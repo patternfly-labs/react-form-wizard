@@ -45,6 +45,13 @@ export function InputsWizard() {
                 <Section label="Select">
                     <Select label="Select" path="select.value" options={['Option 1', 'Option 2']} />
                     <Select label="Select required" path="select.required" options={['Option 1', 'Option 2']} required />
+                    <Select
+                        label="Select with prompt"
+                        path="select.value"
+                        options={['Option 1', 'Option 2']}
+                        prompt={{ label: 'See selection', href: '/?route=inputs' }}
+                        required
+                    />
                 </Section>
                 <Section label="MultiSelect">
                     <WizMultiSelect label="MultiSelect" path="multiSelect.value" isCreatable options={['Option 1', 'Option 2']} />

@@ -1,5 +1,4 @@
 import {
-    Button,
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
@@ -8,15 +7,13 @@ import {
     SelectOption,
     SelectOptionObject,
     SelectVariant,
-    Split,
-    SplitItem,
 } from '@patternfly/react-core'
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
 import './Select.css'
 import { WizFormGroup } from './WizFormGroup'
-import { ExternalLinkAltIcon } from '@patternfly/react-icons'
+import { HelperTextPrompt } from '../components/HelperTextPrompt'
 
 export type WizSingleSelectProps = InputCommonProps<string> & {
     label: string
@@ -80,31 +77,9 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
         )
     }
 
-    const helperTextPrompt = (
-        <Split>
-            <SplitItem isFilled>
-                <span className="pf-c-form__helper-text">{helperText}</span>
-            </SplitItem>
-            <SplitItem>
-                {prompt?.label && prompt?.href && (
-                    <Button
-                        variant="link"
-                        style={{ paddingRight: '0px' }}
-                        onClick={() => window.open(prompt.href)}
-                        isDisabled={prompt?.isDisabled}
-                        icon={<ExternalLinkAltIcon />}
-                        iconPosition="right"
-                    >
-                        {prompt.label}
-                    </Button>
-                )}
-            </SplitItem>
-        </Split>
-    )
-
     return (
         <div id={id}>
-            <WizFormGroup helperTextNode={helperTextPrompt} {...props} id={id}>
+            <WizFormGroup helperTextNode={HelperTextPrompt({ prompt, helperText })} {...props} id={id}>
                 <InputGroup>
                     <PfSelect
                         isDisabled={disabled || props.readonly}
