@@ -50,7 +50,7 @@ export type WizArrayInputProps = Omit<InputCommonProps, 'path'> & {
     sortable?: boolean
     newValue?: object
     defaultCollapsed?: boolean
-    defaultRender?: boolean
+    disallowEmpty?: boolean
     isSection?: boolean
     summaryList?: boolean
 }
@@ -84,7 +84,7 @@ export function WizArrayInput(props: WizArrayInputProps) {
         [item, path, setValue, update, values]
     )
 
-    if (!values.length && props.defaultRender) {
+    if (!values.length && props.disallowEmpty) {
         addItem(props.newValue ?? {})
     }
 
