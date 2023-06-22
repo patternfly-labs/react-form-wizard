@@ -159,6 +159,7 @@ export function PlacementPredicate(props: { rootPath?: string; clusters: IResour
                 collapsedContent={<MatchExpressionCollapsed />}
                 newValue={{ key: '', operator: 'In', values: [] }}
                 defaultCollapsed={editMode !== EditMode.Create}
+                defaultRender={editMode === EditMode.Create}
             >
                 <MatchExpression labelValuesMap={labelValuesMap} />
             </WizArrayInput>

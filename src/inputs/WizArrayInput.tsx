@@ -50,6 +50,7 @@ export type WizArrayInputProps = Omit<InputCommonProps, 'path'> & {
     sortable?: boolean
     newValue?: object
     defaultCollapsed?: boolean
+    defaultRender?: boolean
     isSection?: boolean
     summaryList?: boolean
 }
@@ -82,6 +83,10 @@ export function WizArrayInput(props: WizArrayInputProps) {
         },
         [item, path, setValue, update, values]
     )
+
+    if (!values.length && props.defaultRender) {
+        addItem(props.newValue ?? {})
+    }
 
     const removeItem = useCallback(
         (item: object) => {
