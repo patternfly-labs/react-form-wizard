@@ -6,6 +6,7 @@ import {
     DescriptionListTerm,
     InputGroup,
     Select as PfSelect,
+    SelectProps as PfSelectProps,
     SelectOption,
     SelectOptionObject,
     SelectVariant,
@@ -162,14 +163,14 @@ function SelectBase<T = any>(props: SelectProps<T>) {
         }
     }, [keyedValue, selectOptions])
 
-    const onSelect = useCallback(
+    const onSelect = useCallback<Required<PfSelectProps>['onSelect']>(
         (_, selectOptionObject) => {
             switch (props.variant) {
                 case 'single':
                     if (isCreatable && typeof selectOptionObject === 'string') {
                         setValue(selectOptionObject)
                     } else {
-                        setValue(selectOptionObject.value)
+                        setValue((selectOptionObject as Option<T>).value)
                     }
                     setOpen(false)
                     break
@@ -184,7 +185,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
         // update()
     }, [])
 
-    const onFilter = useCallback(
+    const onFilter = useCallback<Required<PfSelectProps>['onFilter']>(
         (_, value: string) => {
             if (selectOptions)
                 return selectOptions

@@ -49,7 +49,7 @@ export type WizardCancel = () => void
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
     const [data, setData] = useState(props.defaultData ? klona(props.defaultData) : {})
-    const update = useCallback((newData) => setData((data: unknown) => klona(newData ?? data)), [])
+    const update = useCallback((newData: any) => setData((data: unknown) => klona(newData ?? data)), [])
     const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false)
     useEffect(() => {
         if (props.showYaml !== undefined) {
