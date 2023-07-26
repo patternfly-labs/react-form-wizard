@@ -53,7 +53,9 @@ export function StepInternal(props: StepProps) {
     const hasInputs = useHasInputs()
     const setStepHasInputs = useSetStepHasInputs()
     useLayoutEffect(() => {
-        if (displayMode !== DisplayMode.Details) setStepHasInputs(props.id, hasInputs)
+        if (displayMode !== DisplayMode.Details) {
+            setStepHasInputs(props.id, hasInputs)
+        }
     }, [hasInputs, displayMode, props.id, setStepHasInputs])
 
     const hidden = useInputHidden(props)

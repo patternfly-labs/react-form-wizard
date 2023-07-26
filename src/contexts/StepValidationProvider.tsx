@@ -2,9 +2,11 @@ import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, use
 import { useItem } from './ItemContext'
 
 const StepSetHasValidationErrorContext = createContext<(id: string, hasError: boolean) => void>(() => null)
+StepSetHasValidationErrorContext.displayName = 'StepSetHasValidationErrorContext'
 export const useSetStepHasValidationError = () => useContext(StepSetHasValidationErrorContext)
 
 export const StepHasValidationErrorContext = createContext<Record<string, boolean>>({})
+StepHasValidationErrorContext.displayName = 'StepHasValidationErrorContext'
 export const useStepHasValidationError = () => useContext(StepHasValidationErrorContext)
 
 export function StepValidationProvider(props: { children: ReactNode }) {

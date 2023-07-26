@@ -3,10 +3,12 @@ import { useItem } from './ItemContext'
 
 // Function to set if a step should show validation
 const StepSetShowValidationContext = createContext<(id: string, has: boolean) => void>(() => null)
+StepSetShowValidationContext.displayName = 'StepSetShowValidationContext'
 export const useSetStepShowValidation = () => useContext(StepSetShowValidationContext)
 
 // Record of step id to boolean indicating is a step should show validation
 const StepShowValidationContext = createContext<Record<string, boolean>>({})
+StepShowValidationContext.displayName = 'StepShowValidationContext'
 export const useStepShowValidation = () => useContext(StepShowValidationContext)
 
 export function StepShowValidationProvider(props: { children: ReactNode }) {

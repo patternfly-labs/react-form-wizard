@@ -260,7 +260,7 @@ function MyFooter(props: {
     if (wizardContext.activeStep.name === lastStep.name) {
         return (
             <div className="pf-u-box-shadow-sm-top">
-                {wizardHasValidationError && wizardHasValidationError && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
+                {wizardHasValidationError && showWizardValidation && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
                 {submitError && <Alert title={submitError} isInline variant="danger" />}
                 <WizardFooter>
                     <Button
