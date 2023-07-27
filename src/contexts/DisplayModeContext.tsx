@@ -7,6 +7,7 @@ export enum DisplayMode {
 }
 
 export const DisplayModeContext = createContext<DisplayMode>(DisplayMode.Step)
+DisplayModeContext.displayName = 'DisplayModeContext'
 
 export function useDisplayMode() {
     return useContext(DisplayModeContext)

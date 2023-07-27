@@ -16,6 +16,7 @@ export interface IRadioGroupContextState {
 }
 
 export const RadioGroupContext = createContext<IRadioGroupContextState>({})
+RadioGroupContext.displayName = 'RadioGroupContext'
 
 export type WizRadioGroupProps = InputCommonProps & { children?: ReactNode }
 

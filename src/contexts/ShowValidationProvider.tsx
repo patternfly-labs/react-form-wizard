@@ -7,11 +7,13 @@ When a wizard gets to the review step, validation errors for the whole wizard sh
 */
 
 const SetShowValidationContext = createContext<(show: boolean) => void>(() => null)
+SetShowValidationContext.displayName = 'SetShowValidationContexts'
 export function useSetShowValidation() {
     return useContext(SetShowValidationContext)
 }
 
 export const ShowValidationContext = createContext(false)
+ShowValidationContext.displayName = 'ShowValidationContext'
 export function useShowValidation() {
     return useContext(ShowValidationContext)
 }

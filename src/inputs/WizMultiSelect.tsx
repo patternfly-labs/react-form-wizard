@@ -7,6 +7,7 @@ import {
     Select as PfSelect,
     SelectOption,
     SelectOptionObject,
+    SelectProps,
     SelectVariant,
 } from '@patternfly/react-core'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
@@ -28,7 +29,7 @@ export function WizMultiSelect(props: WizMultiSelectProps) {
     const placeholder = getSelectPlaceholder(props)
     const [open, setOpen] = useState(false)
 
-    const onSelect = useCallback(
+    const onSelect = useCallback<Required<SelectProps>['onSelect']>(
         (_, selectedString: string | SelectOptionObject) => {
             if (typeof selectedString === 'string') {
                 let newValues: any[]
@@ -64,7 +65,7 @@ export function WizMultiSelect(props: WizMultiSelectProps) {
         return Object.keys(map).sort()
     }, [props.options, selections])
 
-    const onFilter = useCallback(
+    const onFilter = useCallback<Required<SelectProps>['onFilter']>(
         (_, filterValue: string) =>
             options
                 .filter((option) => {

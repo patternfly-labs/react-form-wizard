@@ -1,16 +1,16 @@
 import get from 'get-value'
-import { ReactNode, useCallback, useContext, useLayoutEffect } from 'react'
+import { ReactNode, useCallback, useContext, useState } from 'react'
 import set from 'set-value'
 import { EditMode } from '..'
 import { useData } from '../contexts/DataContext'
 import { useDisplayMode } from '../contexts/DisplayModeContext'
 import { useEditMode } from '../contexts/EditModeContext'
-import { useSetHasInputs, useUpdateHasInputs } from '../contexts/HasInputsProvider'
-import { useSetHasValue } from '../contexts/HasValueProvider'
+import { useHasInputs, useSetHasInputs, useUpdateHasInputs } from '../contexts/HasInputsProvider'
+import { useHasValue, useSetHasValue } from '../contexts/HasValueProvider'
 import { ItemContext } from '../contexts/ItemContext'
 import { useShowValidation } from '../contexts/ShowValidationProvider'
 import { useStringContext } from '../contexts/StringContext'
-import { useSetHasValidationError, useValidate } from '../contexts/ValidationProvider'
+import { useHasValidationError, useSetHasValidationError, useValidate } from '../contexts/ValidationProvider'
 
 export type HiddenFn = (item: any) => boolean
 
@@ -101,45 +101,47 @@ export function useInput(props: InputCommonProps) {
     const hidden = useInputHidden(props)
 
     const setHasInputs = useSetHasInputs()
-    useLayoutEffect(() => {
-        if (!hidden) setHasInputs()
-    }, [hidden, setHasInputs])
-
+    const hasInputs = useHasInputs()
     const updateHasInputs = useUpdateHasInputs()
-    useLayoutEffect(() => {
-        updateHasInputs()
-    }, [hidden, updateHasInputs])
+
+    if (!hidden && !hasInputs) {
+        setHasInputs()
+    }
 
     const { validated, error } = useInputValidation(props)
+    const hasValidationError = useHasValidationError()
     const setHasValidationError = useSetHasValidationError()
-    useLayoutEffect(() => {
-        if (!hidden && error) setHasValidationError()
-    }, [hidden, error, setHasValidationError])
+    if (!hidden && error && !hasValidationError) {
+        setHasValidationError()
+    }
 
-    const validate = useValidate()
     // if value changes we need to validate in the case of a checkbox which hides child inputs
     // if hidden changes we need to validate in the case of a inputs which hides child inputs
     // if error changes we need to validate to set the error or clear errors if there is no other inputs with errors
-    useLayoutEffect(() => {
+    const [previousValue, setPreviousValue] = useState(value)
+    const [previousHidden, setPreviousHidden] = useState(hidden)
+    const [previousError, setPreviousError] = useState(error)
+    const validate = useValidate()
+
+    if (value !== previousValue || hidden !== previousHidden || error !== previousError) {
+        setPreviousValue(value)
+        setPreviousHidden(hidden)
+        setPreviousError(error)
+        if (hidden && !previousHidden) {
+            updateHasInputs()
+        }
         validate()
-    }, [value, hidden, error, validate])
+    }
 
     const path = usePath(props)
     const id = useID(props)
 
+    const hasValue = useHasValue()
     const setHasValue = useSetHasValue()
-    useLayoutEffect(() => {
-        if (value) {
-            if (Array.isArray(value)) {
-                if (value.length > 0) setHasValue()
-            } else setHasValue()
-        }
-    }, [setHasValue, value])
-
-    // const updateHasValue = useUpdateHasValue()
-    // useEffect(() => {
-    //     if (!value) updateHasValue()
-    // }, [updateHasValue, value])
+    // anything other than empty array counts as having a value
+    if (!hasValue && value && (!Array.isArray(value) || value.length > 0)) {
+        setHasValue()
+    }
 
     let disabled = props.disabled
     if (editMode === EditMode.Edit) {

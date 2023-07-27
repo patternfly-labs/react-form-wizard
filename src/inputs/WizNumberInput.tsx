@@ -1,4 +1,10 @@
-import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, NumberInput as PFNumberInput } from '@patternfly/react-core'
+import {
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    NumberInputProps,
+    NumberInput as PFNumberInput,
+} from '@patternfly/react-core'
 import { Fragment, useCallback } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { getEnterPlaceholder, InputCommonProps, useInput } from './Input'
@@ -25,9 +31,9 @@ export function WizNumberInput(props: WizNumberInputProps) {
         }
     }, [props.zeroIsUndefined, setValue, value])
 
-    const onChange = useCallback(
+    const onChange = useCallback<Required<NumberInputProps>['onChange']>(
         (event) => {
-            const newValue = Number(event.target.value)
+            const newValue = Number((event.target as HTMLInputElement).value)
             if (props.zeroIsUndefined && newValue === 0) {
                 setValue(undefined)
             } else {

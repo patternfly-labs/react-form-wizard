@@ -6,6 +6,7 @@ import {
     Select as PfSelect,
     SelectOption,
     SelectOptionObject,
+    SelectProps,
     SelectVariant,
 } from '@patternfly/react-core'
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
@@ -32,7 +33,7 @@ export function WizAsyncSelect(props: WizAsyncSelectProps) {
     const [options, setOptions] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
 
-    const onSelect = useCallback(
+    const onSelect = useCallback<Required<SelectProps>['onSelect']>(
         (_, selectedString: string | SelectOptionObject) => {
             if (typeof selectedString === 'string') {
                 setValue(selectedString)
@@ -44,7 +45,7 @@ export function WizAsyncSelect(props: WizAsyncSelectProps) {
 
     const onClear = useCallback(() => setValue(''), [setValue])
 
-    const onFilter = useCallback(
+    const onFilter = useCallback<Required<SelectProps>['onFilter']>(
         (_, filterValue: string) =>
             options
                 .filter((option) => {

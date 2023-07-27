@@ -2,9 +2,11 @@ import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, use
 import { useItem } from './ItemContext'
 
 const StepSetHasInputsContext = createContext<(id: string, has: boolean) => void>(() => null)
+StepSetHasInputsContext.displayName = 'StepSetHasInputsContext'
 export const useSetStepHasInputs = () => useContext(StepSetHasInputsContext)
 
 const StepHasInputsContext = createContext<Record<string, boolean>>({})
+StepHasInputsContext.displayName = 'StepHasInputsContext'
 export const useStepHasInputs = () => useContext(StepHasInputsContext)
 
 export function StepHasInputsProvider(props: { children: ReactNode }) {

@@ -67,6 +67,7 @@ export const defaultStrings: WizardStrings = {
 }
 
 export const StringContext = createContext<WizardStrings>(defaultStrings)
+StringContext.displayName = 'StringContext'
 
 export function useStringContext() {
     return useContext(StringContext)

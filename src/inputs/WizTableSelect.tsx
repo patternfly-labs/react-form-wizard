@@ -11,6 +11,7 @@ import {
     EmptyStateBody,
     List,
     ListItem,
+    OnSetPage,
     Pagination,
     PaginationVariant,
     Title,
@@ -43,7 +44,7 @@ export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
 
     const [page, setPage] = useState(1)
-    const onSetPage = useCallback((_: unknown, page) => setPage(page), [])
+    const onSetPage = useCallback<OnSetPage>((_: unknown, page) => setPage(page), [])
 
     const pagedItems = useMemo(() => {
         return props.items.slice((page - 1) * 10, page * 10)

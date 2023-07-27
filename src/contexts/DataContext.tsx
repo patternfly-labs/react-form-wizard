@@ -5,6 +5,7 @@ export interface IDataContext {
 }
 
 export const DataContext = createContext<IDataContext>({ update: () => null })
+DataContext.displayName = 'DataContext'
 
 export function useData() {
     return useContext(DataContext)

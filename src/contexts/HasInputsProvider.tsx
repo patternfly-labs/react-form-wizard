@@ -1,45 +1,47 @@
 import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react'
 
 const SetHasInputsContext = createContext<() => void>(() => null)
+SetHasInputsContext.displayName = 'SetHasInputsContext'
 export const useSetHasInputs = () => useContext(SetHasInputsContext)
 
 export const HasInputsContext = createContext(false)
+HasInputsContext.displayName = 'HasInputsContext'
 export const useHasInputs = () => useContext(HasInputsContext)
 
 const UpdateHasInputsContext = createContext<() => void>(() => null)
+UpdateHasInputsContext.displayName = 'UpdateHasInputsContext'
 export const useUpdateHasInputs = () => useContext(UpdateHasInputsContext)
 
 export function HasInputsProvider(props: { children: ReactNode }) {
-    const [hasInputs, setHasInputsState] = useState(false)
-    const [setHasInputs, setHasInputsFunction] = useState<() => void>(() => () => setHasInputsState(true))
-    const validate = useCallback(() => {
-        setHasInputsState(false)
-        setHasInputsFunction(() => () => setHasInputsState(true))
-    }, [])
-    useLayoutEffect(() => {
-        validate()
-    }, [validate])
-
+    const parentHasInputs = useContext(HasInputsContext)
+    const parentSetHasInputs = useContext(SetHasInputsContext)
     const parentUpdateHasInputs = useContext(UpdateHasInputsContext)
-    useLayoutEffect(() => {
-        if (!hasInputs) parentUpdateHasInputs?.()
-    }, [parentUpdateHasInputs, hasInputs])
+
+    const [hasInputs, setHasInputsState] = useState(false)
+
+    const setHasInputs = useCallback(() => {
+        setHasInputsState(true)
+    }, [setHasInputsState])
+
+    if (hasInputs && !parentHasInputs) {
+        parentSetHasInputs()
+    }
+
+    const updateHasInputs = useCallback(() => {
+        setHasInputsState(false)
+        parentUpdateHasInputs()
+    }, [setHasInputsState, parentUpdateHasInputs])
 
     // When this control goes away - parentUpdateHasInputs
     useLayoutEffect(
         () => () => {
-            if (parentUpdateHasInputs) parentUpdateHasInputs()
+            parentUpdateHasInputs()
         },
         [parentUpdateHasInputs]
     )
 
-    const parentSetHasInputs = useContext(SetHasInputsContext)
-    useLayoutEffect(() => {
-        if (hasInputs) parentSetHasInputs?.()
-    }, [parentSetHasInputs, hasInputs])
-
     return (
-        <UpdateHasInputsContext.Provider value={validate}>
+        <UpdateHasInputsContext.Provider value={updateHasInputs}>
             <SetHasInputsContext.Provider value={setHasInputs}>
                 <HasInputsContext.Provider value={hasInputs}>{props.children}</HasInputsContext.Provider>
             </SetHasInputsContext.Provider>

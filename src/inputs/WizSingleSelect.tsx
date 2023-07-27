@@ -4,6 +4,7 @@ import {
     DescriptionListTerm,
     InputGroup,
     Select as PfSelect,
+    SelectProps,
     SelectOption,
     SelectOptionObject,
     SelectVariant,
@@ -30,7 +31,7 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
     const { prompt, helperText } = props
     const [open, setOpen] = useState(false)
 
-    const onSelect = useCallback(
+    const onSelect = useCallback<Required<SelectProps>['onSelect']>(
         (_, selectedString: string | SelectOptionObject) => {
             if (typeof selectedString === 'string') {
                 setValue(selectedString)
@@ -42,7 +43,7 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
 
     const onClear = useCallback(() => setValue(''), [setValue])
 
-    const onFilter = useCallback(
+    const onFilter = useCallback<Required<SelectProps>['onFilter']>(
         (_, filterValue: string) =>
             props.options
                 .filter((option) => {

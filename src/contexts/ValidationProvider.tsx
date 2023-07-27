@@ -1,34 +1,41 @@
 import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react'
 
 const SetHasValidationErrorContext = createContext<() => void>(() => null)
+SetHasValidationErrorContext.displayName = 'SetHasValidationErrorContext'
 export const useSetHasValidationError = () => useContext(SetHasValidationErrorContext)
 
 export const HasValidationErrorContext = createContext(true)
+HasValidationErrorContext.displayName = 'HasValidationErrorContext'
 export const useHasValidationError = () => useContext(HasValidationErrorContext)
 
 const ValidateContext = createContext<() => void>(() => null)
+ValidateContext.displayName = 'ValidateContext'
 export const useValidate = () => useContext(ValidateContext)
 
 export function ValidationProvider(props: { children: ReactNode }) {
     const [hasValidationError, setHasValidationErrorState] = useState(false)
-    const [setHasValidationError, setHasValidationErrorFunction] = useState<() => void>(() => () => setHasValidationErrorState(true))
+    const [previousHasValidationError, setPreviousHasValidationError] = useState(false)
+    const setHasValidationError = useCallback(() => {
+        if (!hasValidationError) {
+            setHasValidationErrorState(true)
+        }
+    }, [hasValidationError, setHasValidationErrorState])
     const validate = useCallback(() => {
         setHasValidationErrorState(false)
-        setHasValidationErrorFunction(() => () => setHasValidationErrorState(true))
-    }, [])
-    useLayoutEffect(() => {
-        validate()
-    }, [validate])
+    }, [setHasValidationErrorState])
 
     const parentValidate = useContext(ValidateContext)
-    useLayoutEffect(() => {
-        if (!hasValidationError) parentValidate?.()
-    }, [parentValidate, hasValidationError])
+    if (hasValidationError !== previousHasValidationError) {
+        setPreviousHasValidationError(hasValidationError)
+        if (!hasValidationError) {
+            parentValidate()
+        }
+    }
 
     // When this control goes away - parentValidate
     useLayoutEffect(
         () => () => {
-            if (parentValidate) parentValidate()
+            parentValidate()
         },
         [parentValidate]
     )

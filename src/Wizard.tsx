@@ -49,7 +49,7 @@ export type WizardCancel = () => void
 
 export function Wizard(props: WizardProps & { showHeader?: boolean; showYaml?: boolean }) {
     const [data, setData] = useState(props.defaultData ? klona(props.defaultData) : {})
-    const update = useCallback((newData) => setData((data: unknown) => klona(newData ?? data)), [])
+    const update = useCallback((newData: any) => setData((data: unknown) => klona(newData ?? data)), [])
     const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false)
     useEffect(() => {
         if (props.showYaml !== undefined) {
@@ -260,7 +260,7 @@ function MyFooter(props: {
     if (wizardContext.activeStep.name === lastStep.name) {
         return (
             <div className="pf-u-box-shadow-sm-top">
-                {wizardHasValidationError && wizardHasValidationError && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
+                {wizardHasValidationError && showWizardValidation && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
                 {submitError && <Alert title={submitError} isInline variant="danger" />}
                 <WizardFooter>
                     <Button
