@@ -8,15 +8,15 @@ jobs:
         if: (github.event_name == 'schedule' && github.repository == 'patternfly-labs/react-form-wizard') || (github.event_name != 'schedule')
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
               with:
                   token: ${{ secrets.GH_TOKEN }}
-            - uses: actions/setup-node@v2
+            - uses: actions/setup-node@v4
               with:
                   node-version: '18'
             - run: npx npm-check-updates --doctor --upgrade --target minor
-            - run: npm audit fix
-            - uses: EndBug/add-and-commit@v7
+            - run: npm audit fix || true
+            - uses: EndBug/add-and-commit@v9
               with:
                   default_author: github_actions
                   message: Upgraded package dependencies
