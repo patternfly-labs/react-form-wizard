@@ -209,7 +209,7 @@ function BulkSelect(props: {
 }) {
     const [open, setOpen] = useState(false)
     const onDropDownToggle = useCallback(() => setOpen((open) => !open), [])
-    const { selectNoItems, selectPageItems, selectAllItems } = useStringContext()
+    const { selected, selectNoItems, selectPageItems, selectAllItems } = useStringContext()
     const allSelected = props.selectedCount === props.total
     const anySelected = props.selectedCount > 0
     const someChecked = props.selectedCount ? null : false
@@ -259,10 +259,10 @@ function BulkSelect(props: {
     const toggle = useMemo(
         () => (
             <DropdownToggle splitButtonItems={splitButtonItems} onToggle={onDropDownToggle}>
-                {props.selectedCount !== 0 && <Fragment>{props.selectedCount} selected</Fragment>}
+                {props.selectedCount !== 0 && <Fragment>{selected(props.selectedCount)}</Fragment>}
             </DropdownToggle>
         ),
-        [onDropDownToggle, props.selectedCount, splitButtonItems]
+        [onDropDownToggle, props.selectedCount, splitButtonItems, selected]
     )
 
     return <Dropdown onSelect={onDropDownToggle} toggle={toggle} isOpen={open} dropdownItems={items} position={DropdownPosition.left} />
