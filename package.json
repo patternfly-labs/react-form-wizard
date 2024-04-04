@@ -47,7 +47,7 @@
         "yaml": "1.10.2"
     },
     "devDependencies": {
-        "@babel/core": "7.24.3",
+        "@babel/core": "7.24.4",
         "@babel/preset-react": "7.24.1",
         "@babel/preset-typescript": "7.24.1",
         "@cypress/code-coverage": "^3.12.33",
@@ -63,7 +63,7 @@
         "@types/mini-css-extract-plugin": "2.5.0",
         "@types/node": "^18.19.29",
         "@types/react": "^18.2.65",
-        "@types/react-dom": "^18.2.23",
+        "@types/react-dom": "^18.2.24",
         "@types/react-router-dom": "5.3.3",
         "@types/set-value": "4.0.3",
         "@types/validator": "13.11.9",
@@ -76,7 +76,7 @@
         "babel-plugin-transform-class-properties": "6.24.1",
         "concurrently": "7.6.0",
         "cpy-cli": "4.2.0",
-        "css-loader": "6.10.0",
+        "css-loader": "6.11.0",
         "css-minimizer-webpack-plugin": "3.4.1",
         "cypress": "9.7.0",
         "eslint": "8.57.0",
