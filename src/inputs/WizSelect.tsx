@@ -5,12 +5,15 @@ import {
     DescriptionListGroup,
     DescriptionListTerm,
     InputGroup,
+    InputGroupItem,
+} from '@patternfly/react-core'
+import {
     Select as PfSelect,
     SelectProps as PfSelectProps,
     SelectOption,
     SelectOptionObject,
     SelectVariant,
-} from '@patternfly/react-core'
+} from '@patternfly/react-core/deprecated'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { SpinnerButton } from '../components/SpinnerButton'
@@ -247,34 +250,36 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             <WizFormGroup helperTextNode={HelperTextPrompt({ prompt, helperText })} {...props}>
                 <InputGroup>
                     {!selectOptions && <SpinnerButton />}
-                    <PfSelect
-                        isDisabled={disabled || !selectOptions}
-                        variant={variant}
-                        isOpen={open}
-                        onToggle={setOpen}
-                        selections={selections}
-                        onSelect={onSelect}
-                        onClear={props.required ? undefined : onClear}
-                        isCreatable={isCreatable}
-                        onCreateOption={(value) => props.onCreate?.(value)}
-                        validated={validated}
-                        hasInlineFilter
-                        onFilter={onFilter}
-                        footer={props.footer}
-                        placeholderText={selectOptions && activePlacemeholder}
-                    >
-                        {selectOptions?.map((option) => (
-                            <SelectOption
-                                key={option.id}
-                                id={option.id}
-                                value={option}
-                                description={option.description}
-                                isDisabled={option.disabled}
-                            >
-                                {option.toString()}
-                            </SelectOption>
-                        ))}
-                    </PfSelect>
+                    <InputGroupItem>
+                        <PfSelect
+                            isDisabled={disabled || !selectOptions}
+                            variant={variant}
+                            isOpen={open}
+                            onToggle={(_event, val) => setOpen(val)}
+                            selections={selections}
+                            onSelect={onSelect}
+                            onClear={props.required ? undefined : onClear}
+                            isCreatable={isCreatable}
+                            onCreateOption={(value) => props.onCreate?.(value)}
+                            validated={validated}
+                            hasInlineFilter
+                            onFilter={onFilter}
+                            footer={props.footer}
+                            placeholderText={selectOptions && activePlacemeholder}
+                        >
+                            {selectOptions?.map((option) => (
+                                <SelectOption
+                                    key={option.id}
+                                    id={option.id}
+                                    value={option}
+                                    description={option.description}
+                                    isDisabled={option.disabled}
+                                >
+                                    {option.toString()}
+                                </SelectOption>
+                            ))}
+                        </PfSelect>
+                    </InputGroupItem>
                 </InputGroup>
             </WizFormGroup>
         </div>

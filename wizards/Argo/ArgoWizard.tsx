@@ -640,7 +640,7 @@ export function ExternalLinkButton(props: { id: string; href?: string; icon?: Re
     return (
         <Flex>
             <FlexItem spacer={{ default: 'spacerXl' }}>
-                <Button id={props.id} icon={props.icon} isSmall={true} variant="link" component="a" href={props.href} target="_blank">
+                <Button id={props.id} icon={props.icon} size="sm" variant="link" component="a" href={props.href} target="_blank">
                     Add cluster sets
                 </Button>
             </FlexItem>

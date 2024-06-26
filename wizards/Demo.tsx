@@ -11,6 +11,7 @@ import {
     PageSidebar,
     PageToggleButton,
     Title,
+    PageSidebarBody,
 } from '@patternfly/react-core'
 import { AnsibleTowerIcon, ApplicationsIcon, BarsIcon, ClusterIcon, GithubIcon, LockIcon, RedhatIcon } from '@patternfly/react-icons'
 import { ReactNode } from 'react'
@@ -351,7 +352,7 @@ function DemoHeader() {
                 </PageToggleButton>
             </MastheadToggle>
             <MastheadMain>
-                <MastheadBrand>
+                <MastheadBrand component="a">
                     <div style={{ display: 'flex', gap: 8, alignItems: 'start' }}>
                         <svg width="45" height="40.5" viewBox="0 0 30 27" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -389,8 +390,8 @@ function DemoHeader() {
 function DemoSidebar() {
     const location = useLocation()
     return (
-        <PageSidebar
-            nav={
+        <PageSidebar>
+            <PageSidebarBody>
                 <Nav>
                     <NavList>
                         <NavItem isActive={location.search === ''}>
@@ -411,7 +412,7 @@ function DemoSidebar() {
                         </NavExpandable> */}
                     </NavList>
                 </Nav>
-            }
-        />
+            </PageSidebarBody>
+        </PageSidebar>
     )
 }

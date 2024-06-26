@@ -2,11 +2,6 @@ import {
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
-    Dropdown,
-    DropdownItem,
-    DropdownPosition,
-    DropdownToggle,
-    DropdownToggleCheckbox,
     EmptyState,
     EmptyStateBody,
     List,
@@ -14,9 +9,10 @@ import {
     OnSetPage,
     Pagination,
     PaginationVariant,
-    Title,
+    EmptyStateHeader,
 } from '@patternfly/react-core'
-import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
+import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle, DropdownToggleCheckbox } from '@patternfly/react-core/deprecated'
+import { Table /* data-codemods */, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -138,9 +134,7 @@ export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
     if (props.items.length === 0) {
         return (
             <EmptyState>
-                <Title headingLevel="h4" size="lg">
-                    {props.emptyTitle}
-                </Title>
+                <EmptyStateHeader titleText={<>{props.emptyTitle}</>} headingLevel="h4" />
                 <EmptyStateBody>{props.emptyMessage}</EmptyStateBody>
             </EmptyState>
         )
@@ -159,7 +153,7 @@ export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
                 />
                 {/* <SearchInput style={{ flexGrow: 1 }} /> */}
             </div>
-            <TableComposable aria-label={props.label} variant="compact" id={id}>
+            <Table aria-label={props.label} variant="compact" id={id}>
                 <Thead>
                     <Tr>
                         <Th />
@@ -184,7 +178,7 @@ export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
                         </Tr>
                     ))}
                 </Tbody>
-            </TableComposable>
+            </Table>
             {props.items.length > 10 && (
                 <Pagination
                     itemCount={props.items.length}

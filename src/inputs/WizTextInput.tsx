@@ -1,4 +1,4 @@
-import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup'
+import { InputGroup, InputGroupItem } from '@patternfly/react-core/dist/js/components/InputGroup'
 import { TextInput as PFTextInput } from '@patternfly/react-core/dist/js/components/TextInput'
 import { Fragment, useState } from 'react'
 import { WizTextDetail } from '..'
@@ -32,16 +32,18 @@ export function WizTextInput(props: WizTextInputProps) {
     if (!props.label) {
         return (
             <InputGroup>
-                <PFTextInput
-                    id={id}
-                    placeholder={placeholder}
-                    validated={validated}
-                    value={value}
-                    onChange={setValue}
-                    isReadOnly={props.readonly}
-                    type={!props.secret || showSecrets ? 'text' : 'password'}
-                    isDisabled={disabled}
-                />
+                <InputGroupItem isFill>
+                    <PFTextInput
+                        id={id}
+                        placeholder={placeholder}
+                        validated={validated}
+                        value={value}
+                        onChange={setValue}
+                        type={!props.secret || showSecrets ? 'text' : 'password'}
+                        isDisabled={disabled}
+                        readOnlyVariant="default"
+                    />
+                </InputGroupItem>
                 {!disabled && value !== '' && props.secret && (
                     <ShowSecretsButton showSecrets={showSecrets} setShowSecrets={setShowSecrets} />
                 )}
@@ -56,16 +58,18 @@ export function WizTextInput(props: WizTextInputProps) {
     return (
         <WizFormGroup {...props} id={id}>
             <InputGroup>
-                <PFTextInput
-                    id={id}
-                    placeholder={placeholder}
-                    validated={validated}
-                    value={value}
-                    onChange={setValue}
-                    isReadOnly={props.readonly}
-                    type={!props.secret || showSecrets ? 'text' : 'password'}
-                    isDisabled={disabled}
-                />
+                <InputGroupItem isFill>
+                    <PFTextInput
+                        id={id}
+                        placeholder={placeholder}
+                        validated={validated}
+                        value={value}
+                        onChange={setValue}
+                        type={!props.secret || showSecrets ? 'text' : 'password'}
+                        isDisabled={disabled}
+                        readOnlyVariant="default"
+                    />
+                </InputGroupItem>
                 {!disabled && value !== '' && props.secret && (
                     <ShowSecretsButton showSecrets={showSecrets} setShowSecrets={setShowSecrets} />
                 )}

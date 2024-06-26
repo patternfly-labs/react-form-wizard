@@ -6,6 +6,7 @@ import {
     Divider,
     InputGroup,
     TextInput as PFTextInput,
+    InputGroupItem,
 } from '@patternfly/react-core'
 import { PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
@@ -64,21 +65,25 @@ export function WizStringsInput(props: WizStringsInputProps) {
                     {values.map((_, index) => {
                         return (
                             <InputGroup key={index}>
-                                <WizTextInput
-                                    id={`${id}-${index + 1}`}
-                                    path={props.path + '.' + index.toString()}
-                                    // onChange={(e) => onKeyChange(index, e)}
-                                    required
-                                />
-                                <Button
-                                    variant="plain"
-                                    isDisabled={props.required === true && values.length === 1}
-                                    aria-label={removeItemAriaLabel}
-                                    onClick={() => onDeleteKey(index)}
-                                    style={{ alignSelf: 'start' }}
-                                >
-                                    <TrashIcon />
-                                </Button>
+                                <InputGroupItem>
+                                    <WizTextInput
+                                        id={`${id}-${index + 1}`}
+                                        path={props.path + '.' + index.toString()}
+                                        // onChange={(e) => onKeyChange(index, e)}
+                                        required
+                                    />
+                                </InputGroupItem>
+                                <InputGroupItem>
+                                    <Button
+                                        variant="plain"
+                                        isDisabled={props.required === true && values.length === 1}
+                                        aria-label={removeItemAriaLabel}
+                                        onClick={() => onDeleteKey(index)}
+                                        style={{ alignSelf: 'start' }}
+                                    >
+                                        <TrashIcon />
+                                    </Button>
+                                </InputGroupItem>
                             </InputGroup>
                         )
                     })}
@@ -88,7 +93,7 @@ export function WizStringsInput(props: WizStringsInputProps) {
                     <Button
                         id="add-button"
                         variant="link"
-                        isSmall
+                        size="sm"
                         aria-label={actionAriaLabel}
                         onClick={onNewKey}
                         icon={<PlusCircleIcon />}
@@ -164,16 +169,20 @@ export function StringsMapInput(props: StringsMapInputProps) {
                     {values.map((pair, index) => {
                         return (
                             <InputGroup key={index}>
-                                <PFTextInput id={`${id}-${index + 1}`} value={pair} onChange={(e) => onKeyChange(index, e)} required />
-                                <Button
-                                    variant="plain"
-                                    isDisabled={props.required === true && values.length === 1}
-                                    aria-label={removeItemAriaLabel}
-                                    onClick={() => onDeleteKey(index)}
-                                    style={{ alignSelf: 'start' }}
-                                >
-                                    <TrashIcon />
-                                </Button>
+                                <InputGroupItem isFill>
+                                    <PFTextInput id={`${id}-${index + 1}`} value={pair} onChange={(e) => onKeyChange(index, e)} required />
+                                </InputGroupItem>
+                                <InputGroupItem>
+                                    <Button
+                                        variant="plain"
+                                        isDisabled={props.required === true && values.length === 1}
+                                        aria-label={removeItemAriaLabel}
+                                        onClick={() => onDeleteKey(index)}
+                                        style={{ alignSelf: 'start' }}
+                                    >
+                                        <TrashIcon />
+                                    </Button>
+                                </InputGroupItem>
                             </InputGroup>
                         )
                     })}
@@ -183,7 +192,7 @@ export function StringsMapInput(props: StringsMapInputProps) {
                     <Button
                         id="add-button"
                         variant="link"
-                        isSmall
+                        size="sm"
                         aria-label={actionAriaLabel}
                         onClick={onNewKey}
                         icon={<PlusCircleIcon />}

@@ -330,7 +330,7 @@ export function Catalog(props: {
 
     return (
         <Page>
-            <PageSection variant="light" sticky="top" isWidthLimited>
+            <PageSection variant="light" isWidthLimited>
                 <Flex style={{ gap: 16 }}>
                     <FlexItem grow={{ default: 'grow' }}>
                         <Stack hasGutter>
@@ -351,7 +351,7 @@ export function Catalog(props: {
                 </Drawer>
             </PageSection>
             {props.onBack && (
-                <PageSection variant="light" sticky="bottom" isFilled={false}>
+                <PageSection variant="light" isFilled={false}>
                     <Button onClick={props.onBack}>Back</Button>
                 </PageSection>
             )}

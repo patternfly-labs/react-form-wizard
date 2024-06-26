@@ -108,7 +108,7 @@ export function WizKeyValue(props: KeyValueProps) {
             </div>
             {!Object.keys(pairs).length && <Divider />}
             <div>
-                <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey} icon={<PlusCircleIcon />}>
+                <Button id="add-button" variant="link" size="sm" aria-label={actionAriaLabel} onClick={onNewKey} icon={<PlusCircleIcon />}>
                     {getAddPlaceholder(props)}
                 </Button>
             </div>

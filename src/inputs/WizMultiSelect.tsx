@@ -1,15 +1,5 @@
-import {
-    Chip,
-    ChipGroup,
-    DescriptionListDescription,
-    DescriptionListGroup,
-    DescriptionListTerm,
-    Select as PfSelect,
-    SelectOption,
-    SelectOptionObject,
-    SelectProps,
-    SelectVariant,
-} from '@patternfly/react-core'
+import { Chip, ChipGroup, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm } from '@patternfly/react-core'
+import { Select as PfSelect, SelectOption, SelectOptionObject, SelectProps, SelectVariant } from '@patternfly/react-core/deprecated'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
@@ -109,7 +99,7 @@ export function WizMultiSelect(props: WizMultiSelectProps) {
                     isDisabled={disabled}
                     variant={SelectVariant.checkbox}
                     isOpen={open}
-                    onToggle={setOpen}
+                    onToggle={(_event, val) => setOpen(val)}
                     selections={selections}
                     onSelect={onSelect}
                     onClear={onClear}

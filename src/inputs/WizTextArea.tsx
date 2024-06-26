@@ -37,7 +37,7 @@ export function WizTextArea(props: WizTextAreaProps) {
         <WizFormGroup {...props} id={id}>
             <InputGroup>
                 {value && !showSecrets && props.secret ? (
-                    <TextInput id={id} value={value} validated={validated} isReadOnly={true} type="password" />
+                    <TextInput id={id} value={value} validated={validated} type="password" readOnlyVariant="default" />
                 ) : (
                     <PFTextArea
                         id={id}
@@ -45,11 +45,11 @@ export function WizTextArea(props: WizTextAreaProps) {
                         validated={validated}
                         value={value}
                         onChange={setValue}
-                        isReadOnly={props.readonly}
                         type={!props.secret || showSecrets ? 'text' : 'password'}
                         spellCheck="false"
                         resizeOrientation="vertical"
                         autoResize
+                        readOnlyVariant="default"
                     />
                 )}
                 {!disabled && value !== '' && props.secret && (

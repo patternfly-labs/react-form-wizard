@@ -8,11 +8,8 @@ import {
     DrawerPanelContent,
     Split,
     SplitItem,
-    Wizard as PFWizard,
-    WizardContext,
-    WizardFooter,
-    WizardStep,
 } from '@patternfly/react-core'
+import { Wizard as PFWizard, WizardContext, WizardFooter, WizardStep } from '@patternfly/react-core/deprecated'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { klona } from 'klona/json'
 import { Children, Fragment, isValidElement, ReactElement, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'

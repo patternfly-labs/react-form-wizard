@@ -1,17 +1,5 @@
-import {
-    Button,
-    Divider,
-    Dropdown,
-    DropdownItem,
-    DropdownProps,
-    DropdownToggle,
-    FormFieldGroupHeader,
-    List,
-    ListItem,
-    Split,
-    SplitItem,
-    Title,
-} from '@patternfly/react-core'
+import { Button, Divider, FormFieldGroupHeader, List, ListItem, Split, SplitItem, Title } from '@patternfly/react-core'
+import { Dropdown, DropdownItem, DropdownProps, DropdownToggle } from '@patternfly/react-core/deprecated'
 import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
@@ -227,7 +215,7 @@ export function WizArrayInput(props: WizArrayInputProps) {
                         <Button
                             id="add-button"
                             variant="link"
-                            isSmall
+                            size="sm"
                             aria-label={actionAriaLabel}
                             onClick={() => addItem(props.newValue ?? {})}
                             icon={<PlusCircleIcon />}

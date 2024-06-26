@@ -1,14 +1,5 @@
-import {
-    DescriptionListDescription,
-    DescriptionListGroup,
-    DescriptionListTerm,
-    InputGroup,
-    Select as PfSelect,
-    SelectOption,
-    SelectOptionObject,
-    SelectProps,
-    SelectVariant,
-} from '@patternfly/react-core'
+import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, InputGroup, InputGroupItem } from '@patternfly/react-core'
+import { Select as PfSelect, SelectOption, SelectOptionObject, SelectProps, SelectVariant } from '@patternfly/react-core/deprecated'
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import { SpinnerButton } from '../components/SpinnerButton'
 import { SyncButton } from '../components/SyncButton'
@@ -100,28 +91,30 @@ export function WizAsyncSelect(props: WizAsyncSelectProps) {
     return (
         <WizFormGroup {...props} id={id}>
             <InputGroup>
-                <PfSelect
-                    isDisabled={disabled || (loading && !props.isCreatable)}
-                    variant={SelectVariant.single}
-                    isOpen={open}
-                    onToggle={setOpen}
-                    selections={value}
-                    onSelect={onSelect}
-                    onClear={props.required ? undefined : onClear}
-                    validated={validated}
-                    onFilter={onFilter}
-                    hasInlineFilter={true}
-                    footer={props.footer}
-                    placeholderText={placeholder}
-                    isCreatable={props.isCreatable}
-                >
-                    {options.map((option) => (
-                        <SelectOption key={option} value={option}>
-                            {option}
-                        </SelectOption>
-                    ))}
-                    {/* {props.children} */}
-                </PfSelect>
+                <InputGroupItem>
+                    <PfSelect
+                        isDisabled={disabled || (loading && !props.isCreatable)}
+                        variant={SelectVariant.single}
+                        isOpen={open}
+                        onToggle={(_event, val) => setOpen(val)}
+                        selections={value}
+                        onSelect={onSelect}
+                        onClear={props.required ? undefined : onClear}
+                        validated={validated}
+                        onFilter={onFilter}
+                        hasInlineFilter={true}
+                        footer={props.footer}
+                        placeholderText={placeholder}
+                        isCreatable={props.isCreatable}
+                    >
+                        {options.map((option) => (
+                            <SelectOption key={option} value={option}>
+                                {option}
+                            </SelectOption>
+                        ))}
+                        {/* {props.children} */}
+                    </PfSelect>
+                </InputGroupItem>
                 {props.asyncCallback && loading && <SpinnerButton />}
                 {props.asyncCallback && !loading && <SyncButton onClick={sync} />}
             </InputGroup>
