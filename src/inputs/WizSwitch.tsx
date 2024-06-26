@@ -34,7 +34,7 @@ export function WizSwitch(props: WizSwitchProps) {
             <Fragment>
                 <Split id={id}>
                     <CheckIcon style={{ paddingRight: 5 }} />
-                    <div className="pf-c-description-list__term" style={{ paddingLeft: 2 }}>
+                    <div className="pf-v5-c-description-list__term" style={{ paddingLeft: 2 }}>
                         {props.label}
                     </div>
                 </Split>

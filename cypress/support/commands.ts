@@ -27,7 +27,7 @@
 Cypress.Commands.add('multiselect', { prevSubject: 'element' }, (subject: JQuery<HTMLElement>, text: string) => {
     cy.wrap(subject)
         .click()
-        .get('.pf-c-check')
+        .get('.pf-v5-c-check')
         .contains(text)
         .parent()
         .within(() => cy.get('[type="checkbox"]').check())

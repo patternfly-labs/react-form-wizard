@@ -63,7 +63,7 @@ export function WizKeyValue(props: KeyValueProps) {
         if (!pairs.length) return <Fragment />
         return (
             <Fragment>
-                <div className="pf-c-description-list__term">{props.label}</div>
+                <div className="pf-v5-c-description-list__term">{props.label}</div>
                 <Indented id={id}>
                     <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
                         {pairs.map((pair, index) => (
@@ -80,7 +80,7 @@ export function WizKeyValue(props: KeyValueProps) {
     return (
         <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 4 }}>
             <div>
-                <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
+                <span className="pf-v5-c-form__label pf-v5-c-form__label-text">{props.label}</span>
                 {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
             </div>
             <HelperText helperText={props.helperText} />

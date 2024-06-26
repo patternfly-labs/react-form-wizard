@@ -30,8 +30,8 @@ describe('ansible wizard', () => {
                     cy.get('#key-2').type('pre-inst-1-var-2')
                     cy.get('#value-2').type('pre-inst-1-val-2')
                 })
-                cy.get('.pf-c-form__field-group-toggle').within(() => {
-                    cy.get('.pf-c-button').click()
+                cy.get('.pf-v5-c-form__field-group-toggle').within(() => {
+                    cy.get('.pf-v5-c-button').click()
                 })
             })
             cy.contains('Add job template').click()
@@ -45,8 +45,8 @@ describe('ansible wizard', () => {
                     cy.get('#key-2').type('pre-inst-2-var-2')
                     cy.get('#value-2').type('pre-inst-2-val-2')
                 })
-                cy.get('.pf-c-form__field-group-toggle').within(() => {
-                    cy.get('.pf-c-button').click()
+                cy.get('.pf-v5-c-form__field-group-toggle').within(() => {
+                    cy.get('.pf-v5-c-button').click()
                 })
             })
         })
@@ -63,8 +63,8 @@ describe('ansible wizard', () => {
                     cy.get('#key-2').type('post-inst-1-var-2')
                     cy.get('#value-2').type('post-inst-1-val-2')
                 })
-                cy.get('.pf-c-form__field-group-toggle').within(() => {
-                    cy.get('.pf-c-button').click()
+                cy.get('.pf-v5-c-form__field-group-toggle').within(() => {
+                    cy.get('.pf-v5-c-button').click()
                 })
             })
             cy.contains('Add job template').click()
@@ -78,8 +78,8 @@ describe('ansible wizard', () => {
                     cy.get('#key-2').type('post-inst-2-var-2')
                     cy.get('#value-2').type('post-inst-2-val-2')
                 })
-                cy.get('.pf-c-form__field-group-toggle').within(() => {
-                    cy.get('.pf-c-button').click()
+                cy.get('.pf-v5-c-form__field-group-toggle').within(() => {
+                    cy.get('.pf-v5-c-button').click()
                 })
             })
         })
@@ -102,8 +102,8 @@ describe('ansible wizard', () => {
                     cy.get('#key-2').type('pre-up-1-var-2')
                     cy.get('#value-2').type('pre-up-1-val-2')
                 })
-                cy.get('.pf-c-form__field-group-toggle').within(() => {
-                    cy.get('.pf-c-button').click()
+                cy.get('.pf-v5-c-form__field-group-toggle').within(() => {
+                    cy.get('.pf-v5-c-button').click()
                 })
             })
             cy.contains('Add job template').click()
@@ -117,8 +117,8 @@ describe('ansible wizard', () => {
                     cy.get('#key-2').type('pre-up-2-var-2')
                     cy.get('#value-2').type('pre-up-2-val-2')
                 })
-                cy.get('.pf-c-form__field-group-toggle').within(() => {
-                    cy.get('.pf-c-button').click()
+                cy.get('.pf-v5-c-form__field-group-toggle').within(() => {
+                    cy.get('.pf-v5-c-button').click()
                 })
             })
         })
@@ -135,8 +135,8 @@ describe('ansible wizard', () => {
                     cy.get('#key-2').type('post-up-1-var-2')
                     cy.get('#value-2').type('post-up-1-val-2')
                 })
-                cy.get('.pf-c-form__field-group-toggle').within(() => {
-                    cy.get('.pf-c-button').click()
+                cy.get('.pf-v5-c-form__field-group-toggle').within(() => {
+                    cy.get('.pf-v5-c-button').click()
                 })
             })
             cy.contains('Add job template').click()
@@ -150,8 +150,8 @@ describe('ansible wizard', () => {
                     cy.get('#key-2').type('post-up-2-var-2')
                     cy.get('#value-2').type('post-up-2-val-2')
                 })
-                cy.get('.pf-c-form__field-group-toggle').within(() => {
-                    cy.get('.pf-c-button').click()
+                cy.get('.pf-v5-c-form__field-group-toggle').within(() => {
+                    cy.get('.pf-v5-c-button').click()
                 })
             })
         })

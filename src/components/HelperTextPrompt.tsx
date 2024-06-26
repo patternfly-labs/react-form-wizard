@@ -12,7 +12,7 @@ export function HelperTextPrompt(props: HelperTextPromptProps) {
     return (
         <Split>
             <SplitItem isFilled>
-                <span className="pf-c-form__helper-text">{helperText}</span>
+                <span className="pf-v5-c-form__helper-text">{helperText}</span>
             </SplitItem>
             <SplitItem>
                 {prompt?.label && prompt?.href && (

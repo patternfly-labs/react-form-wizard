@@ -276,7 +276,7 @@ export function PlacementSelector(props: {
     return (
         <WizDetailsHidden>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span className="pf-c-form__label pf-c-form__label-text">How do you want to select clusters?</span>
+                <span className="pf-v5-c-form__label pf-v5-c-form__label-text">How do you want to select clusters?</span>
                 <ToggleGroup aria-label="Default with single selectable">
                     <ToggleGroupItem
                         text="New placement"
@@ -392,7 +392,7 @@ export function PlacementSelector(props: {
                 </ToggleGroup>
             </div>
             {props.allowNoPlacement === true && placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 0 && (
-                <p className="pf-c-form__helper-text">
+                <p className="pf-v5-c-form__helper-text">
                     Do not add a placement if you want to place this policy using policy set placement.
                 </p>
             )}

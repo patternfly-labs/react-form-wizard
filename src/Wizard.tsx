@@ -144,7 +144,7 @@ function WizardInternal(props: {
                             <SplitItem isFilled>{component.props?.label}</SplitItem>
                             {(showValidation || stepShowValidation[component.props?.id]) && stepHasValidationError[component.props?.id] && (
                                 <SplitItem>
-                                    <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+                                    <ExclamationCircleIcon color="var(--pf-v5-global--danger-color--100)" />
                                 </SplitItem>
                             )}
                         </Split>
@@ -256,7 +256,7 @@ function MyFooter(props: {
 
     if (wizardContext.activeStep.name === lastStep.name) {
         return (
-            <div className="pf-u-box-shadow-sm-top">
+            <div className="pf-v5-u-box-shadow-sm-top">
                 {wizardHasValidationError && showWizardValidation && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
                 {submitError && <Alert title={submitError} isInline variant="danger" />}
                 <WizardFooter>
@@ -272,7 +272,7 @@ function MyFooter(props: {
                     <Button variant="secondary" onClick={onBack}>
                         {backButtonText}
                     </Button>
-                    <div className="pf-c-wizard__footer-cancel">
+                    <div className="pf-v5-c-wizard__footer-cancel">
                         <Button variant="link" onClick={onClose}>
                             {cancelButtonText}
                         </Button>
@@ -284,7 +284,7 @@ function MyFooter(props: {
     }
 
     return (
-        <div className="pf-u-box-shadow-sm-top">
+        <div className="pf-v5-u-box-shadow-sm-top">
             {activeStepHasValidationError && activeStepShowValidation && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
             <WizardFooter>
                 <Button
@@ -297,7 +297,7 @@ function MyFooter(props: {
                 <Button variant="secondary" onClick={onBack} isDisabled={firstStep.name === activeStep.name}>
                     {backButtonText}
                 </Button>
-                <div className="pf-c-wizard__footer-cancel">
+                <div className="pf-v5-c-wizard__footer-cancel">
                     <Button variant="link" onClick={onClose}>
                         {cancelButtonText}
                     </Button>

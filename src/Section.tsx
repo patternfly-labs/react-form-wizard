@@ -73,7 +73,7 @@ function SectionInternal(props: SectionProps) {
                             {(hasValidationError) => (
                                 <section
                                     id={id}
-                                    className="pf-c-form__section"
+                                    className="pf-v5-c-form__section"
                                     role="group"
                                     style={{ display: !hasInputs && props.autohide !== false ? 'none' : undefined }}
                                 >
@@ -86,7 +86,7 @@ function SectionInternal(props: SectionProps) {
                                         <SplitItem isFilled>
                                             <Stack>
                                                 <Split hasGutter>
-                                                    <div className="pf-c-form__section-title">
+                                                    <div className="pf-v5-c-form__section-title">
                                                         {props.label}
                                                         {props.id && (
                                                             <LabelHelp
@@ -108,10 +108,10 @@ function SectionInternal(props: SectionProps) {
                                             <SplitItem>
                                                 <Split>
                                                     <SplitItem>
-                                                        <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+                                                        <ExclamationCircleIcon color="var(--pf-v5-global--danger-color--100)" />
                                                     </SplitItem>
                                                     <SplitItem>
-                                                        <span className="pf-c-form__helper-text pf-m-error">
+                                                        <span className="pf-v5-c-form__helper-text pf-m-error">
                                                             &nbsp; {expandToFixValidationErrors}
                                                         </span>
                                                     </SplitItem>

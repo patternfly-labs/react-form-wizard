@@ -12,7 +12,7 @@ describe('edit policy automation', () => {
 
     it('jobs', () => {
         cy.get('#job').within(() => {
-            cy.get('.pf-c-input-group > div').within(() => {
+            cy.get('.pf-v5-c-input-group > div').within(() => {
                 cy.contains('job1').click()
             })
             cy.get('#job2').click()
@@ -21,7 +21,7 @@ describe('edit policy automation', () => {
 
     it('mode', () => {
         cy.get('#mode').within(() => {
-            cy.get('.pf-c-input-group > div').click()
+            cy.get('.pf-v5-c-input-group > div').click()
             cy.get('#Once').click()
         })
         cy.contains('Next').click()
@@ -55,7 +55,7 @@ describe('edit policy automation', () => {
 
     it('mode', () => {
         cy.get('#mode').within(() => {
-            cy.get('.pf-c-input-group > div').click()
+            cy.get('.pf-v5-c-input-group > div').click()
             cy.get('#EveryEvent').click()
         })
         cy.get('#spec-delayafterrunseconds-form-group').within(() => {

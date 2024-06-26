@@ -13,8 +13,8 @@ export function LabelHelp(props: { id: string; labelHelp?: ReactNode; labelHelpT
                 id={`${props.id}-label-help-button`}
                 aria-label={moreInfo}
                 onClick={(e) => e.preventDefault()}
-                className="pf-c-form__group-label-help"
-                style={{ padding: '0 var(--pf-c-button--PaddingRight) 0 var(--pf-c-button--PaddingLeft)' }}
+                className="pf-v5-c-form__group-label-help"
+                style={{ padding: '0 var(--pf-v5-c-button--PaddingRight) 0 var(--pf-v5-c-button--PaddingLeft)' }}
             >
                 <HelpIcon noVerticalAlign />
             </Button>

@@ -143,7 +143,7 @@ export function WizArrayInput(props: WizArrayInputProps) {
         }
         return (
             <Fragment>
-                <div className="pf-c-description-list__term">{props.label}</div>
+                <div className="pf-v5-c-description-list__term">{props.label}</div>
                 <Indented id={id}>
                     <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
                         {values.map((value, index) => (
@@ -172,12 +172,12 @@ export function WizArrayInput(props: WizArrayInputProps) {
                 <div style={{ paddingBottom: 8, paddingTop: 0 }}>
                     {props.isSection ? (
                         <Split hasGutter style={{ paddingBottom: 8 }}>
-                            <span className="pf-c-form__section-title">{props.label}</span>
+                            <span className="pf-v5-c-form__section-title">{props.label}</span>
                             {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                         </Split>
                     ) : (
                         <div>
-                            <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
+                            <span className="pf-v5-c-form__label pf-v5-c-form__label-text">{props.label}</span>
                             {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                         </div>
                     )}
@@ -241,8 +241,8 @@ export function WizArrayInput(props: WizArrayInputProps) {
                             toggle={
                                 <DropdownToggle id="toggle-id" onToggle={onToggle}>
                                     {/* Mimic Button layout to match styling when there is a single add option */}
-                                    <span className="pf-c-button pf-m-link pf-m-small">
-                                        <span className="pf-c-button__icon pf-m-start">
+                                    <span className="pf-v5-c-button pf-m-link pf-m-small">
+                                        <span className="pf-v5-c-button__icon pf-m-start">
                                             <PlusCircleIcon />
                                         </span>
                                         {props.placeholder}
@@ -253,8 +253,8 @@ export function WizArrayInput(props: WizArrayInputProps) {
                             // Match dropdown caret colors with button link styling
                             style={
                                 {
-                                    '--pf-c-dropdown--m-plain__toggle-icon--Color': 'var(--pf-global--link--Color)',
-                                    '--pf-c-dropdown--m-plain--hover__toggle-icon--Color': 'var(--pf-global--link--Color--hover)',
+                                    '--pf-v5-c-dropdown--m-plain__toggle-icon--Color': 'var(--pf-v5-global--link--Color)',
+                                    '--pf-v5-c-dropdown--m-plain--hover__toggle-icon--Color': 'var(--pf-v5-global--link--Color--hover)',
                                 } as DropdownProps['style']
                             }
                         />
@@ -329,10 +329,10 @@ export function ArrayInputItem(props: {
                                                     showValidation && hasErrors ? (
                                                         <Split>
                                                             <SplitItem>
-                                                                <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+                                                                <ExclamationCircleIcon color="var(--pf-v5-global--danger-color--100)" />
                                                             </SplitItem>
                                                             <SplitItem>
-                                                                <span className="pf-c-form__helper-text pf-m-error">
+                                                                <span className="pf-v5-c-form__helper-text pf-m-error">
                                                                     &nbsp; {expandToFixValidationErrors}
                                                                 </span>
                                                             </SplitItem>
