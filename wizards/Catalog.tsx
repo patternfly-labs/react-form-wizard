@@ -17,6 +17,7 @@ import {
     DrawerSection,
     Flex,
     FlexItem,
+    Icon,
     Label,
     LabelGroup,
     List,
@@ -302,7 +303,11 @@ export function Catalog(props: {
                                                     {featureGroup.features?.map((feature, index) => (
                                                         <ListItem
                                                             key={index}
-                                                            icon={<CheckIcon color="green" size="md" style={{ marginTop: -2 }} />}
+                                                            icon={
+                                                                <Icon status="success" isInline>
+                                                                    <CheckIcon />
+                                                                </Icon>
+                                                            }
                                                         >
                                                             {feature}
                                                         </ListItem>

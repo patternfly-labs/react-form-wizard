@@ -1,4 +1,4 @@
-import { Button, Divider, FormFieldGroupHeader, List, ListItem, Split, SplitItem, Title } from '@patternfly/react-core'
+import { Button, Divider, FormFieldGroupHeader, Icon, List, ListItem, Split, SplitItem, Title } from '@patternfly/react-core'
 import { Dropdown, DropdownItem, DropdownProps, DropdownToggle } from '@patternfly/react-core/deprecated'
 import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
@@ -329,7 +329,9 @@ export function ArrayInputItem(props: {
                                                     showValidation && hasErrors ? (
                                                         <Split>
                                                             <SplitItem>
-                                                                <ExclamationCircleIcon color="var(--pf-v5-global--danger-color--100)" />
+                                                                <Icon status="danger">
+                                                                    <ExclamationCircleIcon />
+                                                                </Icon>
                                                             </SplitItem>
                                                             <SplitItem>
                                                                 <span className="pf-v5-c-form__helper-text pf-m-error">

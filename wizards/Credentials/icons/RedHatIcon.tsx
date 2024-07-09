@@ -1,12 +1,12 @@
 import { Fragment } from 'react'
-import { createSvgIcon } from './createAcmIcon'
+import { createIcon } from './createAcmIcon'
 
-export const RedHatIcon = createSvgIcon({
+export const RedHatIcon = createIcon({
     xOffset: 0,
     yOffset: -7,
     width: 54,
     height: 54,
-    svgPaths: (
+    svgPath: (
         <Fragment>
             <path
                 d="M44.466 17.253c.068.312.097.63.087.95 0 4.133-5.094 4.853-8.61 4.853-13.682 0-23.889-8.4-23.889-10.962a1.68 1.68 0 01.062-.538l-1.032 2.516a5.07 5.07 0 00-.425 2.04c0 5.03 11.532 12.632 24.677 12.632 5.822 0 10.246-2.155 10.246-6.047 0-.3 0-.539-.484-2.814l-.632-2.63z"

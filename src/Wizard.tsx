@@ -6,6 +6,7 @@ import {
     DrawerContent,
     DrawerContentBody,
     DrawerPanelContent,
+    Icon,
     Split,
     SplitItem,
 } from '@patternfly/react-core'
@@ -144,7 +145,9 @@ function WizardInternal(props: {
                             <SplitItem isFilled>{component.props?.label}</SplitItem>
                             {(showValidation || stepShowValidation[component.props?.id]) && stepHasValidationError[component.props?.id] && (
                                 <SplitItem>
-                                    <ExclamationCircleIcon color="var(--pf-v5-global--danger-color--100)" />
+                                    <Icon status="danger">
+                                        <ExclamationCircleIcon />
+                                    </Icon>
                                 </SplitItem>
                             )}
                         </Split>

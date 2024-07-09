@@ -1,4 +1,4 @@
-import { Stack } from '@patternfly/react-core'
+import { Icon, Stack } from '@patternfly/react-core'
 import { ServerIcon, VirtualMachineIcon } from '@patternfly/react-icons'
 import { useHistory } from 'react-router-dom'
 import {
@@ -45,7 +45,11 @@ export function ProviderCatalog() {
                     onClick: () => history.push(RouteE.ControlPlane),
                 },
                 {
-                    icon: <ServerIcon size="lg" />,
+                    icon: (
+                        <Icon size="lg">
+                            <ServerIcon />
+                        </Icon>
+                    ),
                     title: 'Bare Metal',
                     descriptions: ['Create and manage your clusters on your bare metal machines.'],
                     featureGroups: [{ title: 'Available Control Planes', features: ['Hosted', 'Standalone'] }],
@@ -66,7 +70,11 @@ export function ProviderCatalog() {
                     onClick: () => history.push(RouteE.ControlPlane),
                 },
                 {
-                    icon: <VirtualMachineIcon size="lg" />,
+                    icon: (
+                        <Icon size="lg">
+                            <VirtualMachineIcon />
+                        </Icon>
+                    ),
                     title: 'VIRT',
                     descriptions: ['Create and manage your clusters on virtual machines.'],
                     featureGroups: [{ title: 'Available Control Planes', features: ['VSphere', 'RHV', 'OpenStack'] }],

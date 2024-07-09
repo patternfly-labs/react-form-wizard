@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 // eslint-disable-next-line no-use-before-define
-import { CodeBlock, List, ListItem, Stack } from '@patternfly/react-core'
+import { CodeBlock, Icon, List, ListItem, Stack } from '@patternfly/react-core'
 import { CheckIcon, CloseIcon } from '@patternfly/react-icons'
 import { useHistory } from 'react-router-dom'
 import {
@@ -120,7 +120,13 @@ export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
                     <WizDetailsHidden>
                         <Stack hasGutter>
                             <List>
-                                <ListItem icon={<CheckIcon color="var(--pf-v5-global--success-color--100)" />}>
+                                <ListItem
+                                    icon={
+                                        <Icon status="success">
+                                            <CheckIcon />
+                                        </Icon>
+                                    }
+                                >
                                     <Stack style={{ width: '100%' }} hasGutter>
                                         <div>The hypershift-preview component is enabled on the multi-cluster engine.</div>
                                         <CodeBlock>{`oc get mce multiclusterengine-sample -ojsonpath="{.spec.overrides.components[?(@.name=='hypershift-preview')].enabled}"`}</CodeBlock>
@@ -128,7 +134,13 @@ export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
                                 </ListItem>
                             </List>
                             <List>
-                                <ListItem icon={<CheckIcon color="var(--pf-v5-global--success-color--100)" />}>
+                                <ListItem
+                                    icon={
+                                        <Icon status="success">
+                                            <CheckIcon />
+                                        </Icon>
+                                    }
+                                >
                                     <Stack style={{ width: '100%' }} hasGutter>
                                         <div>Managed cluster addon for hypershift is configured.</div>
                                         <CodeBlock>{`oc get mca hypershift-addon -n local-cluster`}</CodeBlock>
@@ -136,7 +148,13 @@ export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
                                 </ListItem>
                             </List>
                             <List>
-                                <ListItem icon={<CloseIcon color="var(--pf-v5-global--danger-color--100)" />}>
+                                <ListItem
+                                    icon={
+                                        <Icon status="danger">
+                                            <CloseIcon />
+                                        </Icon>
+                                    }
+                                >
                                     <Stack style={{ width: '100%' }} hasGutter>
                                         <div>
                                             An OIDC s3 credentials secret for the HyperShift operator to use to access a public s3 bucket

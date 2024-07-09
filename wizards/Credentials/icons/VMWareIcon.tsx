@@ -1,12 +1,12 @@
 import { Fragment } from 'react'
-import { createSvgIcon } from './createAcmIcon'
+import { createIcon } from './createAcmIcon'
 
-export const VMWareIcon = createSvgIcon({
+export const VMWareIcon = createIcon({
     xOffset: 0,
     yOffset: 0,
     width: 384,
     height: 384,
-    svgPaths: (
+    svgPath: (
         <Fragment>
             <defs>
                 <linearGradient id="a" x1="0.2" y1="0.2" x2="0.8" y2="0.8">

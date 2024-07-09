@@ -12,12 +12,10 @@ export function LabelHelp(props: { id: string; labelHelp?: ReactNode; labelHelpT
                 isInline
                 id={`${props.id}-label-help-button`}
                 aria-label={moreInfo}
-                onClick={(e) => e.preventDefault()}
                 className="pf-v5-c-form__group-label-help"
-                style={{ padding: '0 var(--pf-v5-c-button--PaddingRight) 0 var(--pf-v5-c-button--PaddingLeft)' }}
-            >
-                <HelpIcon noVerticalAlign />
-            </Button>
+                style={{ ['--pf-v5-c-form__group-label-help--TranslateY' as any]: 0 }}
+                icon={<HelpIcon />}
+            />
         </Popover>
     ) : (
         <Fragment />

@@ -1,11 +1,12 @@
-import { createSvgIcon } from './createAcmIcon'
+import { createIcon } from './createAcmIcon'
 
-export const HybridIcon = createSvgIcon({
+export const HybridIcon = createIcon({
+    name: 'AWS',
     xOffset: 0,
     yOffset: 0,
     width: 64,
     height: 44,
-    svgPaths: (
+    svgPath: (
         <g id="steps-1-2" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g id="infra-provider---no-hosts-available-copy" transform="translate(-652.000000, -924.000000)">
                 <g id="Tile" transform="translate(564.000000, 888.000000)">

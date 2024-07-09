@@ -1,4 +1,4 @@
-import { DescriptionList, Divider, Split, SplitItem, Stack, Text, Title } from '@patternfly/react-core'
+import { DescriptionList, Divider, Icon, Split, SplitItem, Stack, Text, Title } from '@patternfly/react-core'
 import { AngleDownIcon, AngleLeftIcon, ExclamationCircleIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useEffect, useState } from 'react'
 import { LabelHelp } from './components/LabelHelp'
@@ -108,7 +108,9 @@ function SectionInternal(props: SectionProps) {
                                             <SplitItem>
                                                 <Split>
                                                     <SplitItem>
-                                                        <ExclamationCircleIcon color="var(--pf-v5-global--danger-color--100)" />
+                                                        <Icon status="danger">
+                                                            <ExclamationCircleIcon />
+                                                        </Icon>
                                                     </SplitItem>
                                                     <SplitItem>
                                                         <span className="pf-v5-c-form__helper-text pf-m-error">

@@ -78,7 +78,11 @@ export function CredentialsWizard(props: { onSubmit: WizardSubmit; onCancel: Wiz
                     >
                         <Tile
                             id={CredentialsType.ansible}
-                            icon={<AnsibleTowerIcon color="#EE0000" />}
+                            icon={
+                                <span style={{ color: '#EE0000' }}>
+                                    <AnsibleTowerIcon />
+                                </span>
+                            }
                             value={CredentialsType.ansible}
                             label="Red Hat Ansible Automation Platform"
                         />
