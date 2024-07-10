@@ -1,6 +1,6 @@
-import { Split, Stack, Switch as PFSwitch } from '@patternfly/react-core'
+import { Split, Stack, Switch as PFSwitch, SwitchProps } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
-import { Fragment, ReactNode } from 'react'
+import { Fragment, ReactNode, useCallback } from 'react'
 import { HelperText } from '../components/HelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
@@ -25,6 +25,7 @@ function getIsChecked(value: any) {
 
 export function WizSwitch(props: WizSwitchProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
+    const onChange = useCallback<NonNullable<SwitchProps['onChange']>>((_event, value) => setValue(value), [setValue])
 
     if (hidden) return <Fragment />
 
@@ -50,7 +51,7 @@ export function WizSwitch(props: WizSwitchProps) {
                     <PFSwitch
                         id={id}
                         isChecked={getIsChecked(value)}
-                        onChange={setValue}
+                        onChange={onChange}
                         label={
                             <>
                                 {props.label} <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />

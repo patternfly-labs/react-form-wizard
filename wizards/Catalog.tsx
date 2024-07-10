@@ -344,7 +344,7 @@ export function Catalog(props: {
                         </Stack>
                     </FlexItem>
                     <FlexItem alignSelf={{ default: 'alignSelfFlexEnd' }} grow={{ default: 'grow' }}>
-                        <SearchInput value={search} onChange={setSearch} onClear={() => setSearch('')} />
+                        <SearchInput value={search} onChange={(_event, value) => setSearch(value)} onClear={() => setSearch('')} />
                     </FlexItem>
                 </Flex>
             </PageSection>

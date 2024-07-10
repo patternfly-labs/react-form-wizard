@@ -170,7 +170,12 @@ export function StringsMapInput(props: StringsMapInputProps) {
                         return (
                             <InputGroup key={index}>
                                 <InputGroupItem isFill>
-                                    <PFTextInput id={`${id}-${index + 1}`} value={pair} onChange={(e) => onKeyChange(index, e)} required />
+                                    <PFTextInput
+                                        id={`${id}-${index + 1}`}
+                                        value={pair}
+                                        onChange={(_event, value) => onKeyChange(index, value)}
+                                        required
+                                    />
                                 </InputGroupItem>
                                 <InputGroupItem>
                                     <Button
