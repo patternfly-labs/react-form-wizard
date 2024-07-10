@@ -1,4 +1,4 @@
-import { DescriptionListDescription, Split, TimePicker } from '@patternfly/react-core'
+import { DescriptionListDescription, FormHelperText, HelperText, HelperTextItem, Split, TimePicker } from '@patternfly/react-core'
 import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
 import { CheckIcon } from '@patternfly/react-icons'
 import get from 'get-value'
@@ -41,18 +41,12 @@ export function WizTimeRange(props: InputCommonProps<string>) {
         )
     }
 
+    const showHelperText = (validated === 'error' && error) || (validated !== 'error' && props.helperText)
+    const helperText = validated === 'error' ? error : props.helperText
+
     return (
         <Fragment>
-            <FormGroup
-                id={`${id}-form-group`}
-                fieldId={id}
-                isInline
-                label={props.label}
-                helperText={props.helperText}
-                helperTextInvalid={error}
-                validated={validated}
-                isRequired={props.required}
-            >
+            <FormGroup id={`${id}-form-group`} fieldId={id} isInline label={props.label} isRequired={props.required}>
                 <TimePicker
                     id={`${id}-time-picker`}
                     key={id}
@@ -63,6 +57,13 @@ export function WizTimeRange(props: InputCommonProps<string>) {
                     label={props.label}
                     value={value}
                 />
+                {showHelperText && (
+                    <FormHelperText>
+                        <HelperText>
+                            <HelperTextItem variant={validated}>{helperText}</HelperTextItem>
+                        </HelperText>
+                    </FormHelperText>
+                )}
             </FormGroup>
         </Fragment>
     )
