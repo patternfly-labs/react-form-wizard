@@ -59,7 +59,7 @@ export function WizardPage(props: WizardPageProps) {
                     {props.description && <Text component="small">{props.description}</Text>}
                 </PageSection>
             }
-            groupProps={{ sticky: 'top' }}
+            groupProps={{ stickyOnBreakpoint: { default: 'top' } }}
         >
             <PageSection type={PageSectionTypes.wizard} variant={PageSectionVariants.light}>
                 <Wizard {...props} showHeader={false} showYaml={drawerExpanded} yamlEditor={yamlEditor}>
