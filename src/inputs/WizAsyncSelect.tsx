@@ -91,7 +91,7 @@ export function WizAsyncSelect(props: WizAsyncSelectProps) {
     return (
         <WizFormGroup {...props} id={id}>
             <InputGroup>
-                <InputGroupItem>
+                <InputGroupItem isFill>
                     <PfSelect
                         isDisabled={disabled || (loading && !props.isCreatable)}
                         variant={SelectVariant.single}

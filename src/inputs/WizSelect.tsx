@@ -250,7 +250,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
             <WizFormGroup helperTextNode={HelperTextPrompt({ prompt, helperText })} {...props}>
                 <InputGroup>
                     {!selectOptions && <SpinnerButton />}
-                    <InputGroupItem>
+                    <InputGroupItem isFill>
                         <PfSelect
                             isDisabled={disabled || !selectOptions}
                             variant={variant}

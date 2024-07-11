@@ -73,7 +73,7 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
         <div id={id}>
             <WizFormGroup helperTextNode={HelperTextPrompt({ prompt, helperText })} {...props} id={id}>
                 <InputGroup>
-                    <InputGroupItem>
+                    <InputGroupItem isFill>
                         <PfSelect
                             isDisabled={disabled || props.readonly}
                             variant={SelectVariant.single}
