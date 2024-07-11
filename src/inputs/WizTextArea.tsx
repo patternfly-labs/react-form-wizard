@@ -1,5 +1,5 @@
-import { InputGroup, TextArea as PFTextArea, TextInput } from '@patternfly/react-core'
-import { Fragment, useState } from 'react'
+import { InputGroup, TextArea as PFTextArea, TextAreaProps, TextInput } from '@patternfly/react-core'
+import { Fragment, useCallback, useState } from 'react'
 import { WizTextDetail } from '..'
 import { ClearInputButton } from '../components/ClearInputButton'
 import { PasteInputButton } from '../components/PasteInputButton'
@@ -21,6 +21,8 @@ export function WizTextArea(props: WizTextAreaProps) {
     // Hide initially if a value is set
     const [showSecrets, setShowSecrets] = useState(!value)
 
+    const onChange = useCallback<NonNullable<TextAreaProps['onChange']>>((_event, value) => setValue(value), [setValue])
+
     if (hidden) return <Fragment />
 
     if (mode === DisplayMode.Details) {
@@ -32,7 +34,7 @@ export function WizTextArea(props: WizTextAreaProps) {
     const canPaste = props.canPaste !== undefined ? props.canPaste : props.secret === true
 
     return (
-        <WizFormGroup {...props} id={id}>
+        <WizFormGroup {...props} id={id} key={id}>
             <InputGroup>
                 {value && !showSecrets && props.secret ? (
                     <TextInput id={id} value={value} validated={validated} type="password" readOnlyVariant="default" />
@@ -42,12 +44,12 @@ export function WizTextArea(props: WizTextAreaProps) {
                         placeholder={placeholder}
                         validated={validated}
                         value={value}
-                        onChange={setValue}
+                        onChange={onChange}
                         type={!props.secret || showSecrets ? 'text' : 'password'}
                         spellCheck="false"
                         resizeOrientation="vertical"
                         autoResize
-                        readOnlyVariant="default"
+                        readOnlyVariant={props.readonly ? 'default' : undefined}
                     />
                 )}
                 {!disabled && value !== '' && props.secret && (
