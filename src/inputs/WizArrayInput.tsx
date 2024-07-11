@@ -1,5 +1,19 @@
-import { Button, Divider, FormFieldGroupHeader, Icon, List, ListItem, Split, SplitItem, Title } from '@patternfly/react-core'
-import { Dropdown, DropdownItem, DropdownProps, DropdownToggle } from '@patternfly/react-core/deprecated'
+import {
+    Button,
+    Divider,
+    Dropdown,
+    DropdownList,
+    DropdownItem,
+    FormFieldGroupHeader,
+    Icon,
+    List,
+    ListItem,
+    MenuToggle,
+    Split,
+    SplitItem,
+    Title,
+    MenuToggleElement,
+} from '@patternfly/react-core'
 import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
@@ -224,9 +238,19 @@ export function WizArrayInput(props: WizArrayInputProps) {
                         </Button>
                     ) : (
                         <Dropdown
-                            isPlain
-                            dropdownItems={props.dropdownItems.map((item, index) => {
-                                return (
+                            isOpen={open}
+                            onOpenChange={setOpen}
+                            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                                <MenuToggle ref={toggleRef} onClick={onToggle} variant="plainText">
+                                    <Button icon={<PlusCircleIcon />} iconPosition="left" variant="link" size="sm">
+                                        {props.placeholder}
+                                    </Button>
+                                </MenuToggle>
+                            )}
+                            popperProps={{ position: 'left' }}
+                        >
+                            <DropdownList>
+                                {props.dropdownItems.map((item, index) => (
                                     <DropdownItem
                                         key={index}
                                         onClick={() => {
@@ -236,28 +260,9 @@ export function WizArrayInput(props: WizArrayInputProps) {
                                     >
                                         {item.label}
                                     </DropdownItem>
-                                )
-                            })}
-                            toggle={
-                                <DropdownToggle id="toggle-id" onToggle={onToggle}>
-                                    {/* Mimic Button layout to match styling when there is a single add option */}
-                                    <span className="pf-v5-c-button pf-m-link pf-m-small">
-                                        <span className="pf-v5-c-button__icon pf-m-start">
-                                            <PlusCircleIcon />
-                                        </span>
-                                        {props.placeholder}
-                                    </span>
-                                </DropdownToggle>
-                            }
-                            isOpen={open}
-                            // Match dropdown caret colors with button link styling
-                            style={
-                                {
-                                    '--pf-v5-c-dropdown--m-plain__toggle-icon--Color': 'var(--pf-v5-global--link--Color)',
-                                    '--pf-v5-c-dropdown--m-plain--hover__toggle-icon--Color': 'var(--pf-v5-global--link--Color--hover)',
-                                } as DropdownProps['style']
-                            }
-                        />
+                                ))}
+                            </DropdownList>
+                        </Dropdown>
                     )}
                 </div>
             )}

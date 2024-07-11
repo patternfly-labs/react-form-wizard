@@ -2,6 +2,8 @@ import {
     DescriptionListDescription,
     DescriptionListGroup,
     DescriptionListTerm,
+    Dropdown,
+    DropdownItem,
     EmptyState,
     EmptyStateBody,
     List,
@@ -10,9 +12,12 @@ import {
     Pagination,
     PaginationVariant,
     EmptyStateHeader,
+    MenuToggleCheckbox,
+    MenuToggleElement,
+    MenuToggle,
+    DropdownList,
 } from '@patternfly/react-core'
-import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle, DropdownToggleCheckbox } from '@patternfly/react-core/deprecated'
-import { Table /* data-codemods */, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
+import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -237,29 +242,36 @@ function BulkSelect(props: {
 
     const { deselectAllAriaLabel, selectAllAriaLabel } = useStringContext()
 
-    const splitButtonItems = useMemo(
-        () => [
-            <DropdownToggleCheckbox
-                id="example-checkbox-2"
-                key="split-checkbox"
-                aria-label={anySelected ? deselectAllAriaLabel : selectAllAriaLabel}
-                isChecked={isChecked}
-                onClick={onCheckbox}
-            />,
-        ],
-        [anySelected, isChecked, onCheckbox, deselectAllAriaLabel, selectAllAriaLabel]
+    const toggle = useCallback(
+        (toggleRef: React.Ref<MenuToggleElement>) => {
+            return (
+                <MenuToggle
+                    ref={toggleRef}
+                    onClick={onDropDownToggle}
+                    splitButtonOptions={{
+                        items: [
+                            <MenuToggleCheckbox
+                                id="example-checkbox-2"
+                                key="split-checkbox"
+                                aria-label={anySelected ? deselectAllAriaLabel : selectAllAriaLabel}
+                                isChecked={isChecked}
+                                onChange={onCheckbox}
+                            >
+                                {props.selectedCount !== 0 && <Fragment>{selected(props.selectedCount)}</Fragment>}
+                            </MenuToggleCheckbox>,
+                        ],
+                    }}
+                />
+            )
+        },
+        [anySelected, deselectAllAriaLabel, isChecked, onCheckbox, onDropDownToggle, props.selectedCount, selectAllAriaLabel, selected]
     )
 
-    const toggle = useMemo(
-        () => (
-            <DropdownToggle splitButtonItems={splitButtonItems} onToggle={onDropDownToggle}>
-                {props.selectedCount !== 0 && <Fragment>{selected(props.selectedCount)}</Fragment>}
-            </DropdownToggle>
-        ),
-        [onDropDownToggle, props.selectedCount, splitButtonItems, selected]
+    return (
+        <Dropdown onSelect={onDropDownToggle} toggle={toggle} isOpen={open} onOpenChange={setOpen} popperProps={{ position: 'left' }}>
+            <DropdownList>{items}</DropdownList>
+        </Dropdown>
     )
-
-    return <Dropdown onSelect={onDropDownToggle} toggle={toggle} isOpen={open} dropdownItems={items} position={DropdownPosition.left} />
 }
 
 function onlyUnique(value: unknown, index: number, self: unknown[]) {
