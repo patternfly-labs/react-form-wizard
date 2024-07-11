@@ -1,5 +1,12 @@
-import { DescriptionListDescription, FormHelperText, HelperText, HelperTextItem, Split, TimePicker } from '@patternfly/react-core'
-import { FormGroup } from '@patternfly/react-core/dist/js/components/Form'
+import {
+    DescriptionListDescription,
+    FormGroup,
+    FormHelperText,
+    HelperText,
+    HelperTextItem,
+    Split,
+    TimePicker,
+} from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, useContext } from 'react'

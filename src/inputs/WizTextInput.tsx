@@ -1,5 +1,4 @@
-import { InputGroup, InputGroupItem } from '@patternfly/react-core/dist/js/components/InputGroup'
-import { TextInput as PFTextInput } from '@patternfly/react-core/dist/js/components/TextInput'
+import { InputGroup, InputGroupItem, TextInput as PFTextInput } from '@patternfly/react-core'
 import { Fragment, useState } from 'react'
 import { WizTextDetail } from '..'
 import { ClearInputButton } from '../components/ClearInputButton'

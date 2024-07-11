@@ -1,5 +1,5 @@
 import { FormFieldGroupExpandableProps } from '@patternfly/react-core'
-import { FormFieldGroupToggle } from '@patternfly/react-core/dist/js/components/Form//FormFieldGroupToggle'
+import { FormFieldGroupToggle } from '@patternfly/react-core/dist/js/components/Form/FormFieldGroupToggle'
 import { css } from '@patternfly/react-styles'
 import styles from '@patternfly/react-styles/css/components/Form/form'
 import * as React from 'react'
