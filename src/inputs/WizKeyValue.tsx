@@ -1,7 +1,7 @@
 import { Button, Divider, List, ListItem, TextInput } from '@patternfly/react-core'
 import { PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
-import { HelperText } from '../components/HelperText'
+import { WizHelperText } from '../components/WizHelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -83,7 +83,7 @@ export function WizKeyValue(props: KeyValueProps) {
                 <span className="pf-v5-c-form__label pf-v5-c-form__label-text">{props.label}</span>
                 {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
             </div>
-            <HelperText helperText={props.helperText} />
+            <WizHelperText {...props} />
             <div
                 style={{
                     display: 'grid',

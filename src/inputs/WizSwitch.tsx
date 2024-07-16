@@ -1,7 +1,7 @@
 import { Split, Stack, Switch as PFSwitch, SwitchProps } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useCallback } from 'react'
-import { HelperText } from '../components/HelperText'
+import { WizHelperText } from '../components/WizHelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -47,7 +47,7 @@ export function WizSwitch(props: WizSwitchProps) {
     return (
         <Stack hasGutter>
             <Stack>
-                <WizFormGroup {...props} id={id} label={props.title} helperText={undefined}>
+                <WizFormGroup {...props} id={id} label={props.title} noHelperText>
                     <PFSwitch
                         id={id}
                         isChecked={getIsChecked(value)}
@@ -60,7 +60,7 @@ export function WizSwitch(props: WizSwitchProps) {
                         value={value}
                     />
                 </WizFormGroup>
-                <HelperText helperText={props.helperText} />
+                <WizHelperText {...props} />
             </Stack>
             {value && <Indented paddingBottom={8}>{props.children}</Indented>}
         </Stack>

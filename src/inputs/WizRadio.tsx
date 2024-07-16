@@ -1,6 +1,6 @@
 import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Radio as PfRadio } from '@patternfly/react-core'
 import { Children, createContext, Fragment, isValidElement, ReactElement, ReactNode, useContext } from 'react'
-import { HelperText } from '../components/HelperText'
+import { WizHelperText } from '../components/WizHelperText'
 import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { useRandomID } from '../contexts/useRandomID'
@@ -62,8 +62,8 @@ export function WizRadioGroup(props: WizRadioGroupProps) {
     return (
         <RadioGroupContext.Provider value={state}>
             <div id={id}>
-                <WizFormGroup {...props} id={id} helperText={undefined}>
-                    <HelperText helperText={props.helperText} />
+                <WizFormGroup {...props} id={id} noHelperText>
+                    <WizHelperText {...props} />
                     <div style={{ display: 'flex', flexDirection: 'column', rowGap: 12, paddingTop: 8, paddingBottom: 4 }}>
                         {props.children}
                     </div>

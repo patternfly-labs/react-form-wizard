@@ -28,6 +28,7 @@ export type InputCommonProps<ValueT = any> = {
     labelHelp?: ReactNode
     labelHelpTitle?: string
     helperText?: ReactNode
+    prompt?: { label?: string; href?: string; isDisabled?: boolean }
     disabledInEditMode?: boolean
 
     inputValueToPathValue?: (inputValue: unknown, pathValue: unknown) => unknown

@@ -1,7 +1,7 @@
 import { CheckboxProps, Checkbox as PFCheckbox, Split, Stack } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
 import { Fragment, ReactNode, useCallback } from 'react'
-import { HelperText } from '../components/HelperText'
+import { WizHelperText } from '../components/WizHelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -47,7 +47,7 @@ export function WizCheckbox(props: WizCheckboxProps) {
     return (
         <Stack hasGutter>
             <Stack>
-                <WizFormGroup {...props} id={id} label={props.title} helperText={undefined}>
+                <WizFormGroup {...props} id={id} label={props.title} noHelperText>
                     <PFCheckbox
                         id={id}
                         isChecked={getIsChecked(value)}
@@ -58,7 +58,7 @@ export function WizCheckbox(props: WizCheckboxProps) {
                             </>
                         }
                         value={value}
-                        body={<HelperText helperText={props.helperText} />}
+                        body={<WizHelperText {...props} />}
                     />
                 </WizFormGroup>
             </Stack>

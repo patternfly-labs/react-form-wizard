@@ -1,19 +1,16 @@
-import { ReactNode } from 'react'
+import { PropsWithChildren } from 'react'
 import { LabelHelp } from '../components/LabelHelp'
-import { InputCommonProps, useID, useInputValidation } from './Input'
-import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core'
+import { InputCommonProps, useID } from './Input'
+import { FormGroup } from '@patternfly/react-core'
+import { WizHelperText } from '../components/WizHelperText'
 
 type WizFormGroupProps = InputCommonProps & {
-    children: ReactNode
-    helperTextNode?: ReactNode
+    noHelperText?: boolean
 }
 
-export function WizFormGroup(props: WizFormGroupProps) {
-    const { validated, error } = useInputValidation(props)
-    const { helperTextNode } = props
+export function WizFormGroup(props: PropsWithChildren<WizFormGroupProps>) {
+    const { noHelperText } = props
     const id = useID(props)
-    const showHelperText = (validated === 'error' && error) || (validated !== 'error' && helperTextNode)
-    const helperText = validated === 'error' ? error : helperTextNode
     return (
         <FormGroup
             id={`${id}-form-group`}
@@ -24,13 +21,7 @@ export function WizFormGroup(props: WizFormGroupProps) {
             labelIcon={<LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
         >
             {props.children}
-            {showHelperText && (
-                <FormHelperText>
-                    <HelperText>
-                        <HelperTextItem variant={validated}>{helperText}</HelperTextItem>
-                    </HelperText>
-                </FormHelperText>
-            )}
+            {!noHelperText && <WizHelperText {...props} />}
         </FormGroup>
     )
 }

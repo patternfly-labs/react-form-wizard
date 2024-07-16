@@ -21,7 +21,6 @@ import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
 import './Select.css'
 import { WizFormGroup } from './WizFormGroup'
-import { HelperTextPrompt } from '../components/HelperTextPrompt'
 
 export interface Option<T> {
     id?: string
@@ -49,8 +48,6 @@ type SelectCommonProps<T> = InputCommonProps<T> & {
     keyPath?: string
     isCreatable?: boolean
     onCreate?: (value: string) => void
-    helperText?: string
-    prompt?: { label: string; href: string; isDisabled?: boolean }
 }
 
 interface SingleSelectProps<T> extends SelectCommonProps<T> {
@@ -75,7 +72,6 @@ function SelectBase<T = any>(props: SelectProps<T>) {
 
     const [open, setOpen] = useState(false)
 
-    const { prompt, helperText } = props
     // The drop down items with icons and descriptions - optionally grouped
     const selectOptions:
         | ({
@@ -247,7 +243,7 @@ function SelectBase<T = any>(props: SelectProps<T>) {
     // currently disabling select field when undefined
     return (
         <div id={id}>
-            <WizFormGroup helperTextNode={HelperTextPrompt({ prompt, helperText })} {...props}>
+            <WizFormGroup {...props}>
                 <InputGroup>
                     {!selectOptions && <SpinnerButton />}
                     <InputGroupItem isFill>

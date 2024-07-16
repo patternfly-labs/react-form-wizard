@@ -19,7 +19,7 @@ import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { WizTextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
-import { HelperText } from '../components/HelperText'
+import { WizHelperText } from '../components/WizHelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
@@ -195,7 +195,7 @@ export function WizArrayInput(props: WizArrayInputProps) {
                             {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                         </div>
                     )}
-                    <HelperText helperText={props.helperText} />
+                    <WizHelperText {...props} />
                 </div>
             )}
             {values.length === 0 ? (
