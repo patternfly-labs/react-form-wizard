@@ -48,7 +48,7 @@ export function WizTextArea(props: WizTextAreaProps) {
                         type={!props.secret || showSecrets ? 'text' : 'password'}
                         spellCheck="false"
                         resizeOrientation="vertical"
-                        autoResize
+                        autoResize={!!value} // Only enable after text has been entered; bug with initial size calculation
                         readOnlyVariant={props.readonly ? 'default' : undefined}
                     />
                 )}
