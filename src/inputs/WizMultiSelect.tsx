@@ -112,7 +112,7 @@ export function WizMultiSelect(props: WizMultiSelectProps) {
                     onToggle={setOpen}
                     selections={selections}
                     onSelect={onSelect}
-                    onClear={props.required ? undefined : onClear}
+                    onClear={onClear}
                     isCreatable={props.isCreatable}
                     validated={validated}
                     onFilter={onFilter}
