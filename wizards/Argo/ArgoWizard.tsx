@@ -11,7 +11,7 @@ import {
     Radio,
     WizRadioGroup,
     Section,
-    Select,
+    WizSelect,
     Step,
     WizTextDetail,
     Tile,
@@ -291,7 +291,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             id="name"
                             validation={isValidKubernetesResourceName}
                         />
-                        <Select
+                        <WizSelect
                             id="namespace"
                             path="metadata.namespace"
                             label="Argo server"
@@ -300,7 +300,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             options={props.argoServers}
                             required
                         />
-                        <Select
+                        <WizSelect
                             path="spec.generators.0.clusterDecisionResource.requeueAfterSeconds"
                             label="Requeue time"
                             options={requeueTimes}
@@ -335,7 +335,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         </WizTiles>
                         {/* Git repo */}
                         <WizHidden hidden={(data) => data.spec.template.spec.source.path === undefined}>
-                            <Select
+                            <WizSelect
                                 path="spec.template.spec.source.repoURL"
                                 label="URL"
                                 labelHelp="The URL path for the Git repository."
@@ -415,7 +415,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                         </WizHidden>
                         {/* Helm repo */}
                         <WizHidden hidden={(data) => data.spec.template.spec.source.chart === undefined}>
-                            <Select
+                            <WizSelect
                                 path="spec.template.spec.source.repoURL"
                                 label="URL"
                                 labelHelp="The URL path for the Helm repository."
@@ -528,7 +528,7 @@ export function ArgoWizard(props: ArgoWizardProps) {
                             inputValueToPathValue={checkboxPrunePropagationPolicyToSyncOptions}
                             pathValueToInputValue={checkboxSyncOptionsToPrunePropagationPolicy}
                         >
-                            <Select
+                            <WizSelect
                                 label="Propogation policy"
                                 options={['foreground', 'background', 'orphan']}
                                 path="spec.template.spec.syncPolicy.syncOptions"
@@ -592,7 +592,7 @@ export function TimeWindow(props: { timeZone: string[] }) {
                 required
                 options={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}
             />
-            <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
+            <WizSelect path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
             <WizArrayInput
                 path="timeWindows"
                 placeholder="Add time range"
@@ -839,7 +839,7 @@ function ArgoWizardPlacementSection(props: {
                 </WizItemSelector>
             ) : (
                 <WizItemSelector selectKey="kind" selectValue="ApplicationSet">
-                    <Select
+                    <WizSelect
                         path="spec.generators.0.clusterDecisionResource.labelSelector.matchLabels.cluster\.open-cluster-management\.io/placement"
                         label="Existing placement"
                         options={placements.map((placement) => placement.metadata?.name ?? '')}

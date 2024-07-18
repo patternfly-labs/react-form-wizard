@@ -5,7 +5,7 @@ import { CheckIcon, CloseIcon } from '@patternfly/react-icons'
 import { useHistory } from 'react-router-dom'
 import {
     Section,
-    Select,
+    WizSelect,
     Step,
     WizardPage,
     WizArrayInput,
@@ -189,7 +189,7 @@ export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
                             required
                             labelHelp="The unique name of your cluster. The value must be a string that contains lowercase alphanumeric values, such as dev. Cannot be changed after creation."
                         />
-                        <Select
+                        <WizSelect
                             path="spec.hostingNamespace"
                             label="Cluster set"
                             placeholder="Select a cluster set"
@@ -197,7 +197,7 @@ export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
                             options={clusterSets}
                             required
                         />
-                        <Select
+                        <WizSelect
                             path="spec.infrastructure.release.image"
                             label="Release image"
                             placeholder="Select a release image"
@@ -230,7 +230,7 @@ export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
                             placeholder="Enter the Base DNS domain"
                             helperText="Defaults to the base DNS domain from the credentials."
                         />
-                        <Select
+                        <WizSelect
                             path="spec.infrastructure.release.platform.image"
                             label="Release image"
                             placeholder="Select a release image"
@@ -248,7 +248,7 @@ export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
                         prompt="Enter the worker pools"
                         description="One or more worker nodes will be created to run the container workloads in this cluster."
                     >
-                        <Select
+                        <WizSelect
                             path="spec.infrastructure.platform.aws.region"
                             label="Region"
                             options={Object.keys(awsRegions)}
@@ -264,7 +264,7 @@ export function AmazonHypershiftWizard(props: AWSHypershiftWizardProps) {
                             newValue={newNodePool}
                         >
                             <WizTextInput path="name" label="Pool name" required />
-                            <Select path="spec.platform.aws.instanceType" label="Instance type" options={['default']} required />
+                            <WizSelect path="spec.platform.aws.instanceType" label="Instance type" options={['default']} required />
                         </WizArrayInput>
                     </Section>
                 </WizItemSelector>
@@ -337,14 +337,14 @@ export function ControlPlaneStep() {
             description="Three control plane nodes will be created to control this cluster unless single node is enabled, in which case there will only be one control plane node."
         >
             <WizMultiSelect path="zones" label="Zones" options={awsRegions['us-east-1']} />
-            <Select
+            <WizSelect
                 path="instanceType"
                 label="Instance type"
                 placeholder="Select the instance type"
                 options={AWSmasterInstanceTypes.map((instanceType) => ({ value: instanceType.value, label: instanceType.description }))}
                 required
             />
-            <Select path="rootStorage" label="Root storage (GiB)" options={['default']} />
+            <WizSelect path="rootStorage" label="Root storage (GiB)" options={['default']} />
         </Section>
     )
 }

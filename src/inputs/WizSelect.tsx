@@ -37,7 +37,7 @@ export interface OptionGroup<T> {
     options: (Option<T> | string | number)[] | undefined
 }
 
-type SelectCommonProps<T> = InputCommonProps<T> & {
+type WizSelectCommonProps<T> = InputCommonProps<T> & {
     placeholder?: string
     footer?: ReactNode
     label: string
@@ -50,18 +50,18 @@ type SelectCommonProps<T> = InputCommonProps<T> & {
     onCreate?: (value: string) => void
 }
 
-interface SingleSelectProps<T> extends SelectCommonProps<T> {
+interface WizSelectSingleProps<T> extends WizSelectCommonProps<T> {
     variant: 'single'
     options?: (Option<T> | string | number)[]
 }
 
-export function Select<T>(props: Omit<SingleSelectProps<T>, 'variant'>) {
-    return <SelectBase<T> {...props} variant="single" />
+export function WizSelect<T>(props: Omit<WizSelectSingleProps<T>, 'variant'>) {
+    return <WizSelectBase<T> {...props} variant="single" />
 }
 
-type SelectProps<T> = SingleSelectProps<T>
+type SelectProps<T> = WizSelectSingleProps<T>
 
-function SelectBase<T = any>(props: SelectProps<T>) {
+function WizSelectBase<T = any>(props: SelectProps<T>) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
 
     const placeholder = getSelectPlaceholder(props)

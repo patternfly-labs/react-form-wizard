@@ -8,7 +8,7 @@ import {
     EditMode,
     Radio,
     Section,
-    Select,
+    WizSelect,
     Step,
     StringsMapInput,
     WizardCancel,
@@ -420,7 +420,7 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                     />
                 </WizRadioGroup>
 
-                <Select
+                <WizSelect
                     path="objectDefinition.spec.severity"
                     label="Severity"
                     placeholder="Select severity"

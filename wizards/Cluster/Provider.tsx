@@ -6,7 +6,7 @@ import {
     ItemContext,
     WizNumberInput,
     Section,
-    Select,
+    WizSelect,
     WizSingleSelect,
     Step,
     WizSwitch,
@@ -265,7 +265,7 @@ export function CreateCluster() {
                     label="Automation"
                     description="Choose an automation job template to automatically run Ansible jobs at differrent stages of a clusters life cycle. To use this feature the Ansible Automation Platform Resource Operator must be installed."
                 >
-                    <Select
+                    <WizSelect
                         label="Ansible automation template"
                         path="ansibleAutomationtemplate"
                         options={['my-ansible-template-1', 'my-ansible-template-2']}

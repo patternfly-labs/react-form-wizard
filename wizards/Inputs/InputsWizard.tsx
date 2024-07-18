@@ -5,7 +5,7 @@ import {
     Radio,
     WizRadioGroup,
     Section,
-    Select,
+    WizSelect,
     WizSingleSelect,
     Step,
     WizStringsInput,
@@ -43,9 +43,9 @@ export function InputsWizard() {
 
             <Step label="Select" id="select">
                 <Section label="Select">
-                    <Select label="Select" path="select.value" options={['Option 1', 'Option 2']} />
-                    <Select label="Select required" path="select.required" options={['Option 1', 'Option 2']} required />
-                    <Select
+                    <WizSelect label="Select" path="select.value" options={['Option 1', 'Option 2']} />
+                    <WizSelect label="Select required" path="select.required" options={['Option 1', 'Option 2']} required />
+                    <WizSelect
                         label="Select with prompt"
                         path="select.value"
                         options={['Option 1', 'Option 2']}
@@ -190,7 +190,7 @@ export function InputsWizard() {
                         sortable
                     >
                         <WizTextInput label="Name" path="metadata.name" required />
-                        <Select label="Namespace" path="metadata.namespace" required options={['namespace-1', 'namespace-2']} />
+                        <WizSelect label="Namespace" path="metadata.namespace" required options={['namespace-1', 'namespace-2']} />
                         <WizKeyValue id="labels" path="metadata.labels" label="Labels" />
                         <WizKeyValue id="labels" path="metadata.annotations" label="Annotations" />
                     </WizArrayInput>
@@ -242,7 +242,7 @@ export function InputsWizard() {
                 <Section label="Automatically hidden" description="A section will automatically hide itelf if all child inputs are hidden.">
                     <WizTextInput label="Text input hidden" path="hidden.textInput" hidden={(item) => !item.showHidden} required />
                     <WizTextArea label="Text area hidden" path="hidden.textArea" hidden={(item) => !item.showHidden} required />
-                    <Select
+                    <WizSelect
                         label="Select hidden"
                         path="hidden.select"
                         options={['Option 1', 'Option 2']}

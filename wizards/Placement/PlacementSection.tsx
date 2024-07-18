@@ -1,6 +1,6 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { WizDetailsHidden, EditMode, WizItemSelector, Section, Select, WizSingleSelect } from '../../src'
+import { WizDetailsHidden, EditMode, WizItemSelector, Section, WizSelect, WizSingleSelect } from '../../src'
 import { useData } from '../../src/contexts/DataContext'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { useEditMode } from '../../src/contexts/EditModeContext'
@@ -239,7 +239,7 @@ export function PlacementSection(props: {
             )}
             {placementCount === 0 && placementRuleCount === 0 && placementBindingCount === 1 && (
                 <WizItemSelector selectKey="kind" selectValue={PlacementBindingKind}>
-                    <Select
+                    <WizSelect
                         path="placementRef.name"
                         label="Placement"
                         required
