@@ -5,7 +5,7 @@ import {
     WizKeyValue,
     WizMultiSelect,
     Section,
-    Select,
+    WizSelect,
     Step,
     WizTextDetail,
     Tile,
@@ -41,7 +41,7 @@ export function ClusterForm() {
                     </WizTiles>
                 </Section>
                 <Section label="Credentials" prompt="Select the infrastructure for the cluster" hidden={(item) => !item.provider}>
-                    <Select
+                    <WizSelect
                         path="credential"
                         label="Infrastructure credentials"
                         placeholder="Select the credentials for the infrastructure"
@@ -54,8 +54,8 @@ export function ClusterForm() {
             <Step label="Cluster details" id="cluster-details">
                 <Section label="Cluster details" prompt="Enter the cluster details">
                     <WizTextInput path="name" label="Cluster name" placeholder="Enter the cluster name" required />
-                    <Select path="region" label="Region" options={Object.keys(awsRegions)} />
-                    <Select
+                    <WizSelect path="region" label="Region" options={Object.keys(awsRegions)} />
+                    <WizSelect
                         path="clusterSet"
                         label="Cluster set"
                         placeholder="Select a cluster set"
@@ -64,7 +64,13 @@ export function ClusterForm() {
                         required
                     />
                     <WizTextInput path="baseDnsDomain" label="Base DNS domain" placeholder="Enter the Base DNS domain" />
-                    <Select path="releaseImage" label="Release image" placeholder="Select a release image" options={['default']} required />
+                    <WizSelect
+                        path="releaseImage"
+                        label="Release image"
+                        placeholder="Select a release image"
+                        options={['default']}
+                        required
+                    />
                     <WizKeyValue path="labels" label="Additional labels" />
                 </Section>
             </Step>
@@ -83,7 +89,7 @@ export function ClusterForm() {
                     prompt="Enter networking options"
                     description="Configure network access for your cluster. One network is created by default."
                 >
-                    <Select path="networkType" label="Network type" options={['default']} required />
+                    <WizSelect path="networkType" label="Network type" options={['default']} required />
 
                     <WizArrayInput
                         path="networks"
@@ -136,7 +142,7 @@ export function ClusterForm() {
                     prompt="Configure a Ansible automation"
                     description="Choose an automation job template to automatically run Ansible jobs at different stages of a cluster's life cycle. To use this feature, the Ansible Automation Platform Resource Operator must be installed."
                 >
-                    <Select path="ansibleTemplate" label="Ansible Automation Template" options={['default']} />
+                    <WizSelect path="ansibleTemplate" label="Ansible Automation Template" options={['default']} />
                 </Section>
             </Step>
         </WizardPage>
@@ -151,14 +157,14 @@ export function ControlPlaneStep() {
             description="Three control plane nodes will be created to control this cluster unless single node is enabled, in which case there will only be one control plane node."
         >
             <WizMultiSelect path="zones" label="Zones" options={awsRegions['us-east-1']} />
-            <Select
+            <WizSelect
                 path="instanceType"
                 label="Instance type"
                 placeholder="Select the instance type"
                 options={AWSmasterInstanceTypes.map((instanceType) => ({ value: instanceType.value, label: instanceType.description }))}
                 required
             />
-            <Select path="rootStorage" label="Root storage (GiB)" options={['default']} />
+            <WizSelect path="rootStorage" label="Root storage (GiB)" options={['default']} />
         </Section>
     )
 }
@@ -177,10 +183,10 @@ export function WorkerPoolsStep() {
                 collapsedContent={<WizTextDetail path="name" placeholder="Expand to edit the worker pool details" />}
             >
                 <WizTextInput path="name" label="Pool name" />
-                <Select path="zones" label="Zones" options={['default']} />
-                <Select path="instanceType" label="Instance type" options={['default']} />
+                <WizSelect path="zones" label="Zones" options={['default']} />
+                <WizSelect path="instanceType" label="Instance type" options={['default']} />
                 {/* <NumberInput */}
-                <Select path="rootStorage" label="Root storage (GiB)" options={['default']} />
+                <WizSelect path="rootStorage" label="Root storage (GiB)" options={['default']} />
             </WizArrayInput>
         </Section>
     )

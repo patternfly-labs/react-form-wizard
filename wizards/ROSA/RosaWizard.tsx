@@ -3,7 +3,7 @@ import {
     Radio,
     WizRadioGroup,
     Section,
-    Select,
+    WizSelect,
     Step,
     Tile,
     WizTiles,
@@ -24,8 +24,8 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                     prompt="Welcome to the Red Hat OpenShift service on AWS (ROSA)"
                     description="Red Hat OpenShift Service on AWS provides a model that allows Red Hat to deploy clusters into a customer's existing Amazon Web Service (AWS) account."
                 >
-                    <Select id="account" path="account" label="Associated AWS account" options={['TODO']} />
-                    <Select id="role" path="role" label="OpenShift Cluster Manager role (ocm-role)" options={['TODO']} />
+                    <WizSelect id="account" path="account" label="Associated AWS account" options={['TODO']} />
+                    <WizSelect id="role" path="role" label="OpenShift Cluster Manager role (ocm-role)" options={['TODO']} />
                 </Section>
                 <Section
                     label="Account roles ARNs"
@@ -51,8 +51,8 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                                 helperText="Maximum 32 characters."
                             />
                         </WizCheckbox>
-                        <Select id="version" path="version" label="Version" options={['TODO']} required />
-                        <Select id="region" path="region" label="Region" options={['TODO']} required />
+                        <WizSelect id="version" path="version" label="Version" options={['TODO']} required />
+                        <WizSelect id="region" path="region" label="Region" options={['TODO']} required />
                         <WizRadioGroup id="availability" path="availability" label="Availability">
                             <Radio id="single-zone" value="single-zone" label="Single zone" />
                             <Radio id="multi-zone" value="multi-zone" label="Multi zone" />
@@ -93,8 +93,14 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                         label="Default machine pool"
                         description="Select a compute node instance type and count your default machine pool."
                     >
-                        <Select id="instance-type" path="instanceType" label="Compute node instance type" options={['TODO']} required />
-                        <Select id="availability-zones" path="availabilityZones" label="Availability zones" options={['TODO']} required />
+                        <WizSelect id="instance-type" path="instanceType" label="Compute node instance type" options={['TODO']} required />
+                        <WizSelect
+                            id="availability-zones"
+                            path="availabilityZones"
+                            label="Availability zones"
+                            options={['TODO']}
+                            required
+                        />
 
                         <WizCheckbox
                             id="autoscaling"
@@ -156,7 +162,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                         label="Virtual Private Cloud (VPC) subnets"
                         description="the subnet list is based on the provided VPC ID. You must select at least 1 subnet from each availability zone."
                     >
-                        <Select id="subnets" path="subnets" label="Subnets" options={['TODO']} required />
+                        <WizSelect id="subnets" path="subnets" label="Subnets" options={['TODO']} required />
                     </Section>
                 </Step>
 
@@ -212,7 +218,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                             label="Automatic"
                             description="Clusters will be automatically updared beased on your defined day and start time when new versions are available."
                         >
-                            <Select
+                            <WizSelect
                                 id="day"
                                 path="day"
                                 label="Day"
@@ -228,7 +234,7 @@ export function RosaWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCanc
                     label="Node draining"
                     description="You may set a grace period for how long Pod Disruption Budget-protected workloads will be respected during upgrades. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted."
                 >
-                    <Select id="grace-period" path="gracePeriod" label="Grace period" options={['Every hour', 'Every day']} required />
+                    <WizSelect id="grace-period" path="gracePeriod" label="Grace period" options={['Every hour', 'Every day']} required />
                 </Section>
             </Step>
 

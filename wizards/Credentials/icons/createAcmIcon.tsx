@@ -1,37 +1,53 @@
-import { getSize, IconSize, SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon'
-import React, { ReactNode } from 'react'
+import * as React from 'react'
 
-export function createSvgIcon(iconDefinition: {
+export interface IconDefinition {
     name?: string
     width: number
     height: number
+    svgPath: JSX.Element
     xOffset?: number
     yOffset?: number
-    svgPaths: ReactNode
-}) {
-    // eslint-disable-next-line react/display-name
-    return (props: SVGIconProps) => {
-        const { size, color, title, noVerticalAlign, ...otherProps } = props
-        const hasTitle = Boolean(title)
-        const heightWidth = getSize(size ?? IconSize.sm)
-        const baseAlign = -0.125 * Number.parseFloat(heightWidth)
-        const style = noVerticalAlign ? undefined : { verticalAlign: `${baseAlign}em` }
-        const viewBox = [iconDefinition.xOffset ?? 0, iconDefinition.yOffset ?? 0, iconDefinition.width, iconDefinition.height].join(' ')
-        return (
-            <svg
-                style={style}
-                fill={color ?? 'currentColor'}
-                height={heightWidth}
-                width={heightWidth}
-                viewBox={viewBox}
-                aria-labelledby={hasTitle ? props.id : undefined}
-                aria-hidden={hasTitle ? undefined : true}
-                role="presentation"
-                {...(otherProps as Omit<React.SVGProps<SVGElement>, 'ref'>)} // Lie.
-            >
-                {hasTitle && <title id={props.id}>{title}</title>}
-                {iconDefinition.svgPaths}
-            </svg>
-        )
+}
+
+export interface SVGIconProps extends Omit<React.HTMLProps<SVGElement>, 'ref'> {
+    title?: string
+    className?: string
+}
+
+let currentId = 0
+
+/**
+ * Factory to create Icon class components for consumers
+ */
+export function createIcon({ name, xOffset = 0, yOffset = 0, width, height, svgPath }: IconDefinition): React.ComponentClass<SVGIconProps> {
+    return class SVGIcon extends React.Component<SVGIconProps> {
+        static displayName = name
+
+        id = `acm-icon-title-${currentId++}`
+
+        render() {
+            const { title, className, ...props } = this.props
+            const classes = className ? `pf-v5-svg ${className}` : 'pf-v5-svg'
+
+            const hasTitle = Boolean(title)
+            const viewBox = [xOffset, yOffset, width, height].join(' ')
+
+            return (
+                <svg
+                    className={classes}
+                    viewBox={viewBox}
+                    fill="currentColor"
+                    aria-labelledby={hasTitle ? this.id : undefined}
+                    aria-hidden={hasTitle ? undefined : true}
+                    role="img"
+                    width="1em"
+                    height="1em"
+                    {...(props as Omit<React.SVGProps<SVGElement>, 'ref'>)} // Lie.
+                >
+                    {hasTitle && <title id={this.id}>{title}</title>}
+                    {svgPath}
+                </svg>
+            )
+        }
     }
 }

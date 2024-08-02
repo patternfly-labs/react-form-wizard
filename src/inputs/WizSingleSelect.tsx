@@ -1,34 +1,22 @@
-import {
-    DescriptionListDescription,
-    DescriptionListGroup,
-    DescriptionListTerm,
-    InputGroup,
-    Select as PfSelect,
-    SelectProps,
-    SelectOption,
-    SelectOptionObject,
-    SelectVariant,
-} from '@patternfly/react-core'
+import { DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, InputGroup, InputGroupItem } from '@patternfly/react-core'
+import { Select as PfSelect, SelectProps, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core/deprecated'
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import { DisplayMode } from '../contexts/DisplayModeContext'
 import { InputCommonProps, getSelectPlaceholder, useInput } from './Input'
 import './Select.css'
 import { WizFormGroup } from './WizFormGroup'
-import { HelperTextPrompt } from '../components/HelperTextPrompt'
 
 export type WizSingleSelectProps = InputCommonProps<string> & {
     label: string
     placeholder?: string
     isCreatable?: boolean
     footer?: ReactNode
-    prompt?: { label: string; href: string; isDisabled?: boolean }
     options: string[]
 }
 
 export function WizSingleSelect(props: WizSingleSelectProps) {
     const { displayMode: mode, value, setValue, validated, hidden, id, disabled } = useInput(props)
     const placeholder = getSelectPlaceholder(props)
-    const { prompt, helperText } = props
     const [open, setOpen] = useState(false)
 
     const onSelect = useCallback<Required<SelectProps>['onSelect']>(
@@ -80,29 +68,31 @@ export function WizSingleSelect(props: WizSingleSelectProps) {
 
     return (
         <div id={id}>
-            <WizFormGroup helperTextNode={HelperTextPrompt({ prompt, helperText })} {...props} id={id}>
+            <WizFormGroup {...props} id={id}>
                 <InputGroup>
-                    <PfSelect
-                        isDisabled={disabled || props.readonly}
-                        variant={SelectVariant.single}
-                        isOpen={open}
-                        onToggle={setOpen}
-                        selections={value}
-                        onSelect={onSelect}
-                        onClear={props.required ? undefined : onClear}
-                        validated={validated}
-                        onFilter={onFilter}
-                        hasInlineFilter
-                        footer={props.footer}
-                        placeholderText={placeholder}
-                        isCreatable={props.isCreatable}
-                    >
-                        {props.options.map((option) => (
-                            <SelectOption id={option} key={option} value={option}>
-                                {option}
-                            </SelectOption>
-                        ))}
-                    </PfSelect>
+                    <InputGroupItem isFill>
+                        <PfSelect
+                            isDisabled={disabled || props.readonly}
+                            variant={SelectVariant.single}
+                            isOpen={open}
+                            onToggle={(_event, val) => setOpen(val)}
+                            selections={value}
+                            onSelect={onSelect}
+                            onClear={props.required ? undefined : onClear}
+                            validated={validated}
+                            onFilter={onFilter}
+                            hasInlineFilter
+                            footer={props.footer}
+                            placeholderText={placeholder}
+                            isCreatable={props.isCreatable}
+                        >
+                            {props.options.map((option) => (
+                                <SelectOption id={option} key={option} value={option}>
+                                    {option}
+                                </SelectOption>
+                            ))}
+                        </PfSelect>
+                    </InputGroupItem>
                 </InputGroup>
             </WizFormGroup>
         </div>

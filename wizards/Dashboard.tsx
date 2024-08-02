@@ -27,7 +27,7 @@ export function DashboardPage(props: { title: string; description?: string; chil
                     </Stack>
                 </PageSection>
             }
-            groupProps={{ sticky: 'top' }}
+            groupProps={{ stickyOnBreakpoint: { default: 'top' } }}
         >
             <PageSection isWidthLimited variant="light">
                 <Masonry size={300}>{props.children}</Masonry>

@@ -1,7 +1,5 @@
-import { InputGroup } from '@patternfly/react-core/dist/js/components/InputGroup'
-import { TextArea as PFTextArea } from '@patternfly/react-core/dist/js/components/TextArea'
-import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput'
-import { Fragment, useState } from 'react'
+import { InputGroup, TextArea as PFTextArea, TextAreaProps, TextInput } from '@patternfly/react-core'
+import { Fragment, useCallback, useState } from 'react'
 import { WizTextDetail } from '..'
 import { ClearInputButton } from '../components/ClearInputButton'
 import { PasteInputButton } from '../components/PasteInputButton'
@@ -23,6 +21,8 @@ export function WizTextArea(props: WizTextAreaProps) {
     // Hide initially if a value is set
     const [showSecrets, setShowSecrets] = useState(!value)
 
+    const onChange = useCallback<NonNullable<TextAreaProps['onChange']>>((_event, value) => setValue(value), [setValue])
+
     if (hidden) return <Fragment />
 
     if (mode === DisplayMode.Details) {
@@ -34,22 +34,22 @@ export function WizTextArea(props: WizTextAreaProps) {
     const canPaste = props.canPaste !== undefined ? props.canPaste : props.secret === true
 
     return (
-        <WizFormGroup {...props} id={id}>
+        <WizFormGroup {...props} id={id} key={id}>
             <InputGroup>
                 {value && !showSecrets && props.secret ? (
-                    <TextInput id={id} value={value} validated={validated} isReadOnly={true} type="password" />
+                    <TextInput id={id} value={value} validated={validated} type="password" readOnlyVariant="default" />
                 ) : (
                     <PFTextArea
                         id={id}
                         placeholder={placeholder}
                         validated={validated}
                         value={value}
-                        onChange={setValue}
-                        isReadOnly={props.readonly}
+                        onChange={onChange}
                         type={!props.secret || showSecrets ? 'text' : 'password'}
                         spellCheck="false"
                         resizeOrientation="vertical"
-                        autoResize
+                        autoResize={!!value} // Only enable after text has been entered; bug with initial size calculation
+                        readOnlyVariant={props.readonly ? 'default' : undefined}
                     />
                 )}
                 {!disabled && value !== '' && props.secret && (

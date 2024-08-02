@@ -1,7 +1,7 @@
 import { Flex } from '@patternfly/react-core'
 import { Fragment } from 'react'
 import set from 'set-value'
-import { Select, WizMultiSelect, WizSingleSelect, WizStringsInput, WizTextInput } from '../../src'
+import { WizSelect, WizMultiSelect, WizSingleSelect, WizStringsInput, WizTextInput } from '../../src'
 import { DisplayMode, useDisplayMode } from '../../src/contexts/DisplayModeContext'
 import { ItemContext, useItem } from '../../src/contexts/ItemContext'
 import { IExpression } from '../common/resources/IMatchExpression'
@@ -22,7 +22,7 @@ export function MatchExpression(props: { labelValuesMap?: Record<string, string[
             ) : (
                 <WizTextInput label="Label" path="key" required onValueChange={(_value, item) => set(item as object, 'values', [])} />
             )}
-            <Select
+            <WizSelect
                 label="Operator"
                 path="operator"
                 options={[

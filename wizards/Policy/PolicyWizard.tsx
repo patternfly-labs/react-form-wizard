@@ -8,7 +8,7 @@ import {
     EditMode,
     Radio,
     Section,
-    Select,
+    WizSelect,
     Step,
     StringsMapInput,
     WizardCancel,
@@ -420,7 +420,7 @@ export function PolicyWizardTemplates(props: { policies: IResource[] }) {
                     />
                 </WizRadioGroup>
 
-                <Select
+                <WizSelect
                     path="objectDefinition.spec.severity"
                     label="Severity"
                     placeholder="Select severity"
@@ -620,7 +620,7 @@ function PolicyPolicySets() {
                             : 'This policy is placed by the policy sets: '}
                         <b>{policySets.join(', ')}</b>
                     </p>
-                    <p className="pf-c-form__helper-text">
+                    <p className="pf-v5-c-form__helper-text">
                         Only add placement to this policy if you want it to be placed in addition to the policy set placement.
                     </p>
                 </Alert>

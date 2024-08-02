@@ -11,6 +11,8 @@ import {
     PageSidebar,
     PageToggleButton,
     Title,
+    PageSidebarBody,
+    Icon,
 } from '@patternfly/react-core'
 import { AnsibleTowerIcon, ApplicationsIcon, BarsIcon, ClusterIcon, GithubIcon, LockIcon, RedhatIcon } from '@patternfly/react-icons'
 import { ReactNode } from 'react'
@@ -91,7 +93,11 @@ interface IWizard {
 
 const wizards: IWizard[] = [
     {
-        icon: <AWSIcon size="lg" />,
+        icon: (
+            <Icon size="lg">
+                <AWSIcon />
+            </Icon>
+        ),
         shortName: 'AmazonHyperShift',
         name: 'Amazon HyperShift Cluster',
         route: RouteE.AmazonHyperShift,
@@ -100,7 +106,13 @@ const wizards: IWizard[] = [
         state: StateE.prototype,
     },
     {
-        icon: <AnsibleTowerIcon size="lg" color="#EE0000" />,
+        icon: (
+            <span style={{ color: '#EE0000' }}>
+                <Icon size="lg" isInline>
+                    <AnsibleTowerIcon />{' '}
+                </Icon>
+            </span>
+        ),
         shortName: 'Ansible',
         name: 'Ansible automation',
         route: RouteE.Ansible,
@@ -109,7 +121,11 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
-        icon: <ApplicationsIcon size="lg" />,
+        icon: (
+            <Icon size="lg">
+                <ApplicationsIcon />
+            </Icon>
+        ),
         shortName: 'Application',
         name: 'Application',
         route: RouteE.Application,
@@ -127,7 +143,11 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
-        icon: <ClusterIcon size="lg" />,
+        icon: (
+            <Icon size="lg">
+                <ClusterIcon />
+            </Icon>
+        ),
         shortName: 'Cluster',
         name: 'Cluster',
         route: RouteE.Cluster,
@@ -137,7 +157,11 @@ const wizards: IWizard[] = [
         labels: ['Multi-Cluster Engine'],
     },
     {
-        icon: <LockIcon size="lg" />,
+        icon: (
+            <Icon size="lg">
+                <LockIcon />
+            </Icon>
+        ),
         shortName: 'Credentials',
         name: 'Credentials',
         route: RouteE.Credentials,
@@ -165,7 +189,13 @@ const wizards: IWizard[] = [
         state: StateE.beta,
     },
     {
-        icon: <AnsibleTowerIcon size="lg" color="#EE0000" />,
+        icon: (
+            <span style={{ color: '#EE0000' }}>
+                <Icon size="lg" isInline>
+                    <AnsibleTowerIcon />{' '}
+                </Icon>
+            </span>
+        ),
         shortName: 'Policy Automation',
         name: 'Policy Automation',
         route: RouteE.PolicyAutomation,
@@ -181,7 +211,13 @@ const wizards: IWizard[] = [
         labels: ['Advanced Cluster Management'],
     },
     {
-        icon: <RedhatIcon size="lg" color="#EE0000" />,
+        icon: (
+            <span style={{ color: '#EE0000' }}>
+                <Icon size="lg" isInline>
+                    <RedhatIcon />
+                </Icon>
+            </span>
+        ),
         shortName: 'ROSA',
         name: 'ROSA',
         route: RouteE.ROSA,
@@ -351,7 +387,7 @@ function DemoHeader() {
                 </PageToggleButton>
             </MastheadToggle>
             <MastheadMain>
-                <MastheadBrand>
+                <MastheadBrand component="a">
                     <div style={{ display: 'flex', gap: 8, alignItems: 'start' }}>
                         <svg width="45" height="40.5" viewBox="0 0 30 27" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -379,7 +415,9 @@ function DemoHeader() {
             <MastheadContent>
                 <span style={{ flexGrow: 1 }} />
                 <a href="https://github.com/patternfly-labs/react-form-wizard" style={{ color: 'white' }}>
-                    <GithubIcon size="lg" />
+                    <Icon size="lg">
+                        <GithubIcon />
+                    </Icon>
                 </a>
             </MastheadContent>
         </Masthead>
@@ -389,8 +427,8 @@ function DemoHeader() {
 function DemoSidebar() {
     const location = useLocation()
     return (
-        <PageSidebar
-            nav={
+        <PageSidebar>
+            <PageSidebarBody>
                 <Nav>
                     <NavList>
                         <NavItem isActive={location.search === ''}>
@@ -411,7 +449,7 @@ function DemoSidebar() {
                         </NavExpandable> */}
                     </NavList>
                 </Nav>
-            }
-        />
+            </PageSidebarBody>
+        </PageSidebar>
     )
 }

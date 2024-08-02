@@ -1,6 +1,5 @@
-import { Tooltip } from '@patternfly/react-core'
-import { Button } from '@patternfly/react-core/dist/js/components/Button'
-import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
+import { Button, Tooltip } from '@patternfly/react-core'
+import { TimesCircleIcon } from '@patternfly/react-icons'
 import { useStringContext } from '../contexts/StringContext'
 
 export function ClearInputButton(props: { onClick: () => void }) {

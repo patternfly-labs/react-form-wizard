@@ -4,9 +4,6 @@ import {
     DescriptionListTerm,
     Dropdown,
     DropdownItem,
-    DropdownPosition,
-    DropdownToggle,
-    DropdownToggleCheckbox,
     EmptyState,
     EmptyStateBody,
     List,
@@ -14,9 +11,13 @@ import {
     OnSetPage,
     Pagination,
     PaginationVariant,
-    Title,
+    EmptyStateHeader,
+    MenuToggleCheckbox,
+    MenuToggleElement,
+    MenuToggle,
+    DropdownList,
 } from '@patternfly/react-core'
-import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
+import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 import { Fragment, ReactNode, useCallback, useMemo, useState } from 'react'
 import { Indented } from '../components/Indented'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -121,7 +122,7 @@ export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
         }
         return (
             <Fragment>
-                <div className="pf-c-description-list__term">{props.label}</div>
+                <div className="pf-v5-c-description-list__term">{props.label}</div>
                 <Indented paddingBottom={4}>
                     <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
                         {values.map((value, index) => (
@@ -138,9 +139,7 @@ export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
     if (props.items.length === 0) {
         return (
             <EmptyState>
-                <Title headingLevel="h4" size="lg">
-                    {props.emptyTitle}
-                </Title>
+                <EmptyStateHeader titleText={<>{props.emptyTitle}</>} headingLevel="h4" />
                 <EmptyStateBody>{props.emptyMessage}</EmptyStateBody>
             </EmptyState>
         )
@@ -159,7 +158,7 @@ export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
                 />
                 {/* <SearchInput style={{ flexGrow: 1 }} /> */}
             </div>
-            <TableComposable aria-label={props.label} variant="compact" id={id}>
+            <Table aria-label={props.label} variant="compact" id={id}>
                 <Thead>
                     <Tr>
                         <Th />
@@ -184,7 +183,7 @@ export function WizTableSelect<T = any>(props: WizTableSelectProps<T>) {
                         </Tr>
                     ))}
                 </Tbody>
-            </TableComposable>
+            </Table>
             {props.items.length > 10 && (
                 <Pagination
                     itemCount={props.items.length}
@@ -243,29 +242,36 @@ function BulkSelect(props: {
 
     const { deselectAllAriaLabel, selectAllAriaLabel } = useStringContext()
 
-    const splitButtonItems = useMemo(
-        () => [
-            <DropdownToggleCheckbox
-                id="example-checkbox-2"
-                key="split-checkbox"
-                aria-label={anySelected ? deselectAllAriaLabel : selectAllAriaLabel}
-                isChecked={isChecked}
-                onClick={onCheckbox}
-            />,
-        ],
-        [anySelected, isChecked, onCheckbox, deselectAllAriaLabel, selectAllAriaLabel]
+    const toggle = useCallback(
+        (toggleRef: React.Ref<MenuToggleElement>) => {
+            return (
+                <MenuToggle
+                    ref={toggleRef}
+                    onClick={onDropDownToggle}
+                    splitButtonOptions={{
+                        items: [
+                            <MenuToggleCheckbox
+                                id="example-checkbox-2"
+                                key="split-checkbox"
+                                aria-label={anySelected ? deselectAllAriaLabel : selectAllAriaLabel}
+                                isChecked={isChecked}
+                                onChange={onCheckbox}
+                            >
+                                {props.selectedCount !== 0 && <Fragment>{selected(props.selectedCount)}</Fragment>}
+                            </MenuToggleCheckbox>,
+                        ],
+                    }}
+                />
+            )
+        },
+        [anySelected, deselectAllAriaLabel, isChecked, onCheckbox, onDropDownToggle, props.selectedCount, selectAllAriaLabel, selected]
     )
 
-    const toggle = useMemo(
-        () => (
-            <DropdownToggle splitButtonItems={splitButtonItems} onToggle={onDropDownToggle}>
-                {props.selectedCount !== 0 && <Fragment>{selected(props.selectedCount)}</Fragment>}
-            </DropdownToggle>
-        ),
-        [onDropDownToggle, props.selectedCount, splitButtonItems, selected]
+    return (
+        <Dropdown onSelect={onDropDownToggle} toggle={toggle} isOpen={open} onOpenChange={setOpen} popperProps={{ position: 'left' }}>
+            <DropdownList>{items}</DropdownList>
+        </Dropdown>
     )
-
-    return <Dropdown onSelect={onDropDownToggle} toggle={toggle} isOpen={open} dropdownItems={items} position={DropdownPosition.left} />
 }
 
 function onlyUnique(value: unknown, index: number, self: unknown[]) {

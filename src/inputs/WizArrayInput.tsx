@@ -2,22 +2,24 @@ import {
     Button,
     Divider,
     Dropdown,
+    DropdownList,
     DropdownItem,
-    DropdownProps,
-    DropdownToggle,
     FormFieldGroupHeader,
+    Icon,
     List,
     ListItem,
+    MenuToggle,
     Split,
     SplitItem,
     Title,
+    MenuToggleElement,
 } from '@patternfly/react-core'
 import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import get from 'get-value'
 import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { WizTextDetail } from '..'
 import { FieldGroup } from '../components/FieldGroup'
-import { HelperText } from '../components/HelperText'
+import { WizHelperText } from '../components/WizHelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { useData } from '../contexts/DataContext'
@@ -155,7 +157,7 @@ export function WizArrayInput(props: WizArrayInputProps) {
         }
         return (
             <Fragment>
-                <div className="pf-c-description-list__term">{props.label}</div>
+                <div className="pf-v5-c-description-list__term">{props.label}</div>
                 <Indented id={id}>
                     <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
                         {values.map((value, index) => (
@@ -184,16 +186,16 @@ export function WizArrayInput(props: WizArrayInputProps) {
                 <div style={{ paddingBottom: 8, paddingTop: 0 }}>
                     {props.isSection ? (
                         <Split hasGutter style={{ paddingBottom: 8 }}>
-                            <span className="pf-c-form__section-title">{props.label}</span>
+                            <span className="pf-v5-c-form__section-title">{props.label}</span>
                             {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                         </Split>
                     ) : (
                         <div>
-                            <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
+                            <span className="pf-v5-c-form__label pf-v5-c-form__label-text">{props.label}</span>
                             {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
                         </div>
                     )}
-                    <HelperText helperText={props.helperText} />
+                    <WizHelperText {...props} />
                 </div>
             )}
             {values.length === 0 ? (
@@ -227,7 +229,7 @@ export function WizArrayInput(props: WizArrayInputProps) {
                         <Button
                             id="add-button"
                             variant="link"
-                            isSmall
+                            size="sm"
                             aria-label={actionAriaLabel}
                             onClick={() => addItem(props.newValue ?? {})}
                             icon={<PlusCircleIcon />}
@@ -236,9 +238,19 @@ export function WizArrayInput(props: WizArrayInputProps) {
                         </Button>
                     ) : (
                         <Dropdown
-                            isPlain
-                            dropdownItems={props.dropdownItems.map((item, index) => {
-                                return (
+                            isOpen={open}
+                            onOpenChange={setOpen}
+                            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                                <MenuToggle ref={toggleRef} onClick={onToggle} variant="plainText">
+                                    <Button icon={<PlusCircleIcon />} iconPosition="left" variant="link" size="sm">
+                                        {props.placeholder}
+                                    </Button>
+                                </MenuToggle>
+                            )}
+                            popperProps={{ position: 'left' }}
+                        >
+                            <DropdownList>
+                                {props.dropdownItems.map((item, index) => (
                                     <DropdownItem
                                         key={index}
                                         onClick={() => {
@@ -248,28 +260,9 @@ export function WizArrayInput(props: WizArrayInputProps) {
                                     >
                                         {item.label}
                                     </DropdownItem>
-                                )
-                            })}
-                            toggle={
-                                <DropdownToggle id="toggle-id" onToggle={onToggle}>
-                                    {/* Mimic Button layout to match styling when there is a single add option */}
-                                    <span className="pf-c-button pf-m-link pf-m-small">
-                                        <span className="pf-c-button__icon pf-m-start">
-                                            <PlusCircleIcon />
-                                        </span>
-                                        {props.placeholder}
-                                    </span>
-                                </DropdownToggle>
-                            }
-                            isOpen={open}
-                            // Match dropdown caret colors with button link styling
-                            style={
-                                {
-                                    '--pf-c-dropdown--m-plain__toggle-icon--Color': 'var(--pf-global--link--Color)',
-                                    '--pf-c-dropdown--m-plain--hover__toggle-icon--Color': 'var(--pf-global--link--Color--hover)',
-                                } as DropdownProps['style']
-                            }
-                        />
+                                ))}
+                            </DropdownList>
+                        </Dropdown>
                     )}
                 </div>
             )}
@@ -341,10 +334,12 @@ export function ArrayInputItem(props: {
                                                     showValidation && hasErrors ? (
                                                         <Split>
                                                             <SplitItem>
-                                                                <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+                                                                <Icon status="danger">
+                                                                    <ExclamationCircleIcon />
+                                                                </Icon>
                                                             </SplitItem>
                                                             <SplitItem>
-                                                                <span className="pf-c-form__helper-text pf-m-error">
+                                                                <span className="pf-v5-c-form__helper-text pf-m-error">
                                                                     &nbsp; {expandToFixValidationErrors}
                                                                 </span>
                                                             </SplitItem>

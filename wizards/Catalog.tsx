@@ -17,6 +17,7 @@ import {
     DrawerSection,
     Flex,
     FlexItem,
+    Icon,
     Label,
     LabelGroup,
     List,
@@ -302,7 +303,11 @@ export function Catalog(props: {
                                                     {featureGroup.features?.map((feature, index) => (
                                                         <ListItem
                                                             key={index}
-                                                            icon={<CheckIcon color="green" size="md" style={{ marginTop: -2 }} />}
+                                                            icon={
+                                                                <Icon status="success" isInline>
+                                                                    <CheckIcon />
+                                                                </Icon>
+                                                            }
                                                         >
                                                             {feature}
                                                         </ListItem>
@@ -330,7 +335,7 @@ export function Catalog(props: {
 
     return (
         <Page>
-            <PageSection variant="light" sticky="top" isWidthLimited>
+            <PageSection variant="light" isWidthLimited>
                 <Flex style={{ gap: 16 }}>
                     <FlexItem grow={{ default: 'grow' }}>
                         <Stack hasGutter>
@@ -339,7 +344,7 @@ export function Catalog(props: {
                         </Stack>
                     </FlexItem>
                     <FlexItem alignSelf={{ default: 'alignSelfFlexEnd' }} grow={{ default: 'grow' }}>
-                        <SearchInput value={search} onChange={setSearch} onClear={() => setSearch('')} />
+                        <SearchInput value={search} onChange={(_event, value) => setSearch(value)} onClear={() => setSearch('')} />
                     </FlexItem>
                 </Flex>
             </PageSection>
@@ -351,7 +356,7 @@ export function Catalog(props: {
                 </Drawer>
             </PageSection>
             {props.onBack && (
-                <PageSection variant="light" sticky="bottom" isFilled={false}>
+                <PageSection variant="light" isFilled={false}>
                     <Button onClick={props.onBack}>Back</Button>
                 </PageSection>
             )}

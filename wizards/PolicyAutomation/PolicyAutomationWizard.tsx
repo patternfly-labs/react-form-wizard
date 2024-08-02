@@ -6,7 +6,7 @@ import {
     EditMode,
     WizKeyValue,
     Section,
-    Select,
+    WizSelect,
     Step,
     WizardCancel,
     WizardPage,
@@ -123,7 +123,7 @@ export function PolicyAutomationWizard(props: {
                             </Alert>
                         </WizDetailsHidden>
                     )}
-                    <Select
+                    <WizSelect
                         id="secret"
                         label="Ansible credential"
                         path="spec.automationDef.secret"
@@ -162,7 +162,7 @@ export function PolicyAutomationWizard(props: {
                         }
                         required
                     />
-                    <Select
+                    <WizSelect
                         id="job"
                         label="Ansible job"
                         path="spec.automationDef.name"
@@ -177,7 +177,7 @@ export function PolicyAutomationWizard(props: {
                         placeholder="Add variable"
                         hidden={(item) => !item.spec?.automationDef?.name}
                     />
-                    <Select
+                    <WizSelect
                         id="mode"
                         label="Schedule"
                         labelHelp={

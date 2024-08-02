@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { WizKeyValue, Section, Select, Step, WizardCancel, WizardPage, WizardSubmit, WizArrayInput, WizTextInput } from '../../src'
+import { WizKeyValue, Section, WizSelect, Step, WizardCancel, WizardPage, WizardSubmit, WizArrayInput, WizTextInput } from '../../src'
 
 export function AnsibleWizard(props: {
     onSubmit: WizardSubmit
@@ -30,7 +30,7 @@ export function AnsibleWizard(props: {
                     description="Automation is accomplished by creating a ClusterCurator resource which can be selected during cluster creation to automate running ansible jobs."
                 >
                     <WizTextInput label="Name" id="name" path="metadata.name" required />
-                    <Select
+                    <WizSelect
                         label="Namespace"
                         id="namespace"
                         path="metadata.namespace"
@@ -43,7 +43,7 @@ export function AnsibleWizard(props: {
 
             <Step label="Install" id="install">
                 <Section id="install" label="Install" prompt="Install Ansible job templates">
-                    <Select
+                    <WizSelect
                         id="install-secret"
                         path="spec.install.towerAuthSecret"
                         label="Ansible credentials"
@@ -82,7 +82,7 @@ export function AnsibleWizard(props: {
 
             <Step label="Upgrade" id="upgrade">
                 <Section id="upgrade" label="Upgrade" prompt="Upgrade Ansible job templates">
-                    <Select
+                    <WizSelect
                         id="upgrade-secret"
                         path="spec.upgrade.towerAuthSecret"
                         label="Ansible credentials"

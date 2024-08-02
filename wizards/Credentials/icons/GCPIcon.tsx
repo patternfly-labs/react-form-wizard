@@ -1,11 +1,11 @@
-import { createSvgIcon } from './createAcmIcon'
+import { createIcon } from './createAcmIcon'
 
-export const GCPIcon = createSvgIcon({
+export const GCPIcon = createIcon({
     xOffset: 0,
     yOffset: -25,
     width: 256,
     height: 256,
-    svgPaths: (
+    svgPath: (
         <g>
             <path
                 d="M170.252 56.819l22.253-22.253 1.483-9.37C153.437-11.677 88.976-7.496 52.42 33.92 42.267 45.423 34.734 59.764 30.717 74.573l7.97-1.123 44.505-7.34 3.436-3.513c19.797-21.742 53.27-24.667 76.128-6.168l7.496.39z"

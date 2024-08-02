@@ -2,7 +2,7 @@ import {
     WizItemSelector,
     WizKeyValue,
     Section,
-    Select,
+    WizSelect,
     Step,
     WizardCancel,
     WizardPage,
@@ -65,7 +65,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                     >
                         <WizTextInput id="text-input" path="metadata.name" label="Name" required />
                         <WizTextInput id="text-input" path="metadata.namespace" label="Namespace" required />
-                        <Select
+                        <WizSelect
                             id="select"
                             path="spec.channel"
                             label="Channel"
@@ -95,7 +95,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/git-tag`}
                             label="Tag"
                         />
-                        <Select
+                        <WizSelect
                             id="select"
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/reconcile-option`}
                             label="Reconcile option"
@@ -135,7 +135,7 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                         }}
                     >
                         <WizTextInput id="text-input" path="metadata.name" label="Channel name" required />
-                        <Select
+                        <WizSelect
                             id="type"
                             path={`spec.type`}
                             label="Repository type"
@@ -143,14 +143,14 @@ export function AppWizard(props: { onSubmit: WizardSubmit; onCancel: WizardCance
                             required
                         />
                         <WizTextInput id="pathname" path="spec.pathname" label="Repository URL" placeholder="Enter the URL" required />
-                        <Select
+                        <WizSelect
                             id="type"
                             path="spec.secretRef.name"
                             label="Repository secret"
                             options={['TODO']}
                             helperText="The secret containing the credentials to access the repository."
                         />
-                        <Select
+                        <WizSelect
                             id="select"
                             path={`metadata.annotations.apps\\.open-cluster-management\\.io/reconcile-rate`}
                             label="Repository reconcile rate"

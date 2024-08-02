@@ -1,7 +1,5 @@
-import { Tooltip } from '@patternfly/react-core'
-import { Button } from '@patternfly/react-core/dist/js/components/Button'
-import EyeIcon from '@patternfly/react-icons/dist/js/icons/eye-icon'
-import EyeSlashIcon from '@patternfly/react-icons/dist/js/icons/eye-slash-icon'
+import { Button, Tooltip } from '@patternfly/react-core'
+import { EyeIcon, EyeSlashIcon } from '@patternfly/react-icons'
 import { useStringContext } from '../contexts/StringContext'
 
 export function ShowSecretsButton(props: { showSecrets: boolean; setShowSecrets: (value: boolean) => void }) {

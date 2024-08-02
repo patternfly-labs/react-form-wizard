@@ -1,7 +1,7 @@
 import { Button, Divider, List, ListItem, TextInput } from '@patternfly/react-core'
 import { PlusCircleIcon, TrashIcon } from '@patternfly/react-icons'
 import { Fragment } from 'react'
-import { HelperText } from '../components/HelperText'
+import { WizHelperText } from '../components/WizHelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -63,7 +63,7 @@ export function WizKeyValue(props: KeyValueProps) {
         if (!pairs.length) return <Fragment />
         return (
             <Fragment>
-                <div className="pf-c-description-list__term">{props.label}</div>
+                <div className="pf-v5-c-description-list__term">{props.label}</div>
                 <Indented id={id}>
                     <List style={{ marginTop: -4 }} isPlain={props.summaryList !== true}>
                         {pairs.map((pair, index) => (
@@ -80,10 +80,10 @@ export function WizKeyValue(props: KeyValueProps) {
     return (
         <div id={id} style={{ display: 'flex', flexDirection: 'column', rowGap: pairs.length ? 8 : 4 }}>
             <div>
-                <span className="pf-c-form__label pf-c-form__label-text">{props.label}</span>
+                <span className="pf-v5-c-form__label pf-v5-c-form__label-text">{props.label}</span>
                 {props.labelHelp && <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />}
             </div>
-            <HelperText helperText={props.helperText} />
+            <WizHelperText {...props} />
             <div
                 style={{
                     display: 'grid',
@@ -96,9 +96,13 @@ export function WizKeyValue(props: KeyValueProps) {
                 {pairs.map((pair, index) => {
                     return (
                         <Fragment key={index}>
-                            <TextInput id={`key-${index + 1}`} value={pair.key} onChange={(e) => onKeyChange(index, e)} />
+                            <TextInput id={`key-${index + 1}`} value={pair.key} onChange={(_event, value) => onKeyChange(index, value)} />
                             <span>=</span>
-                            <TextInput id={`value-${index + 1}`} value={pair.value} onChange={(e) => onValueChange(index, e)} />
+                            <TextInput
+                                id={`value-${index + 1}`}
+                                value={pair.value}
+                                onChange={(_event, value) => onValueChange(index, value)}
+                            />
                             <Button variant="plain" aria-label={removeItemAriaLabel} onClick={() => onDeleteKey(index)}>
                                 <TrashIcon />
                             </Button>
@@ -108,7 +112,7 @@ export function WizKeyValue(props: KeyValueProps) {
             </div>
             {!Object.keys(pairs).length && <Divider />}
             <div>
-                <Button id="add-button" variant="link" isSmall aria-label={actionAriaLabel} onClick={onNewKey} icon={<PlusCircleIcon />}>
+                <Button id="add-button" variant="link" size="sm" aria-label={actionAriaLabel} onClick={onNewKey} icon={<PlusCircleIcon />}>
                     {getAddPlaceholder(props)}
                 </Button>
             </div>

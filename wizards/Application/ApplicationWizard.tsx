@@ -8,7 +8,7 @@ import {
     Radio,
     WizRadioGroup,
     Section,
-    Select,
+    WizSelect,
     Step,
     WizTextDetail,
     Tile,
@@ -143,7 +143,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </WizTiles>
 
                         <WizHidden hidden={(data) => data.repositoryType !== 'SubscriptionGit'}>
-                            <Select
+                            <WizSelect
                                 path="subscription.git.url"
                                 label="URL"
                                 placeholder="Enter or select a Git URL"
@@ -166,7 +166,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                                 placeholder="Enter the Git access token"
                                 labelHelp="The access token if this is a private Git repository and requires connection."
                             />
-                            <Select
+                            <WizSelect
                                 path="subscription.git.branch"
                                 label="Branch"
                                 placeholder="Enter or select a branch"
@@ -174,7 +174,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                                 options={['branch-1']}
                                 required
                             />
-                            <Select
+                            <WizSelect
                                 path="subscription.git.path"
                                 label="Path"
                                 placeholder="Enter or select a repository path"
@@ -196,14 +196,14 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                                 placeholder="Enter a specific tag"
                                 labelHelp="If you want to subscribe to a specific tag, you need to specify the tag. If both Git desired commit and tag annotations are specified, the tag is ignored. You might need to specify git-clone-depth annotation if your desired commit of the tag is older than the last 20 commits."
                             />
-                            <Select
+                            <WizSelect
                                 path="subscription.git.reconcileOption"
                                 label="Reconcile option"
                                 labelHelp="With the Merge option, new fields are added and existing fields are updated in the resource. Choose to merge if resources are updated after the initial deployment. If you choose to replace, the existing resource is replaced with the Git source."
                                 options={reconcileOptions}
                                 required
                             />
-                            <Select
+                            <WizSelect
                                 path="subscription.git.reconcileRate"
                                 label="Repository reconcile rate"
                                 labelHelp="The frequency of resource reconciliation that is used as a global repository setting. The medium default setting checks for changes to apply every three minutes and re-applies all resources every 15 minutes, even without a change. Select low to reconcile every hour. Select high to reconcile every two minutes. If you select off, the deployed resources are not automatically reconciled."
@@ -223,7 +223,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </WizHidden>
 
                         <WizHidden hidden={(data) => data.repositoryType !== 'SubscriptionHelm'}>
-                            <Select
+                            <WizSelect
                                 path="subscription.helm.url"
                                 label="URL"
                                 placeholder="Enter or select a Helm repository URL"
@@ -263,7 +263,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                                 placeholder="Enter the version or versions"
                                 labelHelp="The version or versions for the deployable. You can use a range of versions in the form >1.0, or <3.0."
                             />
-                            <Select
+                            <WizSelect
                                 path="subscription.helm.reconcileRate"
                                 label="Repository reconcile rate"
                                 labelHelp="The frequency of resource reconciliation that is used as a global repository setting. The medium default setting checks for changes to apply every three minutes and re-applies all resources every 15 minutes, even without a change. Select low to reconcile every hour. Select high to reconcile every two minutes. If you select off, the deployed resources are not automatically reconciled."
@@ -283,7 +283,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         </WizHidden>
 
                         <WizHidden hidden={(data) => data.repositoryType !== 'SubscriptionObjectstorage'}>
-                            <Select
+                            <WizSelect
                                 path="subscription.obj.url"
                                 label="URL"
                                 placeholder="Enter or select an ObjectStore bucket URL"
@@ -327,7 +327,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
             <Step id="general" label="General" hidden={(item) => item.deployType !== 'ArgoCD'}>
                 <Section label="General">
                     <WizTextInput path="appSetName" label="ApplicationSet name" placeholder="Enter the application set name" required />
-                    <Select
+                    <WizSelect
                         path="argoServer"
                         label="Argo server"
                         placeholder="Select the Argo server"
@@ -336,7 +336,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                         required
                     />
                     <ExternalLinkButton id="addClusterSets" icon={<PlusCircleIcon />} href={props.addClusterSets} />
-                    <Select
+                    <WizSelect
                         path="requeueTime"
                         label="Requeue time"
                         options={requeueTimes}
@@ -353,7 +353,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                     </WizTiles>
                     {/* Git repo */}
                     <WizHidden hidden={(data) => data.repositoryType !== 'Git'}>
-                        <Select
+                        <WizSelect
                             path="git.url"
                             label="URL"
                             labelHelp="The URL path for the Git repository."
@@ -364,14 +364,14 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                             }))}
                             required
                         />
-                        <Select
+                        <WizSelect
                             path="git.revision"
                             label="Revision"
                             labelHelp="Refer to a single commit"
                             placeholder="Enter or select a tracking revision"
                             options={['Branches', 'Tags']}
                         />
-                        <Select
+                        <WizSelect
                             path="git.path"
                             label="Path"
                             labelHelp="The location of the resources on the Git repository."
@@ -381,7 +381,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                     </WizHidden>
                     {/* Helm repo */}
                     <WizHidden hidden={(data) => data.repositoryType !== 'Helm'}>
-                        <Select
+                        <WizSelect
                             path="helm.url"
                             label="URL"
                             labelHelp="The URL path for the Helm repository."
@@ -429,7 +429,7 @@ export function ApplicationWizard(props: ApplicationWizardProps) {
                     <WizCheckbox path="syncPolicy.createNamespace" label="Automatically create namespace if it does not exist" />
                     <WizCheckbox path="syncPolicy.validate" label="Disable kubectl validation" />
                     <WizCheckbox path="syncPolicy.prunePropagationPolicy" label="Prune propagation policy">
-                        <Select
+                        <WizSelect
                             path="syncPolicy.propagationPolicy"
                             label="Propogation policy"
                             options={['foreground', 'background', 'orphan']}
@@ -467,7 +467,7 @@ export function Placement(props: { placements: string[] }) {
                     label="Use an existing placement"
                     labelHelp="If available in the application namespace, you can select a predefined placement configuration"
                 >
-                    <Select
+                    <WizSelect
                         path="placement.select"
                         label="Placement"
                         placeholder="Select an existing placement"
@@ -483,7 +483,7 @@ export function Placement(props: { placements: string[] }) {
 export function AnsibleCredentials(props: { ansibleCredentials: string[] }) {
     return (
         <Section label="Configure automation for prehook and posthook">
-            <Select
+            <WizSelect
                 path="subscription.git.ansibleSecretName"
                 label="Ansible Automation Platform credential"
                 labelHelp="If using Configure automation for prehook and posthook tasks, select the Ansible Automation Platform credential. Click the Add credentials tab to create a new secret."
@@ -532,7 +532,7 @@ export function TimeWindow(props: { timeZone: string[] }) {
                 required
                 options={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}
             />
-            <Select path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
+            <WizSelect path="timeWindow.timezone" label="Time zone" placeholder="Select the time zone" options={props.timeZone} required />
             <WizArrayInput
                 path="timeWindows"
                 placeholder="Add time range"
@@ -559,7 +559,7 @@ export function ExternalLinkButton(props: { id: string; href?: string; icon?: Re
     return (
         <Flex>
             <FlexItem spacer={{ default: 'spacerXl' }}>
-                <Button id={props.id} icon={props.icon} isSmall={true} variant="link" component="a" href={props.href} target="_blank">
+                <Button id={props.id} icon={props.icon} size="sm" variant="link" component="a" href={props.href} target="_blank">
                     Add cluster sets
                 </Button>
             </FlexItem>
@@ -595,7 +595,7 @@ function DetailsSection(props: { namespaces: string[] }) {
     return (
         <Section label="Details" prompt="Enter the details of the application">
             <WizTextInput path="name" label="Application name" required />
-            <Select
+            <WizSelect
                 path="namespace"
                 label="Namespace"
                 placeholder="Select the namespace"

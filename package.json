@@ -1,6 +1,6 @@
 {
     "name": "@patternfly-labs/react-form-wizard",
-    "version": "1.32.0",
+    "version": "2.0.0",
     "description": "A Patternfly react wizard framework.",
     "license": "Apache-2.0",
     "main": "lib/src/index.js",
@@ -34,9 +34,9 @@
         "url": "git+https://github.com/patternfly-labs/react-form-wizard.git"
     },
     "peerDependencies": {
-        "@patternfly/react-core": "4",
-        "@patternfly/react-icons": "4",
-        "@patternfly/react-table": "4",
+        "@patternfly/react-core": "^5",
+        "@patternfly/react-icons": "^5",
+        "@patternfly/react-table": "^5",
         "react": ">=17",
         "react-dom": ">=17"
     },
@@ -51,9 +51,9 @@
         "@babel/preset-react": "7.24.7",
         "@babel/preset-typescript": "7.24.7",
         "@cypress/code-coverage": "^3.12.36",
-        "@patternfly/react-core": "4.272.0",
-        "@patternfly/react-icons": "4.93.7",
-        "@patternfly/react-table": "4.113.7",
+        "@patternfly/react-core": "^5.3.4",
+        "@patternfly/react-icons": "^5.3.2",
+        "@patternfly/react-table": "^5.3.4",
         "@pmmmwh/react-refresh-webpack-plugin": "0.5.15",
         "@react-hook/resize-observer": "1.2.6",
         "@svgr/webpack": "6.5.1",
@@ -78,7 +78,7 @@
         "cpy-cli": "4.2.0",
         "css-loader": "6.11.0",
         "css-minimizer-webpack-plugin": "3.4.1",
-        "cypress": "9.7.0",
+        "cypress": "^11.2.0",
         "eslint": "8.57.0",
         "eslint-config-prettier": "8.10.0",
         "eslint-plugin-i18n-json": "^4.0.0",

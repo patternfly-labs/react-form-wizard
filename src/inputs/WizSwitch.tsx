@@ -1,7 +1,7 @@
-import { Split, Stack, Switch as PFSwitch } from '@patternfly/react-core'
+import { Split, Stack, Switch as PFSwitch, SwitchProps } from '@patternfly/react-core'
 import { CheckIcon } from '@patternfly/react-icons'
-import { Fragment, ReactNode } from 'react'
-import { HelperText } from '../components/HelperText'
+import { Fragment, ReactNode, useCallback } from 'react'
+import { WizHelperText } from '../components/WizHelperText'
 import { Indented } from '../components/Indented'
 import { LabelHelp } from '../components/LabelHelp'
 import { DisplayMode } from '../contexts/DisplayModeContext'
@@ -25,6 +25,7 @@ function getIsChecked(value: any) {
 
 export function WizSwitch(props: WizSwitchProps) {
     const { displayMode: mode, value, setValue, hidden, id } = useInput(props)
+    const onChange = useCallback<NonNullable<SwitchProps['onChange']>>((_event, value) => setValue(value), [setValue])
 
     if (hidden) return <Fragment />
 
@@ -34,7 +35,7 @@ export function WizSwitch(props: WizSwitchProps) {
             <Fragment>
                 <Split id={id}>
                     <CheckIcon style={{ paddingRight: 5 }} />
-                    <div className="pf-c-description-list__term" style={{ paddingLeft: 2 }}>
+                    <div className="pf-v5-c-description-list__term" style={{ paddingLeft: 2 }}>
                         {props.label}
                     </div>
                 </Split>
@@ -46,11 +47,11 @@ export function WizSwitch(props: WizSwitchProps) {
     return (
         <Stack hasGutter>
             <Stack>
-                <WizFormGroup {...props} id={id} label={props.title} helperText={undefined}>
+                <WizFormGroup {...props} id={id} label={props.title} noHelperText>
                     <PFSwitch
                         id={id}
                         isChecked={getIsChecked(value)}
-                        onChange={setValue}
+                        onChange={onChange}
                         label={
                             <>
                                 {props.label} <LabelHelp id={id} labelHelp={props.labelHelp} labelHelpTitle={props.labelHelpTitle} />
@@ -59,7 +60,7 @@ export function WizSwitch(props: WizSwitchProps) {
                         value={value}
                     />
                 </WizFormGroup>
-                <HelperText helperText={props.helperText} />
+                <WizHelperText {...props} />
             </Stack>
             {value && <Indented paddingBottom={8}>{props.children}</Indented>}
         </Stack>

@@ -1,5 +1,4 @@
-import { Spinner, Tooltip } from '@patternfly/react-core'
-import { Button } from '@patternfly/react-core/dist/js/components/Button'
+import { Button, Spinner, Tooltip } from '@patternfly/react-core'
 import { useStringContext } from '../contexts/StringContext'
 
 export function SpinnerButton() {

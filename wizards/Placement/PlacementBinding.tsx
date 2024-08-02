@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { Select, WizArrayInput, WizTextInput } from '../../src'
+import { WizSelect, WizArrayInput, WizTextInput } from '../../src'
 import { useItem } from '../../src/contexts/ItemContext'
 import { IResource } from '../../src/common/resource'
 import { PlacementApiGroup, PlacementKind } from '../common/resources/IPlacement'
@@ -55,7 +55,7 @@ function PlacementBinding(props: { bindingSubjectKind: string; bindingSubjectApi
                 helperText="The placement binding name must be unique to the namespace."
                 validation={isValidKubernetesResourceName}
             />
-            <Select
+            <WizSelect
                 path="placementRef.kind"
                 label="Placement kind"
                 helperText="The placement rule used to select clusters for placement."
@@ -113,7 +113,7 @@ function Subject() {
     const subject = useItem() as IPlacementSubject
     return (
         <Fragment>
-            <Select
+            <WizSelect
                 path="kind"
                 label="Subject kind"
                 required

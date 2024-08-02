@@ -1,11 +1,11 @@
-import { createSvgIcon } from './createAcmIcon'
+import { createIcon } from './createAcmIcon'
 
-export const AWSIcon = createSvgIcon({
+export const AWSIcon = createIcon({
     xOffset: 0,
     yOffset: -100,
     width: 304,
     height: 304,
-    svgPaths: (
+    svgPath: (
         <g>
             <path
                 fill="#252F3E"
