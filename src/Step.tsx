@@ -65,5 +65,13 @@ export function StepInternal(props: StepProps) {
         // Don't use forms in steps which are forms
         return <Fragment>{props.children}</Fragment>
     }
-    return <Form>{props.children}</Form>
+    return (
+        <Form
+            onSubmit={(event) => {
+                event.preventDefault()
+            }}
+        >
+            {props.children}
+        </Form>
+    )
 }
