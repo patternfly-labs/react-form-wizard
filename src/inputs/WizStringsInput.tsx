@@ -21,7 +21,7 @@ export type WizStringsInputProps = InputCommonProps & {
 }
 
 export function WizStringsInput(props: WizStringsInputProps) {
-    const { displayMode: mode, value, setValue, id, hidden } = useInput(props)
+    const { displayMode: mode, value, setValue, id, hidden, required } = useInput(props)
 
     const values: string[] = Array.isArray(value) ? value : []
 
@@ -70,7 +70,7 @@ export function WizStringsInput(props: WizStringsInputProps) {
                                         id={`${id}-${index + 1}`}
                                         path={props.path + '.' + index.toString()}
                                         // onChange={(e) => onKeyChange(index, e)}
-                                        required
+                                        required={required}
                                     />
                                 </InputGroupItem>
                                 <InputGroupItem>

@@ -152,6 +152,7 @@ export function useInput(props: InputCommonProps) {
     }
 
     return {
+        ...props,
         id,
         path,
         displayMode,
