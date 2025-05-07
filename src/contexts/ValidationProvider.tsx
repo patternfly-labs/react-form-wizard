@@ -1,5 +1,20 @@
 import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react'
 
+export enum EditorValidationStatus {
+    success = 'success',
+    pending = 'pending',
+    failure = 'failure',
+}
+
+export const EditorValidationStatusContext = createContext<{
+    editorValidationStatus: EditorValidationStatus
+    setEditorValidationStatus: (status: EditorValidationStatus) => void
+}>({
+    editorValidationStatus: EditorValidationStatus.success,
+    setEditorValidationStatus: () => void
+})
+export const useEditorValidationStatus = () => useContext(EditorValidationStatusContext)
+
 const SetHasValidationErrorContext = createContext<() => void>(() => null)
 SetHasValidationErrorContext.displayName = 'SetHasValidationErrorContext'
 export const useSetHasValidationError = () => useContext(SetHasValidationErrorContext)
@@ -13,6 +28,8 @@ ValidateContext.displayName = 'ValidateContext'
 export const useValidate = () => useContext(ValidateContext)
 
 export function ValidationProvider(props: { children: ReactNode }) {
+    const [editorValidationStatus, setEditorValidationStatus] = useState<EditorValidationStatus>(EditorValidationStatus.success)
+
     const [hasValidationError, setHasValidationErrorState] = useState(false)
     const [previousHasValidationError, setPreviousHasValidationError] = useState(false)
     const setHasValidationError = useCallback(() => {
@@ -47,9 +64,11 @@ export function ValidationProvider(props: { children: ReactNode }) {
 
     return (
         <ValidateContext.Provider value={validate}>
-            <SetHasValidationErrorContext.Provider value={setHasValidationError}>
-                <HasValidationErrorContext.Provider value={hasValidationError}>{props.children}</HasValidationErrorContext.Provider>
-            </SetHasValidationErrorContext.Provider>
+            <EditorValidationStatusContext.Provider value={{ editorValidationStatus, setEditorValidationStatus }}>
+                <SetHasValidationErrorContext.Provider value={setHasValidationError}>
+                    <HasValidationErrorContext.Provider value={hasValidationError}>{props.children}</HasValidationErrorContext.Provider>
+                </SetHasValidationErrorContext.Provider>
+            </EditorValidationStatusContext.Provider>
         </ValidateContext.Provider>
     )
 }

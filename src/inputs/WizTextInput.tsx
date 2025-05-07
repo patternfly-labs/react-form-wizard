@@ -41,6 +41,7 @@ export function WizTextInput(props: WizTextInputProps) {
                     onChange={onChange}
                     type={!props.secret || showSecrets ? 'text' : 'password'}
                     isDisabled={disabled}
+                    spellCheck="false"
                     readOnlyVariant={props.readonly ? 'default' : undefined}
                 />
             </InputGroupItem>
