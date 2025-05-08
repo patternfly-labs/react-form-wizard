@@ -344,7 +344,7 @@ function RenderHiddenSteps(props: { stepComponents: ReactElement[] }) {
 function WizardDrawer(props: { yamlEditor?: () => ReactNode }) {
     const [yamlEditor] = useState(props.yamlEditor ?? undefined)
     return (
-        <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
+        <DrawerPanelContent isResizable={true} defaultSize="600px">
             {yamlEditor}
         </DrawerPanelContent>
     )

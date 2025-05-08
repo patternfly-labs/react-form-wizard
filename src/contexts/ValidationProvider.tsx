@@ -11,7 +11,7 @@ export const EditorValidationStatusContext = createContext<{
     setEditorValidationStatus: (status: EditorValidationStatus) => void
 }>({
     editorValidationStatus: EditorValidationStatus.success,
-    setEditorValidationStatus: () => void
+    setEditorValidationStatus: () => void 0
 })
 export const useEditorValidationStatus = () => useContext(EditorValidationStatusContext)
 
