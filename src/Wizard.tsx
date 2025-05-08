@@ -24,7 +24,7 @@ import { ShowValidationProvider, useSetShowValidation, useShowValidation } from 
 import { StepHasInputsProvider } from './contexts/StepHasInputsProvider'
 import { StepShowValidationProvider, useSetStepShowValidation, useStepShowValidation } from './contexts/StepShowValidationProvider'
 import { StepValidationProvider, useStepHasValidationError } from './contexts/StepValidationProvider'
-import { useHasValidationError, ValidationProvider } from './contexts/ValidationProvider'
+import { useHasValidationError, useEditorValidationStatus, ValidationProvider, EditorValidationStatus } from './contexts/ValidationProvider'
 import { Step } from './Step'
 
 export interface WizardProps {
@@ -229,6 +229,7 @@ function MyFooter(props: {
     const setShowValidation = useSetShowValidation()
     const showWizardValidation = useShowValidation()
     const wizardHasValidationError = useHasValidationError()
+    const { editorValidationStatus } = useEditorValidationStatus()
 
     const firstStep = props.steps[0]
     const lastStep = props.steps[props.steps.length - 1]
@@ -255,17 +256,36 @@ function MyFooter(props: {
         }
     }, [lastStep.name, setShowValidation, wizardContext.activeStep.name])
 
-    const { fixValidationErrorsMsg, submitText, submittingText, cancelButtonText, backButtonText, nextButtonText } = useStringContext()
+    const {
+        fixValidationErrorsMsg,
+        fixEditorValidationErrorsMsg,
+        waitforEditorValidationErrorsMsg,
+        submitText,
+        submittingText,
+        cancelButtonText,
+        backButtonText,
+        nextButtonText,
+    } = useStringContext()
 
     if (wizardContext.activeStep.name === lastStep.name) {
         return (
             <div className="pf-v5-u-box-shadow-sm-top">
+                {editorValidationStatus === EditorValidationStatus.failure && showWizardValidation && (
+                    <Alert title={fixEditorValidationErrorsMsg} isInline variant="danger" />
+                )}
                 {wizardHasValidationError && showWizardValidation && <Alert title={fixValidationErrorsMsg} isInline variant="danger" />}
+                {editorValidationStatus === EditorValidationStatus.pending && showWizardValidation && (
+                    <Alert title={waitforEditorValidationErrorsMsg} isInline variant="warning" />
+                )}
                 {submitError && <Alert title={submitError} isInline variant="danger" />}
                 <WizardFooter>
                     <Button
                         onClick={onSubmitClick}
-                        isDisabled={(wizardHasValidationError && showWizardValidation) || submitting}
+                        isDisabled={
+                            ((wizardHasValidationError || editorValidationStatus !== EditorValidationStatus.success) &&
+                                showWizardValidation) ||
+                            submitting
+                        }
                         isLoading={submitting}
                         type="submit"
                     >
@@ -324,7 +344,7 @@ function RenderHiddenSteps(props: { stepComponents: ReactElement[] }) {
 function WizardDrawer(props: { yamlEditor?: () => ReactNode }) {
     const [yamlEditor] = useState(props.yamlEditor ?? undefined)
     return (
-        <DrawerPanelContent isResizable={true} defaultSize="800px" style={{ backgroundColor: 'rgb(21, 21, 21)' }}>
+        <DrawerPanelContent isResizable={true} defaultSize="600px">
             {yamlEditor}
         </DrawerPanelContent>
     )

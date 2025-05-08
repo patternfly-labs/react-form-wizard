@@ -96,11 +96,17 @@ export function WizKeyValue(props: KeyValueProps) {
                 {pairs.map((pair, index) => {
                     return (
                         <Fragment key={index}>
-                            <TextInput id={`key-${index + 1}`} value={pair.key} onChange={(_event, value) => onKeyChange(index, value)} />
+                            <TextInput
+                                id={`key-${index + 1}`}
+                                value={pair.key}
+                                spellCheck="false"
+                                onChange={(_event, value) => onKeyChange(index, value)}
+                            />
                             <span>=</span>
                             <TextInput
                                 id={`value-${index + 1}`}
                                 value={pair.value}
+                                spellCheck="false"
                                 onChange={(_event, value) => onValueChange(index, value)}
                             />
                             <Button variant="plain" aria-label={removeItemAriaLabel} onClick={() => onDeleteKey(index)}>

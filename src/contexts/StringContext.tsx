@@ -19,6 +19,8 @@ export interface WizardStrings {
     cancelButtonText: string
     nextButtonText: string
     fixValidationErrorsMsg: string
+    fixEditorValidationErrorsMsg: string
+    waitforEditorValidationErrorsMsg: string
     submitText: string
     submittingText: string
     moreInfo: string
@@ -53,6 +55,8 @@ export const defaultStrings: WizardStrings = {
     cancelButtonText: 'Cancel',
     nextButtonText: 'Next',
     fixValidationErrorsMsg: 'Please fix validation errors',
+    fixEditorValidationErrorsMsg: 'Please fix editor syntax errors',
+    waitforEditorValidationErrorsMsg: 'Please wait for editor syntax check',
     submitText: 'Submit',
     submittingText: 'Submitting',
     moreInfo: 'More info',

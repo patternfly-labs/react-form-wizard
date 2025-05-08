@@ -173,6 +173,7 @@ export function StringsMapInput(props: StringsMapInputProps) {
                                     <PFTextInput
                                         id={`${id}-${index + 1}`}
                                         value={pair}
+                                        spellCheck="false"
                                         onChange={(_event, value) => onKeyChange(index, value)}
                                         required
                                     />
