@@ -47,7 +47,7 @@
         "yaml": "1.10.2"
     },
     "devDependencies": {
-        "@babel/core": "7.27.1",
+        "@babel/core": "7.27.3",
         "@babel/preset-react": "7.27.1",
         "@babel/preset-typescript": "7.27.1",
         "@cypress/code-coverage": "^3.14.3",
@@ -61,8 +61,8 @@
         "@types/get-value": "3.0.5",
         "@types/html-webpack-plugin": "3.2.9",
         "@types/mini-css-extract-plugin": "2.5.1",
-        "@types/node": "^18.19.103",
-        "@types/react": "^18.3.22",
+        "@types/node": "^18.19.104",
+        "@types/react": "^18.3.23",
         "@types/react-dom": "^18.3.7",
         "@types/react-router-dom": "5.3.3",
         "@types/set-value": "4.0.3",
