@@ -253,6 +253,10 @@ function MyFooter(props: {
         if (wizardContext.activeStep.name === lastStep.name) {
             // We are on the review step - show validation for all steps
             setShowValidation(true)
+        } else {
+            // if not on review step and there was a submit error
+            // assume user went back and fixed something
+            setSubmitError('')
         }
     }, [lastStep.name, setShowValidation, wizardContext.activeStep.name])
 
