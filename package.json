@@ -47,7 +47,7 @@
         "yaml": "1.10.2"
     },
     "devDependencies": {
-        "@babel/core": "7.28.3",
+        "@babel/core": "7.28.4",
         "@babel/preset-react": "7.27.1",
         "@babel/preset-typescript": "7.27.1",
         "@cypress/code-coverage": "^3.14.6",
